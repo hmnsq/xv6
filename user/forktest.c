@@ -8,7 +8,7 @@
 #define N 1000
 
 void
-print(const char *s)
+print(const var_na *s)
 {
   write(1, s, strlen(s));
 }
@@ -16,31 +16,31 @@ print(const char *s)
 void
 forktest(void)
 {
-  int n, pid;
+  ཧྲིལ n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  ཆེད་དུ (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
+    གལ་ཏེ (pid < 0)
+      bha_nga;
+    གལ་ཏེ (pid == 0)
       exit(0);
   }
 
-  if (n == N) {
+  གལ་ཏེ (n == N) {
     print("fork claimed to work N times!\n");
     exit(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  ཆེད་དུ (; n > 0; n--) {
+    གལ་ཏེ (wait(0) < 0) {
       print("wait stopped early\n");
       exit(1);
     }
   }
 
-  if (wait(0) != -1) {
+  གལ་ཏེ (wait(0) != -1) {
     print("wait got too many\n");
     exit(1);
   }
@@ -48,8 +48,8 @@ forktest(void)
   print("fork test OK\n");
 }
 
-int
-main(void)
+ཧྲིལ
+གཙོ(void)
 {
   forktest();
   exit(0);

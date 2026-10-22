@@ -2,20 +2,20 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+ཧྲིལ
+གཙོ(ཧྲིལ argc, var_na *argv[])
 {
-  int i;
+  ཧྲིལ i;
 
-  if (argc < 2) {
+  གལ་ཏེ (argc < 2) {
     fprintf(2, "Usage: mkdir files...\n");
     exit(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (mkdir(argv[i]) < 0) {
+  ཆེད་དུ (i = 1; i < argc; i++) {
+    གལ་ཏེ (mkdir(argv[i]) < 0) {
       fprintf(2, "mkdir: %s failed to create\n", argv[i]);
-      break;
+      bha_nga;
     }
   }
 

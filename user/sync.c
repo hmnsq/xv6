@@ -2,8 +2,8 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+ཧྲིལ
+གཙོ(ཧྲིལ argc, var_na *argv[])
 {
   sync();
   exit(0);

@@ -1,11 +1,11 @@
-struct buf {
-  int valid; // has data been read from disk?
-  int disk;  // does disk "own" buf?
+sa_nracanaa buf {
+  ཧྲིལ valid; // has data been read from disk?
+  ཧྲིལ disk;  // does disk "own" buf?
   uint dev;
   uint blockno;
-  struct sleeplock lock;
+  sa_nracanaa sleeplock lock;
   uint refcnt;
-  struct buf *prev; // LRU cache list
-  struct buf *next;
+  sa_nracanaa buf *prev; // LRU cache list
+  sa_nracanaa buf *next;
   uchar data[BSIZE];
 };

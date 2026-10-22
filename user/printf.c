@@ -4,108 +4,108 @@
 
 #include <stdarg.h>
 
-static char digits[] = "0123456789ABCDEF";
+static var_na digits[] = "0123456789ABCDEF";
 
 static void
-putc(int fd, char c)
+putc(ཧྲིལ fd, var_na c)
 {
   write(fd, &c, 1);
 }
 
 static void
-printint(int fd, long long xx, int base, int sgn)
+printint(ཧྲིལ fd, long long xx, ཧྲིལ base, ཧྲིལ sgn)
 {
-  char buf[20];
-  int i, neg;
+  var_na buf[20];
+  ཧྲིལ i, neg;
   unsigned long long x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  གལ་ཏེ (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } དེ་མིན {
     x = xx;
   }
 
   i = 0;
   do {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  } སྐབས ((x /= base) != 0);
+  གལ་ཏེ (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  སྐབས (--i >= 0)
     putc(fd, buf[i]);
 }
 
 static void
-printptr(int fd, uint64 x)
+printptr(ཧྲིལ fd, uint64 x)
 {
-  int i;
+  ཧྲིལ i;
   putc(fd, '0');
   putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
+  ཆེད་དུ (i = 0; i < (parimaa_na(uint64) * 2); i++, x <<= 4)
+    putc(fd, digits[x >> (parimaa_na(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
 void
-vprintf(int fd, const char *fmt, va_list ap)
+vprintf(ཧྲིལ fd, const var_na *fmt, va_list ap)
 {
-  char *s;
-  int c0, c1, c2, i, state;
+  var_na *s;
+  ཧྲིལ c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  ཆེད་དུ (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    གལ་ཏེ (state == 0) {
+      གལ་ཏེ (c0 == '%') {
         state = '%';
-      } else {
+      } དེ་མིན {
         putc(fd, c0);
       }
-    } else if (state == '%') {
+    } དེ་མིན གལ་ཏེ (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      གལ་ཏེ (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      གལ་ཏེ (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
+      གལ་ཏེ (c0 == 'd') {
+        printint(fd, va_arg(ap, ཧྲིལ), 10, 1);
+      } དེ་མིན གལ་ཏེ (c0 == 'l' && c1 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      } དེ་མིན གལ་ཏེ (c0 == 'l' && c1 == 'l' && c2 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
+      } དེ་མིན གལ་ཏེ (c0 == 'u') {
         printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
+      } དེ་མིན གལ་ཏེ (c0 == 'l' && c1 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      } དེ་མིན གལ་ཏེ (c0 == 'l' && c1 == 'l' && c2 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
+      } དེ་མིན གལ་ཏེ (c0 == 'x') {
         printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
+      } དེ་མིན གལ་ཏེ (c0 == 'l' && c1 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      } དེ་མིན གལ་ཏེ (c0 == 'l' && c1 == 'l' && c2 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
+      } དེ་མིན གལ་ཏེ (c0 == 'p') {
         printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
+      } དེ་མིན གལ་ཏེ (c0 == 'c') {
         putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } དེ་མིན གལ་ཏེ (c0 == 's') {
+        གལ་ཏེ ((s = va_arg(ap, var_na *)) == 0)
           s = "(null)";
-        for (; *s; s++)
+        ཆེད་དུ (; *s; s++)
           putc(fd, *s);
-      } else if (c0 == '%') {
+      } དེ་མིན གལ་ཏེ (c0 == '%') {
         putc(fd, '%');
-      } else {
+      } དེ་མིན {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
@@ -117,7 +117,7 @@ vprintf(int fd, const char *fmt, va_list ap)
 }
 
 void
-fprintf(int fd, const char *fmt, ...)
+fprintf(ཧྲིལ fd, const var_na *fmt, ...)
 {
   va_list ap;
 
@@ -126,7 +126,7 @@ fprintf(int fd, const char *fmt, ...)
 }
 
 void
-printf(const char *fmt, ...)
+printf(const var_na *fmt, ...)
 {
   va_list ap;
 

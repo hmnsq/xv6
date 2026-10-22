@@ -10,25 +10,25 @@
 
 #define PIPESIZE 512
 
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
+sa_nracanaa pipe {
+  sa_nracanaa spinlock lock;
+  var_na data[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  ཧྲིལ readopen;  // read fd is still open
+  ཧྲིལ writeopen; // write fd is still open
 };
 
-int
-pipealloc(struct file **f0, struct file **f1)
+ཧྲིལ
+pipealloc(sa_nracanaa file **f0, sa_nracanaa file **f1)
 {
-  struct pipe *pi;
+  sa_nracanaa pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+  གལ་ཏེ ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
+  གལ་ཏེ ((pi = (sa_nracanaa pipe *)kalloc()) == 0)
     goto bad;
   pi->readopen = 1;
   pi->writeopen = 1;
@@ -43,60 +43,60 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  ཕྱིར 0;
 
 bad:
-  if (pi)
-    kfree((char *)pi);
-  if (*f0)
+  གལ་ཏེ (pi)
+    kfree((var_na *)pi);
+  གལ་ཏེ (*f0)
     fileclose(*f0);
-  if (*f1)
+  གལ་ཏེ (*f1)
     fileclose(*f1);
-  return -1;
+  ཕྱིར -1;
 }
 
 void
-pipeclose(struct pipe *pi, int writable)
+pipeclose(sa_nracanaa pipe *pi, ཧྲིལ writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  གལ་ཏེ (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } དེ་མིན {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  གལ་ཏེ (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
-    kfree((char *)pi);
-  } else
+    kfree((var_na *)pi);
+  } དེ་མིན
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+ཧྲིལ
+pipewrite(sa_nracanaa pipe *pi, uint64 addr, ཧྲིལ n)
 {
-  int i = 0;
-  struct proc *pr = myproc();
+  ཧྲིལ i = 0;
+  sa_nracanaa proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  སྐབས (i < n) {
+    གལ་ཏེ (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      ཕྱིར -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    གལ་ཏེ (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
-      char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+    } དེ་མིན {
+      var_na ch;
+      གལ་ཏེ (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        གལ་ཏེ (i == 0)
           i = -1;
-        break;
+        bha_nga;
       }
       pi->data[pi->nwrite++ % PIPESIZE] = ch;
       i++;
@@ -105,39 +105,39 @@ pipewrite(struct pipe *pi, uint64 addr, int n)
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  ཕྱིར i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+ཧྲིལ
+piperead(sa_nracanaa pipe *pi, uint64 addr, ཧྲིལ n)
 {
-  int i;
-  struct proc *pr = myproc();
-  char ch;
+  ཧྲིལ i;
+  sa_nracanaa proc *pr = myproc();
+  var_na ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  སྐབས (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    གལ་ཏེ (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      ཕྱིར -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
-      break;
+  ཆེད་དུ (i = 0; i < n; i++) { //DOC: piperead-copy
+    གལ་ཏེ (pi->nread == pi->nwrite)
+      bha_nga;
     ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+    གལ་ཏེ (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      གལ་ཏེ (i == 0)
         i = -1;
-      break;
+      bha_nga;
     }
     pi->nread++;
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  ཕྱིར i;
 }

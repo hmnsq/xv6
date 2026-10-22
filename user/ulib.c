@@ -9,154 +9,154 @@
 // wrapper so that it's OK if main() does not call exit().
 //
 void
-start(int argc, char **argv)
+start(ཧྲིལ argc, var_na **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  ཧྲིལ r;
+  extern ཧྲིལ གཙོ(ཧྲིལ argc, var_na **argv);
+  r = གཙོ(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+var_na *
+strcpy(var_na *s, const var_na *t)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  སྐབས ((*s++ = *t++) != 0)
     ;
-  return os;
+  ཕྱིར os;
 }
 
-int
-strcmp(const char *p, const char *q)
+ཧྲིལ
+strcmp(const var_na *p, const var_na *q)
 {
-  while (*p && *p == *q)
+  སྐབས (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  ཕྱིར (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(const var_na *s)
 {
-  int n;
+  ཧྲིལ n;
 
-  for (n = 0; s[n]; n++)
+  ཆེད་དུ (n = 0; s[n]; n++)
     ;
-  return n;
+  ཕྱིར n;
 }
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, ཧྲིལ c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  var_na *cdst = (var_na *)dst;
+  ཧྲིལ i;
+  ཆེད་དུ (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ཕྱིར dst;
 }
 
-char *
-strchr(const char *s, char c)
+var_na *
+strchr(const var_na *s, var_na c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  ཆེད་དུ (; *s; s++)
+    གལ་ཏེ (*s == c)
+      ཕྱིར (var_na *)s;
+  ཕྱིར 0;
 }
 
-char *
-gets(char *buf, int max)
+var_na *
+gets(var_na *buf, ཧྲིལ max)
 {
-  int i, cc;
-  char c;
+  ཧྲིལ i, cc;
+  var_na c;
 
-  for (i = 0; i + 1 < max;) {
+  ཆེད་དུ (i = 0; i + 1 < max;) {
     cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+    གལ་ཏེ (cc < 1)
+      bha_nga;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    གལ་ཏེ (c == '\n' || c == '\r')
+      bha_nga;
   }
   buf[i] = '\0';
-  return buf;
+  ཕྱིར buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+ཧྲིལ
+stat(const var_na *n, sa_nracanaa stat *st)
 {
-  int fd;
-  int r;
+  ཧྲིལ fd;
+  ཧྲིལ r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  གལ་ཏེ (fd < 0)
+    ཕྱིར -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  ཕྱིར r;
 }
 
-int
-atoi(const char *s)
+ཧྲིལ
+atoi(const var_na *s)
 {
-  int n;
+  ཧྲིལ n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  སྐབས ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  ཕྱིར n;
 }
 
 void *
-memmove(void *vdst, const void *vsrc, int n)
+memmove(void *vdst, const void *vsrc, ཧྲིལ n)
 {
-  char *dst;
-  const char *src;
+  var_na *dst;
+  const var_na *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  གལ་ཏེ (src > dst) {
+    སྐབས (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } དེ་མིན {
     dst += n;
     src += n;
-    while (n-- > 0)
+    སྐབས (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  ཕྱིར vdst;
 }
 
-int
+ཧྲིལ
 memcmp(const void *s1, const void *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  const var_na *p1 = s1, *p2 = s2;
+  སྐབས (n-- > 0) {
+    གལ་ཏེ (*p1 != *p2) {
+      ཕྱིར *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  ཕྱིར 0;
 }
 
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  ཕྱིར memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+var_na *
+sbrk(ཧྲིལ n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  ཕྱིར sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+var_na *
+sbrklazy(ཧྲིལ n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  ཕྱིར sys_sbrk(n, SBRK_LAZY);
 }
