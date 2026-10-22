@@ -1,16 +1,16 @@
 // Sleeping locks
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "sleeplock.h"
+#شامل "types.h"
+#شامل "riscv.h"
+#شامل "defs.h"
+#شامل "param.h"
+#شامل "memlayout.h"
+#شامل "spinlock.h"
+#شامل "proc.h"
+#شامل "sleeplock.h"
 
-void
-initsleeplock(struct sleeplock *lk, char *name)
+تهی
+initsleeplock(ساختار sleeplock *lk, نویسه *name)
 {
   initlock(&lk->lk, "sleep lock");
   lk->name = name;
@@ -18,11 +18,11 @@ initsleeplock(struct sleeplock *lk, char *name)
   lk->pid = 0;
 }
 
-void
-acquiresleep(struct sleeplock *lk)
+تهی
+acquiresleep(ساختار sleeplock *lk)
 {
   acquire(&lk->lk);
-  while (lk->locked) {
+  وقتی (lk->locked) {
     sleep_prepare(lk);
     release(&lk->lk);
     sleep();
@@ -33,8 +33,8 @@ acquiresleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-void
-releasesleep(struct sleeplock *lk)
+تهی
+releasesleep(ساختار sleeplock *lk)
 {
   acquire(&lk->lk);
   lk->locked = 0;
@@ -43,13 +43,13 @@ releasesleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-int
-holdingsleep(struct sleeplock *lk)
+صحیح
+holdingsleep(ساختار sleeplock *lk)
 {
-  int r;
+  صحیح r;
 
   acquire(&lk->lk);
   r = lk->locked && (lk->pid == myproc()->pid);
   release(&lk->lk);
-  return r;
+  بازگشت r;
 }

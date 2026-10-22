@@ -1,186 +1,186 @@
 // clang-format off
-struct buf;
-struct context;
-struct file;
-struct inode;
-struct pipe;
-struct proc;
-struct spinlock;
-struct sleeplock;
-struct stat;
-struct superblock;
+ساختار buf;
+ساختار context;
+ساختار file;
+ساختار inode;
+ساختار pipe;
+ساختار proc;
+ساختار spinlock;
+ساختار sleeplock;
+ساختار stat;
+ساختار superblock;
 
 // bio.c
-void            binit(void);
-struct buf*     bread(uint, uint);
-void            brelse(struct buf*);
-void            bwrite(struct buf*);
-void            bpin(struct buf*);
-void            bunpin(struct buf*);
+تهی            binit(تهی);
+ساختار buf*     bread(uint, uint);
+تهی            brelse(ساختار buf*);
+تهی            bwrite(ساختار buf*);
+تهی            bpin(ساختار buf*);
+تهی            bunpin(ساختار buf*);
 
 // console.c
-void            consoleinit(void);
-void            consoleintr(int);
-void            consputc(int);
+تهی            consoleinit(تهی);
+تهی            consoleintr(صحیح);
+تهی            consputc(صحیح);
 
 // exec.c
-int             kexec(char*, char**);
+صحیح             kexec(نویسه*, نویسه**);
 
 // file.c
-struct file*    filealloc(void);
-void            fileclose(struct file*);
-struct file*    filedup(struct file*);
-void            fileinit(void);
-int             fileread(struct file*, uint64, int n);
-int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, uint64, int n);
+ساختار file*    filealloc(تهی);
+تهی            fileclose(ساختار file*);
+ساختار file*    filedup(ساختار file*);
+تهی            fileinit(تهی);
+صحیح             fileread(ساختار file*, uint64, صحیح n);
+صحیح             filestat(ساختار file*, uint64 addr);
+صحیح             filewrite(ساختار file*, uint64, صحیح n);
 
 // fs.c
-void            fsinit(int);
-int             dirlink(struct inode*, char*, uint);
-struct inode*   dirlookup(struct inode*, char*, uint*);
-struct inode*   ialloc(uint, short);
-struct inode*   idup(struct inode*);
-void            iinit();
-void            ilock(struct inode*);
-void            iput(struct inode*);
-void            iunlock(struct inode*);
-void            iunlockput(struct inode*);
-void            iupdate(struct inode*);
-int             namecmp(const char*, const char*);
-struct inode*   namei(char*);
-struct inode*   nameiparent(char*, char*);
-int             readi(struct inode*, int, uint64, uint, uint);
-void            stati(struct inode*, struct stat*);
-int             writei(struct inode*, int, uint64, uint, uint);
-void            itrunc(struct inode*);
-void            ireclaim(int);
+تهی            fsinit(صحیح);
+صحیح             dirlink(ساختار inode*, نویسه*, uint);
+ساختار inode*   dirlookup(ساختار inode*, نویسه*, uint*);
+ساختار inode*   ialloc(uint, short);
+ساختار inode*   idup(ساختار inode*);
+تهی            iinit();
+تهی            ilock(ساختار inode*);
+تهی            iput(ساختار inode*);
+تهی            iunlock(ساختار inode*);
+تهی            iunlockput(ساختار inode*);
+تهی            iupdate(ساختار inode*);
+صحیح             namecmp(ثابت نویسه*, ثابت نویسه*);
+ساختار inode*   namei(نویسه*);
+ساختار inode*   nameiparent(نویسه*, نویسه*);
+صحیح             readi(ساختار inode*, صحیح, uint64, uint, uint);
+تهی            stati(ساختار inode*, ساختار stat*);
+صحیح             writei(ساختار inode*, صحیح, uint64, uint, uint);
+تهی            itrunc(ساختار inode*);
+تهی            ireclaim(صحیح);
 
 // kalloc.c
-void*           kalloc(void);
-void            kfree(void *);
-void            kinit(void);
+تهی*           kalloc(تهی);
+تهی            kfree(تهی *);
+تهی            kinit(تهی);
 
 // log.c
-void            initlog(int, struct superblock*);
-void            log_write(struct buf*);
-void            begin_op(void);
-void            end_op(void);
+تهی            initlog(صحیح, ساختار superblock*);
+تهی            log_write(ساختار buf*);
+تهی            begin_op(تهی);
+تهی            end_op(تهی);
 
 // pipe.c
-int             pipealloc(struct file**, struct file**);
-void            pipeclose(struct pipe*, int);
-int             piperead(struct pipe*, uint64, int);
-int             pipewrite(struct pipe*, uint64, int);
+صحیح             pipealloc(ساختار file**, ساختار file**);
+تهی            pipeclose(ساختار pipe*, صحیح);
+صحیح             piperead(ساختار pipe*, uint64, صحیح);
+صحیح             pipewrite(ساختار pipe*, uint64, صحیح);
 
 // printk.c
-int             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
-void            panic(char*) __attribute__((noreturn));
-void            printkinit(void);
+صحیح             printk(نویسه*, ...) __attribute__ ((format (printf, 1, 2)));
+تهی            panic(نویسه*) __attribute__((noreturn));
+تهی            printkinit(تهی);
 
 // proc.c
-int             cpuid(void);
-void            kexit(int);
-int             kfork(void);
-int             growproc(int);
-void            proc_mapstacks(pagetable_t);
-pagetable_t     proc_pagetable(struct proc *);
-void            proc_freepagetable(pagetable_t, uint64);
-int             kkill(int);
-int             killed(struct proc*);
-void            setkilled(struct proc*);
-struct cpu*     mycpu(void);
-struct proc*    myproc();
-void            procinit(void);
-void            scheduler(void) __attribute__((noreturn));
-void            sched(void);
-void            sleep_prepare(void*);
-void            sleep(void);
-void            userinit(void);
-int             kwait(uint64);
-void            wakeup(void*);
-void            yield(void);
-int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
-int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
-void            procdump(void);
+صحیح             cpuid(تهی);
+تهی            kexit(صحیح);
+صحیح             kfork(تهی);
+صحیح             growproc(صحیح);
+تهی            proc_mapstacks(pagetable_t);
+pagetable_t     proc_pagetable(ساختار proc *);
+تهی            proc_freepagetable(pagetable_t, uint64);
+صحیح             kkill(صحیح);
+صحیح             killed(ساختار proc*);
+تهی            setkilled(ساختار proc*);
+ساختار cpu*     mycpu(تهی);
+ساختار proc*    myproc();
+تهی            procinit(تهی);
+تهی            scheduler(تهی) __attribute__((noreturn));
+تهی            sched(تهی);
+تهی            sleep_prepare(تهی*);
+تهی            sleep(تهی);
+تهی            userinit(تهی);
+صحیح             kwait(uint64);
+تهی            wakeup(تهی*);
+تهی            yield(تهی);
+صحیح             either_copyout(صحیح user_dst, uint64 dst, تهی *src, uint64 len);
+صحیح             either_copyin(تهی *dst, صحیح user_src, uint64 src, uint64 len);
+تهی            procdump(تهی);
 
 // swtch.S
-void            swtch(struct context*, struct context*);
+تهی            swtch(ساختار context*, ساختار context*);
 
 // spinlock.c
-void            acquire(struct spinlock*);
-int             holding(struct spinlock*);
-void            initlock(struct spinlock*, char*);
-void            release(struct spinlock*);
-void            push_off(void);
-void            pop_off(void);
+تهی            acquire(ساختار spinlock*);
+صحیح             holding(ساختار spinlock*);
+تهی            initlock(ساختار spinlock*, نویسه*);
+تهی            release(ساختار spinlock*);
+تهی            افزودن_off(تهی);
+تهی            برداشت_off(تهی);
 
 // sleeplock.c
-void            acquiresleep(struct sleeplock*);
-void            releasesleep(struct sleeplock*);
-int             holdingsleep(struct sleeplock*);
-void            initsleeplock(struct sleeplock*, char*);
+تهی            acquiresleep(ساختار sleeplock*);
+تهی            releasesleep(ساختار sleeplock*);
+صحیح             holdingsleep(ساختار sleeplock*);
+تهی            initsleeplock(ساختار sleeplock*, نویسه*);
 
 // string.c
-int             memcmp(const void*, const void*, uint);
-void*           memmove(void*, const void*, uint);
-void*           memset(void*, int, uint);
-char*           safestrcpy(char*, const char*, int);
-int             strlen(const char*);
-int             strncmp(const char*, const char*, uint);
-char*           strncpy(char*, const char*, int);
+صحیح             memcmp(ثابت تهی*, ثابت تهی*, uint);
+تهی*           memmove(تهی*, ثابت تهی*, uint);
+تهی*           memset(تهی*, صحیح, uint);
+نویسه*           safestrcpy(نویسه*, ثابت نویسه*, صحیح);
+صحیح             strlen(ثابت نویسه*);
+صحیح             strncmp(ثابت نویسه*, ثابت نویسه*, uint);
+نویسه*           strncpy(نویسه*, ثابت نویسه*, صحیح);
 
 // syscall.c
-void            argint(int, int*);
-int             argstr(int, char*, int);
-void            argaddr(int, uint64 *);
-int             fetchstr(uint64, char*, int);
-int             fetchaddr(uint64, uint64*);
-void            syscall();
+تهی            argint(صحیح, صحیح*);
+صحیح             argstr(صحیح, نویسه*, صحیح);
+تهی            argaddr(صحیح, uint64 *);
+صحیح             fetchstr(uint64, نویسه*, صحیح);
+صحیح             fetchaddr(uint64, uint64*);
+تهی            syscall();
 
 // trap.c
-extern uint     ticks;
-void            trapinit(void);
-void            trapinithart(void);
-extern struct spinlock tickslock;
-void            prepare_return(void);
+بیرونی uint     ticks;
+تهی            trapinit(تهی);
+تهی            trapinithart(تهی);
+بیرونی ساختار spinlock tickslock;
+تهی            prepare_return(تهی);
 
 // uart.c
-void            uartinit(void);
-void            uartintr(void);
-void            uartwrite(char [], int);
-void            uartputc_sync(int);
+تهی            uartinit(تهی);
+تهی            uartintr(تهی);
+تهی            uartwrite(نویسه [], صحیح);
+تهی            uartputc_sync(صحیح);
 
 // vm.c
-void            kvminit(void);
-void            kvminithart(void);
-void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
-int             mappages(pagetable_t, uint64, uint64, uint64, int);
-pagetable_t     uvmcreate(void);
-uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+تهی            kvminit(تهی);
+تهی            kvminithart(تهی);
+تهی            kvmmap(pagetable_t, uint64, uint64, uint64, صحیح);
+صحیح             mappages(pagetable_t, uint64, uint64, uint64, صحیح);
+pagetable_t     uvmcreate(تهی);
+uint64          uvmalloc(pagetable_t, uint64, uint64, صحیح);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
-int             uvmcopy(pagetable_t, pagetable_t, uint64);
-void            uvmfree(pagetable_t, uint64);
-void            uvmunmap(pagetable_t, uint64, uint64, int);
-void            uvmclear(pagetable_t, uint64);
-pte_t *         walk(pagetable_t, uint64, int);
+صحیح             uvmcopy(pagetable_t, pagetable_t, uint64);
+تهی            uvmfree(pagetable_t, uint64);
+تهی            uvmunmap(pagetable_t, uint64, uint64, صحیح);
+تهی            uvmclear(pagetable_t, uint64);
+pte_t *         walk(pagetable_t, uint64, صحیح);
 uint64          walkaddr(pagetable_t, uint64);
-int             copyout(pagetable_t, uint64, uint64, char *, uint64);
-int             copyin(pagetable_t, uint64, char *, uint64, uint64);
-int             copyinstr(pagetable_t, uint64, char *, uint64, uint64);
-int             ismapped(pagetable_t, uint64);
-uint64          vmfault(pagetable_t, uint64, uint64, int);
+صحیح             copyout(pagetable_t, uint64, uint64, نویسه *, uint64);
+صحیح             copyin(pagetable_t, uint64, نویسه *, uint64, uint64);
+صحیح             copyinstr(pagetable_t, uint64, نویسه *, uint64, uint64);
+صحیح             ismapped(pagetable_t, uint64);
+uint64          vmfault(pagetable_t, uint64, uint64, صحیح);
 
 // plic.c
-void            plicinit(void);
-void            plicinithart(void);
-int             plic_claim(void);
-void            plic_complete(int);
+تهی            plicinit(تهی);
+تهی            plicinithart(تهی);
+صحیح             plic_claim(تهی);
+تهی            plic_complete(صحیح);
 
 // virtio_disk.c
-void            virtio_disk_init(void);
-void            virtio_disk_rw(struct buf *, int);
-void            virtio_disk_intr(void);
+تهی            virtio_disk_init(تهی);
+تهی            virtio_disk_rw(ساختار buf *, صحیح);
+تهی            virtio_disk_intr(تهی);
 
 // number of elements in fixed-size array
-#define NELEM(x) (sizeof(x) / sizeof((x)[0]))
+#define NELEM(x) (اندازه(x) / اندازه((x)[0]))

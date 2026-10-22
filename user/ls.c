@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "user/user.h"
+#شامل "kernel/fs.h"
+#شامل "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+نویسه *
+fmtname(نویسه *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  ایستا نویسه buf[DIRSIZ + 1];
+  نویسه *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  برای (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  اگر (strlen(p) >= DIRSIZ)
+    بازگشت p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[اندازه(buf) - 1] = '\0';
+  بازگشت buf;
 }
 
-void
-ls(char *path)
+تهی
+ls(نویسه *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  نویسه buf[512], *p;
+  صحیح fd;
+  ساختار dirent de;
+  ساختار stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  اگر ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    بازگشت;
   }
 
-  if (fstat(fd, &st) < 0) {
+  اگر (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    بازگشت;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  انتخاب (st.type) {
+  حالت T_DEVICE:
+  حالت T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (صحیح)st.size);
+    بشکن;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  حالت T_DIR:
+    اگر (strlen(path) + 1 + DIRSIZ + 1 > اندازه buf) {
       printf("ls: path too long\n");
-      break;
+      بشکن;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    وقتی (اقرأ(fd, &de, اندازه(de)) == اندازه(de)) {
+      اگر (de.inum == 0)
+        ادامه;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      اگر (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
-        continue;
+        ادامه;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (صحیح)st.size);
     }
-    break;
+    بشکن;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+صحیح
+اصلی(صحیح argc, نویسه *argv[])
 {
-  int i;
+  صحیح i;
 
-  if (argc < 2) {
+  اگر (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  برای (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((نویسه *)-1)
 
-struct stat;
+ساختار stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+صحیح fork(تهی);
+صحیح exit(صحیح) __attribute__((noreturn));
+صحیح wait(صحیح *);
+صحیح pipe(صحیح *);
+صحیح اكتب(صحیح, ثابت تهی *, صحیح);
+صحیح اقرأ(صحیح, تهی *, صحیح);
+صحیح close(صحیح);
+صحیح kill(صحیح);
+صحیح exec(ثابت نویسه *, نویسه **);
+صحیح open(ثابت نویسه *, صحیح);
+صحیح mknod(ثابت نویسه *, short, short);
+صحیح unlink(ثابت نویسه *);
+صحیح fstat(صحیح fd, ساختار stat *);
+صحیح link(ثابت نویسه *, ثابت نویسه *);
+صحیح mkdir(ثابت نویسه *);
+صحیح chdir(ثابت نویسه *);
+صحیح dup(صحیح);
+صحیح getpid(تهی);
+نویسه *sys_sbrk(صحیح, صحیح);
+صحیح pause(صحیح);
+صحیح uptime(تهی);
+صحیح sync(تهی);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+صحیح stat(ثابت نویسه *, ساختار stat *);
+نویسه *strcpy(نویسه *, ثابت نویسه *);
+تهی *memmove(تهی *, ثابت تهی *, صحیح);
+نویسه *strchr(ثابت نویسه *, نویسه c);
+صحیح strcmp(ثابت نویسه *, ثابت نویسه *);
+نویسه *gets(نویسه *, صحیح max);
+uint strlen(ثابت نویسه *);
+تهی *memset(تهی *, صحیح, uint);
+صحیح atoi(ثابت نویسه *);
+صحیح memcmp(ثابت تهی *, ثابت تهی *, uint);
+تهی *memcpy(تهی *, ثابت تهی *, uint);
+نویسه *sbrk(صحیح);
+نویسه *sbrklazy(صحیح);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+تهی fprintf(صحیح, ثابت نویسه *, ...) __attribute__((format(printf, 2, 3)));
+تهی printf(ثابت نویسه *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+تهی *malloc(uint);
+تهی آزاد(تهی *);

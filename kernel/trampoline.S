@@ -94,7 +94,7 @@ uservec:
         # flush now-stale user entries from the TLB.
         sfence.vma zero, zero
 
-        # call usertrap()
+        # فراخوان usertrap()
         jalr t0
 
 .globl userret

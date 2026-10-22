@@ -1,106 +1,106 @@
-#include "types.h"
+#شامل "types.h"
 
-void *
-memset(void *dst, int c, uint n)
+تهی *
+memset(تهی *dst, صحیح c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  نویسه *cdst = (نویسه *)dst;
+  صحیح i;
+  برای (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  بازگشت dst;
 }
 
-int
-memcmp(const void *v1, const void *v2, uint n)
+صحیح
+memcmp(ثابت تهی *v1, ثابت تهی *v2, uint n)
 {
-  const uchar *s1, *s2;
+  ثابت uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  وقتی (n-- > 0) {
+    اگر (*s1 != *s2)
+      بازگشت *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  بازگشت 0;
 }
 
-void *
-memmove(void *dst, const void *src, uint n)
+تهی *
+memmove(تهی *dst, ثابت تهی *src, uint n)
 {
-  const char *s;
-  char *d;
+  ثابت نویسه *s;
+  نویسه *d;
 
-  if (n == 0)
-    return dst;
+  اگر (n == 0)
+    بازگشت dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  اگر (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    وقتی (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } وگرنه
+    وقتی (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  بازگشت dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
-void *
-memcpy(void *dst, const void *src, uint n)
+تهی *
+memcpy(تهی *dst, ثابت تهی *src, uint n)
 {
-  return memmove(dst, src, n);
+  بازگشت memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+صحیح
+strncmp(ثابت نویسه *p, ثابت نویسه *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  وقتی (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  اگر (n == 0)
+    بازگشت 0;
+  بازگشت (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+نویسه *
+strncpy(نویسه *s, ثابت نویسه *t, صحیح n)
 {
-  char *os;
+  نویسه *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  وقتی (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  وقتی (n-- > 0)
     *s++ = 0;
-  return os;
+  بازگشت os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+نویسه *
+safestrcpy(نویسه *s, ثابت نویسه *t, صحیح n)
 {
-  char *os;
+  نویسه *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  اگر (n <= 0)
+    بازگشت os;
+  وقتی (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  بازگشت os;
 }
 
-int
-strlen(const char *s)
+صحیح
+strlen(ثابت نویسه *s)
 {
-  int n;
+  صحیح n;
 
-  for (n = 0; s[n]; n++)
+  برای (n = 0; s[n]; n++)
     ;
-  return n;
+  بازگشت n;
 }

@@ -2,19 +2,19 @@
 // low-level driver for 16550a UART.
 //
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "proc.h"
-#include "defs.h"
+#شامل "types.h"
+#شامل "param.h"
+#شامل "memlayout.h"
+#شامل "riscv.h"
+#شامل "spinlock.h"
+#شامل "sleeplock.h"
+#شامل "proc.h"
+#شامل "defs.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#define Reg(reg) ((فرار unsigned نویسه *)(UART0 + (reg)))
 
 #define ReadReg(reg)     (*(Reg(reg)))
 #define WriteReg(reg, v) (*(Reg(reg)) = (v))
@@ -39,14 +39,14 @@
 #define LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
 
 // for sending threads to serialize their writes
-static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+ایستا ساختار sleeplock tx_lock;
+ایستا صحیح tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+بیرونی فرار صحیح panicking; // from printk.c
+بیرونی فرار صحیح panicked;  // from printk.c
 
-void
-uartinit(void)
+تهی
+uartinit(تهی)
 {
   // disable interrupts.
   WriteReg(IER, 0x00);
@@ -76,18 +76,18 @@ uartinit(void)
 // transmit buf[] to the uart. it blocks if the
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
-void
-uartwrite(char buf[], int n)
+تهی
+uartwrite(نویسه buf[], صحیح n)
 {
   acquiresleep(&tx_lock);
 
-  int i = 0;
-  while (i < n) {
+  صحیح i = 0;
+  وقتی (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    اگر (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } وگرنه {
       sleep();
     }
   }
@@ -99,57 +99,57 @@ uartwrite(char buf[], int n)
 // interrupts, for use by kernel printk() and
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
-void
-uartputc_sync(int c)
+تهی
+uartputc_sync(صحیح c)
 {
-  if (panicking == 0)
-    push_off();
+  اگر (panicking == 0)
+    افزودن_off();
 
-  if (panicked) {
-    for (;;)
+  اگر (panicked) {
+    برای (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  وقتی ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
-    pop_off();
+  اگر (panicking == 0)
+    برداشت_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
-uartgetc(void)
+ایستا صحیح
+uartgetc(تهی)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  اگر (ReadReg(LSR) & LSR_RX_READY) {
+    بازگشت ReadReg(RHR);
+  } وگرنه {
+    بازگشت -1;
   }
 }
 
 // handle a uart interrupt, raised because input has
 // arrived, or the uart is ready for more output, or
 // both. called from devintr().
-void
-uartintr(void)
+تهی
+uartintr(تهی)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  اگر (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
-      break;
+  وقتی (1) {
+    صحیح c = uartgetc();
+    اگر (c == -1)
+      بشکن;
     consoleintr(c);
   }
 }

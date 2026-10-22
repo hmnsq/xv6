@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "kernel/fcntl.h"
+#شامل "kernel/riscv.h"
+#شامل "kernel/vm.h"
+#شامل "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+تهی
+start(صحیح argc, نویسه **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  صحیح r;
+  بیرونی صحیح اصلی(صحیح argc, نویسه **argv);
+  r = اصلی(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+نویسه *
+strcpy(نویسه *s, ثابت نویسه *t)
 {
-  char *os;
+  نویسه *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  وقتی ((*s++ = *t++) != 0)
     ;
-  return os;
+  بازگشت os;
 }
 
-int
-strcmp(const char *p, const char *q)
+صحیح
+strcmp(ثابت نویسه *p, ثابت نویسه *q)
 {
-  while (*p && *p == *q)
+  وقتی (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  بازگشت (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(ثابت نویسه *s)
 {
-  int n;
+  صحیح n;
 
-  for (n = 0; s[n]; n++)
+  برای (n = 0; s[n]; n++)
     ;
-  return n;
+  بازگشت n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+تهی *
+memset(تهی *dst, صحیح c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  نویسه *cdst = (نویسه *)dst;
+  صحیح i;
+  برای (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  بازگشت dst;
 }
 
-char *
-strchr(const char *s, char c)
+نویسه *
+strchr(ثابت نویسه *s, نویسه c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  برای (; *s; s++)
+    اگر (*s == c)
+      بازگشت (نویسه *)s;
+  بازگشت 0;
 }
 
-char *
-gets(char *buf, int max)
+نویسه *
+gets(نویسه *buf, صحیح max)
 {
-  int i, cc;
-  char c;
+  صحیح i, cc;
+  نویسه c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  برای (i = 0; i + 1 < max;) {
+    cc = اقرأ(0, &c, 1);
+    اگر (cc < 1)
+      بشکن;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    اگر (c == '\n' || c == '\r')
+      بشکن;
   }
   buf[i] = '\0';
-  return buf;
+  بازگشت buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+صحیح
+stat(ثابت نویسه *n, ساختار stat *st)
 {
-  int fd;
-  int r;
+  صحیح fd;
+  صحیح r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  اگر (fd < 0)
+    بازگشت -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  بازگشت r;
 }
 
-int
-atoi(const char *s)
+صحیح
+atoi(ثابت نویسه *s)
 {
-  int n;
+  صحیح n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  وقتی ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  بازگشت n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+تهی *
+memmove(تهی *vdst, ثابت تهی *vsrc, صحیح n)
 {
-  char *dst;
-  const char *src;
+  نویسه *dst;
+  ثابت نویسه *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  اگر (src > dst) {
+    وقتی (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } وگرنه {
     dst += n;
     src += n;
-    while (n-- > 0)
+    وقتی (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  بازگشت vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+صحیح
+memcmp(ثابت تهی *s1, ثابت تهی *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  ثابت نویسه *p1 = s1, *p2 = s2;
+  وقتی (n-- > 0) {
+    اگر (*p1 != *p2) {
+      بازگشت *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  بازگشت 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+تهی *
+memcpy(تهی *dst, ثابت تهی *src, uint n)
 {
-  return memmove(dst, src, n);
+  بازگشت memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+نویسه *
+sbrk(صحیح n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  بازگشت sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+نویسه *
+sbrklazy(صحیح n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  بازگشت sys_sbrk(n, SBRK_LAZY);
 }

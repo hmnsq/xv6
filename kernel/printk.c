@@ -2,125 +2,125 @@
 // formatted console output -- printk, panic.
 //
 
-#include <stdarg.h>
+#شامل <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#شامل "types.h"
+#شامل "param.h"
+#شامل "spinlock.h"
+#شامل "sleeplock.h"
+#شامل "fs.h"
+#شامل "file.h"
+#شامل "memlayout.h"
+#شامل "riscv.h"
+#شامل "defs.h"
+#شامل "proc.h"
 
-volatile int panicking = 0; // printing a panic message
-volatile int panicked = 0;  // spinning forever at end of a panic
+فرار صحیح panicking = 0; // printing a panic message
+فرار صحیح panicked = 0;  // spinning forever at end of a panic
 
 // lock to avoid interleaving concurrent printk's.
-static struct {
-  struct spinlock lock;
+ایستا ساختار {
+  ساختار spinlock lock;
 } pr;
 
-static char digits[] = "0123456789abcdef";
+ایستا نویسه digits[] = "0123456789abcdef";
 
-static void
-printint(long long xx, int base, int sign)
+ایستا تهی
+printint(long long xx, صحیح base, صحیح sign)
 {
-  char buf[20];
-  int i;
+  نویسه buf[20];
+  صحیح i;
   unsigned long long x;
 
-  if (sign && (sign = (xx < 0)))
+  اگر (sign && (sign = (xx < 0)))
     x = -xx;
-  else
+  وگرنه
     x = xx;
 
   i = 0;
-  do {
+  انجامبده {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  } وقتی ((x /= base) != 0);
 
-  if (sign)
+  اگر (sign)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  وقتی (--i >= 0)
     consputc(buf[i]);
 }
 
-static void
+ایستا تهی
 printptr(uint64 x)
 {
-  int i;
+  صحیح i;
   consputc('0');
   consputc('x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
+  برای (i = 0; i < (اندازه(uint64) * 2); i++, x <<= 4)
+    consputc(digits[x >> (اندازه(uint64) * 8 - 4)]);
 }
 
 // Print to the console.
-int
-printk(char *fmt, ...)
+صحیح
+printk(نویسه *fmt, ...)
 {
   va_list ap;
-  int i, cx, c0, c1, c2;
-  char *s;
+  صحیح i, cx, c0, c1, c2;
+  نویسه *s;
 
-  if (panicking == 0)
+  اگر (panicking == 0)
     acquire(&pr.lock);
 
   va_start(ap, fmt);
-  for (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
-    if (cx != '%') {
+  برای (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
+    اگر (cx != '%') {
       consputc(cx);
-      continue;
+      ادامه;
     }
     i++;
     c0 = fmt[i + 0] & 0xff;
     c1 = c2 = 0;
-    if (c0)
+    اگر (c0)
       c1 = fmt[i + 1] & 0xff;
-    if (c1)
+    اگر (c1)
       c2 = fmt[i + 2] & 0xff;
-    if (c0 == 'd') {
-      printint(va_arg(ap, int), 10, 1);
-    } else if (c0 == 'l' && c1 == 'd') {
+    اگر (c0 == 'd') {
+      printint(va_arg(ap, صحیح), 10, 1);
+    } وگرنه اگر (c0 == 'l' && c1 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+    } وگرنه اگر (c0 == 'l' && c1 == 'l' && c2 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 2;
-    } else if (c0 == 'u') {
+    } وگرنه اگر (c0 == 'u') {
       printint(va_arg(ap, uint32), 10, 0);
-    } else if (c0 == 'l' && c1 == 'u') {
+    } وگرنه اگر (c0 == 'l' && c1 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+    } وگرنه اگر (c0 == 'l' && c1 == 'l' && c2 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 2;
-    } else if (c0 == 'x') {
+    } وگرنه اگر (c0 == 'x') {
       printint(va_arg(ap, uint32), 16, 0);
-    } else if (c0 == 'l' && c1 == 'x') {
+    } وگرنه اگر (c0 == 'l' && c1 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+    } وگرنه اگر (c0 == 'l' && c1 == 'l' && c2 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 2;
-    } else if (c0 == 'p') {
+    } وگرنه اگر (c0 == 'p') {
       printptr(va_arg(ap, uint64));
-    } else if (c0 == 'c') {
+    } وگرنه اگر (c0 == 'c') {
       consputc(va_arg(ap, uint));
-    } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+    } وگرنه اگر (c0 == 's') {
+      اگر ((s = va_arg(ap, نویسه *)) == 0)
         s = "(null)";
-      for (; *s; s++)
+      برای (; *s; s++)
         consputc(*s);
-    } else if (c0 == '%') {
+    } وگرنه اگر (c0 == '%') {
       consputc('%');
-    } else if (c0 == 0) {
-      break;
-    } else {
+    } وگرنه اگر (c0 == 0) {
+      بشکن;
+    } وگرنه {
       // Print unknown % sequence to draw attention.
       consputc('%');
       consputc(c0);
@@ -128,25 +128,25 @@ printk(char *fmt, ...)
   }
   va_end(ap);
 
-  if (panicking == 0)
+  اگر (panicking == 0)
     release(&pr.lock);
 
-  return 0;
+  بازگشت 0;
 }
 
-void
-panic(char *s)
+تهی
+panic(نویسه *s)
 {
   panicking = 1;
   printk("panic: ");
   printk("%s\n", s);
   panicked = 1; // freeze uart output from other CPUs
-  for (;;)
+  برای (;;)
     ;
 }
 
-void
-printkinit(void)
+تهی
+printkinit(تهی)
 {
   initlock(&pr.lock, "pr");
 }

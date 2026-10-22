@@ -1,17 +1,17 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "user/user.h"
 
-int
-main(int argc, char **argv)
+صحیح
+اصلی(صحیح argc, نویسه **argv)
 {
-  int i;
+  صحیح i;
 
-  if (argc < 2) {
+  اگر (argc < 2) {
     fprintf(2, "usage: kill pid...\n");
     exit(1);
   }
-  for (i = 1; i < argc; i++)
+  برای (i = 1; i < argc; i++)
     kill(atoi(argv[i]));
   exit(0);
 }

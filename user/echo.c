@@ -1,18 +1,18 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "user/user.h"
 
-int
-main(int argc, char *argv[])
+صحیح
+اصلی(صحیح argc, نویسه *argv[])
 {
-  int i;
+  صحیح i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  برای (i = 1; i < argc; i++) {
+    اكتب(1, argv[i], strlen(argv[i]));
+    اگر (i + 1 < argc) {
+      اكتب(1, " ", 1);
+    } وگرنه {
+      اكتب(1, "\n", 1);
     }
   }
   exit(0);
