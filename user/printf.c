@@ -4,108 +4,108 @@
 
 #include <stdarg.h>
 
-static char digits[] = "0123456789ABCDEF";
+static var_na digits[] = "0123456789ABCDEF";
 
 static void
-putc(int fd, char c)
+putc(ຈຳນວນເຕັມ fd, var_na c)
 {
   write(fd, &c, 1);
 }
 
 static void
-printint(int fd, long long xx, int base, int sgn)
+printint(ຈຳນວນເຕັມ fd, long long xx, ຈຳນວນເຕັມ base, ຈຳນວນເຕັມ sgn)
 {
-  char buf[20];
-  int i, neg;
+  var_na buf[20];
+  ຈຳນວນເຕັມ i, neg;
   unsigned long long x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  ຖ້າ (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } ບໍ່ດັ່ງນັ້ນ {
     x = xx;
   }
 
   i = 0;
   do {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  } ໃນຂະນະທີ່ ((x /= base) != 0);
+  ຖ້າ (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  ໃນຂະນະທີ່ (--i >= 0)
     putc(fd, buf[i]);
 }
 
 static void
-printptr(int fd, uint64 x)
+printptr(ຈຳນວນເຕັມ fd, uint64 x)
 {
-  int i;
+  ຈຳນວນເຕັມ i;
   putc(fd, '0');
   putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
+  ສຳລັບ (i = 0; i < (parimaa_na(uint64) * 2); i++, x <<= 4)
+    putc(fd, digits[x >> (parimaa_na(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
 void
-vprintf(int fd, const char *fmt, va_list ap)
+vprintf(ຈຳນວນເຕັມ fd, const var_na *fmt, va_list ap)
 {
-  char *s;
-  int c0, c1, c2, i, state;
+  var_na *s;
+  ຈຳນວນເຕັມ c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  ສຳລັບ (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    ຖ້າ (state == 0) {
+      ຖ້າ (c0 == '%') {
         state = '%';
-      } else {
+      } ບໍ່ດັ່ງນັ້ນ {
         putc(fd, c0);
       }
-    } else if (state == '%') {
+    } ບໍ່ດັ່ງນັ້ນ ຖ້າ (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      ຖ້າ (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      ຖ້າ (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
+      ຖ້າ (c0 == 'd') {
+        printint(fd, va_arg(ap, ຈຳນວນເຕັມ), 10, 1);
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'l' && c1 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'l' && c1 == 'l' && c2 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'u') {
         printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'l' && c1 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'l' && c1 == 'l' && c2 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'x') {
         printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'l' && c1 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'l' && c1 == 'l' && c2 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'p') {
         printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 'c') {
         putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == 's') {
+        ຖ້າ ((s = va_arg(ap, var_na *)) == 0)
           s = "(null)";
-        for (; *s; s++)
+        ສຳລັບ (; *s; s++)
           putc(fd, *s);
-      } else if (c0 == '%') {
+      } ບໍ່ດັ່ງນັ້ນ ຖ້າ (c0 == '%') {
         putc(fd, '%');
-      } else {
+      } ບໍ່ດັ່ງນັ້ນ {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
@@ -117,7 +117,7 @@ vprintf(int fd, const char *fmt, va_list ap)
 }
 
 void
-fprintf(int fd, const char *fmt, ...)
+fprintf(ຈຳນວນເຕັມ fd, const var_na *fmt, ...)
 {
   va_list ap;
 
@@ -126,7 +126,7 @@ fprintf(int fd, const char *fmt, ...)
 }
 
 void
-printf(const char *fmt, ...)
+printf(const var_na *fmt, ...)
 {
   va_list ap;
 

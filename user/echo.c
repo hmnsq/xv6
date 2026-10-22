@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+ຈຳນວນເຕັມ
+main(ຈຳນວນເຕັມ argc, var_na *argv[])
 {
-  int i;
+  ຈຳນວນເຕັມ i;
 
-  for (i = 1; i < argc; i++) {
+  ສຳລັບ (i = 1; i < argc; i++) {
     write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
+    ຖ້າ (i + 1 < argc) {
       write(1, " ", 1);
-    } else {
+    } ບໍ່ດັ່ງນັ້ນ {
       write(1, "\n", 1);
     }
   }

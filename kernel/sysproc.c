@@ -10,22 +10,22 @@
 uint64
 sys_exit(void)
 {
-  int n;
+  ຈຳນວນເຕັມ n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  ສົ່ງຄືນ 0; // not reached
 }
 
 uint64
 sys_getpid(void)
 {
-  return myproc()->pid;
+  ສົ່ງຄືນ myproc()->pid;
 }
 
 uint64
 sys_fork(void)
 {
-  return kfork();
+  ສົ່ງຄືນ kfork();
 }
 
 uint64
@@ -33,52 +33,52 @@ sys_wait(void)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  ສົ່ງຄືນ kwait(p);
 }
 
 uint64
 sys_sbrk(void)
 {
   uint64 addr;
-  int t;
-  int n;
+  ຈຳນວນເຕັມ t;
+  ຈຳນວນເຕັມ n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  ຖ້າ (t == SBRK_EAGER || n < 0) {
+    ຖ້າ (growproc(n) < 0) {
+      ສົ່ງຄືນ -1;
     }
-  } else {
+  } ບໍ່ດັ່ງນັ້ນ {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    ຖ້າ (addr + n < addr)
+      ສົ່ງຄືນ -1;
+    ຖ້າ (addr + n > TRAPFRAME)
+      ສົ່ງຄືນ -1;
     myproc()->sz += n;
   }
-  return addr;
+  ສົ່ງຄືນ addr;
 }
 
 uint64
 sys_pause(void)
 {
-  int n;
+  ຈຳນວນເຕັມ n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  ຖ້າ (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  ໃນຂະນະທີ່ (ticks - ticks0 < n) {
+    ຖ້າ (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      ສົ່ງຄືນ -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,16 +86,16 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  ສົ່ງຄືນ 0;
 }
 
 uint64
 sys_kill(void)
 {
-  int pid;
+  ຈຳນວນເຕັມ pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  ສົ່ງຄືນ kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
@@ -108,5 +108,5 @@ sys_uptime(void)
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  ສົ່ງຄືນ xticks;
 }

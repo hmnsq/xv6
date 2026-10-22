@@ -5,54 +5,54 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+var_na buf[1024];
+ຈຳນວນເຕັມ match(var_na *, var_na *);
 
 void
-grep(char *pattern, int fd)
+grep(var_na *pattern, ຈຳນວນເຕັມ fd)
 {
-  int n, m;
-  char *p, *q;
+  ຈຳນວນເຕັມ n, m;
+  var_na *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  ໃນຂະນະທີ່ ((n = read(fd, buf + m, parimaa_na(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    ໃນຂະນະທີ່ ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      ຖ້າ (match(pattern, p)) {
         *q = '\n';
         write(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    ຖ້າ (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+ຈຳນວນເຕັມ
+main(ຈຳນວນເຕັມ argc, var_na *argv[])
 {
-  int fd, i;
-  char *pattern;
+  ຈຳນວນເຕັມ fd, i;
+  var_na *pattern;
 
-  if (argc <= 1) {
+  ຖ້າ (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
     exit(1);
   }
   pattern = argv[1];
 
-  if (argc <= 2) {
+  ຖ້າ (argc <= 2) {
     grep(pattern, 0);
     exit(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  ສຳລັບ (i = 2; i < argc; i++) {
+    ຖ້າ ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("grep: cannot open %s\n", argv[i]);
       exit(1);
     }
@@ -66,43 +66,43 @@ main(int argc, char *argv[])
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+ຈຳນວນເຕັມ matchhere(var_na *, var_na *);
+ຈຳນວນເຕັມ matchstar(ຈຳນວນເຕັມ, var_na *, var_na *);
 
-int
-match(char *re, char *text)
+ຈຳນວນເຕັມ
+match(var_na *re, var_na *text)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
+  ຖ້າ (re[0] == '^')
+    ສົ່ງຄືນ matchhere(re + 1, text);
   do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+    ຖ້າ (matchhere(re, text))
+      ສົ່ງຄືນ 1;
+  } ໃນຂະນະທີ່ (*text++ != '\0');
+  ສົ່ງຄືນ 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+ຈຳນວນເຕັມ
+matchhere(var_na *re, var_na *text)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  ຖ້າ (re[0] == '\0')
+    ສົ່ງຄືນ 1;
+  ຖ້າ (re[1] == '*')
+    ສົ່ງຄືນ matchstar(re[0], re + 2, text);
+  ຖ້າ (re[0] == '$' && re[1] == '\0')
+    ສົ່ງຄືນ *text == '\0';
+  ຖ້າ (*text != '\0' && (re[0] == '.' || re[0] == *text))
+    ສົ່ງຄືນ matchhere(re + 1, text + 1);
+  ສົ່ງຄືນ 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+ຈຳນວນເຕັມ
+matchstar(ຈຳນວນເຕັມ c, var_na *re, var_na *text)
 {
   do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+    ຖ້າ (matchhere(re, text))
+      ສົ່ງຄືນ 1;
+  } ໃນຂະນະທີ່ (*text != '\0' && (*text++ == c || c == '.'));
+  ສົ່ງຄືນ 0;
 }
