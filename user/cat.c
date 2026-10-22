@@ -1,38 +1,38 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/types.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/fcntl.h"
+#ଅନ୍ତର୍ଭାଵ "user/user.h"
 
-char buf[512];
+ଅକ୍ଷର buf[512];
 
-void
-cat(int fd)
+ଶୂନ୍ୟ
+cat(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd)
 {
-  int n;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  ଯେତେବେଳେ ((n = ପଠ(fd, buf, ଆକାର(buf))) > 0) {
+    ଯଦି (ଲିଖ(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  ଯଦି (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ମୁଖ୍ୟ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର *argv[])
 {
-  int fd, i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd, i;
 
-  if (argc <= 1) {
+  ଯଦି (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  ପାଇଁ (i = 1; i < argc; i++) {
+    ଯଦି ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

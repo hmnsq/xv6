@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/types.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/stat.h"
+#ଅନ୍ତର୍ଭାଵ "user/user.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା long Align;
 
-union header {
-  struct {
-    union header *ptr;
+ସଂଘ header {
+  ସଂରଚନା {
+    ସଂଘ header *ptr;
     uint size;
   } s;
   Align x;
 };
 
-typedef union header Header;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ସଂଘ header Header;
 
-static Header base;
-static Header *freep;
+ସ୍ଥିର Header base;
+ସ୍ଥିର Header *freep;
 
-void
-free(void *ap)
+ଶୂନ୍ୟ
+ମୁକ୍ତ(ଶୂନ୍ୟ *ap)
 {
   Header *bp, *p;
 
   bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
+  ପାଇଁ (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    ଯଦି (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      ଭାଙ୍ଗ;
+  ଯଦି (bp + bp->s.size == p->s.ptr) {
     bp->s.size += p->s.ptr->s.size;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } ଅନ୍ୟଥା
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
+  ଯଦି (p + p->s.size == bp) {
     p->s.size += bp->s.size;
     p->s.ptr = bp->s.ptr;
-  } else
+  } ଅନ୍ୟଥା
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+ସ୍ଥିର Header *
 morecore(uint nu)
 {
-  char *p;
+  ଅକ୍ଷର *p;
   Header *hp;
 
-  if (nu < 4096)
+  ଯଦି (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
+  p = sbrk(nu * ଆକାର(Header));
+  ଯଦି (p == SBRK_ERROR)
+    ଫେରନ୍ତୁ 0;
   hp = (Header *)p;
   hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  ମୁକ୍ତ((ଶୂନ୍ୟ *)(hp + 1));
+  ଫେରନ୍ତୁ freep;
 }
 
-void *
+ଶୂନ୍ୟ *
 malloc(uint nbytes)
 {
   Header *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
+  nunits = (nbytes + ଆକାର(Header) - 1) / ଆକାର(Header) + 1;
+  ଯଦି ((prevp = freep) == 0) {
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  ପାଇଁ (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    ଯଦି (p->s.size >= nunits) {
+      ଯଦି (p->s.size == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
+      ଅନ୍ୟଥା {
         p->s.size -= nunits;
         p += p->s.size;
         p->s.size = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      ଫେରନ୍ତୁ (ଶୂନ୍ୟ *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    ଯଦି (p == freep)
+      ଯଦି ((p = morecore(nunits)) == 0)
+        ଫେରନ୍ତୁ 0;
   }
 }

@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((ଅକ୍ଷର *)-1)
 
-struct stat;
+ସଂରଚନା stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା fork(ଶୂନ୍ୟ);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା exit(ପୂର୍ଣ୍ଣସଂଖ୍ୟା) __attribute__((noreturn));
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା wait(ପୂର୍ଣ୍ଣସଂଖ୍ୟା *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା pipe(ପୂର୍ଣ୍ଣସଂଖ୍ୟା *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଲିଖ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ଅଚଳ ଶୂନ୍ୟ *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା ପଠ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ଶୂନ୍ୟ *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା close(ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା kill(ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା exec(ଅଚଳ ଅକ୍ଷର *, ଅକ୍ଷର **);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା open(ଅଚଳ ଅକ୍ଷର *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା mknod(ଅଚଳ ଅକ୍ଷର *, short, short);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା unlink(ଅଚଳ ଅକ୍ଷର *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା fstat(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd, ସଂରଚନା stat *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା link(ଅଚଳ ଅକ୍ଷର *, ଅଚଳ ଅକ୍ଷର *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା mkdir(ଅଚଳ ଅକ୍ଷର *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା chdir(ଅଚଳ ଅକ୍ଷର *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା dup(ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା getpid(ଶୂନ୍ୟ);
+ଅକ୍ଷର *sys_sbrk(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା pause(ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା uptime(ଶୂନ୍ୟ);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା sync(ଶୂନ୍ୟ);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା stat(ଅଚଳ ଅକ୍ଷର *, ସଂରଚନା stat *);
+ଅକ୍ଷର *strcpy(ଅକ୍ଷର *, ଅଚଳ ଅକ୍ଷର *);
+ଶୂନ୍ୟ *memmove(ଶୂନ୍ୟ *, ଅଚଳ ଶୂନ୍ୟ *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ଅକ୍ଷର *strchr(ଅଚଳ ଅକ୍ଷର *, ଅକ୍ଷର c);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା strcmp(ଅଚଳ ଅକ୍ଷର *, ଅଚଳ ଅକ୍ଷର *);
+ଅକ୍ଷର *gets(ଅକ୍ଷର *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା max);
+uint strlen(ଅଚଳ ଅକ୍ଷର *);
+ଶୂନ୍ୟ *memset(ଶୂନ୍ୟ *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା, uint);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା atoi(ଅଚଳ ଅକ୍ଷର *);
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା memcmp(ଅଚଳ ଶୂନ୍ୟ *, ଅଚଳ ଶୂନ୍ୟ *, uint);
+ଶୂନ୍ୟ *memcpy(ଶୂନ୍ୟ *, ଅଚଳ ଶୂନ୍ୟ *, uint);
+ଅକ୍ଷର *sbrk(ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+ଅକ୍ଷର *sbrklazy(ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+ଶୂନ୍ୟ fprintf(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ଅଚଳ ଅକ୍ଷର *, ...) __attribute__((format(printf, 2, 3)));
+ଶୂନ୍ୟ printf(ଅଚଳ ଅକ୍ଷର *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+ଶୂନ୍ୟ *malloc(uint);
+ଶୂନ୍ୟ ମୁକ୍ତ(ଶୂନ୍ୟ *);

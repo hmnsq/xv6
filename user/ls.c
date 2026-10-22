@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/types.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/stat.h"
+#ଅନ୍ତର୍ଭାଵ "user/user.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/fs.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+ଅକ୍ଷର *
+fmtname(ଅକ୍ଷର *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  ସ୍ଥିର ଅକ୍ଷର buf[DIRSIZ + 1];
+  ଅକ୍ଷର *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  ପାଇଁ (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  ଯଦି (strlen(p) >= DIRSIZ)
+    ଫେରନ୍ତୁ p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[ଆକାର(buf) - 1] = '\0';
+  ଫେରନ୍ତୁ buf;
 }
 
-void
-ls(char *path)
+ଶୂନ୍ୟ
+ls(ଅକ୍ଷର *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  ଅକ୍ଷର buf[512], *p;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd;
+  ସଂରଚନା dirent de;
+  ସଂରଚନା stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  ଯଦି ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    ଫେରନ୍ତୁ;
   }
 
-  if (fstat(fd, &st) < 0) {
+  ଯଦି (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    ଫେରନ୍ତୁ;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  ବାଛ (st.type) {
+  ସ୍ଥିତି T_DEVICE:
+  ସ୍ଥିତି T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)st.size);
+    ଭାଙ୍ଗ;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  ସ୍ଥିତି T_DIR:
+    ଯଦି (strlen(path) + 1 + DIRSIZ + 1 > ଆକାର buf) {
       printf("ls: path too long\n");
-      break;
+      ଭାଙ୍ଗ;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    ଯେତେବେଳେ (ପଠ(fd, &de, ଆକାର(de)) == ଆକାର(de)) {
+      ଯଦି (de.inum == 0)
+        ଜାରି;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      ଯଦି (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
-        continue;
+        ଜାରି;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)st.size);
     }
-    break;
+    ଭାଙ୍ଗ;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ମୁଖ୍ୟ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର *argv[])
 {
-  int i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
 
-  if (argc < 2) {
+  ଯଦି (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  ପାଇଁ (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

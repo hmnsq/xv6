@@ -1,18 +1,18 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/types.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/stat.h"
+#ଅନ୍ତର୍ଭାଵ "user/user.h"
 
-int
-main(int argc, char *argv[])
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ମୁଖ୍ୟ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର *argv[])
 {
-  int i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  ପାଇଁ (i = 1; i < argc; i++) {
+    ଲିଖ(1, argv[i], strlen(argv[i]));
+    ଯଦି (i + 1 < argc) {
+      ଲିଖ(1, " ", 1);
+    } ଅନ୍ୟଥା {
+      ଲିଖ(1, "\n", 1);
     }
   }
   exit(0);

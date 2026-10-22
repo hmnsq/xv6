@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/types.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/stat.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/fcntl.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/riscv.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/vm.h"
+#ଅନ୍ତର୍ଭାଵ "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+ଶୂନ୍ୟ
+start(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା r;
+  ବାହ୍ୟ ପୂର୍ଣ୍ଣସଂଖ୍ୟା ମୁଖ୍ୟ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର **argv);
+  r = ମୁଖ୍ୟ(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+ଅକ୍ଷର *
+strcpy(ଅକ୍ଷର *s, ଅଚଳ ଅକ୍ଷର *t)
 {
-  char *os;
+  ଅକ୍ଷର *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  ଯେତେବେଳେ ((*s++ = *t++) != 0)
     ;
-  return os;
+  ଫେରନ୍ତୁ os;
 }
 
-int
-strcmp(const char *p, const char *q)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+strcmp(ଅଚଳ ଅକ୍ଷର *p, ଅଚଳ ଅକ୍ଷର *q)
 {
-  while (*p && *p == *q)
+  ଯେତେବେଳେ (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  ଫେରନ୍ତୁ (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(ଅଚଳ ଅକ୍ଷର *s)
 {
-  int n;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା n;
 
-  for (n = 0; s[n]; n++)
+  ପାଇଁ (n = 0; s[n]; n++)
     ;
-  return n;
+  ଫେରନ୍ତୁ n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+ଶୂନ୍ୟ *
+memset(ଶୂନ୍ୟ *dst, ପୂର୍ଣ୍ଣସଂଖ୍ୟା c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  ଅକ୍ଷର *cdst = (ଅକ୍ଷର *)dst;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ପାଇଁ (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ଫେରନ୍ତୁ dst;
 }
 
-char *
-strchr(const char *s, char c)
+ଅକ୍ଷର *
+strchr(ଅଚଳ ଅକ୍ଷର *s, ଅକ୍ଷର c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  ପାଇଁ (; *s; s++)
+    ଯଦି (*s == c)
+      ଫେରନ୍ତୁ (ଅକ୍ଷର *)s;
+  ଫେରନ୍ତୁ 0;
 }
 
-char *
-gets(char *buf, int max)
+ଅକ୍ଷର *
+gets(ଅକ୍ଷର *buf, ପୂର୍ଣ୍ଣସଂଖ୍ୟା max)
 {
-  int i, cc;
-  char c;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i, cc;
+  ଅକ୍ଷର c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  ପାଇଁ (i = 0; i + 1 < max;) {
+    cc = ପଠ(0, &c, 1);
+    ଯଦି (cc < 1)
+      ଭାଙ୍ଗ;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    ଯଦି (c == '\n' || c == '\r')
+      ଭାଙ୍ଗ;
   }
   buf[i] = '\0';
-  return buf;
+  ଫେରନ୍ତୁ buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+stat(ଅଚଳ ଅକ୍ଷର *n, ସଂରଚନା stat *st)
 {
-  int fd;
-  int r;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  ଯଦି (fd < 0)
+    ଫେରନ୍ତୁ -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  ଫେରନ୍ତୁ r;
 }
 
-int
-atoi(const char *s)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+atoi(ଅଚଳ ଅକ୍ଷର *s)
 {
-  int n;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  ଯେତେବେଳେ ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  ଫେରନ୍ତୁ n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+ଶୂନ୍ୟ *
+memmove(ଶୂନ୍ୟ *vdst, ଅଚଳ ଶୂନ୍ୟ *vsrc, ପୂର୍ଣ୍ଣସଂଖ୍ୟା n)
 {
-  char *dst;
-  const char *src;
+  ଅକ୍ଷର *dst;
+  ଅଚଳ ଅକ୍ଷର *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  ଯଦି (src > dst) {
+    ଯେତେବେଳେ (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } ଅନ୍ୟଥା {
     dst += n;
     src += n;
-    while (n-- > 0)
+    ଯେତେବେଳେ (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  ଫେରନ୍ତୁ vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+memcmp(ଅଚଳ ଶୂନ୍ୟ *s1, ଅଚଳ ଶୂନ୍ୟ *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  ଅଚଳ ଅକ୍ଷର *p1 = s1, *p2 = s2;
+  ଯେତେବେଳେ (n-- > 0) {
+    ଯଦି (*p1 != *p2) {
+      ଫେରନ୍ତୁ *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  ଫେରନ୍ତୁ 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+ଶୂନ୍ୟ *
+memcpy(ଶୂନ୍ୟ *dst, ଅଚଳ ଶୂନ୍ୟ *src, uint n)
 {
-  return memmove(dst, src, n);
+  ଫେରନ୍ତୁ memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+ଅକ୍ଷର *
+sbrk(ପୂର୍ଣ୍ଣସଂଖ୍ୟା n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  ଫେରନ୍ତୁ sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+ଅକ୍ଷର *
+sbrklazy(ପୂର୍ଣ୍ଣସଂଖ୍ୟା n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  ଫେରନ୍ତୁ sys_sbrk(n, SBRK_LAZY);
 }

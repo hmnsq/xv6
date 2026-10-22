@@ -1,30 +1,30 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
+#ଅନ୍ତର୍ଭାଵ "types.h"
+#ଅନ୍ତର୍ଭାଵ "param.h"
+#ଅନ୍ତର୍ଭାଵ "memlayout.h"
+#ଅନ୍ତର୍ଭାଵ "riscv.h"
+#ଅନ୍ତର୍ଭାଵ "spinlock.h"
+#ଅନ୍ତର୍ଭାଵ "proc.h"
+#ଅନ୍ତର୍ଭାଵ "defs.h"
 
-struct spinlock tickslock;
+ସଂରଚନା spinlock tickslock;
 uint ticks;
 
-extern char trampoline[], uservec[];
+ବାହ୍ୟ ଅକ୍ଷର trampoline[], uservec[];
 
 // in kernelvec.S, calls kerneltrap().
-void kernelvec();
+ଶୂନ୍ୟ kernelvec();
 
-extern int devintr();
+ବାହ୍ୟ ପୂର୍ଣ୍ଣସଂଖ୍ୟା devintr();
 
-void
-trapinit(void)
+ଶୂନ୍ୟ
+trapinit(ଶୂନ୍ୟ)
 {
   initlock(&tickslock, "time");
 }
 
 // set up to take exceptions and traps while in the kernel.
-void
-trapinithart(void)
+ଶୂନ୍ୟ
+trapinithart(ଶୂନ୍ୟ)
 {
   w_stvec((uint64)kernelvec);
 }
@@ -35,26 +35,26 @@ trapinithart(void)
 // return value is user satp for trampoline.S to switch to.
 //
 uint64
-usertrap(void)
+usertrap(ଶୂନ୍ୟ)
 {
-  int which_dev = 0;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା which_dev = 0;
 
-  if ((r_sstatus() & SSTATUS_SPP) != 0)
+  ଯଦି ((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
 
   // send interrupts and exceptions to kerneltrap(),
   // since we're now in the kernel.
   w_stvec((uint64)kernelvec); //DOC: kernelvec
 
-  struct proc *p = myproc();
+  ସଂରଚନା proc *p = myproc();
 
   // save user program counter.
   p->trapframe->epc = r_sepc();
 
-  if (r_scause() == 8) {
+  ଯଦି (r_scause() == 8) {
     // system call
 
-    if (killed(p))
+    ଯଦି (killed(p))
       kexit(-1);
 
     // sepc points to the ecall instruction,
@@ -66,23 +66,23 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if ((which_dev = devintr()) != 0) {
+  } ଅନ୍ୟଥା ଯଦି ((which_dev = devintr()) != 0) {
     // ok
-  } else if ((r_scause() == 15 || r_scause() == 13) &&
+  } ଅନ୍ୟଥା ଯଦି ((r_scause() == 15 || r_scause() == 13) &&
              vmfault(p->pagetable, p->sz, r_stval(),
                      (r_scause() == 13) ? 1 : 0) != 0) {
     // page fault on lazily-allocated page
-  } else {
+  } ଅନ୍ୟଥା {
     printk("usertrap(): unexpected scause 0x%lx pid=%d\n", r_scause(), p->pid);
     printk("            sepc=0x%lx stval=0x%lx\n", r_sepc(), r_stval());
     setkilled(p);
   }
 
-  if (killed(p))
+  ଯଦି (killed(p))
     kexit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2)
+  ଯଦି (which_dev == 2)
     yield();
 
   prepare_return();
@@ -91,16 +91,16 @@ usertrap(void)
   uint64 satp = MAKE_SATP(p->pagetable);
 
   // return to trampoline.S; satp value in a0.
-  return satp;
+  ଫେରନ୍ତୁ satp;
 }
 
 //
 // set up trapframe and control registers for a return to user space
 //
-void
-prepare_return(void)
+ଶୂନ୍ୟ
+prepare_return(ଶୂନ୍ୟ)
 {
-  struct proc *p = myproc();
+  ସଂରଚନା proc *p = myproc();
 
   // we're about to switch the destination of traps from
   // kerneltrap() to usertrap(). because a trap from kernel
@@ -133,20 +133,20 @@ prepare_return(void)
 
 // interrupts and exceptions from kernel code go here via kernelvec,
 // on whatever the current kernel stack is.
-void
+ଶୂନ୍ୟ
 kerneltrap()
 {
-  int which_dev = 0;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା which_dev = 0;
   uint64 sepc = r_sepc();
   uint64 sstatus = r_sstatus();
   uint64 scause = r_scause();
 
-  if ((sstatus & SSTATUS_SPP) == 0)
+  ଯଦି ((sstatus & SSTATUS_SPP) == 0)
     panic("kerneltrap: not from supervisor mode");
-  if (intr_get() != 0)
+  ଯଦି (intr_get() != 0)
     panic("kerneltrap: interrupts enabled");
 
-  if ((which_dev = devintr()) == 0) {
+  ଯଦି ((which_dev = devintr()) == 0) {
     // interrupt or trap from an unknown source
     printk("scause=0x%lx sepc=0x%lx stval=0x%lx\n", scause, r_sepc(),
            r_stval());
@@ -154,7 +154,7 @@ kerneltrap()
   }
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2 && myproc() != 0)
+  ଯଦି (which_dev == 2 && myproc() != 0)
     yield();
 
   // the yield() may have caused some traps to occur,
@@ -163,10 +163,10 @@ kerneltrap()
   w_sstatus(sstatus);
 }
 
-void
+ଶୂନ୍ୟ
 clockintr()
 {
-  if (cpuid() == 0) {
+  ଯଦି (cpuid() == 0) {
     acquire(&tickslock);
     ticks++;
     wakeup(&ticks);
@@ -184,37 +184,37 @@ clockintr()
 // returns 2 if timer interrupt,
 // 1 if other device,
 // 0 if not recognized.
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 devintr()
 {
   uint64 scause = r_scause();
 
-  if (scause == 0x8000000000000009L) {
+  ଯଦି (scause == 0x8000000000000009L) {
     // this is a supervisor external interrupt, via PLIC.
 
     // irq indicates which device interrupted.
-    int irq = plic_claim();
+    ପୂର୍ଣ୍ଣସଂଖ୍ୟା irq = plic_claim();
 
-    if (irq == UART0_IRQ) {
+    ଯଦି (irq == UART0_IRQ) {
       uartintr();
-    } else if (irq == VIRTIO0_IRQ) {
+    } ଅନ୍ୟଥା ଯଦି (irq == VIRTIO0_IRQ) {
       virtio_disk_intr();
-    } else if (irq) {
+    } ଅନ୍ୟଥା ଯଦି (irq) {
       printk("unexpected interrupt irq=%d\n", irq);
     }
 
     // the PLIC allows each device to raise at most one
     // interrupt at a time; tell the PLIC the device is
     // now allowed to interrupt again.
-    if (irq)
+    ଯଦି (irq)
       plic_complete(irq);
 
-    return 1;
-  } else if (scause == 0x8000000000000005L) {
+    ଫେରନ୍ତୁ 1;
+  } ଅନ୍ୟଥା ଯଦି (scause == 0x8000000000000005L) {
     // timer interrupt.
     clockintr();
-    return 2;
-  } else {
-    return 0;
+    ଫେରନ୍ତୁ 2;
+  } ଅନ୍ୟଥା {
+    ଫେରନ୍ତୁ 0;
   }
 }

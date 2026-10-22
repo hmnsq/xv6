@@ -1,36 +1,36 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/types.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/stat.h"
+#ଅନ୍ତର୍ଭାଵ "kernel/fcntl.h"
+#ଅନ୍ତର୍ଭାଵ "user/user.h"
 
 // Stress xv6 logging system by having several processes writing
 // concurrently to their own file (e.g., logstress f1 f2 f3 f4)
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+ଅକ୍ଷର buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ମୁଖ୍ୟ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର **argv)
 {
-  int fd, n;
-  enum { N = 250, SZ = 2000 };
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd, n;
+  ଗଣନା { N = 250, SZ = 2000 };
 
-  for (int i = 1; i < argc; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
+  ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 1; i < argc; i++) {
+    ପୂର୍ଣ୍ଣସଂଖ୍ୟା pid1 = fork();
+    ଯଦି (pid1 < 0) {
       printf("%s: fork failed\n", argv[0]);
       exit(1);
     }
-    if (pid1 == 0) {
+    ଯଦି (pid1 == 0) {
       fd = open(argv[i], O_CREATE | O_RDWR);
-      if (fd < 0) {
+      ଯଦି (fd < 0) {
         printf("%s: create %s failed\n", argv[0], argv[i]);
         exit(1);
       }
       memset(buf, '0' + i, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
+      ପାଇଁ (i = 0; i < N; i++) {
+        ଯଦି ((n = ଲିଖ(fd, buf, SZ)) != SZ) {
           printf("write failed %d\n", n);
           exit(1);
         }
@@ -38,11 +38,11 @@ main(int argc, char **argv)
       exit(0);
     }
   }
-  int xstatus;
-  for (int i = 1; i < argc; i++) {
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା xstatus;
+  ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 1; i < argc; i++) {
     wait(&xstatus);
-    if (xstatus != 0)
+    ଯଦି (xstatus != 0)
       exit(xstatus);
   }
-  return 0;
+  ଫେରନ୍ତୁ 0;
 }

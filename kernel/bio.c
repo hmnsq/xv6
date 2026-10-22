@@ -13,36 +13,36 @@
 // * Only one process at a time can use a buffer,
 //     so do not keep them longer than necessary.
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "riscv.h"
-#include "defs.h"
-#include "fs.h"
-#include "buf.h"
+#ଅନ୍ତର୍ଭାଵ "types.h"
+#ଅନ୍ତର୍ଭାଵ "param.h"
+#ଅନ୍ତର୍ଭାଵ "spinlock.h"
+#ଅନ୍ତର୍ଭାଵ "sleeplock.h"
+#ଅନ୍ତର୍ଭାଵ "riscv.h"
+#ଅନ୍ତର୍ଭାଵ "defs.h"
+#ଅନ୍ତର୍ଭାଵ "fs.h"
+#ଅନ୍ତର୍ଭାଵ "buf.h"
 
-struct {
-  struct spinlock lock;
-  struct buf buf[NBUF];
+ସଂରଚନା {
+  ସଂରଚନା spinlock lock;
+  ସଂରଚନା buf buf[NBUF];
 
   // Linked list of all buffers, through prev/next.
   // Sorted by how recently the buffer was used.
   // head.next is most recent, head.prev is least.
-  struct buf head;
+  ସଂରଚନା buf head;
 } bcache;
 
-void
-binit(void)
+ଶୂନ୍ୟ
+binit(ଶୂନ୍ୟ)
 {
-  struct buf *b;
+  ସଂରଚନା buf *b;
 
   initlock(&bcache.lock, "bcache");
 
   // Create linked list of buffers
   bcache.head.prev = &bcache.head;
   bcache.head.next = &bcache.head;
-  for (b = bcache.buf; b < bcache.buf + NBUF; b++) {
+  ପାଇଁ (b = bcache.buf; b < bcache.buf + NBUF; b++) {
     b->next = bcache.head.next;
     b->prev = &bcache.head;
     initsleeplock(&b->lock, "buffer");
@@ -54,76 +54,76 @@ binit(void)
 // Look through buffer cache for block on device dev.
 // If not found, allocate a buffer.
 // In either case, return locked buffer.
-static struct buf *
+ସ୍ଥିର ସଂରଚନା buf *
 bget(uint dev, uint blockno)
 {
-  struct buf *b;
+  ସଂରଚନା buf *b;
 
   acquire(&bcache.lock);
 
   // Is the block already cached?
-  for (b = bcache.head.next; b != &bcache.head; b = b->next) {
-    if (b->dev == dev && b->blockno == blockno) {
+  ପାଇଁ (b = bcache.head.next; b != &bcache.head; b = b->next) {
+    ଯଦି (b->dev == dev && b->blockno == blockno) {
       b->refcnt++;
       release(&bcache.lock);
       acquiresleep(&b->lock);
-      return b;
+      ଫେରନ୍ତୁ b;
     }
   }
 
   // Not cached.
   // Recycle the least recently used (LRU) unused buffer.
-  for (b = bcache.head.prev; b != &bcache.head; b = b->prev) {
-    if (b->refcnt == 0) {
+  ପାଇଁ (b = bcache.head.prev; b != &bcache.head; b = b->prev) {
+    ଯଦି (b->refcnt == 0) {
       b->dev = dev;
       b->blockno = blockno;
       b->valid = 0;
       b->refcnt = 1;
       release(&bcache.lock);
       acquiresleep(&b->lock);
-      return b;
+      ଫେରନ୍ତୁ b;
     }
   }
   panic("bget: no buffers");
 }
 
 // Return a locked buf with the contents of the indicated block.
-struct buf *
+ସଂରଚନା buf *
 bread(uint dev, uint blockno)
 {
-  struct buf *b;
+  ସଂରଚନା buf *b;
 
   b = bget(dev, blockno);
-  if (!b->valid) {
+  ଯଦି (!b->valid) {
     virtio_disk_rw(b, 0);
     b->valid = 1;
   }
-  return b;
+  ଫେରନ୍ତୁ b;
 }
 
 // Write b's contents to disk.  Must be locked.
 // Only the log calls bwrite.
-void
-bwrite(struct buf *b)
+ଶୂନ୍ୟ
+bwrite(ସଂରଚନା buf *b)
 {
-  if (!holdingsleep(&b->lock))
+  ଯଦି (!holdingsleep(&b->lock))
     panic("bwrite");
   virtio_disk_rw(b, 1);
 }
 
 // Release a locked buffer.
 // Move to the head of the most-recently-used list.
-void
-brelse(struct buf *b)
+ଶୂନ୍ୟ
+brelse(ସଂରଚନା buf *b)
 {
-  if (!holdingsleep(&b->lock))
+  ଯଦି (!holdingsleep(&b->lock))
     panic("brelse");
 
   releasesleep(&b->lock);
 
   acquire(&bcache.lock);
   b->refcnt--;
-  if (b->refcnt == 0) {
+  ଯଦି (b->refcnt == 0) {
     // no one is waiting for it.
     b->next->prev = b->prev;
     b->prev->next = b->next;
@@ -136,16 +136,16 @@ brelse(struct buf *b)
   release(&bcache.lock);
 }
 
-void
-bpin(struct buf *b)
+ଶୂନ୍ୟ
+bpin(ସଂରଚନା buf *b)
 {
   acquire(&bcache.lock);
   b->refcnt++;
   release(&bcache.lock);
 }
 
-void
-bunpin(struct buf *b)
+ଶୂନ୍ୟ
+bunpin(ସଂରଚନା buf *b)
 {
   acquire(&bcache.lock);
   b->refcnt--;
