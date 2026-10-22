@@ -1,108 +1,108 @@
 // Simple grep.  Only supports ^ . * $ operators.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "kernel/fcntl.h"
+#ضمن "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+حرف buf[1024];
+صحيح تطابق(حرف *, حرف *);
 
-void
-grep(char *pattern, int fd)
+فراغ
+grep(حرف *الگو, صحيح fd)
 {
-  int n, m;
-  char *p, *q;
+  صحيح n, m;
+  حرف *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  طالما ((n = اقرأ(fd, buf + m, حجم(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    طالما ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      إذا (تطابق(الگو, p)) {
         *q = '\n';
-        write(1, p, q + 1 - p);
+        اكتب(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    إذا (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+صحيح
+اصلی(صحيح argc, حرف *argv[])
 {
-  int fd, i;
-  char *pattern;
+  صحيح fd, i;
+  حرف *الگو;
 
-  if (argc <= 1) {
+  إذا (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
-    exit(1);
+    خروج(1);
   }
-  pattern = argv[1];
+  الگو = argv[1];
 
-  if (argc <= 2) {
-    grep(pattern, 0);
-    exit(0);
+  إذا (argc <= 2) {
+    grep(الگو, 0);
+    خروج(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("grep: cannot open %s\n", argv[i]);
-      exit(1);
+  لكل (i = 2; i < argc; i++) {
+    إذا ((fd = open(argv[i], O_RDONLY)) < 0) {
+      چاپ_کن("grep: cannot open %s\n", argv[i]);
+      خروج(1);
     }
-    grep(pattern, fd);
+    grep(الگو, fd);
     close(fd);
   }
-  exit(0);
+  خروج(0);
 }
 
 // Regexp matcher from Kernighan & Pike,
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+صحيح matchhere(حرف *, حرف *);
+صحيح matchstar(صحيح, حرف *, حرف *);
 
-int
-match(char *re, char *text)
+صحيح
+تطابق(حرف *re, حرف *متن)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
-  do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+  إذا (re[0] == '^')
+    أرجع matchhere(re + 1, متن);
+  افعل { // must look at empty string
+    إذا (matchhere(re, متن))
+      أرجع 1;
+  } طالما (*متن++ != '\0');
+  أرجع 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+صحيح
+matchhere(حرف *re, حرف *متن)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  إذا (re[0] == '\0')
+    أرجع 1;
+  إذا (re[1] == '*')
+    أرجع matchstar(re[0], re + 2, متن);
+  إذا (re[0] == '$' && re[1] == '\0')
+    أرجع *متن == '\0';
+  إذا (*متن != '\0' && (re[0] == '.' || re[0] == *متن))
+    أرجع matchhere(re + 1, متن + 1);
+  أرجع 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+صحيح
+matchstar(صحيح c, حرف *re, حرف *متن)
 {
-  do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+  افعل { // a * matches zero or more instances
+    إذا (matchhere(re, متن))
+      أرجع 1;
+  } طالما (*متن != '\0' && (*متن++ == c || c == '.'));
+  أرجع 0;
 }

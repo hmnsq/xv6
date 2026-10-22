@@ -1,5 +1,5 @@
 // Saved registers for kernel context switches.
-struct context {
+بنية context {
   uint64 ra;
   uint64 sp;
 
@@ -19,14 +19,14 @@ struct context {
 };
 
 // Per-CPU state.
-struct cpu {
-  struct proc *proc;      // The process running on this cpu, or null.
-  struct context context; // swtch() here to enter scheduler().
-  int noff;               // Depth of push_off() nesting.
-  int intena;             // Were interrupts enabled before push_off()?
+بنية cpu {
+  بنية proc *proc;      // The process running on this cpu, or null.
+  بنية context context; // swtch() here to enter scheduler().
+  صحيح noff;               // Depth of push_off() nesting.
+  صحيح intena;             // Were interrupts enabled before push_off()?
 };
 
-extern struct cpu cpus[NCPU];
+خارجي بنية cpu cpus[NCPU];
 
 // per-process data for the trap handling code in trampoline.S.
 // sits in a page by itself just under the trampoline page in the
@@ -37,7 +37,7 @@ extern struct cpu cpus[NCPU];
 // prepare_return() and userret in trampoline.S set up
 // the trapframe's kernel_*, restore user registers from the
 // trapframe, switch to the user page table, and enter user space.
-struct trapframe {
+بنية trapframe {
   /*   0 */ uint64 kernel_satp;   // kernel page table
   /*   8 */ uint64 kernel_sp;     // top of process's kernel stack
   /*  16 */ uint64 kernel_trap;   // usertrap()
@@ -76,29 +76,29 @@ struct trapframe {
   /* 280 */ uint64 t6;
 };
 
-enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+تعداد procstate { استفادهنشده, استفاده_شده, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // Per-process state
-struct proc {
-  struct spinlock lock;
+بنية proc {
+  بنية spinlock قفل;
 
   // p->lock must be held when using these:
-  enum procstate state; // Process state
-  void *chan;           // If non-zero, sleeping on chan
-  int killed;           // If non-zero, have been killed
-  int xstate;           // Exit status to be returned to parent's wait
-  int pid;              // Process ID
+  تعداد procstate state; // Process state
+  فراغ *chan;           // If non-zero, sleeping on chan
+  صحيح killed;           // If non-zero, have been killed
+  صحيح xstate;           // Exit status to be returned to parent's wait
+  صحيح pid;              // Process ID
 
   // wait_lock must be held when using this:
-  struct proc *parent; // Parent process
+  بنية proc *والد; // Parent process
 
   // these are private to the process, so p->lock need not be held.
   uint64 kstack;               // Virtual address of kernel stack
   uint64 sz;                   // Size of process memory (bytes)
   pagetable_t pagetable;       // User page table
-  struct trapframe *trapframe; // data page for trampoline.S
-  struct context context;      // swtch() here to run process
-  struct file *ofile[NOFILE];  // Open files
-  struct inode *cwd;           // Current directory
-  char name[16];               // Process name (debugging)
+  بنية trapframe *trapframe; // data page for trampoline.S
+  بنية context context;      // swtch() here to run process
+  بنية file *ofile[NOFILE];  // Open files
+  بنية inode *cwd;           // Current directory
+  حرف name[16];               // Process name (debugging)
 };
