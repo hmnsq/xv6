@@ -3,48 +3,48 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
-char buf[512];
+var_na buf[512];
 
 void
-wc(int fd, char *name)
+wc(පූර්ණ_සංඛ්‍යා fd, var_na *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  පූර්ණ_සංඛ්‍යා i, n;
+  පූර්ණ_සංඛ්‍යා l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  අතරතුර ((n = read(fd, buf, parimaa_na(buf))) > 0) {
+    සඳහා (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      නම් (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      නම් (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      නැතහොත් නම් (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  නම් (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+පූර්ණ_සංඛ්‍යා
+main(පූර්ණ_සංඛ්‍යා argc, var_na *argv[])
 {
-  int fd, i;
+  පූර්ණ_සංඛ්‍යා fd, i;
 
-  if (argc <= 1) {
+  නම් (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  සඳහා (i = 1; i < argc; i++) {
+    නම් ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

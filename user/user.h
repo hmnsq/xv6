@@ -1,49 +1,49 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((var_na *)-1)
 
-struct stat;
+sa_nracanaa stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+පූර්ණ_සංඛ්‍යා fork(void);
+පූර්ණ_සංඛ්‍යා exit(පූර්ණ_සංඛ්‍යා) __attribute__((noreturn));
+පූර්ණ_සංඛ්‍යා wait(පූර්ණ_සංඛ්‍යා *);
+පූර්ණ_සංඛ්‍යා pipe(පූර්ණ_සංඛ්‍යා *);
+පූර්ණ_සංඛ්‍යා write(පූර්ණ_සංඛ්‍යා, const void *, පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා read(පූර්ණ_සංඛ්‍යා, void *, පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා close(පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා kill(පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා exec(const var_na *, var_na **);
+පූර්ණ_සංඛ්‍යා open(const var_na *, පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා mknod(const var_na *, short, short);
+පූර්ණ_සංඛ්‍යා unlink(const var_na *);
+පූර්ණ_සංඛ්‍යා fstat(පූර්ණ_සංඛ්‍යා fd, sa_nracanaa stat *);
+පූර්ණ_සංඛ්‍යා link(const var_na *, const var_na *);
+පූර්ණ_සංඛ්‍යා mkdir(const var_na *);
+පූර්ණ_සංඛ්‍යා chdir(const var_na *);
+පූර්ණ_සංඛ්‍යා dup(පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා getpid(void);
+var_na *sys_sbrk(පූර්ණ_සංඛ්‍යා, පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා pause(පූර්ණ_සංඛ්‍යා);
+පූර්ණ_සංඛ්‍යා uptime(void);
+පූර්ණ_සංඛ්‍යා sync(void);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
+පූර්ණ_සංඛ්‍යා stat(const var_na *, sa_nracanaa stat *);
+var_na *strcpy(var_na *, const var_na *);
+void *memmove(void *, const void *, පූර්ණ_සංඛ්‍යා);
+var_na *strchr(const var_na *, var_na c);
+පූර්ණ_සංඛ්‍යා strcmp(const var_na *, const var_na *);
+var_na *gets(var_na *, පූර්ණ_සංඛ්‍යා max);
+uint strlen(const var_na *);
+void *memset(void *, පූර්ණ_සංඛ්‍යා, uint);
+පූර්ණ_සංඛ්‍යා atoi(const var_na *);
+පූර්ණ_සංඛ්‍යා memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+var_na *sbrk(පූර්ණ_සංඛ්‍යා);
+var_na *sbrklazy(පූර්ණ_සංඛ්‍යා);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+void fprintf(පූර්ණ_සංඛ්‍යා, const var_na *, ...) __attribute__((format(printf, 2, 3)));
+void printf(const var_na *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
 void *malloc(uint);

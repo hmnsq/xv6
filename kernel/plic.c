@@ -12,37 +12,37 @@ void
 plicinit(void)
 {
   // set desired IRQ priorities non-zero (otherwise disabled).
-  *(volatile uint32 *)(PLIC + UART0_IRQ * 4) = 1;
-  *(volatile uint32 *)(PLIC + VIRTIO0_IRQ * 4) = 1;
+  *(ca_ncala uint32 *)(PLIC + UART0_IRQ * 4) = 1;
+  *(ca_ncala uint32 *)(PLIC + VIRTIO0_IRQ * 4) = 1;
 }
 
 void
 plicinithart(void)
 {
-  int hart = cpuid();
+  පූර්ණ_සංඛ්‍යා hart = cpuid();
 
   // set enable bits for this hart's S-mode
   // for the uart and virtio disk.
-  *(volatile uint32 *)PLIC_SENABLE(hart) =
+  *(ca_ncala uint32 *)PLIC_SENABLE(hart) =
     (1 << UART0_IRQ) | (1 << VIRTIO0_IRQ);
 
   // set this hart's S-mode priority threshold to 0.
-  *(volatile uint32 *)PLIC_SPRIORITY(hart) = 0;
+  *(ca_ncala uint32 *)PLIC_SPRIORITY(hart) = 0;
 }
 
 // ask the PLIC what interrupt we should serve.
-int
+පූර්ණ_සංඛ්‍යා
 plic_claim(void)
 {
-  int hart = cpuid();
-  int irq = *(volatile uint32 *)PLIC_SCLAIM(hart);
-  return irq;
+  පූර්ණ_සංඛ්‍යා hart = cpuid();
+  පූර්ණ_සංඛ්‍යා irq = *(ca_ncala uint32 *)PLIC_SCLAIM(hart);
+  ආපසු irq;
 }
 
 // tell the PLIC we've served this IRQ.
 void
-plic_complete(int irq)
+plic_complete(පූර්ණ_සංඛ්‍යා irq)
 {
-  int hart = cpuid();
-  *(volatile uint32 *)PLIC_SCLAIM(hart) = irq;
+  පූර්ණ_සංඛ්‍යා hart = cpuid();
+  *(ca_ncala uint32 *)PLIC_SCLAIM(hart) = irq;
 }

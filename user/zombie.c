@@ -5,10 +5,10 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
+පූර්ණ_සංඛ්‍යා
 main(void)
 {
-  if (fork() > 0)
+  නම් (fork() > 0)
     pause(5); // Let child exit before parent.
   exit(0);
 }

@@ -10,25 +10,25 @@
 
 #define PIPESIZE 512
 
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
+sa_nracanaa pipe {
+  sa_nracanaa spinlock lock;
+  var_na data[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  පූර්ණ_සංඛ්‍යා readopen;  // read fd is still open
+  පූර්ණ_සංඛ්‍යා writeopen; // write fd is still open
 };
 
-int
-pipealloc(struct file **f0, struct file **f1)
+පූර්ණ_සංඛ්‍යා
+pipealloc(sa_nracanaa file **f0, sa_nracanaa file **f1)
 {
-  struct pipe *pi;
+  sa_nracanaa pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+  නම් ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
+  නම් ((pi = (sa_nracanaa pipe *)kalloc()) == 0)
     goto bad;
   pi->readopen = 1;
   pi->writeopen = 1;
@@ -43,60 +43,60 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  ආපසු 0;
 
 bad:
-  if (pi)
-    kfree((char *)pi);
-  if (*f0)
+  නම් (pi)
+    kfree((var_na *)pi);
+  නම් (*f0)
     fileclose(*f0);
-  if (*f1)
+  නම් (*f1)
     fileclose(*f1);
-  return -1;
+  ආපසු -1;
 }
 
 void
-pipeclose(struct pipe *pi, int writable)
+pipeclose(sa_nracanaa pipe *pi, පූර්ණ_සංඛ්‍යා writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  නම් (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } නැතහොත් {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  නම් (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
-    kfree((char *)pi);
-  } else
+    kfree((var_na *)pi);
+  } නැතහොත්
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+පූර්ණ_සංඛ්‍යා
+pipewrite(sa_nracanaa pipe *pi, uint64 addr, පූර්ණ_සංඛ්‍යා n)
 {
-  int i = 0;
-  struct proc *pr = myproc();
+  පූර්ණ_සංඛ්‍යා i = 0;
+  sa_nracanaa proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  අතරතුර (i < n) {
+    නම් (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      ආපසු -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    නම් (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
-      char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+    } නැතහොත් {
+      var_na ch;
+      නම් (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        නම් (i == 0)
           i = -1;
-        break;
+        bha_nga;
       }
       pi->data[pi->nwrite++ % PIPESIZE] = ch;
       i++;
@@ -105,39 +105,39 @@ pipewrite(struct pipe *pi, uint64 addr, int n)
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  ආපසු i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+පූර්ණ_සංඛ්‍යා
+piperead(sa_nracanaa pipe *pi, uint64 addr, පූර්ණ_සංඛ්‍යා n)
 {
-  int i;
-  struct proc *pr = myproc();
-  char ch;
+  පූර්ණ_සංඛ්‍යා i;
+  sa_nracanaa proc *pr = myproc();
+  var_na ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  අතරතුර (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    නම් (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      ආපසු -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
-      break;
+  සඳහා (i = 0; i < n; i++) { //DOC: piperead-copy
+    නම් (pi->nread == pi->nwrite)
+      bha_nga;
     ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+    නම් (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      නම් (i == 0)
         i = -1;
-      break;
+      bha_nga;
     }
     pi->nread++;
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  ආපසු i;
 }

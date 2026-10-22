@@ -2,8 +2,8 @@
 #define T_FILE   2 // File
 #define T_DEVICE 3 // Device
 
-struct stat {
-  int dev;     // File system's disk device
+sa_nracanaa stat {
+  පූර්ණ_සංඛ්‍යා dev;     // File system's disk device
   uint ino;    // Inode number
   short type;  // Type of file
   short nlink; // Number of links to file
