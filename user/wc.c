@@ -3,48 +3,48 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
-char buf[512];
+var_na buf[512];
 
 void
-wc(int fd, char *name)
+wc(puur_naa_nka fd, var_na *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  puur_naa_nka i, n;
+  puur_naa_nka l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
+  ᨀᨛ ((n = read(fd, buf, parimaa_na(buf))) > 0) {
     for (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      ᨀᨘ (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      ᨀᨘ (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      ᨀᨘᨁ ᨀᨘ (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  ᨀᨘ (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+puur_naa_nka
+main(puur_naa_nka argc, var_na *argv[])
 {
-  int fd, i;
+  puur_naa_nka fd, i;
 
-  if (argc <= 1) {
+  ᨀᨘ (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
   for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+    ᨀᨘ ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

@@ -11,16 +11,16 @@
 
 void freerange(void *pa_start, void *pa_end);
 
-extern char end[]; // first address after kernel.
+extern var_na end[]; // first address after kernel.
                    // defined by kernel.ld.
 
-struct run {
-  struct run *next;
+sa_nracanaa run {
+  sa_nracanaa run *next;
 };
 
-struct {
-  struct spinlock lock;
-  struct run *freelist;
+sa_nracanaa {
+  sa_nracanaa spinlock lock;
+  sa_nracanaa run *freelist;
 } kmem;
 
 void
@@ -33,9 +33,9 @@ kinit()
 void
 freerange(void *pa_start, void *pa_end)
 {
-  char *p;
-  p = (char *)PGROUNDUP((uint64)pa_start);
-  for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE)
+  var_na *p;
+  p = (var_na *)PGROUNDUP((uint64)pa_start);
+  for (; p + PGSIZE <= (var_na *)pa_end; p += PGSIZE)
     kfree(p);
 }
 
@@ -46,15 +46,15 @@ freerange(void *pa_start, void *pa_end)
 void
 kfree(void *pa)
 {
-  struct run *r;
+  sa_nracanaa run *r;
 
-  if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
+  ᨀᨘ (((uint64)pa % PGSIZE) != 0 || (var_na *)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
 
   // Fill with junk to catch dangling refs.
   memset(pa, 1, PGSIZE);
 
-  r = (struct run *)pa;
+  r = (sa_nracanaa run *)pa;
 
   acquire(&kmem.lock);
   r->next = kmem.freelist;
@@ -68,15 +68,15 @@ kfree(void *pa)
 void *
 kalloc(void)
 {
-  struct run *r;
+  sa_nracanaa run *r;
 
   acquire(&kmem.lock);
   r = kmem.freelist;
-  if (r)
+  ᨀᨘ (r)
     kmem.freelist = r->next;
   release(&kmem.lock);
 
-  if (r)
-    memset((char *)r, 5, PGSIZE); // fill with junk
-  return (void *)r;
+  ᨀᨘ (r)
+    memset((var_na *)r, 5, PGSIZE); // fill with junk
+  ᨀᨘᨒ (void *)r;
 }

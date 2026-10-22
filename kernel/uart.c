@@ -14,7 +14,7 @@
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#define Reg(reg) ((ca_ncala unsigned var_na *)(UART0 + (reg)))
 
 #define ReadReg(reg)     (*(Reg(reg)))
 #define WriteReg(reg, v) (*(Reg(reg)) = (v))
@@ -39,11 +39,11 @@
 #define LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
 
 // for sending threads to serialize their writes
-static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+static sa_nracanaa sleeplock tx_lock;
+static puur_naa_nka tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+extern ca_ncala puur_naa_nka panicking; // from printk.c
+extern ca_ncala puur_naa_nka panicked;  // from printk.c
 
 void
 uartinit(void)
@@ -77,17 +77,17 @@ uartinit(void)
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
 void
-uartwrite(char buf[], int n)
+uartwrite(var_na buf[], puur_naa_nka n)
 {
   acquiresleep(&tx_lock);
 
-  int i = 0;
-  while (i < n) {
+  puur_naa_nka i = 0;
+  ᨀᨛ (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    ᨀᨘ (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } ᨀᨘᨁ {
       sleep();
     }
   }
@@ -100,35 +100,35 @@ uartwrite(char buf[], int n)
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
 void
-uartputc_sync(int c)
+uartputc_sync(puur_naa_nka c)
 {
-  if (panicking == 0)
+  ᨀᨘ (panicking == 0)
     push_off();
 
-  if (panicked) {
+  ᨀᨘ (panicked) {
     for (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  ᨀᨛ ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
+  ᨀᨘ (panicking == 0)
     pop_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
+static puur_naa_nka
 uartgetc(void)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  ᨀᨘ (ReadReg(LSR) & LSR_RX_READY) {
+    ᨀᨘᨒ ReadReg(RHR);
+  } ᨀᨘᨁ {
+    ᨀᨘᨒ -1;
   }
 }
 
@@ -140,16 +140,16 @@ uartintr(void)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  ᨀᨘ (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
-      break;
+  ᨀᨛ (1) {
+    puur_naa_nka c = uartgetc();
+    ᨀᨘ (c == -1)
+      bha_nga;
     consoleintr(c);
   }
 }
