@@ -4,174 +4,174 @@
 // user code, and calls into file.c and fs.c.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "stat.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "fcntl.h"
+#અન્તર્ભાવ "types.h"
+#અન્તર્ભાવ "riscv.h"
+#અન્તર્ભાવ "defs.h"
+#અન્તર્ભાવ "param.h"
+#અન્તર્ભાવ "stat.h"
+#અન્તર્ભાવ "spinlock.h"
+#અન્તર્ભાવ "proc.h"
+#અન્તર્ભાવ "fs.h"
+#અન્તર્ભાવ "sleeplock.h"
+#અન્તર્ભાવ "file.h"
+#અન્તર્ભાવ "fcntl.h"
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
-static int
-argfd(int n, int *pfd, struct file **pf)
+સ્થિર પૂર્ણાંક
+argfd(પૂર્ણાંક n, પૂર્ણાંક *pfd, સંરચના file **pf)
 {
-  int fd;
-  struct file *f;
+  પૂર્ણાંક fd;
+  સંરચના file *f;
 
   argint(n, &fd);
-  if (fd < 0 || fd >= NOFILE || (f = myproc()->ofile[fd]) == 0)
-    return -1;
-  if (pfd)
+  જો (fd < 0 || fd >= NOFILE || (f = myproc()->ofile[fd]) == 0)
+    પાછા -1;
+  જો (pfd)
     *pfd = fd;
-  if (pf)
+  જો (pf)
     *pf = f;
-  return 0;
+  પાછા 0;
 }
 
 // Allocate a file descriptor for the given file.
 // Takes over file reference from caller on success.
-static int
-fdalloc(struct file *f)
+સ્થિર પૂર્ણાંક
+fdalloc(સંરચના file *f)
 {
-  int fd;
-  struct proc *p = myproc();
+  પૂર્ણાંક fd;
+  સંરચના proc *p = myproc();
 
-  for (fd = 0; fd < NOFILE; fd++) {
-    if (p->ofile[fd] == 0) {
+  માટે (fd = 0; fd < NOFILE; fd++) {
+    જો (p->ofile[fd] == 0) {
       p->ofile[fd] = f;
-      return fd;
+      પાછા fd;
     }
   }
-  return -1;
+  પાછા -1;
 }
 
 uint64
-sys_dup(void)
+sys_dup(શૂન્ય)
 {
-  struct file *f;
-  int fd;
+  સંરચના file *f;
+  પૂર્ણાંક fd;
 
-  if (argfd(0, 0, &f) < 0)
-    return -1;
-  if ((fd = fdalloc(f)) < 0)
-    return -1;
+  જો (argfd(0, 0, &f) < 0)
+    પાછા -1;
+  જો ((fd = fdalloc(f)) < 0)
+    પાછા -1;
   filedup(f);
-  return fd;
+  પાછા fd;
 }
 
 uint64
-sys_read(void)
+sys_read(શૂન્ય)
 {
-  struct file *f;
-  int n;
+  સંરચના file *f;
+  પૂર્ણાંક n;
   uint64 p;
 
   argaddr(1, &p);
   argint(2, &n);
-  if (argfd(0, 0, &f) < 0)
-    return -1;
-  return fileread(f, p, n);
+  જો (argfd(0, 0, &f) < 0)
+    પાછા -1;
+  પાછા fileread(f, p, n);
 }
 
 uint64
-sys_write(void)
+sys_write(શૂન્ય)
 {
-  struct file *f;
-  int n;
+  સંરચના file *f;
+  પૂર્ણાંક n;
   uint64 p;
 
   argaddr(1, &p);
   argint(2, &n);
-  if (argfd(0, 0, &f) < 0)
-    return -1;
+  જો (argfd(0, 0, &f) < 0)
+    પાછા -1;
 
-  return filewrite(f, p, n);
+  પાછા filewrite(f, p, n);
 }
 
 uint64
-sys_close(void)
+sys_close(શૂન્ય)
 {
-  int fd;
-  struct file *f;
+  પૂર્ણાંક fd;
+  સંરચના file *f;
 
-  if (argfd(0, &fd, &f) < 0)
-    return -1;
+  જો (argfd(0, &fd, &f) < 0)
+    પાછા -1;
   myproc()->ofile[fd] = 0;
   fileclose(f);
-  return 0;
+  પાછા 0;
 }
 
 uint64
-sys_fstat(void)
+sys_fstat(શૂન્ય)
 {
-  struct file *f;
+  સંરચના file *f;
   uint64 st; // user pointer to struct stat
 
   argaddr(1, &st);
-  if (argfd(0, 0, &f) < 0)
-    return -1;
-  return filestat(f, st);
+  જો (argfd(0, 0, &f) < 0)
+    પાછા -1;
+  પાછા filestat(f, st);
 }
 
 // Create the path new as a link to the same inode as old.
 uint64
-sys_link(void)
+sys_link(શૂન્ય)
 {
-  char name[DIRSIZ], new[MAXPATH], old[MAXPATH];
-  struct inode *dp, *ip;
+  અક્ષર name[DIRSIZ], new[MAXPATH], old[MAXPATH];
+  સંરચના inode *dp, *ip;
 
-  if (argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
-    return -1;
+  જો (argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
+    પાછા -1;
 
   begin_op();
-  if ((ip = namei(old)) == 0) {
+  જો ((ip = namei(old)) == 0) {
     end_op();
-    return -1;
+    પાછા -1;
   }
 
   ilock(ip);
-  if (ip->type == T_DIR) {
+  જો (ip->type == T_DIR) {
     iunlockput(ip);
     end_op();
-    return -1;
+    પાછા -1;
   }
 
-  if (ip->nlink >= NLINK_MAX) {
+  જો (ip->nlink >= NLINK_MAX) {
     iunlockput(ip);
     end_op();
-    return -1;
+    પાછા -1;
   }
 
   ip->nlink++;
   iupdate(ip);
   iunlock(ip);
 
-  if ((dp = nameiparent(new, name)) == 0)
-    goto bad;
+  જો ((dp = nameiparent(new, name)) == 0)
+    જાઓ bad;
   ilock(dp);
   // dp may have been unlinked while we resolved it; linking into an
   // orphaned directory leaks ip (itrunc discards the record without
   // dropping ip->nlink).  create() has the same guard.
-  if (dp->nlink == 0) {
+  જો (dp->nlink == 0) {
     iunlockput(dp);
-    goto bad;
+    જાઓ bad;
   }
-  if (dp->dev != ip->dev || dirlink(dp, name, ip->inum) < 0) {
+  જો (dp->dev != ip->dev || dirlink(dp, name, ip->inum) < 0) {
     iunlockput(dp);
-    goto bad;
+    જાઓ bad;
   }
   iunlockput(dp);
   iput(ip);
 
   end_op();
 
-  return 0;
+  પાછા 0;
 
 bad:
   ilock(ip);
@@ -179,63 +179,63 @@ bad:
   iupdate(ip);
   iunlockput(ip);
   end_op();
-  return -1;
+  પાછા -1;
 }
 
 // Is the directory dp empty except for "." and ".." ?
-static int
-isdirempty(struct inode *dp)
+સ્થિર પૂર્ણાંક
+isdirempty(સંરચના inode *dp)
 {
-  int off;
-  struct dirent de;
+  પૂર્ણાંક off;
+  સંરચના dirent de;
 
-  for (off = 2 * sizeof(de); off < dp->size; off += sizeof(de)) {
-    if (readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  માટે (off = 2 * કદ(de); off < dp->size; off += કદ(de)) {
+    જો (readi(dp, 0, (uint64)&de, off, કદ(de)) != કદ(de))
       panic("isdirempty: readi");
-    if (de.inum != 0)
-      return 0;
+    જો (de.inum != 0)
+      પાછા 0;
   }
-  return 1;
+  પાછા 1;
 }
 
 uint64
-sys_unlink(void)
+sys_unlink(શૂન્ય)
 {
-  struct inode *ip, *dp;
-  struct dirent de;
-  char name[DIRSIZ], path[MAXPATH];
+  સંરચના inode *ip, *dp;
+  સંરચના dirent de;
+  અક્ષર name[DIRSIZ], path[MAXPATH];
   uint off;
 
-  if (argstr(0, path, MAXPATH) < 0)
-    return -1;
+  જો (argstr(0, path, MAXPATH) < 0)
+    પાછા -1;
 
   begin_op();
-  if ((dp = nameiparent(path, name)) == 0) {
+  જો ((dp = nameiparent(path, name)) == 0) {
     end_op();
-    return -1;
+    પાછા -1;
   }
 
   ilock(dp);
 
   // Cannot unlink "." or "..".
-  if (namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
-    goto bad;
+  જો (namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
+    જાઓ bad;
 
-  if ((ip = dirlookup(dp, name, &off)) == 0)
-    goto bad;
+  જો ((ip = dirlookup(dp, name, &off)) == 0)
+    જાઓ bad;
   ilock(ip);
 
-  if (ip->nlink < 1)
+  જો (ip->nlink < 1)
     panic("unlink: nlink < 1");
-  if (ip->type == T_DIR && !isdirempty(ip)) {
+  જો (ip->type == T_DIR && !isdirempty(ip)) {
     iunlockput(ip);
-    goto bad;
+    જાઓ bad;
   }
 
-  memset(&de, 0, sizeof(de));
-  if (writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  memset(&de, 0, કદ(de));
+  જો (writei(dp, 0, (uint64)&de, off, કદ(de)) != કદ(de))
     panic("unlink: writei");
-  if (ip->type == T_DIR) {
+  જો (ip->type == T_DIR) {
     dp->nlink--;
     iupdate(dp);
   }
@@ -247,48 +247,48 @@ sys_unlink(void)
 
   end_op();
 
-  return 0;
+  પાછા 0;
 
 bad:
   iunlockput(dp);
   end_op();
-  return -1;
+  પાછા -1;
 }
 
-static struct inode *
-create(char *path, short type, short major, short minor)
+સ્થિર સંરચના inode *
+create(અક્ષર *path, short type, short major, short minor)
 {
-  struct inode *ip, *dp;
-  char name[DIRSIZ];
+  સંરચના inode *ip, *dp;
+  અક્ષર name[DIRSIZ];
 
-  if ((dp = nameiparent(path, name)) == 0)
-    return 0;
+  જો ((dp = nameiparent(path, name)) == 0)
+    પાછા 0;
 
   ilock(dp);
 
-  if (dp->nlink == 0) {
+  જો (dp->nlink == 0) {
     iunlockput(dp);
-    return 0;
+    પાછા 0;
   }
 
   // a new directory's ".." would push dp->nlink past its maximum
-  if (type == T_DIR && dp->nlink >= NLINK_MAX) {
+  જો (type == T_DIR && dp->nlink >= NLINK_MAX) {
     iunlockput(dp);
-    return 0;
+    પાછા 0;
   }
 
-  if ((ip = dirlookup(dp, name, 0)) != 0) {
+  જો ((ip = dirlookup(dp, name, 0)) != 0) {
     iunlockput(dp);
     ilock(ip);
-    if (type == T_FILE && (ip->type == T_FILE || ip->type == T_DEVICE))
-      return ip;
+    જો (type == T_FILE && (ip->type == T_FILE || ip->type == T_DEVICE))
+      પાછા ip;
     iunlockput(ip);
-    return 0;
+    પાછા 0;
   }
 
-  if ((ip = ialloc(dp->dev, type)) == 0) {
+  જો ((ip = ialloc(dp->dev, type)) == 0) {
     iunlockput(dp);
-    return 0;
+    પાછા 0;
   }
 
   ilock(ip);
@@ -297,16 +297,16 @@ create(char *path, short type, short major, short minor)
   ip->nlink = 1;
   iupdate(ip);
 
-  if (type == T_DIR) { // Create . and .. entries.
+  જો (type == T_DIR) { // Create . and .. entries.
     // No ip->nlink++ for ".": avoid cyclic ref count.
-    if (dirlink(ip, ".", ip->inum) < 0 || dirlink(ip, "..", dp->inum) < 0)
-      goto fail;
+    જો (dirlink(ip, ".", ip->inum) < 0 || dirlink(ip, "..", dp->inum) < 0)
+      જાઓ fail;
   }
 
-  if (dirlink(dp, name, ip->inum) < 0)
-    goto fail;
+  જો (dirlink(dp, name, ip->inum) < 0)
+    જાઓ fail;
 
-  if (type == T_DIR) {
+  જો (type == T_DIR) {
     // now that success is guaranteed:
     dp->nlink++; // for ".."
     iupdate(dp);
@@ -314,7 +314,7 @@ create(char *path, short type, short major, short minor)
 
   iunlockput(dp);
 
-  return ip;
+  પાછા ip;
 
 fail:
   // something went wrong. de-allocate ip.
@@ -322,61 +322,61 @@ fail:
   iupdate(ip);
   iunlockput(ip);
   iunlockput(dp);
-  return 0;
+  પાછા 0;
 }
 
 uint64
-sys_open(void)
+sys_open(શૂન્ય)
 {
-  char path[MAXPATH];
-  int fd, omode;
-  struct file *f;
-  struct inode *ip;
-  int n;
+  અક્ષર path[MAXPATH];
+  પૂર્ણાંક fd, omode;
+  સંરચના file *f;
+  સંરચના inode *ip;
+  પૂર્ણાંક n;
 
   argint(1, &omode);
-  if ((n = argstr(0, path, MAXPATH)) < 0)
-    return -1;
+  જો ((n = argstr(0, path, MAXPATH)) < 0)
+    પાછા -1;
 
   begin_op();
 
-  if (omode & O_CREATE) {
+  જો (omode & O_CREATE) {
     ip = create(path, T_FILE, 0, 0);
-    if (ip == 0) {
+    જો (ip == 0) {
       end_op();
-      return -1;
+      પાછા -1;
     }
-  } else {
-    if ((ip = namei(path)) == 0) {
+  } નહીંતર {
+    જો ((ip = namei(path)) == 0) {
       end_op();
-      return -1;
+      પાછા -1;
     }
     ilock(ip);
-    if (ip->type == T_DIR && omode != O_RDONLY) {
+    જો (ip->type == T_DIR && omode != O_RDONLY) {
       iunlockput(ip);
       end_op();
-      return -1;
+      પાછા -1;
     }
   }
 
-  if (ip->type == T_DEVICE && (ip->major < 0 || ip->major >= NDEV)) {
+  જો (ip->type == T_DEVICE && (ip->major < 0 || ip->major >= NDEV)) {
     iunlockput(ip);
     end_op();
-    return -1;
+    પાછા -1;
   }
 
-  if ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0) {
-    if (f)
+  જો ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0) {
+    જો (f)
       fileclose(f);
     iunlockput(ip);
     end_op();
-    return -1;
+    પાછા -1;
   }
 
-  if (ip->type == T_DEVICE) {
+  જો (ip->type == T_DEVICE) {
     f->type = FD_DEVICE;
     f->major = ip->major;
-  } else {
+  } નહીંતર {
     f->type = FD_INODE;
     f->off = 0;
   }
@@ -384,147 +384,147 @@ sys_open(void)
   f->readable = !(omode & O_WRONLY);
   f->writable = (omode & O_WRONLY) || (omode & O_RDWR);
 
-  if ((omode & O_TRUNC) && ip->type == T_FILE) {
+  જો ((omode & O_TRUNC) && ip->type == T_FILE) {
     itrunc(ip);
   }
 
   iunlock(ip);
   end_op();
 
-  return fd;
+  પાછા fd;
 }
 
 uint64
-sys_mkdir(void)
+sys_mkdir(શૂન્ય)
 {
-  char path[MAXPATH];
-  struct inode *ip;
+  અક્ષર path[MAXPATH];
+  સંરચના inode *ip;
 
   begin_op();
-  if (argstr(0, path, MAXPATH) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0) {
+  જો (argstr(0, path, MAXPATH) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0) {
     end_op();
-    return -1;
+    પાછા -1;
   }
   iunlockput(ip);
   end_op();
-  return 0;
+  પાછા 0;
 }
 
 uint64
-sys_mknod(void)
+sys_mknod(શૂન્ય)
 {
-  struct inode *ip;
-  char path[MAXPATH];
-  int major, minor;
+  સંરચના inode *ip;
+  અક્ષર path[MAXPATH];
+  પૂર્ણાંક major, minor;
 
   begin_op();
   argint(1, &major);
   argint(2, &minor);
-  if ((argstr(0, path, MAXPATH)) < 0 ||
+  જો ((argstr(0, path, MAXPATH)) < 0 ||
       (ip = create(path, T_DEVICE, major, minor)) == 0) {
     end_op();
-    return -1;
+    પાછા -1;
   }
   iunlockput(ip);
   end_op();
-  return 0;
+  પાછા 0;
 }
 
 uint64
-sys_chdir(void)
+sys_chdir(શૂન્ય)
 {
-  char path[MAXPATH];
-  struct inode *ip;
-  struct proc *p = myproc();
+  અક્ષર path[MAXPATH];
+  સંરચના inode *ip;
+  સંરચના proc *p = myproc();
 
   begin_op();
-  if (argstr(0, path, MAXPATH) < 0 || (ip = namei(path)) == 0) {
+  જો (argstr(0, path, MAXPATH) < 0 || (ip = namei(path)) == 0) {
     end_op();
-    return -1;
+    પાછા -1;
   }
   ilock(ip);
-  if (ip->type != T_DIR) {
+  જો (ip->type != T_DIR) {
     iunlockput(ip);
     end_op();
-    return -1;
+    પાછા -1;
   }
   iunlock(ip);
   iput(p->cwd);
   end_op();
   p->cwd = ip;
-  return 0;
+  પાછા 0;
 }
 
 uint64
-sys_exec(void)
+sys_exec(શૂન્ય)
 {
-  char path[MAXPATH], *argv[MAXARG];
-  int i;
+  અક્ષર path[MAXPATH], *argv[MAXARG];
+  પૂર્ણાંક i;
   uint64 uargv, uarg;
 
   argaddr(1, &uargv);
-  if (argstr(0, path, MAXPATH) < 0) {
-    return -1;
+  જો (argstr(0, path, MAXPATH) < 0) {
+    પાછા -1;
   }
-  memset(argv, 0, sizeof(argv));
-  for (i = 0;; i++) {
-    if (i >= NELEM(argv)) {
-      goto bad;
+  memset(argv, 0, કદ(argv));
+  માટે (i = 0;; i++) {
+    જો (i >= NELEM(argv)) {
+      જાઓ bad;
     }
-    if (fetchaddr(uargv + sizeof(uint64) * i, (uint64 *)&uarg) < 0) {
-      goto bad;
+    જો (fetchaddr(uargv + કદ(uint64) * i, (uint64 *)&uarg) < 0) {
+      જાઓ bad;
     }
-    if (uarg == 0) {
+    જો (uarg == 0) {
       argv[i] = 0;
-      break;
+      તોડો;
     }
     argv[i] = kalloc();
-    if (argv[i] == 0)
-      goto bad;
-    if (fetchstr(uarg, argv[i], PGSIZE) < 0)
-      goto bad;
+    જો (argv[i] == 0)
+      જાઓ bad;
+    જો (fetchstr(uarg, argv[i], PGSIZE) < 0)
+      જાઓ bad;
   }
 
-  int ret = kexec(path, argv);
+  પૂર્ણાંક ret = kexec(path, argv);
 
-  for (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
+  માટે (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
     kfree(argv[i]);
 
-  return ret;
+  પાછા ret;
 
 bad:
-  for (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
+  માટે (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
     kfree(argv[i]);
-  return -1;
+  પાછા -1;
 }
 
 uint64
-sys_pipe(void)
+sys_pipe(શૂન્ય)
 {
   uint64 fdarray; // user pointer to array of two integers
-  struct file *rf, *wf;
-  int fd0, fd1;
-  struct proc *p = myproc();
+  સંરચના file *rf, *wf;
+  પૂર્ણાંક fd0, fd1;
+  સંરચના proc *p = myproc();
 
   argaddr(0, &fdarray);
-  if (pipealloc(&rf, &wf) < 0)
-    return -1;
+  જો (pipealloc(&rf, &wf) < 0)
+    પાછા -1;
   fd0 = -1;
-  if ((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0) {
-    if (fd0 >= 0)
+  જો ((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0) {
+    જો (fd0 >= 0)
       p->ofile[fd0] = 0;
     fileclose(rf);
     fileclose(wf);
-    return -1;
+    પાછા -1;
   }
-  if (copyout(p->pagetable, p->sz, fdarray, (char *)&fd0, sizeof(fd0)) < 0 ||
-      copyout(p->pagetable, p->sz, fdarray + sizeof(fd0), (char *)&fd1,
-              sizeof(fd1)) < 0) {
+  જો (copyout(p->pagetable, p->sz, fdarray, (અક્ષર *)&fd0, કદ(fd0)) < 0 ||
+      copyout(p->pagetable, p->sz, fdarray + કદ(fd0), (અક્ષર *)&fd1,
+              કદ(fd1)) < 0) {
     p->ofile[fd0] = 0;
     p->ofile[fd1] = 0;
     fileclose(rf);
     fileclose(wf);
-    return -1;
+    પાછા -1;
   }
-  return 0;
+  પાછા 0;
 }

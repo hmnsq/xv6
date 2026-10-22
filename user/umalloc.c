@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "user/user.h"
+#અન્તર્ભાવ "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+પ્રકારવ્યાખ્યા long Align;
 
-union header {
-  struct {
-    union header *ptr;
+સંઘ header {
+  સંરચના {
+    સંઘ header *ptr;
     uint size;
   } s;
   Align x;
 };
 
-typedef union header Header;
+પ્રકારવ્યાખ્યા સંઘ header Header;
 
-static Header base;
-static Header *freep;
+સ્થિર Header base;
+સ્થિર Header *freep;
 
-void
-free(void *ap)
+શૂન્ય
+મુક્ત(શૂન્ય *ap)
 {
   Header *bp, *p;
 
   bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
+  માટે (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    જો (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      તોડો;
+  જો (bp + bp->s.size == p->s.ptr) {
     bp->s.size += p->s.ptr->s.size;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } નહીંતર
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
+  જો (p + p->s.size == bp) {
     p->s.size += bp->s.size;
     p->s.ptr = bp->s.ptr;
-  } else
+  } નહીંતર
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+સ્થિર Header *
 morecore(uint nu)
 {
-  char *p;
+  અક્ષર *p;
   Header *hp;
 
-  if (nu < 4096)
+  જો (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
+  p = sbrk(nu * કદ(Header));
+  જો (p == SBRK_ERROR)
+    પાછા 0;
   hp = (Header *)p;
   hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  મુક્ત((શૂન્ય *)(hp + 1));
+  પાછા freep;
 }
 
-void *
+શૂન્ય *
 malloc(uint nbytes)
 {
   Header *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
+  nunits = (nbytes + કદ(Header) - 1) / કદ(Header) + 1;
+  જો ((prevp = freep) == 0) {
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  માટે (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    જો (p->s.size >= nunits) {
+      જો (p->s.size == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
+      નહીંતર {
         p->s.size -= nunits;
         p += p->s.size;
         p->s.size = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      પાછા (શૂન્ય *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    જો (p == freep)
+      જો ((p = morecore(nunits)) == 0)
+        પાછા 0;
   }
 }

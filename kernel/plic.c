@@ -1,48 +1,48 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#અન્તર્ભાવ "types.h"
+#અન્તર્ભાવ "param.h"
+#અન્તર્ભાવ "memlayout.h"
+#અન્તર્ભાવ "riscv.h"
+#અન્તર્ભાવ "defs.h"
 
 //
 // the riscv Platform Level Interrupt Controller (PLIC).
 //
 
-void
-plicinit(void)
+શૂન્ય
+plicinit(શૂન્ય)
 {
   // set desired IRQ priorities non-zero (otherwise disabled).
-  *(volatile uint32 *)(PLIC + UART0_IRQ * 4) = 1;
-  *(volatile uint32 *)(PLIC + VIRTIO0_IRQ * 4) = 1;
+  *(અસ્થિર uint32 *)(PLIC + UART0_IRQ * 4) = 1;
+  *(અસ્થિર uint32 *)(PLIC + VIRTIO0_IRQ * 4) = 1;
 }
 
-void
-plicinithart(void)
+શૂન્ય
+plicinithart(શૂન્ય)
 {
-  int hart = cpuid();
+  પૂર્ણાંક hart = cpuid();
 
   // set enable bits for this hart's S-mode
   // for the uart and virtio disk.
-  *(volatile uint32 *)PLIC_SENABLE(hart) =
+  *(અસ્થિર uint32 *)PLIC_SENABLE(hart) =
     (1 << UART0_IRQ) | (1 << VIRTIO0_IRQ);
 
   // set this hart's S-mode priority threshold to 0.
-  *(volatile uint32 *)PLIC_SPRIORITY(hart) = 0;
+  *(અસ્થિર uint32 *)PLIC_SPRIORITY(hart) = 0;
 }
 
 // ask the PLIC what interrupt we should serve.
-int
-plic_claim(void)
+પૂર્ણાંક
+plic_claim(શૂન્ય)
 {
-  int hart = cpuid();
-  int irq = *(volatile uint32 *)PLIC_SCLAIM(hart);
-  return irq;
+  પૂર્ણાંક hart = cpuid();
+  પૂર્ણાંક irq = *(અસ્થિર uint32 *)PLIC_SCLAIM(hart);
+  પાછા irq;
 }
 
 // tell the PLIC we've served this IRQ.
-void
-plic_complete(int irq)
+શૂન્ય
+plic_complete(પૂર્ણાંક irq)
 {
-  int hart = cpuid();
-  *(volatile uint32 *)PLIC_SCLAIM(hart) = irq;
+  પૂર્ણાંક hart = cpuid();
+  *(અસ્થિર uint32 *)PLIC_SCLAIM(hart) = irq;
 }

@@ -1,9 +1,9 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "user/user.h"
 
-int
-main(int argc, char *argv[])
+પૂર્ણાંક
+મુખ્ય(પૂર્ણાંક argc, અક્ષર *argv[])
 {
   sync();
   exit(0);

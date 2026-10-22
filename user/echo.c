@@ -1,18 +1,18 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "user/user.h"
 
-int
-main(int argc, char *argv[])
+પૂર્ણાંક
+મુખ્ય(પૂર્ણાંક argc, અક્ષર *argv[])
 {
-  int i;
+  પૂર્ણાંક i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  માટે (i = 1; i < argc; i++) {
+    લિખ(1, argv[i], strlen(argv[i]));
+    જો (i + 1 < argc) {
+      લિખ(1, " ", 1);
+    } નહીંતર {
+      લિખ(1, "\n", 1);
     }
   }
   exit(0);

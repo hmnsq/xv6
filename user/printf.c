@@ -1,111 +1,111 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "user/user.h"
 
-#include <stdarg.h>
+#અન્તર્ભાવ <stdarg.h>
 
-static char digits[] = "0123456789ABCDEF";
+સ્થિર અક્ષર digits[] = "0123456789ABCDEF";
 
-static void
-putc(int fd, char c)
+સ્થિર શૂન્ય
+putc(પૂર્ણાંક fd, અક્ષર c)
 {
-  write(fd, &c, 1);
+  લિખ(fd, &c, 1);
 }
 
-static void
-printint(int fd, long long xx, int base, int sgn)
+સ્થિર શૂન્ય
+printint(પૂર્ણાંક fd, long long xx, પૂર્ણાંક base, પૂર્ણાંક sgn)
 {
-  char buf[20];
-  int i, neg;
+  અક્ષર buf[20];
+  પૂર્ણાંક i, neg;
   unsigned long long x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  જો (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } નહીંતર {
     x = xx;
   }
 
   i = 0;
-  do {
+  કરો {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  } જ્યારે ((x /= base) != 0);
+  જો (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  જ્યારે (--i >= 0)
     putc(fd, buf[i]);
 }
 
-static void
-printptr(int fd, uint64 x)
+સ્થિર શૂન્ય
+printptr(પૂર્ણાંક fd, uint64 x)
 {
-  int i;
+  પૂર્ણાંક i;
   putc(fd, '0');
   putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
+  માટે (i = 0; i < (કદ(uint64) * 2); i++, x <<= 4)
+    putc(fd, digits[x >> (કદ(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
-void
-vprintf(int fd, const char *fmt, va_list ap)
+શૂન્ય
+vprintf(પૂર્ણાંક fd, અચલ અક્ષર *fmt, va_list ap)
 {
-  char *s;
-  int c0, c1, c2, i, state;
+  અક્ષર *s;
+  પૂર્ણાંક c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  માટે (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    જો (state == 0) {
+      જો (c0 == '%') {
         state = '%';
-      } else {
+      } નહીંતર {
         putc(fd, c0);
       }
-    } else if (state == '%') {
+    } નહીંતર જો (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      જો (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      જો (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
+      જો (c0 == 'd') {
+        printint(fd, va_arg(ap, પૂર્ણાંક), 10, 1);
+      } નહીંતર જો (c0 == 'l' && c1 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      } નહીંતર જો (c0 == 'l' && c1 == 'l' && c2 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
+      } નહીંતર જો (c0 == 'u') {
         printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
+      } નહીંતર જો (c0 == 'l' && c1 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      } નહીંતર જો (c0 == 'l' && c1 == 'l' && c2 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
+      } નહીંતર જો (c0 == 'x') {
         printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
+      } નહીંતર જો (c0 == 'l' && c1 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      } નહીંતર જો (c0 == 'l' && c1 == 'l' && c2 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
+      } નહીંતર જો (c0 == 'p') {
         printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
+      } નહીંતર જો (c0 == 'c') {
         putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } નહીંતર જો (c0 == 's') {
+        જો ((s = va_arg(ap, અક્ષર *)) == 0)
           s = "(null)";
-        for (; *s; s++)
+        માટે (; *s; s++)
           putc(fd, *s);
-      } else if (c0 == '%') {
+      } નહીંતર જો (c0 == '%') {
         putc(fd, '%');
-      } else {
+      } નહીંતર {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
@@ -116,8 +116,8 @@ vprintf(int fd, const char *fmt, va_list ap)
   }
 }
 
-void
-fprintf(int fd, const char *fmt, ...)
+શૂન્ય
+fprintf(પૂર્ણાંક fd, અચલ અક્ષર *fmt, ...)
 {
   va_list ap;
 
@@ -125,8 +125,8 @@ fprintf(int fd, const char *fmt, ...)
   vprintf(fd, fmt, ap);
 }
 
-void
-printf(const char *fmt, ...)
+શૂન્ય
+printf(અચલ અક્ષર *fmt, ...)
 {
   va_list ap;
 

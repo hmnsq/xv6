@@ -1,16 +1,16 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#અન્તર્ભાવ "types.h"
+#અન્તર્ભાવ "param.h"
+#અન્તર્ભાવ "memlayout.h"
+#અન્તર્ભાવ "riscv.h"
+#અન્તર્ભાવ "defs.h"
 
-volatile static int started = 0;
+અસ્થિર સ્થિર પૂર્ણાંક started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.
-void
-main()
+શૂન્ય
+મુખ્ય()
 {
-  if (cpuid() == 0) {
+  જો (cpuid() == 0) {
     consoleinit();
     printkinit();
     printk("\n");
@@ -31,8 +31,8 @@ main()
     userinit();         // first user process
 
     __atomic_store_n(&started, 1, __ATOMIC_RELEASE);
-  } else {
-    while (__atomic_load_n(&started, __ATOMIC_ACQUIRE) == 0)
+  } નહીંતર {
+    જ્યારે (__atomic_load_n(&started, __ATOMIC_ACQUIRE) == 0)
       ;
 
     printk("hart %d starting\n", cpuid());

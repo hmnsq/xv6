@@ -1,38 +1,38 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/fcntl.h"
+#અન્તર્ભાવ "user/user.h"
 
-char buf[512];
+અક્ષર buf[512];
 
-void
-cat(int fd)
+શૂન્ય
+cat(પૂર્ણાંક fd)
 {
-  int n;
+  પૂર્ણાંક n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  જ્યારે ((n = પઠ(fd, buf, કદ(buf))) > 0) {
+    જો (લિખ(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  જો (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+પૂર્ણાંક
+મુખ્ય(પૂર્ણાંક argc, અક્ષર *argv[])
 {
-  int fd, i;
+  પૂર્ણાંક fd, i;
 
-  if (argc <= 1) {
+  જો (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  માટે (i = 1; i < argc; i++) {
+    જો ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

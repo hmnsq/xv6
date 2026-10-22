@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((અક્ષર *)-1)
 
-struct stat;
+સંરચના stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+પૂર્ણાંક fork(શૂન્ય);
+પૂર્ણાંક exit(પૂર્ણાંક) __attribute__((noreturn));
+પૂર્ણાંક wait(પૂર્ણાંક *);
+પૂર્ણાંક pipe(પૂર્ણાંક *);
+પૂર્ણાંક લિખ(પૂર્ણાંક, અચલ શૂન્ય *, પૂર્ણાંક);
+પૂર્ણાંક પઠ(પૂર્ણાંક, શૂન્ય *, પૂર્ણાંક);
+પૂર્ણાંક close(પૂર્ણાંક);
+પૂર્ણાંક kill(પૂર્ણાંક);
+પૂર્ણાંક exec(અચલ અક્ષર *, અક્ષર **);
+પૂર્ણાંક open(અચલ અક્ષર *, પૂર્ણાંક);
+પૂર્ણાંક mknod(અચલ અક્ષર *, short, short);
+પૂર્ણાંક unlink(અચલ અક્ષર *);
+પૂર્ણાંક fstat(પૂર્ણાંક fd, સંરચના stat *);
+પૂર્ણાંક link(અચલ અક્ષર *, અચલ અક્ષર *);
+પૂર્ણાંક mkdir(અચલ અક્ષર *);
+પૂર્ણાંક chdir(અચલ અક્ષર *);
+પૂર્ણાંક dup(પૂર્ણાંક);
+પૂર્ણાંક getpid(શૂન્ય);
+અક્ષર *sys_sbrk(પૂર્ણાંક, પૂર્ણાંક);
+પૂર્ણાંક pause(પૂર્ણાંક);
+પૂર્ણાંક uptime(શૂન્ય);
+પૂર્ણાંક sync(શૂન્ય);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+પૂર્ણાંક stat(અચલ અક્ષર *, સંરચના stat *);
+અક્ષર *strcpy(અક્ષર *, અચલ અક્ષર *);
+શૂન્ય *memmove(શૂન્ય *, અચલ શૂન્ય *, પૂર્ણાંક);
+અક્ષર *strchr(અચલ અક્ષર *, અક્ષર c);
+પૂર્ણાંક strcmp(અચલ અક્ષર *, અચલ અક્ષર *);
+અક્ષર *gets(અક્ષર *, પૂર્ણાંક max);
+uint strlen(અચલ અક્ષર *);
+શૂન્ય *memset(શૂન્ય *, પૂર્ણાંક, uint);
+પૂર્ણાંક atoi(અચલ અક્ષર *);
+પૂર્ણાંક memcmp(અચલ શૂન્ય *, અચલ શૂન્ય *, uint);
+શૂન્ય *memcpy(શૂન્ય *, અચલ શૂન્ય *, uint);
+અક્ષર *sbrk(પૂર્ણાંક);
+અક્ષર *sbrklazy(પૂર્ણાંક);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+શૂન્ય fprintf(પૂર્ણાંક, અચલ અક્ષર *, ...) __attribute__((format(printf, 2, 3)));
+શૂન્ય printf(અચલ અક્ષર *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+શૂન્ય *malloc(uint);
+શૂન્ય મુક્ત(શૂન્ય *);

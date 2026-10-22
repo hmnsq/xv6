@@ -2,19 +2,19 @@
 // low-level driver for 16550a UART.
 //
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "proc.h"
-#include "defs.h"
+#અન્તર્ભાવ "types.h"
+#અન્તર્ભાવ "param.h"
+#અન્તર્ભાવ "memlayout.h"
+#અન્તર્ભાવ "riscv.h"
+#અન્તર્ભાવ "spinlock.h"
+#અન્તર્ભાવ "sleeplock.h"
+#અન્તર્ભાવ "proc.h"
+#અન્તર્ભાવ "defs.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#define Reg(reg) ((અસ્થિર unsigned અક્ષર *)(UART0 + (reg)))
 
 #define ReadReg(reg)     (*(Reg(reg)))
 #define WriteReg(reg, v) (*(Reg(reg)) = (v))
@@ -39,14 +39,14 @@
 #define LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
 
 // for sending threads to serialize their writes
-static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+સ્થિર સંરચના sleeplock tx_lock;
+સ્થિર પૂર્ણાંક tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+બાહ્ય અસ્થિર પૂર્ણાંક panicking; // from printk.c
+બાહ્ય અસ્થિર પૂર્ણાંક panicked;  // from printk.c
 
-void
-uartinit(void)
+શૂન્ય
+uartinit(શૂન્ય)
 {
   // disable interrupts.
   WriteReg(IER, 0x00);
@@ -76,18 +76,18 @@ uartinit(void)
 // transmit buf[] to the uart. it blocks if the
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
-void
-uartwrite(char buf[], int n)
+શૂન્ય
+uartwrite(અક્ષર buf[], પૂર્ણાંક n)
 {
   acquiresleep(&tx_lock);
 
-  int i = 0;
-  while (i < n) {
+  પૂર્ણાંક i = 0;
+  જ્યારે (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    જો (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } નહીંતર {
       sleep();
     }
   }
@@ -99,57 +99,57 @@ uartwrite(char buf[], int n)
 // interrupts, for use by kernel printk() and
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
-void
-uartputc_sync(int c)
+શૂન્ય
+uartputc_sync(પૂર્ણાંક c)
 {
-  if (panicking == 0)
-    push_off();
+  જો (panicking == 0)
+    ધકેલો_off();
 
-  if (panicked) {
-    for (;;)
+  જો (panicked) {
+    માટે (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  જ્યારે ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
-    pop_off();
+  જો (panicking == 0)
+    કાઢો_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
-uartgetc(void)
+સ્થિર પૂર્ણાંક
+uartgetc(શૂન્ય)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  જો (ReadReg(LSR) & LSR_RX_READY) {
+    પાછા ReadReg(RHR);
+  } નહીંતર {
+    પાછા -1;
   }
 }
 
 // handle a uart interrupt, raised because input has
 // arrived, or the uart is ready for more output, or
 // both. called from devintr().
-void
-uartintr(void)
+શૂન્ય
+uartintr(શૂન્ય)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  જો (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
-      break;
+  જ્યારે (1) {
+    પૂર્ણાંક c = uartgetc();
+    જો (c == -1)
+      તોડો;
     consoleintr(c);
   }
 }

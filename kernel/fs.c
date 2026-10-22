@@ -9,50 +9,50 @@
 // routines.  The (higher-level) system call implementations
 // are in sysfile.c.
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "stat.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
-#include "file.h"
+#અન્તર્ભાવ "types.h"
+#અન્તર્ભાવ "riscv.h"
+#અન્તર્ભાવ "defs.h"
+#અન્તર્ભાવ "param.h"
+#અન્તર્ભાવ "stat.h"
+#અન્તર્ભાવ "spinlock.h"
+#અન્તર્ભાવ "proc.h"
+#અન્તર્ભાવ "sleeplock.h"
+#અન્તર્ભાવ "fs.h"
+#અન્તર્ભાવ "buf.h"
+#અન્તર્ભાવ "file.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 // there should be one superblock per disk device, but we run with
 // only one device
-struct superblock sb;
+સંરચના superblock sb;
 
 // Read the super block.
-static void
-readsb(int dev, struct superblock *sb)
+સ્થિર શૂન્ય
+readsb(પૂર્ણાંક dev, સંરચના superblock *sb)
 {
-  struct buf *bp;
+  સંરચના buf *bp;
 
   bp = bread(dev, 1);
-  memmove(sb, bp->data, sizeof(*sb));
+  memmove(sb, bp->data, કદ(*sb));
   brelse(bp);
 }
 
 // Init fs
-void
-fsinit(int dev)
+શૂન્ય
+fsinit(પૂર્ણાંક dev)
 {
   readsb(dev, &sb);
-  if (sb.magic != FSMAGIC)
+  જો (sb.magic != FSMAGIC)
     panic("invalid file system");
   initlog(dev, &sb);
   ireclaim(dev);
 }
 
 // Zero a block.
-static void
-bzero(int dev, int bno)
+સ્થિર શૂન્ય
+bzero(પૂર્ણાંક dev, પૂર્ણાંક bno)
 {
-  struct buf *bp;
+  સંરચના buf *bp;
 
   bp = bread(dev, bno);
   memset(bp->data, 0, BSIZE);
@@ -64,42 +64,42 @@ bzero(int dev, int bno)
 
 // Allocate a zeroed disk block.
 // returns 0 if out of disk space.
-static uint
+સ્થિર uint
 balloc(uint dev)
 {
-  int b, bi, m;
-  struct buf *bp;
+  પૂર્ણાંક b, bi, m;
+  સંરચના buf *bp;
 
   bp = 0;
-  for (b = 0; b < sb.size; b += BPB) {
+  માટે (b = 0; b < sb.size; b += BPB) {
     bp = bread(dev, BBLOCK(b, sb));
-    for (bi = 0; bi < BPB && b + bi < sb.size; bi++) {
+    માટે (bi = 0; bi < BPB && b + bi < sb.size; bi++) {
       m = 1 << (bi % 8);
-      if ((bp->data[bi / 8] & m) == 0) { // Is block free?
+      જો ((bp->data[bi / 8] & m) == 0) { // Is block free?
         bp->data[bi / 8] |= m;           // Mark block in use.
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
-        return b + bi;
+        પાછા b + bi;
       }
     }
     brelse(bp);
   }
   printk("balloc: out of blocks\n");
-  return 0;
+  પાછા 0;
 }
 
 // Free a disk block.
-static void
-bfree(int dev, uint b)
+સ્થિર શૂન્ય
+bfree(પૂર્ણાંક dev, uint b)
 {
-  struct buf *bp;
-  int bi, m;
+  સંરચના buf *bp;
+  પૂર્ણાંક bi, m;
 
   bp = bread(dev, BBLOCK(b, sb));
   bi = b % BPB;
   m = 1 << (bi % 8);
-  if ((bp->data[bi / 8] & m) == 0)
+  જો ((bp->data[bi / 8] & m) == 0)
     panic("freeing free block");
   bp->data[bi / 8] &= ~m;
   log_write(bp);
@@ -175,69 +175,69 @@ bfree(int dev, uint b)
 // dev, and inum.  One must hold ip->lock in order to
 // read or write that inode's ip->valid, ip->size, ip->type, &c.
 
-struct {
-  struct spinlock lock;
-  struct inode inode[NINODE];
+સંરચના {
+  સંરચના spinlock lock;
+  સંરચના inode inode[NINODE];
 } itable;
 
-void
+શૂન્ય
 iinit()
 {
-  int i = 0;
+  પૂર્ણાંક i = 0;
 
   initlock(&itable.lock, "itable");
-  for (i = 0; i < NINODE; i++) {
+  માટે (i = 0; i < NINODE; i++) {
     initsleeplock(&itable.inode[i].lock, "inode");
   }
 }
 
-static struct inode *iget(uint dev, uint inum);
+સ્થિર સંરચના inode *iget(uint dev, uint inum);
 
 // Allocate an inode on device dev.
 // Mark it as allocated by  giving it type type.
 // Returns an unlocked but allocated and referenced inode,
 // or NULL if there is no free inode.
-struct inode *
+સંરચના inode *
 ialloc(uint dev, short type)
 {
-  int inum;
-  struct buf *bp;
-  struct dinode *dip;
+  પૂર્ણાંક inum;
+  સંરચના buf *bp;
+  સંરચના dinode *dip;
 
-  for (inum = 1; inum < sb.ninodes; inum++) {
+  માટે (inum = 1; inum < sb.ninodes; inum++) {
     bp = bread(dev, IBLOCK(inum, sb));
-    dip = (struct dinode *)bp->data + inum % IPB;
-    if (dip->type == 0) { // a free inode
-      memset(dip, 0, sizeof(*dip));
+    dip = (સંરચના dinode *)bp->data + inum % IPB;
+    જો (dip->type == 0) { // a free inode
+      memset(dip, 0, કદ(*dip));
       dip->type = type;
       log_write(bp); // mark it allocated on the disk
       brelse(bp);
-      return iget(dev, inum);
+      પાછા iget(dev, inum);
     }
     brelse(bp);
   }
   printk("ialloc: no inodes\n");
-  return 0;
+  પાછા 0;
 }
 
 // Copy a modified in-memory inode to disk.
 // Must be called after every change to an ip->xxx field
 // that lives on disk.
 // Caller must hold ip->lock.
-void
-iupdate(struct inode *ip)
+શૂન્ય
+iupdate(સંરચના inode *ip)
 {
-  struct buf *bp;
-  struct dinode *dip;
+  સંરચના buf *bp;
+  સંરચના dinode *dip;
 
   bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-  dip = (struct dinode *)bp->data + ip->inum % IPB;
+  dip = (સંરચના dinode *)bp->data + ip->inum % IPB;
   dip->type = ip->type;
   dip->major = ip->major;
   dip->minor = ip->minor;
   dip->nlink = ip->nlink;
   dip->size = ip->size;
-  memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
+  memmove(dip->addrs, ip->addrs, કદ(ip->addrs));
   log_write(bp);
   brelse(bp);
 }
@@ -245,27 +245,27 @@ iupdate(struct inode *ip)
 // Find the inode with number inum on device dev
 // and return the in-memory copy. Does not lock
 // the inode and does not read it from disk.
-static struct inode *
+સ્થિર સંરચના inode *
 iget(uint dev, uint inum)
 {
-  struct inode *ip, *empty;
+  સંરચના inode *ip, *empty;
 
   acquire(&itable.lock);
 
   // Is the inode already in the table?
   empty = 0;
-  for (ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++) {
-    if (ip->ref > 0 && ip->dev == dev && ip->inum == inum) {
+  માટે (ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++) {
+    જો (ip->ref > 0 && ip->dev == dev && ip->inum == inum) {
       ip->ref++;
       release(&itable.lock);
-      return ip;
+      પાછા ip;
     }
-    if (empty == 0 && ip->ref == 0) // Remember empty slot.
+    જો (empty == 0 && ip->ref == 0) // Remember empty slot.
       empty = ip;
   }
 
   // Recycle an inode entry.
-  if (empty == 0)
+  જો (empty == 0)
     panic("iget: no inodes");
 
   ip = empty;
@@ -275,65 +275,65 @@ iget(uint dev, uint inum)
   ip->valid = 0;
   release(&itable.lock);
 
-  return ip;
+  પાછા ip;
 }
 
 // Increment reference count for ip.
 // Returns ip to enable ip = idup(ip1) idiom.
-struct inode *
-idup(struct inode *ip)
+સંરચના inode *
+idup(સંરચના inode *ip)
 {
   acquire(&itable.lock);
   ip->ref++;
   release(&itable.lock);
-  return ip;
+  પાછા ip;
 }
 
 // Lock the given inode.
 // Reads the inode from disk if necessary.
-void
-ilock(struct inode *ip)
+શૂન્ય
+ilock(સંરચના inode *ip)
 {
-  struct buf *bp;
-  struct dinode *dip;
+  સંરચના buf *bp;
+  સંરચના dinode *dip;
 
-  if (ip == 0 || ip->ref < 1)
+  જો (ip == 0 || ip->ref < 1)
     panic("ilock");
 
   acquiresleep(&ip->lock);
 
-  if (ip->valid == 0) {
+  જો (ip->valid == 0) {
     bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-    dip = (struct dinode *)bp->data + ip->inum % IPB;
+    dip = (સંરચના dinode *)bp->data + ip->inum % IPB;
     ip->type = dip->type;
     ip->major = dip->major;
     ip->minor = dip->minor;
     ip->nlink = dip->nlink;
     ip->size = dip->size;
-    memmove(ip->addrs, dip->addrs, sizeof(ip->addrs));
+    memmove(ip->addrs, dip->addrs, કદ(ip->addrs));
     brelse(bp);
     ip->valid = 1;
-    if (ip->type == 0)
+    જો (ip->type == 0)
       panic("ilock: no type");
   }
 }
 
 // Unlock the given inode.
-void
-iunlock(struct inode *ip)
+શૂન્ય
+iunlock(સંરચના inode *ip)
 {
-  if (ip == 0 || !holdingsleep(&ip->lock) || ip->ref < 1)
+  જો (ip == 0 || !holdingsleep(&ip->lock) || ip->ref < 1)
     panic("iunlock");
 
   releasesleep(&ip->lock);
 }
 
 // Mark the on-disk inode free.
-static void
+સ્થિર શૂન્ય
 ifree(uint dev, uint inum)
 {
-  struct buf *bp = bread(dev, IBLOCK(inum, sb));
-  struct dinode *dip = (struct dinode *)bp->data + inum % IPB;
+  સંરચના buf *bp = bread(dev, IBLOCK(inum, sb));
+  સંરચના dinode *dip = (સંરચના dinode *)bp->data + inum % IPB;
   dip->type = 0;
   log_write(bp);
   brelse(bp);
@@ -346,18 +346,18 @@ ifree(uint dev, uint inum)
 // to it, free the inode (and its content) on disk.
 // All calls to iput() must be inside a transaction in
 // case it has to free the inode.
-void
-iput(struct inode *ip)
+શૂન્ય
+iput(સંરચના inode *ip)
 {
   acquire(&itable.lock);
 
   // Last reference of an unlinked inode?  Capture dev/inum before ref--,
   // since once ref hits 0, ip may be recycled by a concurrent iget()
   // for a different inum.
-  int last = (ip->ref == 1 && ip->valid && ip->nlink == 0);
+  પૂર્ણાંક last = (ip->ref == 1 && ip->valid && ip->nlink == 0);
   uint dev = ip->dev, inum = ip->inum;
 
-  if (last) {
+  જો (last) {
     // ip->ref == 1 means no other process can have ip locked.
     acquiresleep(&ip->lock);
     release(&itable.lock);
@@ -373,31 +373,31 @@ iput(struct inode *ip)
   ip->ref--;
   release(&itable.lock);
 
-  if (last)
+  જો (last)
     ifree(dev, inum); // now clear type on disk: inum becomes allocatable
 }
 
 // Common idiom: unlock, then put.
-void
-iunlockput(struct inode *ip)
+શૂન્ય
+iunlockput(સંરચના inode *ip)
 {
   iunlock(ip);
   iput(ip);
 }
 
-void
-ireclaim(int dev)
+શૂન્ય
+ireclaim(પૂર્ણાંક dev)
 {
-  for (int inum = 1; inum < sb.ninodes; inum++) {
-    struct inode *ip = 0;
-    struct buf *bp = bread(dev, IBLOCK(inum, sb));
-    struct dinode *dip = (struct dinode *)bp->data + inum % IPB;
-    if (dip->type != 0 && dip->nlink == 0) { // is an orphaned inode
+  માટે (પૂર્ણાંક inum = 1; inum < sb.ninodes; inum++) {
+    સંરચના inode *ip = 0;
+    સંરચના buf *bp = bread(dev, IBLOCK(inum, sb));
+    સંરચના dinode *dip = (સંરચના dinode *)bp->data + inum % IPB;
+    જો (dip->type != 0 && dip->nlink == 0) { // is an orphaned inode
       printk("ireclaim: orphaned inode %d\n", inum);
       ip = iget(dev, inum);
     }
     brelse(bp);
-    if (ip) {
+    જો (ip) {
       begin_op();
       ilock(ip);
       iunlock(ip);
@@ -417,42 +417,42 @@ ireclaim(int dev)
 // Return the disk block address of the nth block in inode ip.
 // If there is no such block, bmap allocates one.
 // returns 0 if out of disk space.
-static uint
-bmap(struct inode *ip, uint bn)
+સ્થિર uint
+bmap(સંરચના inode *ip, uint bn)
 {
   uint addr, *a;
-  struct buf *bp;
+  સંરચના buf *bp;
 
-  if (bn < NDIRECT) {
-    if ((addr = ip->addrs[bn]) == 0) {
+  જો (bn < NDIRECT) {
+    જો ((addr = ip->addrs[bn]) == 0) {
       addr = balloc(ip->dev);
-      if (addr == 0)
-        return 0;
+      જો (addr == 0)
+        પાછા 0;
       ip->addrs[bn] = addr;
     }
-    return addr;
+    પાછા addr;
   }
   bn -= NDIRECT;
 
-  if (bn < NINDIRECT) {
+  જો (bn < NINDIRECT) {
     // Load indirect block, allocating if necessary.
-    if ((addr = ip->addrs[NDIRECT]) == 0) {
+    જો ((addr = ip->addrs[NDIRECT]) == 0) {
       addr = balloc(ip->dev);
-      if (addr == 0)
-        return 0;
+      જો (addr == 0)
+        પાછા 0;
       ip->addrs[NDIRECT] = addr;
     }
     bp = bread(ip->dev, addr);
     a = (uint *)bp->data;
-    if ((addr = a[bn]) == 0) {
+    જો ((addr = a[bn]) == 0) {
       addr = balloc(ip->dev);
-      if (addr) {
+      જો (addr) {
         a[bn] = addr;
         log_write(bp);
       }
     }
     brelse(bp);
-    return addr;
+    પાછા addr;
   }
 
   panic("bmap: out of range");
@@ -460,25 +460,25 @@ bmap(struct inode *ip, uint bn)
 
 // Truncate inode (discard contents).
 // Caller must hold ip->lock.
-void
-itrunc(struct inode *ip)
+શૂન્ય
+itrunc(સંરચના inode *ip)
 {
-  int i, j;
-  struct buf *bp;
+  પૂર્ણાંક i, j;
+  સંરચના buf *bp;
   uint *a;
 
-  for (i = 0; i < NDIRECT; i++) {
-    if (ip->addrs[i]) {
+  માટે (i = 0; i < NDIRECT; i++) {
+    જો (ip->addrs[i]) {
       bfree(ip->dev, ip->addrs[i]);
       ip->addrs[i] = 0;
     }
   }
 
-  if (ip->addrs[NDIRECT]) {
+  જો (ip->addrs[NDIRECT]) {
     bp = bread(ip->dev, ip->addrs[NDIRECT]);
     a = (uint *)bp->data;
-    for (j = 0; j < NINDIRECT; j++) {
-      if (a[j])
+    માટે (j = 0; j < NINDIRECT; j++) {
+      જો (a[j])
         bfree(ip->dev, a[j]);
     }
     brelse(bp);
@@ -492,8 +492,8 @@ itrunc(struct inode *ip)
 
 // Copy stat information from inode.
 // Caller must hold ip->lock.
-void
-stati(struct inode *ip, struct stat *st)
+શૂન્ય
+stati(સંરચના inode *ip, સંરચના stat *st)
 {
   st->dev = ip->dev;
   st->ino = ip->inum;
@@ -506,31 +506,31 @@ stati(struct inode *ip, struct stat *st)
 // Caller must hold ip->lock.
 // If user_dst==1, then dst is a user virtual address;
 // otherwise, dst is a kernel address.
-int
-readi(struct inode *ip, int user_dst, uint64 dst, uint off, uint n)
+પૂર્ણાંક
+readi(સંરચના inode *ip, પૂર્ણાંક user_dst, uint64 dst, uint off, uint n)
 {
   uint tot, m;
-  struct buf *bp;
+  સંરચના buf *bp;
 
-  if (off > ip->size || off + n < off)
-    return 0;
-  if (off + n > ip->size)
+  જો (off > ip->size || off + n < off)
+    પાછા 0;
+  જો (off + n > ip->size)
     n = ip->size - off;
 
-  for (tot = 0; tot < n; tot += m, off += m, dst += m) {
+  માટે (tot = 0; tot < n; tot += m, off += m, dst += m) {
     uint addr = bmap(ip, off / BSIZE);
-    if (addr == 0)
-      break;
+    જો (addr == 0)
+      તોડો;
     bp = bread(ip->dev, addr);
     m = min(n - tot, BSIZE - off % BSIZE);
-    if (either_copyout(user_dst, dst, bp->data + (off % BSIZE), m) == -1) {
+    જો (either_copyout(user_dst, dst, bp->data + (off % BSIZE), m) == -1) {
       brelse(bp);
       tot = -1;
-      break;
+      તોડો;
     }
     brelse(bp);
   }
-  return tot;
+  પાછા tot;
 }
 
 // Write data to inode.
@@ -540,34 +540,34 @@ readi(struct inode *ip, int user_dst, uint64 dst, uint off, uint n)
 // Returns the number of bytes successfully written.
 // If the return value is less than the requested n,
 // there was an error of some kind.
-int
-writei(struct inode *ip, int user_src, uint64 src, uint off, uint n)
+પૂર્ણાંક
+writei(સંરચના inode *ip, પૂર્ણાંક user_src, uint64 src, uint off, uint n)
 {
   uint tot, m;
-  struct buf *bp;
+  સંરચના buf *bp;
 
-  if (off > ip->size || off + n < off)
-    return -1;
-  if (off + n > MAXFILE * BSIZE)
-    return -1;
+  જો (off > ip->size || off + n < off)
+    પાછા -1;
+  જો (off + n > MAXFILE * BSIZE)
+    પાછા -1;
 
-  for (tot = 0; tot < n; tot += m, off += m, src += m) {
+  માટે (tot = 0; tot < n; tot += m, off += m, src += m) {
     uint addr = bmap(ip, off / BSIZE);
-    if (addr == 0)
-      break;
+    જો (addr == 0)
+      તોડો;
     bp = bread(ip->dev, addr);
     m = min(n - tot, BSIZE - off % BSIZE);
-    if (either_copyin(bp->data + (off % BSIZE), user_src, src, m) == -1) {
+    જો (either_copyin(bp->data + (off % BSIZE), user_src, src, m) == -1) {
       // Might have partially updated the block, so we need to log it.
       log_write(bp);
       brelse(bp);
-      break;
+      તોડો;
     }
     log_write(bp);
     brelse(bp);
   }
 
-  if (off > ip->size)
+  જો (off > ip->size)
     ip->size = off;
 
   // write the i-node back to disk even if the size didn't change
@@ -575,74 +575,74 @@ writei(struct inode *ip, int user_src, uint64 src, uint off, uint n)
   // block to ip->addrs[].
   iupdate(ip);
 
-  return tot;
+  પાછા tot;
 }
 
 // Directories
 
-int
-namecmp(const char *s, const char *t)
+પૂર્ણાંક
+namecmp(અચલ અક્ષર *s, અચલ અક્ષર *t)
 {
-  return strncmp(s, t, DIRSIZ);
+  પાછા strncmp(s, t, DIRSIZ);
 }
 
 // Look for a directory entry in a directory.
 // If found, set *poff to byte offset of entry.
-struct inode *
-dirlookup(struct inode *dp, char *name, uint *poff)
+સંરચના inode *
+dirlookup(સંરચના inode *dp, અક્ષર *name, uint *poff)
 {
   uint off, inum;
-  struct dirent de;
+  સંરચના dirent de;
 
-  if (dp->type != T_DIR)
+  જો (dp->type != T_DIR)
     panic("dirlookup not DIR");
 
-  for (off = 0; off < dp->size; off += sizeof(de)) {
-    if (readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  માટે (off = 0; off < dp->size; off += કદ(de)) {
+    જો (readi(dp, 0, (uint64)&de, off, કદ(de)) != કદ(de))
       panic("dirlookup read");
-    if (de.inum == 0)
-      continue;
-    if (namecmp(name, de.name) == 0) {
+    જો (de.inum == 0)
+      ચાલુ;
+    જો (namecmp(name, de.name) == 0) {
       // entry matches path element
-      if (poff)
+      જો (poff)
         *poff = off;
       inum = de.inum;
-      return iget(dp->dev, inum);
+      પાછા iget(dp->dev, inum);
     }
   }
 
-  return 0;
+  પાછા 0;
 }
 
 // Write a new directory entry (name, inum) into the directory dp.
 // Returns 0 on success, -1 on failure (e.g. out of disk blocks).
-int
-dirlink(struct inode *dp, char *name, uint inum)
+પૂર્ણાંક
+dirlink(સંરચના inode *dp, અક્ષર *name, uint inum)
 {
-  int off;
-  struct dirent de;
-  struct inode *ip;
+  પૂર્ણાંક off;
+  સંરચના dirent de;
+  સંરચના inode *ip;
 
   // Check that name is not present.
-  if ((ip = dirlookup(dp, name, 0)) != 0) {
+  જો ((ip = dirlookup(dp, name, 0)) != 0) {
     iput(ip);
-    return -1;
+    પાછા -1;
   }
 
   // Look for an empty dirent.
-  for (off = 0; off < dp->size; off += sizeof(de)) {
-    if (readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  માટે (off = 0; off < dp->size; off += કદ(de)) {
+    જો (readi(dp, 0, (uint64)&de, off, કદ(de)) != કદ(de))
       panic("dirlink read");
-    if (de.inum == 0)
-      break;
+    જો (de.inum == 0)
+      તોડો;
   }
 
   strncpy(de.name, name, DIRSIZ);
   de.inum = inum;
-  if (writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    return -1;
+  જો (writei(dp, 0, (uint64)&de, off, કદ(de)) != કદ(de))
+    પાછા -1;
 
-  return 0;
+  પાછા 0;
 }
 
 // Paths
@@ -659,83 +659,83 @@ dirlink(struct inode *dp, char *name, uint inum)
 //   skipelem("a", name) = "", setting name = "a"
 //   skipelem("", name) = skipelem("////", name) = 0
 //
-static char *
-skipelem(char *path, char *name)
+સ્થિર અક્ષર *
+skipelem(અક્ષર *path, અક્ષર *name)
 {
-  char *s;
-  int len;
+  અક્ષર *s;
+  પૂર્ણાંક len;
 
-  while (*path == '/')
+  જ્યારે (*path == '/')
     path++;
-  if (*path == 0)
-    return 0;
+  જો (*path == 0)
+    પાછા 0;
   s = path;
-  while (*path != '/' && *path != 0)
+  જ્યારે (*path != '/' && *path != 0)
     path++;
   len = path - s;
-  if (len >= DIRSIZ)
+  જો (len >= DIRSIZ)
     memmove(name, s, DIRSIZ);
-  else {
+  નહીંતર {
     memmove(name, s, len);
     name[len] = 0;
   }
-  while (*path == '/')
+  જ્યારે (*path == '/')
     path++;
-  return path;
+  પાછા path;
 }
 
 // Look up and return the inode for a path name.
 // If parent != 0, return the inode for the parent and copy the final
 // path element into name, which must have room for DIRSIZ bytes.
 // Must be called inside a transaction since it calls iput().
-static struct inode *
-namex(char *path, int nameiparent, char *name)
+સ્થિર સંરચના inode *
+namex(અક્ષર *path, પૂર્ણાંક nameiparent, અક્ષર *name)
 {
-  struct inode *ip, *next;
+  સંરચના inode *ip, *next;
 
-  if (*path == '/')
+  જો (*path == '/')
     ip = iget(ROOTDEV, ROOTINO);
-  else
+  નહીંતર
     ip = idup(myproc()->cwd);
 
-  while ((path = skipelem(path, name)) != 0) {
+  જ્યારે ((path = skipelem(path, name)) != 0) {
     ilock(ip);
-    if (ip->type != T_DIR) {
+    જો (ip->type != T_DIR) {
       iunlockput(ip);
-      return 0;
+      પાછા 0;
     }
-    if (ip->nlink == 0) {
+    જો (ip->nlink == 0) {
       iunlockput(ip);
-      return 0;
+      પાછા 0;
     }
-    if (nameiparent && *path == '\0') {
+    જો (nameiparent && *path == '\0') {
       // Stop one level early.
       iunlock(ip);
-      return ip;
+      પાછા ip;
     }
-    if ((next = dirlookup(ip, name, 0)) == 0) {
+    જો ((next = dirlookup(ip, name, 0)) == 0) {
       iunlockput(ip);
-      return 0;
+      પાછા 0;
     }
     iunlockput(ip);
     ip = next;
   }
-  if (nameiparent) {
+  જો (nameiparent) {
     iput(ip);
-    return 0;
+    પાછા 0;
   }
-  return ip;
+  પાછા ip;
 }
 
-struct inode *
-namei(char *path)
+સંરચના inode *
+namei(અક્ષર *path)
 {
-  char name[DIRSIZ];
-  return namex(path, 0, name);
+  અક્ષર name[DIRSIZ];
+  પાછા namex(path, 0, name);
 }
 
-struct inode *
-nameiparent(char *path, char *name)
+સંરચના inode *
+nameiparent(અક્ષર *path, અક્ષર *name)
 {
-  return namex(path, 1, name);
+  પાછા namex(path, 1, name);
 }

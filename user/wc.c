@@ -1,50 +1,50 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "kernel/fcntl.h"
+#અન્તર્ભાવ "user/user.h"
 
-char buf[512];
+અક્ષર buf[512];
 
-void
-wc(int fd, char *name)
+શૂન્ય
+wc(પૂર્ણાંક fd, અક્ષર *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  પૂર્ણાંક i, n;
+  પૂર્ણાંક l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  જ્યારે ((n = પઠ(fd, buf, કદ(buf))) > 0) {
+    માટે (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      જો (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      જો (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      નહીંતર જો (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  જો (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+પૂર્ણાંક
+મુખ્ય(પૂર્ણાંક argc, અક્ષર *argv[])
 {
-  int fd, i;
+  પૂર્ણાંક fd, i;
 
-  if (argc <= 1) {
+  જો (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  માટે (i = 1; i < argc; i++) {
+    જો ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

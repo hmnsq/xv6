@@ -1,58 +1,58 @@
 // Simple grep.  Only supports ^ . * $ operators.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "kernel/fcntl.h"
+#અન્તર્ભાવ "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+અક્ષર buf[1024];
+પૂર્ણાંક match(અક્ષર *, અક્ષર *);
 
-void
-grep(char *pattern, int fd)
+શૂન્ય
+grep(અક્ષર *pattern, પૂર્ણાંક fd)
 {
-  int n, m;
-  char *p, *q;
+  પૂર્ણાંક n, m;
+  અક્ષર *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  જ્યારે ((n = પઠ(fd, buf + m, કદ(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    જ્યારે ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      જો (match(pattern, p)) {
         *q = '\n';
-        write(1, p, q + 1 - p);
+        લિખ(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    જો (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+પૂર્ણાંક
+મુખ્ય(પૂર્ણાંક argc, અક્ષર *argv[])
 {
-  int fd, i;
-  char *pattern;
+  પૂર્ણાંક fd, i;
+  અક્ષર *pattern;
 
-  if (argc <= 1) {
+  જો (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
     exit(1);
   }
   pattern = argv[1];
 
-  if (argc <= 2) {
+  જો (argc <= 2) {
     grep(pattern, 0);
     exit(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  માટે (i = 2; i < argc; i++) {
+    જો ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("grep: cannot open %s\n", argv[i]);
       exit(1);
     }
@@ -66,43 +66,43 @@ main(int argc, char *argv[])
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+પૂર્ણાંક matchhere(અક્ષર *, અક્ષર *);
+પૂર્ણાંક matchstar(પૂર્ણાંક, અક્ષર *, અક્ષર *);
 
-int
-match(char *re, char *text)
+પૂર્ણાંક
+match(અક્ષર *re, અક્ષર *text)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
-  do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+  જો (re[0] == '^')
+    પાછા matchhere(re + 1, text);
+  કરો { // must look at empty string
+    જો (matchhere(re, text))
+      પાછા 1;
+  } જ્યારે (*text++ != '\0');
+  પાછા 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+પૂર્ણાંક
+matchhere(અક્ષર *re, અક્ષર *text)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  જો (re[0] == '\0')
+    પાછા 1;
+  જો (re[1] == '*')
+    પાછા matchstar(re[0], re + 2, text);
+  જો (re[0] == '$' && re[1] == '\0')
+    પાછા *text == '\0';
+  જો (*text != '\0' && (re[0] == '.' || re[0] == *text))
+    પાછા matchhere(re + 1, text + 1);
+  પાછા 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+પૂર્ણાંક
+matchstar(પૂર્ણાંક c, અક્ષર *re, અક્ષર *text)
 {
-  do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+  કરો { // a * matches zero or more instances
+    જો (matchhere(re, text))
+      પાછા 1;
+  } જ્યારે (*text != '\0' && (*text++ == c || c == '.'));
+  પાછા 0;
 }

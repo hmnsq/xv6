@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#અન્તર્ભાવ "kernel/types.h"
+#અન્તર્ભાવ "kernel/stat.h"
+#અન્તર્ભાવ "user/user.h"
+#અન્તર્ભાવ "kernel/fs.h"
+#અન્તર્ભાવ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+અક્ષર *
+fmtname(અક્ષર *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  સ્થિર અક્ષર buf[DIRSIZ + 1];
+  અક્ષર *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  માટે (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  જો (strlen(p) >= DIRSIZ)
+    પાછા p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[કદ(buf) - 1] = '\0';
+  પાછા buf;
 }
 
-void
-ls(char *path)
+શૂન્ય
+ls(અક્ષર *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  અક્ષર buf[512], *p;
+  પૂર્ણાંક fd;
+  સંરચના dirent de;
+  સંરચના stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  જો ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    પાછા;
   }
 
-  if (fstat(fd, &st) < 0) {
+  જો (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    પાછા;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  પસંદગી (st.type) {
+  સ્થિતિ T_DEVICE:
+  સ્થિતિ T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (પૂર્ણાંક)st.size);
+    તોડો;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  સ્થિતિ T_DIR:
+    જો (strlen(path) + 1 + DIRSIZ + 1 > કદ buf) {
       printf("ls: path too long\n");
-      break;
+      તોડો;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    જ્યારે (પઠ(fd, &de, કદ(de)) == કદ(de)) {
+      જો (de.inum == 0)
+        ચાલુ;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      જો (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
-        continue;
+        ચાલુ;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (પૂર્ણાંક)st.size);
     }
-    break;
+    તોડો;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+પૂર્ણાંક
+મુખ્ય(પૂર્ણાંક argc, અક્ષર *argv[])
 {
-  int i;
+  પૂર્ણાંક i;
 
-  if (argc < 2) {
+  જો (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  માટે (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

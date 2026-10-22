@@ -1,186 +1,186 @@
 // clang-format off
-struct buf;
-struct context;
-struct file;
-struct inode;
-struct pipe;
-struct proc;
-struct spinlock;
-struct sleeplock;
-struct stat;
-struct superblock;
+સંરચના buf;
+સંરચના context;
+સંરચના file;
+સંરચના inode;
+સંરચના pipe;
+સંરચના proc;
+સંરચના spinlock;
+સંરચના sleeplock;
+સંરચના stat;
+સંરચના superblock;
 
 // bio.c
-void            binit(void);
-struct buf*     bread(uint, uint);
-void            brelse(struct buf*);
-void            bwrite(struct buf*);
-void            bpin(struct buf*);
-void            bunpin(struct buf*);
+શૂન્ય            binit(શૂન્ય);
+સંરચના buf*     bread(uint, uint);
+શૂન્ય            brelse(સંરચના buf*);
+શૂન્ય            bwrite(સંરચના buf*);
+શૂન્ય            bpin(સંરચના buf*);
+શૂન્ય            bunpin(સંરચના buf*);
 
 // console.c
-void            consoleinit(void);
-void            consoleintr(int);
-void            consputc(int);
+શૂન્ય            consoleinit(શૂન્ય);
+શૂન્ય            consoleintr(પૂર્ણાંક);
+શૂન્ય            consputc(પૂર્ણાંક);
 
 // exec.c
-int             kexec(char*, char**);
+પૂર્ણાંક             kexec(અક્ષર*, અક્ષર**);
 
 // file.c
-struct file*    filealloc(void);
-void            fileclose(struct file*);
-struct file*    filedup(struct file*);
-void            fileinit(void);
-int             fileread(struct file*, uint64, int n);
-int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, uint64, int n);
+સંરચના file*    filealloc(શૂન્ય);
+શૂન્ય            fileclose(સંરચના file*);
+સંરચના file*    filedup(સંરચના file*);
+શૂન્ય            fileinit(શૂન્ય);
+પૂર્ણાંક             fileread(સંરચના file*, uint64, પૂર્ણાંક n);
+પૂર્ણાંક             filestat(સંરચના file*, uint64 addr);
+પૂર્ણાંક             filewrite(સંરચના file*, uint64, પૂર્ણાંક n);
 
 // fs.c
-void            fsinit(int);
-int             dirlink(struct inode*, char*, uint);
-struct inode*   dirlookup(struct inode*, char*, uint*);
-struct inode*   ialloc(uint, short);
-struct inode*   idup(struct inode*);
-void            iinit();
-void            ilock(struct inode*);
-void            iput(struct inode*);
-void            iunlock(struct inode*);
-void            iunlockput(struct inode*);
-void            iupdate(struct inode*);
-int             namecmp(const char*, const char*);
-struct inode*   namei(char*);
-struct inode*   nameiparent(char*, char*);
-int             readi(struct inode*, int, uint64, uint, uint);
-void            stati(struct inode*, struct stat*);
-int             writei(struct inode*, int, uint64, uint, uint);
-void            itrunc(struct inode*);
-void            ireclaim(int);
+શૂન્ય            fsinit(પૂર્ણાંક);
+પૂર્ણાંક             dirlink(સંરચના inode*, અક્ષર*, uint);
+સંરચના inode*   dirlookup(સંરચના inode*, અક્ષર*, uint*);
+સંરચના inode*   ialloc(uint, short);
+સંરચના inode*   idup(સંરચના inode*);
+શૂન્ય            iinit();
+શૂન્ય            ilock(સંરચના inode*);
+શૂન્ય            iput(સંરચના inode*);
+શૂન્ય            iunlock(સંરચના inode*);
+શૂન્ય            iunlockput(સંરચના inode*);
+શૂન્ય            iupdate(સંરચના inode*);
+પૂર્ણાંક             namecmp(અચલ અક્ષર*, અચલ અક્ષર*);
+સંરચના inode*   namei(અક્ષર*);
+સંરચના inode*   nameiparent(અક્ષર*, અક્ષર*);
+પૂર્ણાંક             readi(સંરચના inode*, પૂર્ણાંક, uint64, uint, uint);
+શૂન્ય            stati(સંરચના inode*, સંરચના stat*);
+પૂર્ણાંક             writei(સંરચના inode*, પૂર્ણાંક, uint64, uint, uint);
+શૂન્ય            itrunc(સંરચના inode*);
+શૂન્ય            ireclaim(પૂર્ણાંક);
 
 // kalloc.c
-void*           kalloc(void);
-void            kfree(void *);
-void            kinit(void);
+શૂન્ય*           kalloc(શૂન્ય);
+શૂન્ય            kfree(શૂન્ય *);
+શૂન્ય            kinit(શૂન્ય);
 
 // log.c
-void            initlog(int, struct superblock*);
-void            log_write(struct buf*);
-void            begin_op(void);
-void            end_op(void);
+શૂન્ય            initlog(પૂર્ણાંક, સંરચના superblock*);
+શૂન્ય            log_write(સંરચના buf*);
+શૂન્ય            begin_op(શૂન્ય);
+શૂન્ય            end_op(શૂન્ય);
 
 // pipe.c
-int             pipealloc(struct file**, struct file**);
-void            pipeclose(struct pipe*, int);
-int             piperead(struct pipe*, uint64, int);
-int             pipewrite(struct pipe*, uint64, int);
+પૂર્ણાંક             pipealloc(સંરચના file**, સંરચના file**);
+શૂન્ય            pipeclose(સંરચના pipe*, પૂર્ણાંક);
+પૂર્ણાંક             piperead(સંરચના pipe*, uint64, પૂર્ણાંક);
+પૂર્ણાંક             pipewrite(સંરચના pipe*, uint64, પૂર્ણાંક);
 
 // printk.c
-int             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
-void            panic(char*) __attribute__((noreturn));
-void            printkinit(void);
+પૂર્ણાંક             printk(અક્ષર*, ...) __attribute__ ((format (printf, 1, 2)));
+શૂન્ય            panic(અક્ષર*) __attribute__((noreturn));
+શૂન્ય            printkinit(શૂન્ય);
 
 // proc.c
-int             cpuid(void);
-void            kexit(int);
-int             kfork(void);
-int             growproc(int);
-void            proc_mapstacks(pagetable_t);
-pagetable_t     proc_pagetable(struct proc *);
-void            proc_freepagetable(pagetable_t, uint64);
-int             kkill(int);
-int             killed(struct proc*);
-void            setkilled(struct proc*);
-struct cpu*     mycpu(void);
-struct proc*    myproc();
-void            procinit(void);
-void            scheduler(void) __attribute__((noreturn));
-void            sched(void);
-void            sleep_prepare(void*);
-void            sleep(void);
-void            userinit(void);
-int             kwait(uint64);
-void            wakeup(void*);
-void            yield(void);
-int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
-int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
-void            procdump(void);
+પૂર્ણાંક             cpuid(શૂન્ય);
+શૂન્ય            kexit(પૂર્ણાંક);
+પૂર્ણાંક             kfork(શૂન્ય);
+પૂર્ણાંક             growproc(પૂર્ણાંક);
+શૂન્ય            proc_mapstacks(pagetable_t);
+pagetable_t     proc_pagetable(સંરચના proc *);
+શૂન્ય            proc_freepagetable(pagetable_t, uint64);
+પૂર્ણાંક             kkill(પૂર્ણાંક);
+પૂર્ણાંક             killed(સંરચના proc*);
+શૂન્ય            setkilled(સંરચના proc*);
+સંરચના cpu*     mycpu(શૂન્ય);
+સંરચના proc*    myproc();
+શૂન્ય            procinit(શૂન્ય);
+શૂન્ય            scheduler(શૂન્ય) __attribute__((noreturn));
+શૂન્ય            sched(શૂન્ય);
+શૂન્ય            sleep_prepare(શૂન્ય*);
+શૂન્ય            sleep(શૂન્ય);
+શૂન્ય            userinit(શૂન્ય);
+પૂર્ણાંક             kwait(uint64);
+શૂન્ય            wakeup(શૂન્ય*);
+શૂન્ય            yield(શૂન્ય);
+પૂર્ણાંક             either_copyout(પૂર્ણાંક user_dst, uint64 dst, શૂન્ય *src, uint64 len);
+પૂર્ણાંક             either_copyin(શૂન્ય *dst, પૂર્ણાંક user_src, uint64 src, uint64 len);
+શૂન્ય            procdump(શૂન્ય);
 
 // swtch.S
-void            swtch(struct context*, struct context*);
+શૂન્ય            swtch(સંરચના context*, સંરચના context*);
 
 // spinlock.c
-void            acquire(struct spinlock*);
-int             holding(struct spinlock*);
-void            initlock(struct spinlock*, char*);
-void            release(struct spinlock*);
-void            push_off(void);
-void            pop_off(void);
+શૂન્ય            acquire(સંરચના spinlock*);
+પૂર્ણાંક             holding(સંરચના spinlock*);
+શૂન્ય            initlock(સંરચના spinlock*, અક્ષર*);
+શૂન્ય            release(સંરચના spinlock*);
+શૂન્ય            ધકેલો_off(શૂન્ય);
+શૂન્ય            કાઢો_off(શૂન્ય);
 
 // sleeplock.c
-void            acquiresleep(struct sleeplock*);
-void            releasesleep(struct sleeplock*);
-int             holdingsleep(struct sleeplock*);
-void            initsleeplock(struct sleeplock*, char*);
+શૂન્ય            acquiresleep(સંરચના sleeplock*);
+શૂન્ય            releasesleep(સંરચના sleeplock*);
+પૂર્ણાંક             holdingsleep(સંરચના sleeplock*);
+શૂન્ય            initsleeplock(સંરચના sleeplock*, અક્ષર*);
 
 // string.c
-int             memcmp(const void*, const void*, uint);
-void*           memmove(void*, const void*, uint);
-void*           memset(void*, int, uint);
-char*           safestrcpy(char*, const char*, int);
-int             strlen(const char*);
-int             strncmp(const char*, const char*, uint);
-char*           strncpy(char*, const char*, int);
+પૂર્ણાંક             memcmp(અચલ શૂન્ય*, અચલ શૂન્ય*, uint);
+શૂન્ય*           memmove(શૂન્ય*, અચલ શૂન્ય*, uint);
+શૂન્ય*           memset(શૂન્ય*, પૂર્ણાંક, uint);
+અક્ષર*           safestrcpy(અક્ષર*, અચલ અક્ષર*, પૂર્ણાંક);
+પૂર્ણાંક             strlen(અચલ અક્ષર*);
+પૂર્ણાંક             strncmp(અચલ અક્ષર*, અચલ અક્ષર*, uint);
+અક્ષર*           strncpy(અક્ષર*, અચલ અક્ષર*, પૂર્ણાંક);
 
 // syscall.c
-void            argint(int, int*);
-int             argstr(int, char*, int);
-void            argaddr(int, uint64 *);
-int             fetchstr(uint64, char*, int);
-int             fetchaddr(uint64, uint64*);
-void            syscall();
+શૂન્ય            argint(પૂર્ણાંક, પૂર્ણાંક*);
+પૂર્ણાંક             argstr(પૂર્ણાંક, અક્ષર*, પૂર્ણાંક);
+શૂન્ય            argaddr(પૂર્ણાંક, uint64 *);
+પૂર્ણાંક             fetchstr(uint64, અક્ષર*, પૂર્ણાંક);
+પૂર્ણાંક             fetchaddr(uint64, uint64*);
+શૂન્ય            syscall();
 
 // trap.c
-extern uint     ticks;
-void            trapinit(void);
-void            trapinithart(void);
-extern struct spinlock tickslock;
-void            prepare_return(void);
+બાહ્ય uint     ticks;
+શૂન્ય            trapinit(શૂન્ય);
+શૂન્ય            trapinithart(શૂન્ય);
+બાહ્ય સંરચના spinlock tickslock;
+શૂન્ય            prepare_return(શૂન્ય);
 
 // uart.c
-void            uartinit(void);
-void            uartintr(void);
-void            uartwrite(char [], int);
-void            uartputc_sync(int);
+શૂન્ય            uartinit(શૂન્ય);
+શૂન્ય            uartintr(શૂન્ય);
+શૂન્ય            uartwrite(અક્ષર [], પૂર્ણાંક);
+શૂન્ય            uartputc_sync(પૂર્ણાંક);
 
 // vm.c
-void            kvminit(void);
-void            kvminithart(void);
-void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
-int             mappages(pagetable_t, uint64, uint64, uint64, int);
-pagetable_t     uvmcreate(void);
-uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+શૂન્ય            kvminit(શૂન્ય);
+શૂન્ય            kvminithart(શૂન્ય);
+શૂન્ય            kvmmap(pagetable_t, uint64, uint64, uint64, પૂર્ણાંક);
+પૂર્ણાંક             mappages(pagetable_t, uint64, uint64, uint64, પૂર્ણાંક);
+pagetable_t     uvmcreate(શૂન્ય);
+uint64          uvmalloc(pagetable_t, uint64, uint64, પૂર્ણાંક);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
-int             uvmcopy(pagetable_t, pagetable_t, uint64);
-void            uvmfree(pagetable_t, uint64);
-void            uvmunmap(pagetable_t, uint64, uint64, int);
-void            uvmclear(pagetable_t, uint64);
-pte_t *         walk(pagetable_t, uint64, int);
+પૂર્ણાંક             uvmcopy(pagetable_t, pagetable_t, uint64);
+શૂન્ય            uvmfree(pagetable_t, uint64);
+શૂન્ય            uvmunmap(pagetable_t, uint64, uint64, પૂર્ણાંક);
+શૂન્ય            uvmclear(pagetable_t, uint64);
+pte_t *         walk(pagetable_t, uint64, પૂર્ણાંક);
 uint64          walkaddr(pagetable_t, uint64);
-int             copyout(pagetable_t, uint64, uint64, char *, uint64);
-int             copyin(pagetable_t, uint64, char *, uint64, uint64);
-int             copyinstr(pagetable_t, uint64, char *, uint64, uint64);
-int             ismapped(pagetable_t, uint64);
-uint64          vmfault(pagetable_t, uint64, uint64, int);
+પૂર્ણાંક             copyout(pagetable_t, uint64, uint64, અક્ષર *, uint64);
+પૂર્ણાંક             copyin(pagetable_t, uint64, અક્ષર *, uint64, uint64);
+પૂર્ણાંક             copyinstr(pagetable_t, uint64, અક્ષર *, uint64, uint64);
+પૂર્ણાંક             ismapped(pagetable_t, uint64);
+uint64          vmfault(pagetable_t, uint64, uint64, પૂર્ણાંક);
 
 // plic.c
-void            plicinit(void);
-void            plicinithart(void);
-int             plic_claim(void);
-void            plic_complete(int);
+શૂન્ય            plicinit(શૂન્ય);
+શૂન્ય            plicinithart(શૂન્ય);
+પૂર્ણાંક             plic_claim(શૂન્ય);
+શૂન્ય            plic_complete(પૂર્ણાંક);
 
 // virtio_disk.c
-void            virtio_disk_init(void);
-void            virtio_disk_rw(struct buf *, int);
-void            virtio_disk_intr(void);
+શૂન્ય            virtio_disk_init(શૂન્ય);
+શૂન્ય            virtio_disk_rw(સંરચના buf *, પૂર્ણાંક);
+શૂન્ય            virtio_disk_intr(શૂન્ય);
 
 // number of elements in fixed-size array
-#define NELEM(x) (sizeof(x) / sizeof((x)[0]))
+#define NELEM(x) (કદ(x) / કદ((x)[0]))
