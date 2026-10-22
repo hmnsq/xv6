@@ -1,50 +1,50 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "kernel/fcntl.h"
+#অন্তর্ভাব "user/user.h"
 
-char buf[512];
+অক্ষর buf[512];
 
-void
-wc(int fd, char *name)
+শূন্য
+wc(পূর্ণসংখ্যা fd, অক্ষর *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  পূর্ণসংখ্যা i, n;
+  পূর্ণসংখ্যা l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  যখন ((n = পঠ(fd, buf, আকার(buf))) > 0) {
+    জন্য (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      যদি (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      যদি (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      অন্যথা যদি (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  যদি (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+পূর্ণসংখ্যা
+প্রধান(পূর্ণসংখ্যা argc, অক্ষর *argv[])
 {
-  int fd, i;
+  পূর্ণসংখ্যা fd, i;
 
-  if (argc <= 1) {
+  যদি (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  জন্য (i = 1; i < argc; i++) {
+    যদি ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

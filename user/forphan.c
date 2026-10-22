@@ -1,40 +1,40 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "kernel/fcntl.h"
+#অন্তর্ভাব "user/user.h"
 
 // Create an orphaned file and check if test-xv6.py recovers it.
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+অক্ষর buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+পূর্ণসংখ্যা
+প্রধান(পূর্ণসংখ্যা argc, অক্ষর **argv)
 {
-  int fd = 0;
-  char *s = argv[0];
-  struct stat st;
-  char *ff = "file0";
+  পূর্ণসংখ্যা fd = 0;
+  অক্ষর *s = argv[0];
+  কাঠামো stat st;
+  অক্ষর *ff = "file0";
 
-  if ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
+  যদি ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
     printf("%s: open failed\n", s);
     exit(1);
   }
-  if (fstat(fd, &st) < 0) {
+  যদি (fstat(fd, &st) < 0) {
     fprintf(2, "%s: cannot stat %s\n", s, "ff");
     exit(1);
   }
-  if (unlink(ff) < 0) {
+  যদি (unlink(ff) < 0) {
     printf("%s: unlink failed\n", s);
     exit(1);
   }
-  if (open(ff, O_RDONLY) != -1) {
+  যদি (open(ff, O_RDONLY) != -1) {
     printf("%s: open successed\n", s);
     exit(1);
   }
   printf("wait for kill and reclaim %d\n", st.ino);
   // sit around until killed
-  for (;;)
+  জন্য (;;)
     pause(1000);
 }

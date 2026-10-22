@@ -1,11 +1,11 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
+#অন্তর্ভাব "types.h"
+#অন্তর্ভাব "riscv.h"
+#অন্তর্ভাব "defs.h"
+#অন্তর্ভাব "param.h"
+#অন্তর্ভাব "spinlock.h"
+#অন্তর্ভাব "sleeplock.h"
+#অন্তর্ভাব "fs.h"
+#অন্তর্ভাব "buf.h"
 
 // Simple logging that allows concurrent FS system calls.
 //
@@ -32,29 +32,29 @@
 
 // Contents of the header block, used for both the on-disk header block
 // and to keep track in memory of logged block# before commit.
-struct logheader {
-  int n;
-  int block[LOGBLOCKS];
+কাঠামো logheader {
+  পূর্ণসংখ্যা n;
+  পূর্ণসংখ্যা block[LOGBLOCKS];
 };
 
-struct log {
-  struct spinlock lock;
-  int start;
-  int outstanding; // how many FS sys calls are executing.
-  int committing;  // in commit(), please wait.
-  int dev;
-  int ncommit;
-  struct logheader lh;
+কাঠামো log {
+  কাঠামো spinlock lock;
+  পূর্ণসংখ্যা start;
+  পূর্ণসংখ্যা outstanding; // how many FS sys calls are executing.
+  পূর্ণসংখ্যা committing;  // in commit(), please wait.
+  পূর্ণসংখ্যা dev;
+  পূর্ণসংখ্যা ncommit;
+  কাঠামো logheader lh;
 };
-struct log log;
+কাঠামো log log;
 
-static void recover_from_log(void);
-static void commit();
+স্থির শূন্য recover_from_log(শূন্য);
+স্থির শূন্য commit();
 
-void
-initlog(int dev, struct superblock *sb)
+শূন্য
+initlog(পূর্ণসংখ্যা dev, কাঠামো superblock *sb)
 {
-  if (sizeof(struct logheader) >= BSIZE)
+  যদি (আকার(কাঠামো logheader) >= BSIZE)
     panic("initlog: too big logheader");
 
   initlock(&log.lock, "log");
@@ -64,20 +64,20 @@ initlog(int dev, struct superblock *sb)
 }
 
 // Copy committed blocks from log to their home location
-static void
-install_trans(int recovering)
+স্থির শূন্য
+install_trans(পূর্ণসংখ্যা recovering)
 {
-  int tail;
+  পূর্ণসংখ্যা লেজ;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    if (recovering) {
-      printk("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
+  জন্য (লেজ = 0; লেজ < log.lh.n; লেজ++) {
+    যদি (recovering) {
+      printk("recovering tail %d dst %d\n", লেজ, log.lh.block[লেজ]);
     }
-    struct buf *lbuf = bread(log.dev, log.start + tail + 1); // read log block
-    struct buf *dbuf = bread(log.dev, log.lh.block[tail]);   // read dst
-    memmove(dbuf->data, lbuf->data, BSIZE); // copy block to dst
+    কাঠামো buf *lbuf = bread(log.dev, log.start + লেজ + 1); // read log block
+    কাঠামো buf *dbuf = bread(log.dev, log.lh.block[লেজ]);   // read dst
+    memmove(dbuf->তথ্য, lbuf->তথ্য, BSIZE); // copy block to dst
     bwrite(dbuf);                           // write dst to disk
-    if (recovering == 0)
+    যদি (recovering == 0)
       bunpin(dbuf);
     brelse(lbuf);
     brelse(dbuf);
@@ -85,14 +85,14 @@ install_trans(int recovering)
 }
 
 // Read the log header from disk into the in-memory log header
-static void
-read_head(void)
+স্থির শূন্য
+read_শীর্ষ(শূন্য)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *lh = (struct logheader *)(buf->data);
-  int i;
+  কাঠামো buf *buf = bread(log.dev, log.start);
+  কাঠামো logheader *lh = (কাঠামো logheader *)(buf->তথ্য);
+  পূর্ণসংখ্যা i;
   log.lh.n = lh->n;
-  for (i = 0; i < log.lh.n; i++) {
+  জন্য (i = 0; i < log.lh.n; i++) {
     log.lh.block[i] = lh->block[i];
   }
   brelse(buf);
@@ -101,69 +101,69 @@ read_head(void)
 // Write in-memory log header to disk.
 // This is the true point at which the
 // current transaction commits.
-static void
-write_head(void)
+স্থির শূন্য
+write_শীর্ষ(শূন্য)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *hb = (struct logheader *)(buf->data);
-  int i;
+  কাঠামো buf *buf = bread(log.dev, log.start);
+  কাঠামো logheader *hb = (কাঠামো logheader *)(buf->তথ্য);
+  পূর্ণসংখ্যা i;
   hb->n = log.lh.n;
-  for (i = 0; i < log.lh.n; i++) {
+  জন্য (i = 0; i < log.lh.n; i++) {
     hb->block[i] = log.lh.block[i];
   }
   bwrite(buf);
   brelse(buf);
 }
 
-static void
-recover_from_log(void)
+স্থির শূন্য
+recover_from_log(শূন্য)
 {
-  read_head();
+  read_শীর্ষ();
   install_trans(1); // if committed, copy from log to disk
   log.lh.n = 0;
-  write_head(); // clear the log
+  write_শীর্ষ(); // clear the log
 }
 
 // called at the start of each FS system call.
-void
-begin_op(void)
+শূন্য
+begin_op(শূন্য)
 {
   acquire(&log.lock);
-  while (1) {
-    if (log.committing) {
+  যখন (1) {
+    যদি (log.committing) {
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
       acquire(&log.lock);
-    } else if (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
+    } অন্যথা যদি (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
       // this op might exhaust log space; wait for commit.
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
       acquire(&log.lock);
-    } else {
+    } অন্যথা {
       log.outstanding += 1;
       release(&log.lock);
-      break;
+      বিরতি;
     }
   }
 }
 
 // called at the end of each FS system call.
 // commits if this was the last outstanding operation.
-void
-end_op(void)
+শূন্য
+end_op(শূন্য)
 {
-  int do_commit = 0;
+  পূর্ণসংখ্যা do_commit = 0;
 
   acquire(&log.lock);
   log.outstanding -= 1;
-  if (log.committing)
+  যদি (log.committing)
     panic("log.committing");
-  if (log.outstanding == 0) {
+  যদি (log.outstanding == 0) {
     do_commit = 1;
     log.committing = 1;
-  } else {
+  } অন্যথা {
     // begin_op() may be waiting for log space,
     // and decrementing log.outstanding has decreased
     // the amount of reserved space.
@@ -171,7 +171,7 @@ end_op(void)
   }
   release(&log.lock);
 
-  if (do_commit) {
+  যদি (do_commit) {
     // call commit w/o holding locks, since not allowed
     // to sleep with locks.
     commit();
@@ -184,30 +184,30 @@ end_op(void)
 }
 
 // Copy modified blocks from cache to log.
-static void
-write_log(void)
+স্থির শূন্য
+write_log(শূন্য)
 {
-  int tail;
+  পূর্ণসংখ্যা লেজ;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    struct buf *to = bread(log.dev, log.start + tail + 1); // log block
-    struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
-    memmove(to->data, from->data, BSIZE);
+  জন্য (লেজ = 0; লেজ < log.lh.n; লেজ++) {
+    কাঠামো buf *to = bread(log.dev, log.start + লেজ + 1); // log block
+    কাঠামো buf *from = bread(log.dev, log.lh.block[লেজ]); // cache block
+    memmove(to->তথ্য, from->তথ্য, BSIZE);
     bwrite(to); // write the log
     brelse(from);
     brelse(to);
   }
 }
 
-static void
+স্থির শূন্য
 commit()
 {
-  if (log.lh.n > 0) {
+  যদি (log.lh.n > 0) {
     write_log();      // Write modified blocks from cache to log
-    write_head();     // Write header to disk -- the real commit
+    write_শীর্ষ();     // Write header to disk -- the real commit
     install_trans(0); // Now install writes to home locations
     log.lh.n = 0;
-    write_head(); // Erase the transaction from the log
+    write_শীর্ষ(); // Erase the transaction from the log
   }
 }
 
@@ -220,23 +220,23 @@ commit()
 //   modify bp->data[]
 //   log_write(bp)
 //   brelse(bp)
-void
-log_write(struct buf *b)
+শূন্য
+log_write(কাঠামো buf *b)
 {
-  int i;
+  পূর্ণসংখ্যা i;
 
   acquire(&log.lock);
-  if (log.lh.n >= LOGBLOCKS)
+  যদি (log.lh.n >= LOGBLOCKS)
     panic("too big a transaction");
-  if (log.outstanding < 1)
+  যদি (log.outstanding < 1)
     panic("log_write outside of trans");
 
-  for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno) // log absorption
-      break;
+  জন্য (i = 0; i < log.lh.n; i++) {
+    যদি (log.lh.block[i] == b->blockno) // log absorption
+      বিরতি;
   }
   log.lh.block[i] = b->blockno;
-  if (i == log.lh.n) { // Add new block to log?
+  যদি (i == log.lh.n) { // Add new block to log?
     bpin(b);
     log.lh.n++;
   }
@@ -244,12 +244,12 @@ log_write(struct buf *b)
 }
 
 uint64
-sys_sync(void)
+sys_sync(শূন্য)
 {
   acquire(&log.lock);
-  if (log.committing || log.outstanding > 0) {
-    int n = log.ncommit + 1;
-    while (log.ncommit < n) {
+  যদি (log.committing || log.outstanding > 0) {
+    পূর্ণসংখ্যা n = log.ncommit + 1;
+    যখন (log.ncommit < n) {
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
@@ -257,5 +257,5 @@ sys_sync(void)
     }
   }
   release(&log.lock);
-  return 0;
+  ফেরত 0;
 }

@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+প্রকারলেখ unsigned পূর্ণসংখ্যা uint;
+প্রকারলেখ unsigned short ushort;
+প্রকারলেখ unsigned অক্ষর uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+প্রকারলেখ unsigned অক্ষর uint8;
+প্রকারলেখ unsigned short uint16;
+প্রকারলেখ unsigned পূর্ণসংখ্যা uint32;
+প্রকারলেখ unsigned long uint64;
 
-typedef uint64 pde_t;
+প্রকারলেখ uint64 pde_t;

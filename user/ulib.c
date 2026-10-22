@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "kernel/fcntl.h"
+#অন্তর্ভাব "kernel/riscv.h"
+#অন্তর্ভাব "kernel/vm.h"
+#অন্তর্ভাব "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+শূন্য
+start(পূর্ণসংখ্যা argc, অক্ষর **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  পূর্ণসংখ্যা r;
+  বাহ্যিক পূর্ণসংখ্যা প্রধান(পূর্ণসংখ্যা argc, অক্ষর **argv);
+  r = প্রধান(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+অক্ষর *
+strcpy(অক্ষর *s, ধ্রুবক অক্ষর *t)
 {
-  char *os;
+  অক্ষর *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  যখন ((*s++ = *t++) != 0)
     ;
-  return os;
+  ফেরত os;
 }
 
-int
-strcmp(const char *p, const char *q)
+পূর্ণসংখ্যা
+strcmp(ধ্রুবক অক্ষর *p, ধ্রুবক অক্ষর *q)
 {
-  while (*p && *p == *q)
+  যখন (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  ফেরত (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(ধ্রুবক অক্ষর *s)
 {
-  int n;
+  পূর্ণসংখ্যা n;
 
-  for (n = 0; s[n]; n++)
+  জন্য (n = 0; s[n]; n++)
     ;
-  return n;
+  ফেরত n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+শূন্য *
+memset(শূন্য *dst, পূর্ণসংখ্যা c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  অক্ষর *cdst = (অক্ষর *)dst;
+  পূর্ণসংখ্যা i;
+  জন্য (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ফেরত dst;
 }
 
-char *
-strchr(const char *s, char c)
+অক্ষর *
+strchr(ধ্রুবক অক্ষর *s, অক্ষর c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  জন্য (; *s; s++)
+    যদি (*s == c)
+      ফেরত (অক্ষর *)s;
+  ফেরত 0;
 }
 
-char *
-gets(char *buf, int max)
+অক্ষর *
+gets(অক্ষর *buf, পূর্ণসংখ্যা max)
 {
-  int i, cc;
-  char c;
+  পূর্ণসংখ্যা i, cc;
+  অক্ষর c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  জন্য (i = 0; i + 1 < max;) {
+    cc = পঠ(0, &c, 1);
+    যদি (cc < 1)
+      বিরতি;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    যদি (c == '\n' || c == '\r')
+      বিরতি;
   }
   buf[i] = '\0';
-  return buf;
+  ফেরত buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+পূর্ণসংখ্যা
+stat(ধ্রুবক অক্ষর *n, কাঠামো stat *st)
 {
-  int fd;
-  int r;
+  পূর্ণসংখ্যা fd;
+  পূর্ণসংখ্যা r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  যদি (fd < 0)
+    ফেরত -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  ফেরত r;
 }
 
-int
-atoi(const char *s)
+পূর্ণসংখ্যা
+atoi(ধ্রুবক অক্ষর *s)
 {
-  int n;
+  পূর্ণসংখ্যা n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  যখন ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  ফেরত n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+শূন্য *
+memmove(শূন্য *vdst, ধ্রুবক শূন্য *vsrc, পূর্ণসংখ্যা n)
 {
-  char *dst;
-  const char *src;
+  অক্ষর *dst;
+  ধ্রুবক অক্ষর *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  যদি (src > dst) {
+    যখন (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } অন্যথা {
     dst += n;
     src += n;
-    while (n-- > 0)
+    যখন (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  ফেরত vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+পূর্ণসংখ্যা
+memcmp(ধ্রুবক শূন্য *s1, ধ্রুবক শূন্য *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  ধ্রুবক অক্ষর *p1 = s1, *p2 = s2;
+  যখন (n-- > 0) {
+    যদি (*p1 != *p2) {
+      ফেরত *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  ফেরত 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+শূন্য *
+memcpy(শূন্য *dst, ধ্রুবক শূন্য *src, uint n)
 {
-  return memmove(dst, src, n);
+  ফেরত memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+অক্ষর *
+sbrk(পূর্ণসংখ্যা n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  ফেরত sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+অক্ষর *
+sbrklazy(পূর্ণসংখ্যা n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  ফেরত sys_sbrk(n, SBRK_LAZY);
 }

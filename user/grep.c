@@ -1,58 +1,58 @@
 // Simple grep.  Only supports ^ . * $ operators.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "kernel/fcntl.h"
+#অন্তর্ভাব "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+অক্ষর buf[1024];
+পূর্ণসংখ্যা match(অক্ষর *, অক্ষর *);
 
-void
-grep(char *pattern, int fd)
+শূন্য
+grep(অক্ষর *pattern, পূর্ণসংখ্যা fd)
 {
-  int n, m;
-  char *p, *q;
+  পূর্ণসংখ্যা n, m;
+  অক্ষর *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  যখন ((n = পঠ(fd, buf + m, আকার(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    যখন ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      যদি (match(pattern, p)) {
         *q = '\n';
-        write(1, p, q + 1 - p);
+        লিখ(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    যদি (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+পূর্ণসংখ্যা
+প্রধান(পূর্ণসংখ্যা argc, অক্ষর *argv[])
 {
-  int fd, i;
-  char *pattern;
+  পূর্ণসংখ্যা fd, i;
+  অক্ষর *pattern;
 
-  if (argc <= 1) {
+  যদি (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
     exit(1);
   }
   pattern = argv[1];
 
-  if (argc <= 2) {
+  যদি (argc <= 2) {
     grep(pattern, 0);
     exit(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  জন্য (i = 2; i < argc; i++) {
+    যদি ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("grep: cannot open %s\n", argv[i]);
       exit(1);
     }
@@ -66,43 +66,43 @@ main(int argc, char *argv[])
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+পূর্ণসংখ্যা matchhere(অক্ষর *, অক্ষর *);
+পূর্ণসংখ্যা matchstar(পূর্ণসংখ্যা, অক্ষর *, অক্ষর *);
 
-int
-match(char *re, char *text)
+পূর্ণসংখ্যা
+match(অক্ষর *re, অক্ষর *text)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
-  do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+  যদি (re[0] == '^')
+    ফেরত matchhere(re + 1, text);
+  করো { // must look at empty string
+    যদি (matchhere(re, text))
+      ফেরত 1;
+  } যখন (*text++ != '\0');
+  ফেরত 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+পূর্ণসংখ্যা
+matchhere(অক্ষর *re, অক্ষর *text)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  যদি (re[0] == '\0')
+    ফেরত 1;
+  যদি (re[1] == '*')
+    ফেরত matchstar(re[0], re + 2, text);
+  যদি (re[0] == '$' && re[1] == '\0')
+    ফেরত *text == '\0';
+  যদি (*text != '\0' && (re[0] == '.' || re[0] == *text))
+    ফেরত matchhere(re + 1, text + 1);
+  ফেরত 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+পূর্ণসংখ্যা
+matchstar(পূর্ণসংখ্যা c, অক্ষর *re, অক্ষর *text)
 {
-  do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+  করো { // a * matches zero or more instances
+    যদি (matchhere(re, text))
+      ফেরত 1;
+  } যখন (*text != '\0' && (*text++ == c || c == '.'));
+  ফেরত 0;
 }

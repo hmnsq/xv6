@@ -1,35 +1,35 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "kernel/fcntl.h"
+#অন্তর্ভাব "user/user.h"
 
 // Create an orphaned directory and check if test-xv6.py recovers it.
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+অক্ষর buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+পূর্ণসংখ্যা
+প্রধান(পূর্ণসংখ্যা argc, অক্ষর **argv)
 {
-  char *s = argv[0];
+  অক্ষর *s = argv[0];
 
-  if (mkdir("dd") != 0) {
+  যদি (mkdir("dd") != 0) {
     printf("%s: mkdir dd failed\n", s);
     exit(1);
   }
 
-  if (chdir("dd") != 0) {
+  যদি (chdir("dd") != 0) {
     printf("%s: chdir dd failed\n", s);
     exit(1);
   }
 
-  if (unlink("../dd") < 0) {
+  যদি (unlink("../dd") < 0) {
     printf("%s: unlink failed\n", s);
     exit(1);
   }
   printf("wait for kill and reclaim\n");
   // sit around until killed
-  for (;;)
+  জন্য (;;)
     pause(1000);
 }

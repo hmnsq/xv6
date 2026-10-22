@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((অক্ষর *)-1)
 
-struct stat;
+কাঠামো stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+পূর্ণসংখ্যা fork(শূন্য);
+পূর্ণসংখ্যা exit(পূর্ণসংখ্যা) __attribute__((noreturn));
+পূর্ণসংখ্যা wait(পূর্ণসংখ্যা *);
+পূর্ণসংখ্যা pipe(পূর্ণসংখ্যা *);
+পূর্ণসংখ্যা লিখ(পূর্ণসংখ্যা, ধ্রুবক শূন্য *, পূর্ণসংখ্যা);
+পূর্ণসংখ্যা পঠ(পূর্ণসংখ্যা, শূন্য *, পূর্ণসংখ্যা);
+পূর্ণসংখ্যা close(পূর্ণসংখ্যা);
+পূর্ণসংখ্যা kill(পূর্ণসংখ্যা);
+পূর্ণসংখ্যা exec(ধ্রুবক অক্ষর *, অক্ষর **);
+পূর্ণসংখ্যা open(ধ্রুবক অক্ষর *, পূর্ণসংখ্যা);
+পূর্ণসংখ্যা mknod(ধ্রুবক অক্ষর *, short, short);
+পূর্ণসংখ্যা unlink(ধ্রুবক অক্ষর *);
+পূর্ণসংখ্যা fstat(পূর্ণসংখ্যা fd, কাঠামো stat *);
+পূর্ণসংখ্যা link(ধ্রুবক অক্ষর *, ধ্রুবক অক্ষর *);
+পূর্ণসংখ্যা mkdir(ধ্রুবক অক্ষর *);
+পূর্ণসংখ্যা chdir(ধ্রুবক অক্ষর *);
+পূর্ণসংখ্যা dup(পূর্ণসংখ্যা);
+পূর্ণসংখ্যা getpid(শূন্য);
+অক্ষর *sys_sbrk(পূর্ণসংখ্যা, পূর্ণসংখ্যা);
+পূর্ণসংখ্যা pause(পূর্ণসংখ্যা);
+পূর্ণসংখ্যা uptime(শূন্য);
+পূর্ণসংখ্যা sync(শূন্য);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+পূর্ণসংখ্যা stat(ধ্রুবক অক্ষর *, কাঠামো stat *);
+অক্ষর *strcpy(অক্ষর *, ধ্রুবক অক্ষর *);
+শূন্য *memmove(শূন্য *, ধ্রুবক শূন্য *, পূর্ণসংখ্যা);
+অক্ষর *strchr(ধ্রুবক অক্ষর *, অক্ষর c);
+পূর্ণসংখ্যা strcmp(ধ্রুবক অক্ষর *, ধ্রুবক অক্ষর *);
+অক্ষর *gets(অক্ষর *, পূর্ণসংখ্যা max);
+uint strlen(ধ্রুবক অক্ষর *);
+শূন্য *memset(শূন্য *, পূর্ণসংখ্যা, uint);
+পূর্ণসংখ্যা atoi(ধ্রুবক অক্ষর *);
+পূর্ণসংখ্যা memcmp(ধ্রুবক শূন্য *, ধ্রুবক শূন্য *, uint);
+শূন্য *memcpy(শূন্য *, ধ্রুবক শূন্য *, uint);
+অক্ষর *sbrk(পূর্ণসংখ্যা);
+অক্ষর *sbrklazy(পূর্ণসংখ্যা);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+শূন্য fprintf(পূর্ণসংখ্যা, ধ্রুবক অক্ষর *, ...) __attribute__((format(printf, 2, 3)));
+শূন্য printf(ধ্রুবক অক্ষর *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+শূন্য *malloc(uint);
+শূন্য মুক্ত(শূন্য *);

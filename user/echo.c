@@ -1,18 +1,18 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "user/user.h"
 
-int
-main(int argc, char *argv[])
+পূর্ণসংখ্যা
+প্রধান(পূর্ণসংখ্যা argc, অক্ষর *argv[])
 {
-  int i;
+  পূর্ণসংখ্যা i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  জন্য (i = 1; i < argc; i++) {
+    লিখ(1, argv[i], strlen(argv[i]));
+    যদি (i + 1 < argc) {
+      লিখ(1, " ", 1);
+    } অন্যথা {
+      লিখ(1, "\n", 1);
     }
   }
   exit(0);

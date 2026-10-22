@@ -1,9 +1,9 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "user/user.h"
 
-int
-main(int argc, char *argv[])
+পূর্ণসংখ্যা
+প্রধান(পূর্ণসংখ্যা argc, অক্ষর *argv[])
 {
   sync();
   exit(0);

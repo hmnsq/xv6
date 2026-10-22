@@ -2,40 +2,40 @@
 // kernel stacks, page-table pages,
 // and pipe buffers. Allocates whole 4096-byte pages.
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "defs.h"
+#অন্তর্ভাব "types.h"
+#অন্তর্ভাব "param.h"
+#অন্তর্ভাব "memlayout.h"
+#অন্তর্ভাব "spinlock.h"
+#অন্তর্ভাব "riscv.h"
+#অন্তর্ভাব "defs.h"
 
-void freerange(void *pa_start, void *pa_end);
+শূন্য freerange(শূন্য *pa_start, শূন্য *pa_end);
 
-extern char end[]; // first address after kernel.
+বাহ্যিক অক্ষর end[]; // first address after kernel.
                    // defined by kernel.ld.
 
-struct run {
-  struct run *next;
+কাঠামো run {
+  কাঠামো run *পরবর্তী;
 };
 
-struct {
-  struct spinlock lock;
-  struct run *freelist;
+কাঠামো {
+  কাঠামো spinlock lock;
+  কাঠামো run *freelist;
 } kmem;
 
-void
+শূন্য
 kinit()
 {
   initlock(&kmem.lock, "kmem");
-  freerange(end, (void *)PHYSTOP);
+  freerange(end, (শূন্য *)PHYSTOP);
 }
 
-void
-freerange(void *pa_start, void *pa_end)
+শূন্য
+freerange(শূন্য *pa_start, শূন্য *pa_end)
 {
-  char *p;
-  p = (char *)PGROUNDUP((uint64)pa_start);
-  for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE)
+  অক্ষর *p;
+  p = (অক্ষর *)PGROUNDUP((uint64)pa_start);
+  জন্য (; p + PGSIZE <= (অক্ষর *)pa_end; p += PGSIZE)
     kfree(p);
 }
 
@@ -43,21 +43,21 @@ freerange(void *pa_start, void *pa_end)
 // which normally should have been returned by a
 // call to kalloc().  (The exception is when
 // initializing the allocator; see kinit above.)
-void
-kfree(void *pa)
+শূন্য
+kfree(শূন্য *pa)
 {
-  struct run *r;
+  কাঠামো run *r;
 
-  if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
+  যদি (((uint64)pa % PGSIZE) != 0 || (অক্ষর *)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
 
   // Fill with junk to catch dangling refs.
   memset(pa, 1, PGSIZE);
 
-  r = (struct run *)pa;
+  r = (কাঠামো run *)pa;
 
   acquire(&kmem.lock);
-  r->next = kmem.freelist;
+  r->পরবর্তী = kmem.freelist;
   kmem.freelist = r;
   release(&kmem.lock);
 }
@@ -65,18 +65,18 @@ kfree(void *pa)
 // Allocate one 4096-byte page of physical memory.
 // Returns a pointer that the kernel can use.
 // Returns 0 if the memory cannot be allocated.
-void *
-kalloc(void)
+শূন্য *
+kalloc(শূন্য)
 {
-  struct run *r;
+  কাঠামো run *r;
 
   acquire(&kmem.lock);
   r = kmem.freelist;
-  if (r)
-    kmem.freelist = r->next;
+  যদি (r)
+    kmem.freelist = r->পরবর্তী;
   release(&kmem.lock);
 
-  if (r)
-    memset((char *)r, 5, PGSIZE); // fill with junk
-  return (void *)r;
+  যদি (r)
+    memset((অক্ষর *)r, 5, PGSIZE); // fill with junk
+  ফেরত (শূন্য *)r;
 }
