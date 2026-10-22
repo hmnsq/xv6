@@ -1,164 +1,164 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
+#ضمن "types.h"
+#ضمن "param.h"
+#ضمن "memlayout.h"
+#ضمن "riscv.h"
+#ضمن "spinlock.h"
+#ضمن "proc.h"
+#ضمن "defs.h"
 
-struct cpu cpus[NCPU];
+بنية cpu cpus[NCPU];
 
-struct proc proc[NPROC];
+بنية proc proc[NPROC];
 
-struct proc *initproc;
+بنية proc *initproc;
 
-int nextpid = 1;
-struct spinlock pid_lock;
+صحيح nextpid = 1;
+بنية spinlock pid_lock;
 
-extern void forkret(void);
-static void freeproc(struct proc *p);
+خارجي فراغ forkret(فراغ);
+ساكن فراغ freeproc(بنية proc *p);
 
-extern char trampoline[]; // trampoline.S
+خارجي حرف trampoline[]; // trampoline.S
 
 // helps ensure that wakeups of wait()ing
 // parents are not lost. helps obey the
 // memory model when using p->parent.
 // must be acquired before any p->lock.
-struct spinlock wait_lock;
+بنية spinlock wait_lock;
 
 // Allocate a page for each process's kernel stack.
 // Map it high in memory, followed by an invalid
 // guard page.
-void
+فراغ
 proc_mapstacks(pagetable_t kpgtbl)
 {
-  struct proc *p;
+  بنية proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
-    char *pa = kalloc();
-    if (pa == 0)
+  لكل (p = proc; p < &proc[NPROC]; p++) {
+    حرف *pa = kalloc();
+    𐡄𐡍 (pa == 0)
       panic("kalloc");
-    uint64 va = KSTACK((int)(p - proc));
+    uint64 va = KSTACK((صحيح)(p - proc));
     kvmmap(kpgtbl, va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
   }
 }
 
 // initialize the proc table.
-void
-procinit(void)
+فراغ
+procinit(فراغ)
 {
-  struct proc *p;
+  بنية proc *p;
 
   initlock(&pid_lock, "nextpid");
   initlock(&wait_lock, "wait_lock");
-  for (p = proc; p < &proc[NPROC]; p++) {
+  لكل (p = proc; p < &proc[NPROC]; p++) {
     initlock(&p->lock, "proc");
     p->state = UNUSED;
-    p->kstack = KSTACK((int)(p - proc));
+    p->kstack = KSTACK((صحيح)(p - proc));
   }
 }
 
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
-int
+صحيح
 cpuid()
 {
-  int id = r_tp();
-  return id;
+  صحيح id = r_tp();
+  أرجع id;
 }
 
 // Return this CPU's cpu struct.
 // Interrupts must be disabled.
-struct cpu *
-mycpu(void)
+بنية cpu *
+mycpu(فراغ)
 {
-  int id = cpuid();
-  struct cpu *c = &cpus[id];
-  return c;
+  صحيح id = cpuid();
+  بنية cpu *c = &cpus[id];
+  أرجع c;
 }
 
 // Return the current struct proc *, or zero if none.
-struct proc *
-myproc(void)
+بنية proc *
+myproc(فراغ)
 {
   push_off();
-  struct cpu *c = mycpu();
-  struct proc *p = c->proc;
+  بنية cpu *c = mycpu();
+  بنية proc *p = c->proc;
   pop_off();
-  return p;
+  أرجع p;
 }
 
-int
+صحيح
 allocpid()
 {
-  int pid;
+  صحيح pid;
 
   acquire(&pid_lock);
   pid = nextpid;
   nextpid = nextpid + 1;
   release(&pid_lock);
 
-  return pid;
+  أرجع pid;
 }
 
 // Look in the process table for an UNUSED proc.
 // If found, initialize state required to run in the kernel,
 // and return with p->lock held.
 // If there are no free procs, or a memory allocation fails, return 0.
-static struct proc *
-allocproc(void)
+ساكن بنية proc *
+allocproc(فراغ)
 {
-  struct proc *p;
+  بنية proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  لكل (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->state == UNUSED) {
-      goto found;
-    } else {
+    𐡄𐡍 (p->state == UNUSED) {
+      اذهب found;
+    } وإلا {
       release(&p->lock);
     }
   }
-  return 0;
+  أرجع 0;
 
 found:
   p->pid = allocpid();
   p->state = USED;
 
   // Allocate a trapframe page.
-  if ((p->trapframe = (struct trapframe *)kalloc()) == 0) {
+  𐡄𐡍 ((p->trapframe = (بنية trapframe *)kalloc()) == 0) {
     freeproc(p);
     release(&p->lock);
-    return 0;
+    أرجع 0;
   }
 
   // An empty user page table.
   p->pagetable = proc_pagetable(p);
-  if (p->pagetable == 0) {
+  𐡄𐡍 (p->pagetable == 0) {
     freeproc(p);
     release(&p->lock);
-    return 0;
+    أرجع 0;
   }
 
   // Set up new context to start executing at forkret,
   // which returns to user space.
-  memset(&p->context, 0, sizeof(p->context));
+  memset(&p->context, 0, حجم(p->context));
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
-  return p;
+  أرجع p;
 }
 
 // free a proc structure and the data hanging from it,
 // including user pages.
 // p->lock must be held.
-static void
-freeproc(struct proc *p)
+ساكن فراغ
+freeproc(بنية proc *p)
 {
-  if (p->trapframe)
-    kfree((void *)p->trapframe);
+  𐡄𐡍 (p->trapframe)
+    kfree((فراغ *)p->trapframe);
   p->trapframe = 0;
-  if (p->pagetable)
+  𐡄𐡍 (p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
   p->sz = 0;
@@ -173,40 +173,40 @@ freeproc(struct proc *p)
 // Create a user page table for a given process, with no user memory,
 // but with trampoline and trapframe pages.
 pagetable_t
-proc_pagetable(struct proc *p)
+proc_pagetable(بنية proc *p)
 {
   pagetable_t pagetable;
 
   // An empty page table.
   pagetable = uvmcreate();
-  if (pagetable == 0)
-    return 0;
+  𐡄𐡍 (pagetable == 0)
+    أرجع 0;
 
   // map the trampoline code (for system call return)
   // at the highest user virtual address.
   // only the supervisor uses it, on the way
   // to/from user space, so not PTE_U.
-  if (mappages(pagetable, TRAMPOLINE, PGSIZE, (uint64)trampoline,
+  𐡄𐡍 (mappages(pagetable, TRAMPOLINE, PGSIZE, (uint64)trampoline,
                PTE_R | PTE_X) < 0) {
     uvmfree(pagetable, 0);
-    return 0;
+    أرجع 0;
   }
 
   // map the trapframe page just below the trampoline page, for
   // trampoline.S.
-  if (mappages(pagetable, TRAPFRAME, PGSIZE, (uint64)(p->trapframe),
+  𐡄𐡍 (mappages(pagetable, TRAPFRAME, PGSIZE, (uint64)(p->trapframe),
                PTE_R | PTE_W) < 0) {
     uvmunmap(pagetable, TRAMPOLINE, 1, 0);
     uvmfree(pagetable, 0);
-    return 0;
+    أرجع 0;
   }
 
-  return pagetable;
+  أرجع pagetable;
 }
 
 // Free a process's page table, and free the
 // physical memory it refers to.
-void
+فراغ
 proc_freepagetable(pagetable_t pagetable, uint64 sz)
 {
   uvmunmap(pagetable, TRAMPOLINE, 1, 0);
@@ -215,10 +215,10 @@ proc_freepagetable(pagetable_t pagetable, uint64 sz)
 }
 
 // Set up first user process.
-void
-userinit(void)
+فراغ
+userinit(فراغ)
 {
-  struct proc *p;
+  بنية proc *p;
 
   p = allocproc();
   initproc = p;
@@ -232,46 +232,46 @@ userinit(void)
 
 // Grow or shrink user memory by n bytes.
 // Return 0 on success, -1 on failure.
-int
-growproc(int n)
+صحيح
+growproc(صحيح n)
 {
   uint64 sz;
-  struct proc *p = myproc();
+  بنية proc *p = myproc();
 
   sz = p->sz;
-  if (n > 0) {
-    if (sz + n > TRAPFRAME) {
-      return -1;
+  𐡄𐡍 (n > 0) {
+    𐡄𐡍 (sz + n > TRAPFRAME) {
+      أرجع -1;
     }
-    if ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
-      return -1;
+    𐡄𐡍 ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
+      أرجع -1;
     }
-  } else if (n < 0) {
+  } وإلا 𐡄𐡍 (n < 0) {
     sz = uvmdealloc(p->pagetable, sz, sz + n);
   }
   p->sz = sz;
-  return 0;
+  أرجع 0;
 }
 
 // Create a new process, copying the parent.
 // Sets up child kernel stack to return as if from fork() system call.
-int
-kfork(void)
+صحيح
+kfork(فراغ)
 {
-  int i, pid;
-  struct proc *np;
-  struct proc *p = myproc();
+  صحيح i, pid;
+  بنية proc *np;
+  بنية proc *p = myproc();
 
   // Allocate process.
-  if ((np = allocproc()) == 0) {
-    return -1;
+  𐡄𐡍 ((np = allocproc()) == 0) {
+    أرجع -1;
   }
 
   // Copy user memory from parent to child.
-  if (uvmcopy(p->pagetable, np->pagetable, p->sz) < 0) {
+  𐡄𐡍 (uvmcopy(p->pagetable, np->pagetable, p->sz) < 0) {
     freeproc(np);
     release(&np->lock);
-    return -1;
+    أرجع -1;
   }
   np->sz = p->sz;
 
@@ -282,12 +282,12 @@ kfork(void)
   np->trapframe->a0 = 0;
 
   // increment reference counts on open file descriptors.
-  for (i = 0; i < NOFILE; i++)
-    if (p->ofile[i])
+  لكل (i = 0; i < NOFILE; i++)
+    𐡄𐡍 (p->ofile[i])
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
-  safestrcpy(np->name, p->name, sizeof(p->name));
+  safestrcpy(np->name, p->name, حجم(p->name));
 
   pid = np->pid;
 
@@ -301,18 +301,18 @@ kfork(void)
   np->state = RUNNABLE;
   release(&np->lock);
 
-  return pid;
+  أرجع pid;
 }
 
 // Pass p's abandoned children to init.
 // Caller must hold wait_lock.
-void
-reparent(struct proc *p)
+فراغ
+reparent(بنية proc *p)
 {
-  struct proc *pp;
+  بنية proc *pp;
 
-  for (pp = proc; pp < &proc[NPROC]; pp++) {
-    if (pp->parent == p) {
+  لكل (pp = proc; pp < &proc[NPROC]; pp++) {
+    𐡄𐡍 (pp->parent == p) {
       pp->parent = initproc;
       wakeup(initproc);
     }
@@ -322,18 +322,18 @@ reparent(struct proc *p)
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait().
-void
-kexit(int status)
+فراغ
+kexit(صحيح status)
 {
-  struct proc *p = myproc();
+  بنية proc *p = myproc();
 
-  if (p == initproc)
+  𐡄𐡍 (p == initproc)
     panic("init exiting");
 
   // Close all open files.
-  for (int fd = 0; fd < NOFILE; fd++) {
-    if (p->ofile[fd]) {
-      struct file *f = p->ofile[fd];
+  لكل (صحيح fd = 0; fd < NOFILE; fd++) {
+    𐡄𐡍 (p->ofile[fd]) {
+      بنية file *f = p->ofile[fd];
       fileclose(f);
       p->ofile[fd] = 0;
     }
@@ -366,48 +366,48 @@ kexit(int status)
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
-int
+صحيح
 kwait(uint64 addr)
 {
-  struct proc *pp;
-  int havekids, pid;
-  struct proc *p = myproc();
+  بنية proc *pp;
+  صحيح havekids, pid;
+  بنية proc *p = myproc();
 
   acquire(&wait_lock);
 
-  for (;;) {
+  لكل (;;) {
     // Scan through table looking for exited children.
     havekids = 0;
-    for (pp = proc; pp < &proc[NPROC]; pp++) {
-      if (pp->parent == p) {
+    لكل (pp = proc; pp < &proc[NPROC]; pp++) {
+      𐡄𐡍 (pp->parent == p) {
         // make sure the child isn't still in exit() or swtch().
         acquire(&pp->lock);
 
         havekids = 1;
-        if (pp->state == ZOMBIE) {
+        𐡄𐡍 (pp->state == ZOMBIE) {
           // Found one.
           pid = pp->pid;
-          if (addr != 0 &&
-              copyout(p->pagetable, p->sz, addr, (char *)&pp->xstate,
-                      sizeof(pp->xstate)) < 0) {
+          𐡄𐡍 (addr != 0 &&
+              copyout(p->pagetable, p->sz, addr, (حرف *)&pp->xstate,
+                      حجم(pp->xstate)) < 0) {
             release(&pp->lock);
             release(&wait_lock);
-            return -1;
+            أرجع -1;
           }
           pp->parent = 0;
           freeproc(pp);
           release(&pp->lock);
           release(&wait_lock);
-          return pid;
+          أرجع pid;
         }
         release(&pp->lock);
       }
     }
 
     // No point waiting if we don't have any children.
-    if (!havekids || killed(p)) {
+    𐡄𐡍 (!havekids || killed(p)) {
       release(&wait_lock);
-      return -1;
+      أرجع -1;
     }
 
     // Wait for a child to exit.
@@ -425,14 +425,14 @@ kwait(uint64 addr)
 //  - swtch to start running that process.
 //  - eventually that process transfers control
 //    via swtch back to the scheduler.
-void
-scheduler(void)
+فراغ
+scheduler(فراغ)
 {
-  struct proc *p;
-  struct cpu *c = mycpu();
+  بنية proc *p;
+  بنية cpu *c = mycpu();
 
   c->proc = 0;
-  for (;;) {
+  لكل (;;) {
     // The most recent process to run may have had interrupts
     // turned off; enable them to avoid a deadlock if all
     // processes are waiting. Then turn them back off
@@ -441,10 +441,10 @@ scheduler(void)
     intr_on();
     intr_off();
 
-    int found = 0;
-    for (p = proc; p < &proc[NPROC]; p++) {
+    صحيح found = 0;
+    لكل (p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
-      if (p->state == RUNNABLE) {
+      𐡄𐡍 (p->state == RUNNABLE) {
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
@@ -462,9 +462,9 @@ scheduler(void)
       }
       release(&p->lock);
     }
-    if (found == 0) {
+    𐡄𐡍 (found == 0) {
       // nothing to run; stop running on this core until an interrupt.
-      asm volatile("wfi");
+      asm متطاير("wfi");
     }
   }
 }
@@ -476,19 +476,19 @@ scheduler(void)
 // be proc->intena and proc->noff, but that would
 // break in the few places where a lock is held but
 // there's no process.
-void
-sched(void)
+فراغ
+sched(فراغ)
 {
-  int intena;
-  struct proc *p = myproc();
+  صحيح intena;
+  بنية proc *p = myproc();
 
-  if (!holding(&p->lock))
+  𐡄𐡍 (!holding(&p->lock))
     panic("sched p->lock");
-  if (mycpu()->noff != 1)
+  𐡄𐡍 (mycpu()->noff != 1)
     panic("sched locks");
-  if (p->state == RUNNING)
+  𐡄𐡍 (p->state == RUNNING)
     panic("sched RUNNING");
-  if (intr_get())
+  𐡄𐡍 (intr_get())
     panic("sched interruptible");
 
   intena = mycpu()->intena;
@@ -497,10 +497,10 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
-void
-yield(void)
+فراغ
+yield(فراغ)
 {
-  struct proc *p = myproc();
+  بنية proc *p = myproc();
   acquire(&p->lock);
   p->state = RUNNABLE;
   sched();
@@ -509,17 +509,17 @@ yield(void)
 
 // A fork child's very first scheduling by scheduler()
 // will swtch to forkret.
-void
-forkret(void)
+فراغ
+forkret(فراغ)
 {
-  extern char userret[];
-  static int first = 1;
-  struct proc *p = myproc();
+  خارجي حرف userret[];
+  ساكن صحيح first = 1;
+  بنية proc *p = myproc();
 
   // Still holding p->lock from scheduler.
   release(&p->lock);
 
-  if (first) {
+  𐡄𐡍 (first) {
     first = 0;
 
     // File system initialization must be run in the context of a
@@ -529,8 +529,8 @@ forkret(void)
 
     // We can invoke kexec() now that file system is initialized.
     // Put the return value (argc) of kexec into a0.
-    p->trapframe->a0 = kexec("/init", (char *[]){"/init", 0});
-    if (p->trapframe->a0 == -1) {
+    p->trapframe->a0 = kexec("/init", (حرف *[]){"/init", 0});
+    𐡄𐡍 (p->trapframe->a0 == -1) {
       panic("exec");
     }
   }
@@ -539,17 +539,17 @@ forkret(void)
   prepare_return();
   uint64 satp = MAKE_SATP(p->pagetable);
   uint64 trampoline_userret = TRAMPOLINE + (userret - trampoline);
-  ((void (*)(uint64))trampoline_userret)(satp);
+  ((فراغ (*)(uint64))trampoline_userret)(satp);
 }
 
 // Register current process as waiting for wakeups on chan.
-void
-sleep_prepare(void *chan)
+فراغ
+sleep_prepare(فراغ *chan)
 {
-  struct proc *p = myproc();
+  بنية proc *p = myproc();
 
   acquire(&p->lock);
-  if (chan == 0)
+  𐡄𐡍 (chan == 0)
     panic("sleep_prepare: zero chan");
   p->chan = chan;
   release(&p->lock);
@@ -558,13 +558,13 @@ sleep_prepare(void *chan)
 // Put the thread to sleep.  Assumes sleep_prepare() was called before.
 // If the channel registered by sleep_prepare() has been woken up in
 // the meantime, do not go to sleep, and instead return immediately.
-void
-sleep(void)
+فراغ
+sleep(فراغ)
 {
-  struct proc *p = myproc();
+  بنية proc *p = myproc();
 
   acquire(&p->lock);
-  if (p->chan != 0) {
+  𐡄𐡍 (p->chan != 0) {
     p->state = SLEEPING;
     sched();
   }
@@ -572,21 +572,21 @@ sleep(void)
 }
 
 // Wake up all processes sleeping on channel chan.
-void
-wakeup(void *chan)
+فراغ
+wakeup(فراغ *chan)
 {
-  struct proc *p;
+  بنية proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  لكل (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->chan == chan) {
+    𐡄𐡍 (p->chan == chan) {
       // If the process is waiting for wakeups on this channel,
       // signal that the wakeup happened by clearing p->chan.
       p->chan = 0;
 
       // If this waiting process has gotten so far as to actually
       // go to sleep, also set it back to RUNNING.
-      if (p->state == SLEEPING) {
+      𐡄𐡍 (p->state == SLEEPING) {
         p->state = RUNNABLE;
       }
     }
@@ -597,86 +597,86 @@ wakeup(void *chan)
 // Kill the process with the given pid.
 // The victim won't exit until it tries to return
 // to user space (see usertrap() in trap.c).
-int
-kkill(int pid)
+صحيح
+kkill(صحيح pid)
 {
-  struct proc *p;
+  بنية proc *p;
 
-  if (pid == 0)
-    return -1;
+  𐡄𐡍 (pid == 0)
+    أرجع -1;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  لكل (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->pid == pid) {
+    𐡄𐡍 (p->pid == pid) {
       p->killed = 1;
-      if (p->state == SLEEPING) {
+      𐡄𐡍 (p->state == SLEEPING) {
         // Wake process from sleep().
         p->state = RUNNABLE;
       }
       release(&p->lock);
-      return 0;
+      أرجع 0;
     }
     release(&p->lock);
   }
-  return -1;
+  أرجع -1;
 }
 
-void
-setkilled(struct proc *p)
+فراغ
+setkilled(بنية proc *p)
 {
   acquire(&p->lock);
   p->killed = 1;
   release(&p->lock);
 }
 
-int
-killed(struct proc *p)
+صحيح
+killed(بنية proc *p)
 {
-  int k;
+  صحيح k;
 
   acquire(&p->lock);
   k = p->killed;
   release(&p->lock);
-  return k;
+  أرجع k;
 }
 
 // Copy to either a user address, or kernel address,
 // depending on usr_dst.
 // Returns 0 on success, -1 on error.
-int
-either_copyout(int user_dst, uint64 dst, void *src, uint64 len)
+صحيح
+either_copyout(صحيح user_dst, uint64 dst, فراغ *src, uint64 len)
 {
-  struct proc *p = myproc();
-  if (user_dst) {
-    return copyout(p->pagetable, p->sz, dst, src, len);
-  } else {
-    memmove((char *)dst, src, len);
-    return 0;
+  بنية proc *p = myproc();
+  𐡄𐡍 (user_dst) {
+    أرجع copyout(p->pagetable, p->sz, dst, src, len);
+  } وإلا {
+    memmove((حرف *)dst, src, len);
+    أرجع 0;
   }
 }
 
 // Copy from either a user address, or kernel address,
 // depending on usr_src.
 // Returns 0 on success, -1 on error.
-int
-either_copyin(void *dst, int user_src, uint64 src, uint64 len)
+صحيح
+either_copyin(فراغ *dst, صحيح user_src, uint64 src, uint64 len)
 {
-  struct proc *p = myproc();
-  if (user_src) {
-    return copyin(p->pagetable, p->sz, dst, src, len);
-  } else {
-    memmove(dst, (char *)src, len);
-    return 0;
+  بنية proc *p = myproc();
+  𐡄𐡍 (user_src) {
+    أرجع copyin(p->pagetable, p->sz, dst, src, len);
+  } وإلا {
+    memmove(dst, (حرف *)src, len);
+    أرجع 0;
   }
 }
 
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
 // No lock to avoid wedging a stuck machine further.
-void
-procdump(void)
+فراغ
+procdump(فراغ)
 {
-  static char *states[] = {
+  ساكن حرف *states[] = {
     // clang-format off
     [UNUSED]    = "unused",
     [USED]      = "used",
@@ -686,16 +686,16 @@ procdump(void)
     [ZOMBIE]    = "zombie"
     // clang-format on
   };
-  struct proc *p;
-  char *state;
+  بنية proc *p;
+  حرف *state;
 
   printk("\n");
-  for (p = proc; p < &proc[NPROC]; p++) {
-    if (p->state == UNUSED)
-      continue;
-    if (p->state >= 0 && p->state < NELEM(states) && states[p->state])
+  لكل (p = proc; p < &proc[NPROC]; p++) {
+    𐡄𐡍 (p->state == UNUSED)
+      استمر;
+    𐡄𐡍 (p->state >= 0 && p->state < NELEM(states) && states[p->state])
       state = states[p->state];
-    else
+    وإلا
       state = "???";
     printk("%d %s %s", p->pid, state, p->name);
     printk("\n");

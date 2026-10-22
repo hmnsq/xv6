@@ -1,9 +1,9 @@
 // Long-term locks for processes
-struct sleeplock {
+بنية sleeplock {
   uint locked;        // Is the lock held?
-  struct spinlock lk; // spinlock protecting this sleep lock
+  بنية spinlock lk; // spinlock protecting this sleep lock
 
   // For debugging:
-  char *name; // Name of lock.
-  int pid;    // Process holding lock
+  حرف *name; // Name of lock.
+  صحيح pid;    // Process holding lock
 };
