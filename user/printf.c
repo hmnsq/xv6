@@ -1,114 +1,114 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/stat.h"
+#समावेश "user/user.h"
 
-#include <stdarg.h>
+#समावेश <stdarg.h>
 
-static char digits[] = "0123456789ABCDEF";
+अटल अक्षर digits[] = "0123456789ABCDEF";
 
-static void
-putc(int fd, char c)
+अटल व्योम
+अ_दो(पूर्णांक fd, अक्षर c)
 {
-  write(fd, &c, 1);
+  ग_लिखो(fd, &c, 1);
 }
 
-static void
-printint(int fd, long long xx, int base, int sgn)
+अटल व्योम
+printint(पूर्णांक fd, दीर्घ दीर्घ xx, पूर्णांक base, पूर्णांक sgn)
 {
-  char buf[20];
-  int i, neg;
-  unsigned long long x;
+  अक्षर buf[20];
+  पूर्णांक i, neg;
+  अचिन्हित दीर्घ दीर्घ x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  अगर (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } अन्यथा {
     x = xx;
   }
 
   i = 0;
-  do {
+  करो {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  } जबतक ((x /= base) != 0);
+  अगर (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
-    putc(fd, buf[i]);
+  जबतक (--i >= 0)
+    अ_दो(fd, buf[i]);
 }
 
-static void
-printptr(int fd, uint64 x)
+अटल व्योम
+printptr(पूर्णांक fd, uint64 x)
 {
-  int i;
-  putc(fd, '0');
-  putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
+  पूर्णांक i;
+  अ_दो(fd, '0');
+  अ_दो(fd, 'x');
+  क्रम (i = 0; i < (माप(uint64) * 2); i++, x <<= 4)
+    अ_दो(fd, digits[x >> (माप(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
-void
-vprintf(int fd, const char *fmt, va_list ap)
+व्योम
+भ_लिखो(पूर्णांक fd, स्थिर अक्षर *fmt, बहु_सूची ap)
 {
-  char *s;
-  int c0, c1, c2, i, state;
+  अक्षर *s;
+  पूर्णांक c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  क्रम (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    अगर (state == 0) {
+      अगर (c0 == '%') {
         state = '%';
-      } else {
-        putc(fd, c0);
+      } अन्यथा {
+        अ_दो(fd, c0);
       }
-    } else if (state == '%') {
+    } अन्यथा अगर (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      अगर (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      अगर (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
-        printint(fd, va_arg(ap, uint64), 10, 1);
+      अगर (c0 == 'd') {
+        printint(fd, बहु_तर्क(ap, पूर्णांक), 10, 1);
+      } अन्यथा अगर (c0 == 'l' && c1 == 'd') {
+        printint(fd, बहु_तर्क(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
-        printint(fd, va_arg(ap, uint64), 10, 1);
+      } अन्यथा अगर (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+        printint(fd, बहु_तर्क(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
-        printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
-        printint(fd, va_arg(ap, uint64), 10, 0);
+      } अन्यथा अगर (c0 == 'u') {
+        printint(fd, बहु_तर्क(ap, uint32), 10, 0);
+      } अन्यथा अगर (c0 == 'l' && c1 == 'u') {
+        printint(fd, बहु_तर्क(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
-        printint(fd, va_arg(ap, uint64), 10, 0);
+      } अन्यथा अगर (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+        printint(fd, बहु_तर्क(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
-        printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
-        printint(fd, va_arg(ap, uint64), 16, 0);
+      } अन्यथा अगर (c0 == 'x') {
+        printint(fd, बहु_तर्क(ap, uint32), 16, 0);
+      } अन्यथा अगर (c0 == 'l' && c1 == 'x') {
+        printint(fd, बहु_तर्क(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
-        printint(fd, va_arg(ap, uint64), 16, 0);
+      } अन्यथा अगर (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+        printint(fd, बहु_तर्क(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
-        printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
-        putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } अन्यथा अगर (c0 == 'p') {
+        printptr(fd, बहु_तर्क(ap, uint64));
+      } अन्यथा अगर (c0 == 'c') {
+        अ_दो(fd, बहु_तर्क(ap, uint32));
+      } अन्यथा अगर (c0 == 's') {
+        अगर ((s = बहु_तर्क(ap, अक्षर *)) == 0)
           s = "(null)";
-        for (; *s; s++)
-          putc(fd, *s);
-      } else if (c0 == '%') {
-        putc(fd, '%');
-      } else {
+        क्रम (; *s; s++)
+          अ_दो(fd, *s);
+      } अन्यथा अगर (c0 == '%') {
+        अ_दो(fd, '%');
+      } अन्यथा {
         // Unknown % sequence.  Print it to draw attention.
-        putc(fd, '%');
-        putc(fd, c0);
+        अ_दो(fd, '%');
+        अ_दो(fd, c0);
       }
 
       state = 0;
@@ -116,20 +116,20 @@ vprintf(int fd, const char *fmt, va_list ap)
   }
 }
 
-void
-fprintf(int fd, const char *fmt, ...)
+व्योम
+ख_लिखो(पूर्णांक fd, स्थिर अक्षर *fmt, ...)
 {
-  va_list ap;
+  बहु_सूची ap;
 
-  va_start(ap, fmt);
-  vprintf(fd, fmt, ap);
+  बहु_शुरू(ap, fmt);
+  भ_लिखो(fd, fmt, ap);
 }
 
-void
-printf(const char *fmt, ...)
+व्योम
+म_लिखो(स्थिर अक्षर *fmt, ...)
 {
-  va_list ap;
+  बहु_सूची ap;
 
-  va_start(ap, fmt);
-  vprintf(1, fmt, ap);
+  बहु_शुरू(ap, fmt);
+  भ_लिखो(1, fmt, ap);
 }

@@ -1,28 +1,28 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#समावेश "types.h"
+#समावेश "param.h"
+#समावेश "memlayout.h"
+#समावेश "riscv.h"
+#समावेश "defs.h"
 
-void main();
-void timerinit();
+व्योम मुख्य();
+व्योम timerinit();
 
 // entry.S needs one stack per CPU.
-__attribute__((aligned(16))) char stack0[4096 * NCPU];
+__attribute__((aligned(16))) अक्षर stack0[4096 * NCPU];
 
 // entry.S jumps here in machine mode on stack0.
-void
+व्योम
 start()
 {
   // set M Previous Privilege mode to Supervisor, for mret.
-  unsigned long x = r_mstatus();
+  अचिन्हित दीर्घ x = r_mstatus();
   x &= ~MSTATUS_MPP_MASK;
   x |= MSTATUS_MPP_S;
   w_mstatus(x);
 
   // set M Exception Program Counter to main, for mret.
   // requires gcc -mcmodel=medany
-  w_mepc((uint64)main);
+  w_mepc((uint64)मुख्य);
 
   // disable paging for now.
   w_satp(0);
@@ -44,15 +44,15 @@ start()
   timerinit();
 
   // keep each CPU's hartid in its tp register, for cpuid().
-  int id = r_mhartid();
+  पूर्णांक id = r_mhartid();
   w_tp(id);
 
   // switch to supervisor mode and jump to main().
-  asm volatile("mret");
+  यंत्र अस्थिर("mret");
 }
 
 // ask each hart to generate timer interrupts.
-void
+व्योम
 timerinit()
 {
   // enable the sstc extension (i.e. stimecmp).

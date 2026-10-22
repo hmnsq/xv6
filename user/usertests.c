@@ -1,12 +1,12 @@
-#include "kernel/param.h"
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
-#include "kernel/syscall.h"
-#include "kernel/memlayout.h"
-#include "kernel/riscv.h"
+#समावेश "kernel/param.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/stat.h"
+#समावेश "user/user.h"
+#समावेश "kernel/fs.h"
+#समावेश "kernel/fcntl.h"
+#समावेश "kernel/syscall.h"
+#समावेश "kernel/memlayout.h"
+#समावेश "kernel/riscv.h"
 
 //
 // Tests xv6 system calls.  usertests without arguments runs them all
@@ -17,9 +17,9 @@
 // prints "OK".
 //
 
-#define BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
+#घोषणा BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
 
-char buf[BUFSZ];
+अक्षर buf[BUFSZ];
 
 //
 // Section with tests that run fairly quickly.  Use -q if you want to
@@ -29,108 +29,108 @@ char buf[BUFSZ];
 
 // what if you pass ridiculous pointers to system calls
 // that read user memory with copyin?
-void
-copyin(char *s)
+व्योम
+copyin(अक्षर *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  क्रम (पूर्णांक ai = 0; ai < माप(addrs) / माप(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("copyin1", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open(copyin1) failed\n");
-      exit(1);
+    पूर्णांक fd = खोलो("copyin1", O_CREATE | O_WRONLY);
+    अगर (fd < 0) {
+      म_लिखो("open(copyin1) failed\n");
+      निकास(1);
     }
-    int n = write(fd, (void *)addr, 8192);
-    if (n >= 0) {
-      printf("write(fd, %p, 8192) returned %d, not -1\n", (void *)addr, n);
-      exit(1);
+    पूर्णांक n = ग_लिखो(fd, (व्योम *)addr, 8192);
+    अगर (n >= 0) {
+      म_लिखो("write(fd, %p, 8192) returned %d, not -1\n", (व्योम *)addr, n);
+      निकास(1);
     }
-    close(fd);
+    बंद(fd);
     unlink("copyin1");
 
-    n = write(1, (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(1, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    n = ग_लिखो(1, (अक्षर *)addr, 8192);
+    अगर (n > 0) {
+      म_लिखो("write(1, %p, 8192) returned %d, not -1 or 0\n", (व्योम *)addr, n);
+      निकास(1);
     }
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    पूर्णांक fds[2];
+    अगर (pipe(fds) < 0) {
+      म_लिखो("pipe() failed\n");
+      निकास(1);
     }
-    n = write(fds[1], (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = ग_लिखो(fds[1], (अक्षर *)addr, 8192);
+    अगर (n > 0) {
+      म_लिखो("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (व्योम *)addr,
              n);
-      exit(1);
+      निकास(1);
     }
-    close(fds[0]);
-    close(fds[1]);
+    बंद(fds[0]);
+    बंद(fds[1]);
   }
 }
 
 // what if you pass ridiculous pointers to system calls
 // that write user memory with copyout?
-void
-copyout(char *s)
+व्योम
+copyout(अक्षर *s)
 {
   uint64 addrs[] = {0LL,          0x80000000LL, 0x3fffffe000,
                     0x3ffffff000, 0x4000000000, 0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  क्रम (पूर्णांक ai = 0; ai < माप(addrs) / माप(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("open(README) failed\n");
-      exit(1);
+    पूर्णांक fd = खोलो("README", 0);
+    अगर (fd < 0) {
+      म_लिखो("open(README) failed\n");
+      निकास(1);
     }
-    int n = read(fd, (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(fd, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    पूर्णांक n = पढ़ो(fd, (व्योम *)addr, 8192);
+    अगर (n > 0) {
+      म_लिखो("read(fd, %p, 8192) returned %d, not -1 or 0\n", (व्योम *)addr, n);
+      निकास(1);
     }
-    close(fd);
+    बंद(fd);
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    पूर्णांक fds[2];
+    अगर (pipe(fds) < 0) {
+      म_लिखो("pipe() failed\n");
+      निकास(1);
     }
-    n = write(fds[1], "x", 1);
-    if (n != 1) {
-      printf("pipe write failed\n");
-      exit(1);
+    n = ग_लिखो(fds[1], "x", 1);
+    अगर (n != 1) {
+      म_लिखो("pipe write failed\n");
+      निकास(1);
     }
-    n = read(fds[0], (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = पढ़ो(fds[0], (व्योम *)addr, 8192);
+    अगर (n > 0) {
+      म_लिखो("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (व्योम *)addr,
              n);
-      exit(1);
+      निकास(1);
     }
-    close(fds[0]);
-    close(fds[1]);
+    बंद(fds[0]);
+    बंद(fds[1]);
   }
 }
 
 // what if you pass ridiculous string pointers to system calls?
-void
-copyinstr1(char *s)
+व्योम
+copyinstr1(अक्षर *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  क्रम (पूर्णांक ai = 0; ai < माप(addrs) / माप(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open((char *)addr, O_CREATE | O_WRONLY);
-    if (fd >= 0) {
-      printf("open(%p) returned %d, not -1\n", (void *)addr, fd);
-      exit(1);
+    पूर्णांक fd = खोलो((अक्षर *)addr, O_CREATE | O_WRONLY);
+    अगर (fd >= 0) {
+      म_लिखो("open(%p) returned %d, not -1\n", (व्योम *)addr, fd);
+      निकास(1);
     }
   }
 }
@@ -138,342 +138,342 @@ copyinstr1(char *s)
 // what if a string system call argument is exactly the size
 // of the kernel buffer it is copied into, so that the null
 // would fall just beyond the end of the kernel buffer?
-void
-copyinstr2(char *s)
+व्योम
+copyinstr2(अक्षर *s)
 {
-  char b[MAXPATH + 1];
+  अक्षर b[MAXPATH + 1];
 
-  for (int i = 0; i < MAXPATH; i++)
+  क्रम (पूर्णांक i = 0; i < MAXPATH; i++)
     b[i] = 'x';
   b[MAXPATH] = '\0';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  पूर्णांक ret = unlink(b);
+  अगर (ret != -1) {
+    म_लिखो("unlink(%s) returned %d, not -1\n", b, ret);
+    निकास(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  पूर्णांक fd = खोलो(b, O_CREATE | O_WRONLY);
+  अगर (fd != -1) {
+    म_लिखो("open(%s) returned %d, not -1\n", b, fd);
+    निकास(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  अगर (ret != -1) {
+    म_लिखो("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    निकास(1);
   }
 
-  char *args[] = {"xx", 0};
+  अक्षर *args[] = {"xx", 0};
   ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  अगर (ret != -1) {
+    म_लिखो("exec(%s) returned %d, not -1\n", b, fd);
+    निकास(1);
   }
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  पूर्णांक pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("fork failed\n");
+    निकास(1);
   }
-  if (pid == 0) {
-    static char big[PGSIZE + 1];
-    for (int i = 0; i < PGSIZE; i++)
+  अगर (pid == 0) {
+    अटल अक्षर big[PGSIZE + 1];
+    क्रम (पूर्णांक i = 0; i < PGSIZE; i++)
       big[i] = 'x';
     big[PGSIZE] = '\0';
-    char *args2[] = {big, big, big, 0};
+    अक्षर *args2[] = {big, big, big, 0};
     ret = exec("echo", args2);
-    if (ret != -1) {
-      printf("exec(echo, BIG) returned %d, not -1\n", fd);
-      exit(1);
+    अगर (ret != -1) {
+      म_लिखो("exec(echo, BIG) returned %d, not -1\n", fd);
+      निकास(1);
     }
-    exit(747); // OK
+    निकास(747); // OK
   }
 
-  int st = 0;
-  wait(&st);
-  if (st != 747) {
-    printf("exec(echo, BIG) succeeded, should have failed\n");
-    exit(1);
+  पूर्णांक st = 0;
+  रुको(&st);
+  अगर (st != 747) {
+    म_लिखो("exec(echo, BIG) succeeded, should have failed\n");
+    निकास(1);
   }
 }
 
 // what if a string argument crosses over the end of last user page?
-void
-copyinstr3(char *s)
+व्योम
+copyinstr3(अक्षर *s)
 {
   sbrk(8192);
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0) {
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 शीर्ष_2 = (uint64)sbrk(0);
+  अगर ((शीर्ष_2 % PGSIZE) != 0) {
+    sbrk(PGSIZE - (शीर्ष_2 % PGSIZE));
   }
-  top = (uint64)sbrk(0);
-  if (top % PGSIZE) {
-    printf("oops\n");
-    exit(1);
+  शीर्ष_2 = (uint64)sbrk(0);
+  अगर (शीर्ष_2 % PGSIZE) {
+    म_लिखो("oops\n");
+    निकास(1);
   }
 
-  char *b = (char *)(top - 1);
+  अक्षर *b = (अक्षर *)(शीर्ष_2 - 1);
   *b = 'x';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  पूर्णांक ret = unlink(b);
+  अगर (ret != -1) {
+    म_लिखो("unlink(%s) returned %d, not -1\n", b, ret);
+    निकास(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  पूर्णांक fd = खोलो(b, O_CREATE | O_WRONLY);
+  अगर (fd != -1) {
+    म_लिखो("open(%s) returned %d, not -1\n", b, fd);
+    निकास(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  अगर (ret != -1) {
+    म_लिखो("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    निकास(1);
   }
 
-  char *args[] = {"xx", 0};
+  अक्षर *args[] = {"xx", 0};
   ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  अगर (ret != -1) {
+    म_लिखो("exec(%s) returned %d, not -1\n", b, fd);
+    निकास(1);
   }
 }
 
 // See if the kernel refuses to read/write user memory that the
 // application doesn't have anymore, because it returned it.
-void
-rwsbrk(char *s)
+व्योम
+rwsbrk(अक्षर *s)
 {
-  int fd, n;
+  पूर्णांक fd, n;
 
   uint64 a = (uint64)sbrk(8192);
 
-  if (a == (uint64)SBRK_ERROR) {
-    printf("sbrk(rwsbrk) failed\n");
-    exit(1);
+  अगर (a == (uint64)SBRK_ERROR) {
+    म_लिखो("sbrk(rwsbrk) failed\n");
+    निकास(1);
   }
 
-  if (sbrk(-8192) == SBRK_ERROR) {
-    printf("sbrk(rwsbrk) shrink failed\n");
-    exit(1);
+  अगर (sbrk(-8192) == SBRK_ERROR) {
+    म_लिखो("sbrk(rwsbrk) shrink failed\n");
+    निकास(1);
   }
 
-  fd = open("rwsbrk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open(rwsbrk) failed\n");
-    exit(1);
+  fd = खोलो("rwsbrk", O_CREATE | O_WRONLY);
+  अगर (fd < 0) {
+    म_लिखो("open(rwsbrk) failed\n");
+    निकास(1);
   }
-  n = write(fd, (void *)(a + PGSIZE), 1024);
-  if (n >= 0) {
-    printf("write(fd, %p, 1024) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = ग_लिखो(fd, (व्योम *)(a + PGSIZE), 1024);
+  अगर (n >= 0) {
+    म_लिखो("write(fd, %p, 1024) returned %d, not -1\n", (व्योम *)a + PGSIZE, n);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
   unlink("rwsbrk");
 
-  fd = open("README", O_RDONLY);
-  if (fd < 0) {
-    printf("open(README) failed\n");
-    exit(1);
+  fd = खोलो("README", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("open(README) failed\n");
+    निकास(1);
   }
-  n = read(fd, (void *)(a + PGSIZE), 10);
-  if (n >= 0) {
-    printf("read(fd, %p, 10) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = पढ़ो(fd, (व्योम *)(a + PGSIZE), 10);
+  अगर (n >= 0) {
+    म_लिखो("read(fd, %p, 10) returned %d, not -1\n", (व्योम *)a + PGSIZE, n);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  exit(0);
+  निकास(0);
 }
 
 // test O_TRUNC.
-void
-truncate1(char *s)
+व्योम
+truncate1(अक्षर *s)
 {
-  char buf[32];
+  अक्षर buf[32];
 
   unlink("truncfile");
-  int fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-  write(fd1, "abcd", 4);
-  close(fd1);
+  पूर्णांक fd1 = खोलो("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+  ग_लिखो(fd1, "abcd", 4);
+  बंद(fd1);
 
-  int fd2 = open("truncfile", O_RDONLY);
-  int n = read(fd2, buf, sizeof(buf));
-  if (n != 4) {
-    printf("%s: read %d bytes, wanted 4\n", s, n);
-    exit(1);
+  पूर्णांक fd2 = खोलो("truncfile", O_RDONLY);
+  पूर्णांक n = पढ़ो(fd2, buf, माप(buf));
+  अगर (n != 4) {
+    म_लिखो("%s: read %d bytes, wanted 4\n", s, n);
+    निकास(1);
   }
 
-  fd1 = open("truncfile", O_WRONLY | O_TRUNC);
+  fd1 = खोलो("truncfile", O_WRONLY | O_TRUNC);
 
-  int fd3 = open("truncfile", O_RDONLY);
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 0) {
-    printf("aaa fd3=%d\n", fd3);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  पूर्णांक fd3 = खोलो("truncfile", O_RDONLY);
+  n = पढ़ो(fd3, buf, माप(buf));
+  अगर (n != 0) {
+    म_लिखो("aaa fd3=%d\n", fd3);
+    म_लिखो("%s: read %d bytes, wanted 0\n", s, n);
+    निकास(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 0) {
-    printf("bbb fd2=%d\n", fd2);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  n = पढ़ो(fd2, buf, माप(buf));
+  अगर (n != 0) {
+    म_लिखो("bbb fd2=%d\n", fd2);
+    म_लिखो("%s: read %d bytes, wanted 0\n", s, n);
+    निकास(1);
   }
 
-  write(fd1, "abcdef", 6);
+  ग_लिखो(fd1, "abcdef", 6);
 
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 6) {
-    printf("%s: read %d bytes, wanted 6\n", s, n);
-    exit(1);
+  n = पढ़ो(fd3, buf, माप(buf));
+  अगर (n != 6) {
+    म_लिखो("%s: read %d bytes, wanted 6\n", s, n);
+    निकास(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 2) {
-    printf("%s: read %d bytes, wanted 2\n", s, n);
-    exit(1);
+  n = पढ़ो(fd2, buf, माप(buf));
+  अगर (n != 2) {
+    म_लिखो("%s: read %d bytes, wanted 2\n", s, n);
+    निकास(1);
   }
 
   unlink("truncfile");
 
-  close(fd1);
-  close(fd2);
-  close(fd3);
+  बंद(fd1);
+  बंद(fd2);
+  बंद(fd3);
 }
 
 // write to an open FD whose file has just been truncated.
 // this causes a write at an offset beyond the end of the file.
 // such writes fail on xv6 (unlike POSIX) but at least
 // they don't crash.
-void
-truncate2(char *s)
+व्योम
+truncate2(अक्षर *s)
 {
   unlink("truncfile");
 
-  int fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
-  write(fd1, "abcd", 4);
+  पूर्णांक fd1 = खोलो("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
+  ग_लिखो(fd1, "abcd", 4);
 
-  int fd2 = open("truncfile", O_TRUNC | O_WRONLY);
+  पूर्णांक fd2 = खोलो("truncfile", O_TRUNC | O_WRONLY);
 
-  int n = write(fd1, "x", 1);
-  if (n != -1) {
-    printf("%s: write returned %d, expected -1\n", s, n);
-    exit(1);
+  पूर्णांक n = ग_लिखो(fd1, "x", 1);
+  अगर (n != -1) {
+    म_लिखो("%s: write returned %d, expected -1\n", s, n);
+    निकास(1);
   }
 
   unlink("truncfile");
-  close(fd1);
-  close(fd2);
+  बंद(fd1);
+  बंद(fd2);
 }
 
-void
-truncate3(char *s)
+व्योम
+truncate3(अक्षर *s)
 {
-  int pid, xstatus;
+  पूर्णांक pid, xstatus;
 
-  close(open("truncfile", O_CREATE | O_TRUNC | O_WRONLY));
+  बंद(खोलो("truncfile", O_CREATE | O_TRUNC | O_WRONLY));
 
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
 
-  if (pid == 0) {
-    for (int i = 0; i < 100; i++) {
-      char buf[32];
-      int fd = open("truncfile", O_WRONLY);
-      if (fd < 0) {
-        printf("%s: open failed\n", s);
-        exit(1);
+  अगर (pid == 0) {
+    क्रम (पूर्णांक i = 0; i < 100; i++) {
+      अक्षर buf[32];
+      पूर्णांक fd = खोलो("truncfile", O_WRONLY);
+      अगर (fd < 0) {
+        म_लिखो("%s: open failed\n", s);
+        निकास(1);
       }
-      int n = write(fd, "1234567890", 10);
-      if (n != 10) {
-        printf("%s: write got %d, expected 10\n", s, n);
-        exit(1);
+      पूर्णांक n = ग_लिखो(fd, "1234567890", 10);
+      अगर (n != 10) {
+        म_लिखो("%s: write got %d, expected 10\n", s, n);
+        निकास(1);
       }
-      close(fd);
-      fd = open("truncfile", O_RDONLY);
-      read(fd, buf, sizeof(buf));
-      close(fd);
+      बंद(fd);
+      fd = खोलो("truncfile", O_RDONLY);
+      पढ़ो(fd, buf, माप(buf));
+      बंद(fd);
     }
-    exit(0);
+    निकास(0);
   }
 
-  for (int i = 0; i < 150; i++) {
-    int fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-    if (fd < 0) {
-      printf("%s: open failed\n", s);
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < 150; i++) {
+    पूर्णांक fd = खोलो("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+    अगर (fd < 0) {
+      म_लिखो("%s: open failed\n", s);
+      निकास(1);
     }
-    int n = write(fd, "xxx", 3);
-    if (n != 3) {
-      printf("%s: write got %d, expected 3\n", s, n);
-      exit(1);
+    पूर्णांक n = ग_लिखो(fd, "xxx", 3);
+    अगर (n != 3) {
+      म_लिखो("%s: write got %d, expected 3\n", s, n);
+      निकास(1);
     }
-    close(fd);
+    बंद(fd);
   }
 
-  wait(&xstatus);
+  रुको(&xstatus);
   unlink("truncfile");
-  exit(xstatus);
+  निकास(xstatus);
 }
 
 // does chdir() call iput(p->cwd) in a transaction?
-void
-iputtest(char *s)
+व्योम
+iputtest(अक्षर *s)
 {
-  if (mkdir("iputdir") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("iputdir") < 0) {
+    म_लिखो("%s: mkdir failed\n", s);
+    निकास(1);
   }
-  if (chdir("iputdir") < 0) {
-    printf("%s: chdir iputdir failed\n", s);
-    exit(1);
+  अगर (स_बदलो("iputdir") < 0) {
+    म_लिखो("%s: chdir iputdir failed\n", s);
+    निकास(1);
   }
-  if (unlink("../iputdir") < 0) {
-    printf("%s: unlink ../iputdir failed\n", s);
-    exit(1);
+  अगर (unlink("../iputdir") < 0) {
+    म_लिखो("%s: unlink ../iputdir failed\n", s);
+    निकास(1);
   }
-  if (chdir("/") < 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  अगर (स_बदलो("/") < 0) {
+    म_लिखो("%s: chdir / failed\n", s);
+    निकास(1);
   }
 }
 
 // does exit() call iput(p->cwd) in a transaction?
-void
-exitiputtest(char *s)
+व्योम
+exitiputtest(अक्षर *s)
 {
-  int pid, xstatus;
+  पूर्णांक pid, xstatus;
 
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid == 0) {
-    if (mkdir("iputdir") < 0) {
-      printf("%s: mkdir failed\n", s);
-      exit(1);
+  अगर (pid == 0) {
+    अगर (सूची_गढ़ो("iputdir") < 0) {
+      म_लिखो("%s: mkdir failed\n", s);
+      निकास(1);
     }
-    if (chdir("iputdir") < 0) {
-      printf("%s: child chdir failed\n", s);
-      exit(1);
+    अगर (स_बदलो("iputdir") < 0) {
+      म_लिखो("%s: child chdir failed\n", s);
+      निकास(1);
     }
-    if (unlink("../iputdir") < 0) {
-      printf("%s: unlink ../iputdir failed\n", s);
-      exit(1);
+    अगर (unlink("../iputdir") < 0) {
+      म_लिखो("%s: unlink ../iputdir failed\n", s);
+      निकास(1);
     }
-    exit(0);
+    निकास(0);
   }
-  wait(&xstatus);
-  exit(xstatus);
+  रुको(&xstatus);
+  निकास(xstatus);
 }
 
 // does the error path in open() for attempt to write a
@@ -487,450 +487,450 @@ exitiputtest(char *s)
 //      for(i = 0; i < 10000; i++)
 //        yield();
 //    }
-void
-openiputtest(char *s)
+व्योम
+openiputtest(अक्षर *s)
 {
-  int pid, xstatus;
+  पूर्णांक pid, xstatus;
 
-  if (mkdir("oidir") < 0) {
-    printf("%s: mkdir oidir failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("oidir") < 0) {
+    म_लिखो("%s: mkdir oidir failed\n", s);
+    निकास(1);
   }
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid == 0) {
-    int fd = open("oidir", O_RDWR);
-    if (fd >= 0) {
-      printf("%s: open directory for write succeeded\n", s);
-      exit(1);
+  अगर (pid == 0) {
+    पूर्णांक fd = खोलो("oidir", O_RDWR);
+    अगर (fd >= 0) {
+      म_लिखो("%s: open directory for write succeeded\n", s);
+      निकास(1);
     }
-    exit(0);
+    निकास(0);
   }
-  pause(1);
-  if (unlink("oidir") != 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  छोड़ो(1);
+  अगर (unlink("oidir") != 0) {
+    म_लिखो("%s: unlink failed\n", s);
+    निकास(1);
   }
-  wait(&xstatus);
-  exit(xstatus);
+  रुको(&xstatus);
+  निकास(xstatus);
 }
 
 // simple file system tests
 
-void
-opentest(char *s)
+व्योम
+opentest(अक्षर *s)
 {
-  int fd;
+  पूर्णांक fd;
 
-  fd = open("echo", 0);
-  if (fd < 0) {
-    printf("%s: open echo failed!\n", s);
-    exit(1);
+  fd = खोलो("echo", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: open echo failed!\n", s);
+    निकास(1);
   }
-  close(fd);
-  fd = open("doesnotexist", 0);
-  if (fd >= 0) {
-    printf("%s: open doesnotexist succeeded!\n", s);
-    exit(1);
+  बंद(fd);
+  fd = खोलो("doesnotexist", 0);
+  अगर (fd >= 0) {
+    म_लिखो("%s: open doesnotexist succeeded!\n", s);
+    निकास(1);
   }
 }
 
-void
-writetest(char *s)
+व्योम
+writetest(अक्षर *s)
 {
-  int fd;
-  int i;
-  enum { N = 100, SZ = 10 };
+  पूर्णांक fd;
+  पूर्णांक i;
+  क्रमागत { N = 100, SZ = 10 };
 
-  fd = open("small", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat small failed!\n", s);
-    exit(1);
+  fd = खोलो("small", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: error: creat small failed!\n", s);
+    निकास(1);
   }
-  for (i = 0; i < N; i++) {
-    if (write(fd, "aaaaaaaaaa", SZ) != SZ) {
-      printf("%s: error: write aa %d new file failed\n", s, i);
-      exit(1);
+  क्रम (i = 0; i < N; i++) {
+    अगर (ग_लिखो(fd, "aaaaaaaaaa", SZ) != SZ) {
+      म_लिखो("%s: error: write aa %d new file failed\n", s, i);
+      निकास(1);
     }
-    if (write(fd, "bbbbbbbbbb", SZ) != SZ) {
-      printf("%s: error: write bb %d new file failed\n", s, i);
-      exit(1);
+    अगर (ग_लिखो(fd, "bbbbbbbbbb", SZ) != SZ) {
+      म_लिखो("%s: error: write bb %d new file failed\n", s, i);
+      निकास(1);
     }
   }
-  close(fd);
-  fd = open("small", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open small failed!\n", s);
-    exit(1);
+  बंद(fd);
+  fd = खोलो("small", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("%s: error: open small failed!\n", s);
+    निकास(1);
   }
-  i = read(fd, buf, N * SZ * 2);
-  if (i != N * SZ * 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  i = पढ़ो(fd, buf, N * SZ * 2);
+  अगर (i != N * SZ * 2) {
+    म_लिखो("%s: read failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  if (unlink("small") < 0) {
-    printf("%s: unlink small failed\n", s);
-    exit(1);
+  अगर (unlink("small") < 0) {
+    म_लिखो("%s: unlink small failed\n", s);
+    निकास(1);
   }
 }
 
-void
-writebig(char *s)
+व्योम
+writebig(अक्षर *s)
 {
-  int i, fd, n;
+  पूर्णांक i, fd, n;
 
-  fd = open("big", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat big failed!\n", s);
-    exit(1);
+  fd = खोलो("big", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: error: creat big failed!\n", s);
+    निकास(1);
   }
 
-  for (i = 0; i < MAXFILE; i++) {
-    ((int *)buf)[0] = i;
-    if (write(fd, buf, BSIZE) != BSIZE) {
-      printf("%s: error: write big file failed i=%d\n", s, i);
-      exit(1);
+  क्रम (i = 0; i < MAXFILE; i++) {
+    ((पूर्णांक *)buf)[0] = i;
+    अगर (ग_लिखो(fd, buf, BSIZE) != BSIZE) {
+      म_लिखो("%s: error: write big file failed i=%d\n", s, i);
+      निकास(1);
     }
   }
 
-  close(fd);
+  बंद(fd);
 
-  fd = open("big", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open big failed!\n", s);
-    exit(1);
+  fd = खोलो("big", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("%s: error: open big failed!\n", s);
+    निकास(1);
   }
 
   n = 0;
-  for (;;) {
-    i = read(fd, buf, BSIZE);
-    if (i == 0) {
-      if (n != MAXFILE) {
-        printf("%s: read only %d blocks from big", s, n);
-        exit(1);
+  क्रम (;;) {
+    i = पढ़ो(fd, buf, BSIZE);
+    अगर (i == 0) {
+      अगर (n != MAXFILE) {
+        म_लिखो("%s: read only %d blocks from big", s, n);
+        निकास(1);
       }
-      break;
-    } else if (i != BSIZE) {
-      printf("%s: read failed %d\n", s, i);
-      exit(1);
+      अवरोध;
+    } अन्यथा अगर (i != BSIZE) {
+      म_लिखो("%s: read failed %d\n", s, i);
+      निकास(1);
     }
-    if (((int *)buf)[0] != n) {
-      printf("%s: read content of block %d is %d\n", s, n, ((int *)buf)[0]);
-      exit(1);
+    अगर (((पूर्णांक *)buf)[0] != n) {
+      म_लिखो("%s: read content of block %d is %d\n", s, n, ((पूर्णांक *)buf)[0]);
+      निकास(1);
     }
     n++;
   }
-  close(fd);
-  if (unlink("big") < 0) {
-    printf("%s: unlink big failed\n", s);
-    exit(1);
+  बंद(fd);
+  अगर (unlink("big") < 0) {
+    म_लिखो("%s: unlink big failed\n", s);
+    निकास(1);
   }
 }
 
 // many creates, followed by unlink test
-void
-createtest(char *s)
+व्योम
+createtest(अक्षर *s)
 {
-  int i, fd;
-  enum { N = 52 };
+  पूर्णांक i, fd;
+  क्रमागत { N = 52 };
 
-  char name[3];
+  अक्षर name[3];
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  क्रम (i = 0; i < N; i++) {
     name[1] = '0' + i;
-    fd = open(name, O_CREATE | O_RDWR);
-    close(fd);
+    fd = खोलो(name, O_CREATE | O_RDWR);
+    बंद(fd);
   }
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  क्रम (i = 0; i < N; i++) {
     name[1] = '0' + i;
     unlink(name);
   }
 }
 
-void
-dirtest(char *s)
+व्योम
+dirtest(अक्षर *s)
 {
-  if (mkdir("dir0") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("dir0") < 0) {
+    म_लिखो("%s: mkdir failed\n", s);
+    निकास(1);
   }
 
-  if (chdir("dir0") < 0) {
-    printf("%s: chdir dir0 failed\n", s);
-    exit(1);
+  अगर (स_बदलो("dir0") < 0) {
+    म_लिखो("%s: chdir dir0 failed\n", s);
+    निकास(1);
   }
 
-  if (chdir("..") < 0) {
-    printf("%s: chdir .. failed\n", s);
-    exit(1);
+  अगर (स_बदलो("..") < 0) {
+    म_लिखो("%s: chdir .. failed\n", s);
+    निकास(1);
   }
 
-  if (unlink("dir0") < 0) {
-    printf("%s: unlink dir0 failed\n", s);
-    exit(1);
+  अगर (unlink("dir0") < 0) {
+    म_लिखो("%s: unlink dir0 failed\n", s);
+    निकास(1);
   }
 }
 
-void
-exectest(char *s)
+व्योम
+exectest(अक्षर *s)
 {
-  int fd, xstatus, pid;
-  char *echoargv[] = {"echo", "OK", 0};
-  char buf[3];
+  पूर्णांक fd, xstatus, pid;
+  अक्षर *echoargv[] = {"echo", "OK", 0};
+  अक्षर buf[3];
 
   unlink("echo-ok");
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid == 0) {
-    int errfd = dup(1);
-    if (errfd < 0) {
-      printf("%s: dup failed\n", s);
-      exit(1);
+  अगर (pid == 0) {
+    पूर्णांक errfd = dup(1);
+    अगर (errfd < 0) {
+      म_लिखो("%s: dup failed\n", s);
+      निकास(1);
     }
-    close(1);
-    fd = open("echo-ok", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      fprintf(errfd, "%s: create failed\n", s);
-      exit(1);
+    बंद(1);
+    fd = खोलो("echo-ok", O_CREATE | O_WRONLY);
+    अगर (fd < 0) {
+      ख_लिखो(errfd, "%s: create failed\n", s);
+      निकास(1);
     }
-    if (fd != 1) {
-      fprintf(errfd, "%s: wrong fd\n", s);
-      exit(1);
+    अगर (fd != 1) {
+      ख_लिखो(errfd, "%s: wrong fd\n", s);
+      निकास(1);
     }
-    if (exec("echo", echoargv) < 0) {
-      fprintf(errfd, "%s: exec echo failed\n", s);
-      exit(1);
+    अगर (exec("echo", echoargv) < 0) {
+      ख_लिखो(errfd, "%s: exec echo failed\n", s);
+      निकास(1);
     }
     // won't get to here
   }
-  if (wait(&xstatus) != pid) {
-    printf("%s: wait failed!\n", s);
+  अगर (रुको(&xstatus) != pid) {
+    म_लिखो("%s: wait failed!\n", s);
   }
-  if (xstatus != 0) {
-    printf("%s: nonzero wait status %d\n", s, xstatus);
-    exit(1);
+  अगर (xstatus != 0) {
+    म_लिखो("%s: nonzero wait status %d\n", s, xstatus);
+    निकास(1);
   }
 
-  fd = open("echo-ok", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  fd = खोलो("echo-ok", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("%s: open failed\n", s);
+    निकास(1);
   }
-  if (read(fd, buf, 2) != 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  अगर (पढ़ो(fd, buf, 2) != 2) {
+    म_लिखो("%s: read failed\n", s);
+    निकास(1);
   }
   unlink("echo-ok");
-  if (buf[0] == 'O' && buf[1] == 'K')
-    exit(0);
-  else {
-    printf("%s: wrong output\n", s);
-    exit(1);
+  अगर (buf[0] == 'O' && buf[1] == 'K')
+    निकास(0);
+  अन्यथा {
+    म_लिखो("%s: wrong output\n", s);
+    निकास(1);
   }
 }
 
 // simple fork and pipe read/write
 
-void
-pipe1(char *s)
+व्योम
+pipe1(अक्षर *s)
 {
-  int fds[2], pid, xstatus;
-  int seq, i, n, cc, total;
-  enum { N = 5, SZ = 1033 };
+  पूर्णांक fds[2], pid, xstatus;
+  पूर्णांक seq, i, n, cc, योग;
+  क्रमागत { N = 5, SZ = 1033 };
 
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  अगर (pipe(fds) != 0) {
+    म_लिखो("%s: pipe() failed\n", s);
+    निकास(1);
   }
-  pid = fork();
+  pid = विभाजन();
   seq = 0;
-  if (pid == 0) {
-    close(fds[0]);
-    for (n = 0; n < N; n++) {
-      for (i = 0; i < SZ; i++)
+  अगर (pid == 0) {
+    बंद(fds[0]);
+    क्रम (n = 0; n < N; n++) {
+      क्रम (i = 0; i < SZ; i++)
         buf[i] = seq++;
-      if (write(fds[1], buf, SZ) != SZ) {
-        printf("%s: pipe1 oops 1\n", s);
-        exit(1);
+      अगर (ग_लिखो(fds[1], buf, SZ) != SZ) {
+        म_लिखो("%s: pipe1 oops 1\n", s);
+        निकास(1);
       }
     }
-    exit(0);
-  } else if (pid > 0) {
-    close(fds[1]);
-    total = 0;
+    निकास(0);
+  } अन्यथा अगर (pid > 0) {
+    बंद(fds[1]);
+    योग = 0;
     cc = 1;
-    while ((n = read(fds[0], buf, cc)) > 0) {
-      for (i = 0; i < n; i++) {
-        if ((buf[i] & 0xff) != (seq++ & 0xff)) {
-          printf("%s: pipe1 oops 2\n", s);
-          return;
+    जबतक ((n = पढ़ो(fds[0], buf, cc)) > 0) {
+      क्रम (i = 0; i < n; i++) {
+        अगर ((buf[i] & 0xff) != (seq++ & 0xff)) {
+          म_लिखो("%s: pipe1 oops 2\n", s);
+          वापस;
         }
       }
-      total += n;
+      योग += n;
       cc = cc * 2;
-      if (cc > sizeof(buf))
-        cc = sizeof(buf);
+      अगर (cc > माप(buf))
+        cc = माप(buf);
     }
-    if (total != N * SZ) {
-      printf("%s: pipe1 oops 3 total %d\n", s, total);
-      exit(1);
+    अगर (योग != N * SZ) {
+      म_लिखो("%s: pipe1 oops 3 total %d\n", s, योग);
+      निकास(1);
     }
-    close(fds[0]);
-    wait(&xstatus);
-    exit(xstatus);
-  } else {
-    printf("%s: fork() failed\n", s);
-    exit(1);
+    बंद(fds[0]);
+    रुको(&xstatus);
+    निकास(xstatus);
+  } अन्यथा {
+    म_लिखो("%s: fork() failed\n", s);
+    निकास(1);
   }
 }
 
 // test if child is killed (status = -1)
-void
-killstatus(char *s)
+व्योम
+killstatus(अक्षर *s)
 {
-  int xst;
+  पूर्णांक xst;
 
-  for (int i = 0; i < 100; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < 100; i++) {
+    पूर्णांक pid1 = विभाजन();
+    अगर (pid1 < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (pid1 == 0) {
-      while (1) {
+    अगर (pid1 == 0) {
+      जबतक (1) {
         getpid();
       }
-      exit(0);
+      निकास(0);
     }
-    pause(1);
-    kill(pid1);
-    wait(&xst);
-    if (xst != -1) {
-      printf("%s: status should be -1\n", s);
-      exit(1);
+    छोड़ो(1);
+    समाप्त(pid1);
+    रुको(&xst);
+    अगर (xst != -1) {
+      म_लिखो("%s: status should be -1\n", s);
+      निकास(1);
     }
   }
-  exit(0);
+  निकास(0);
 }
 
 // test that kill on unused process 0 doesn't set the killed flag
-void
-killzero(char *s)
+व्योम
+killzero(अक्षर *s)
 {
-  int pid, xst;
+  पूर्णांक pid, xst;
 
-  kill(0);
+  समाप्त(0);
 
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid == 0) {
-    exit(7);
+  अगर (pid == 0) {
+    निकास(7);
   }
-  if (wait(&xst) != pid) {
-    printf("%s: wait wrong pid\n", s);
-    exit(1);
+  अगर (रुको(&xst) != pid) {
+    म_लिखो("%s: wait wrong pid\n", s);
+    निकास(1);
   }
-  if (xst != 7) {
-    printf("%s: child exited with status %d, expected 7\n", s, xst);
-    exit(1);
+  अगर (xst != 7) {
+    म_लिखो("%s: child exited with status %d, expected 7\n", s, xst);
+    निकास(1);
   }
-  exit(0);
+  निकास(0);
 }
 
 // meant to be run w/ at most two CPUs
-void
-preempt(char *s)
+व्योम
+preempt(अक्षर *s)
 {
-  int pid1, pid2, pid3;
-  int pfds[2];
+  पूर्णांक pid1, pid2, pid3;
+  पूर्णांक pfds[2];
 
-  pid1 = fork();
-  if (pid1 < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  pid1 = विभाजन();
+  अगर (pid1 < 0) {
+    म_लिखो("%s: fork failed", s);
+    निकास(1);
   }
-  if (pid1 == 0)
-    for (;;)
+  अगर (pid1 == 0)
+    क्रम (;;)
       ;
 
-  pid2 = fork();
-  if (pid2 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid2 = विभाजन();
+  अगर (pid2 < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid2 == 0)
-    for (;;)
+  अगर (pid2 == 0)
+    क्रम (;;)
       ;
 
   pipe(pfds);
-  pid3 = fork();
-  if (pid3 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid3 = विभाजन();
+  अगर (pid3 < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid3 == 0) {
-    close(pfds[0]);
-    if (write(pfds[1], "x", 1) != 1)
-      printf("%s: preempt write error", s);
-    close(pfds[1]);
-    for (;;)
+  अगर (pid3 == 0) {
+    बंद(pfds[0]);
+    अगर (ग_लिखो(pfds[1], "x", 1) != 1)
+      म_लिखो("%s: preempt write error", s);
+    बंद(pfds[1]);
+    क्रम (;;)
       ;
   }
 
-  close(pfds[1]);
-  if (read(pfds[0], buf, sizeof(buf)) != 1) {
-    printf("%s: preempt read error", s);
-    return;
+  बंद(pfds[1]);
+  अगर (पढ़ो(pfds[0], buf, माप(buf)) != 1) {
+    म_लिखो("%s: preempt read error", s);
+    वापस;
   }
-  close(pfds[0]);
-  printf("kill... ");
-  kill(pid1);
-  kill(pid2);
-  kill(pid3);
-  printf("wait... ");
-  wait(0);
-  wait(0);
-  wait(0);
+  बंद(pfds[0]);
+  म_लिखो("kill... ");
+  समाप्त(pid1);
+  समाप्त(pid2);
+  समाप्त(pid3);
+  म_लिखो("wait... ");
+  रुको(0);
+  रुको(0);
+  रुको(0);
 }
 
 // try to find any races between exit and wait
-void
-exitwait(char *s)
+व्योम
+exitwait(अक्षर *s)
 {
-  int i, pid;
+  पूर्णांक i, pid;
 
-  for (i = 0; i < 100; i++) {
-    pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  क्रम (i = 0; i < 100; i++) {
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (pid) {
-      int xstate;
-      if (wait(&xstate) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    अगर (pid) {
+      पूर्णांक xstate;
+      अगर (रुको(&xstate) != pid) {
+        म_लिखो("%s: wait wrong pid\n", s);
+        निकास(1);
       }
-      if (i != xstate) {
-        printf("%s: wait wrong exit status\n", s);
-        exit(1);
+      अगर (i != xstate) {
+        म_लिखो("%s: wait wrong exit status\n", s);
+        निकास(1);
       }
-    } else {
-      exit(i);
+    } अन्यथा {
+      निकास(i);
     }
   }
 }
@@ -938,126 +938,126 @@ exitwait(char *s)
 // try to find races in the reparenting
 // code that handles a parent exiting
 // when it still has live children.
-void
-reparent(char *s)
+व्योम
+reparent(अक्षर *s)
 {
-  int master_pid = getpid();
-  for (int i = 0; i < 200; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  पूर्णांक master_pid = getpid();
+  क्रम (पूर्णांक i = 0; i < 200; i++) {
+    पूर्णांक pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (pid) {
-      if (wait(0) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    अगर (pid) {
+      अगर (रुको(0) != pid) {
+        म_लिखो("%s: wait wrong pid\n", s);
+        निकास(1);
       }
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
-        kill(master_pid);
-        exit(1);
+    } अन्यथा {
+      पूर्णांक pid2 = विभाजन();
+      अगर (pid2 < 0) {
+        समाप्त(master_pid);
+        निकास(1);
       }
-      exit(0);
+      निकास(0);
     }
   }
-  exit(0);
+  निकास(0);
 }
 
 // what if two children exit() at the same time?
-void
-twochildren(char *s)
+व्योम
+twochildren(अक्षर *s)
 {
-  for (int i = 0; i < 1000; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < 1000; i++) {
+    पूर्णांक pid1 = विभाजन();
+    अगर (pid1 < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (pid1 == 0) {
-      exit(0);
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
-        printf("%s: fork failed\n", s);
-        exit(1);
+    अगर (pid1 == 0) {
+      निकास(0);
+    } अन्यथा {
+      पूर्णांक pid2 = विभाजन();
+      अगर (pid2 < 0) {
+        म_लिखो("%s: fork failed\n", s);
+        निकास(1);
       }
-      if (pid2 == 0) {
-        exit(0);
-      } else {
-        wait(0);
-        wait(0);
+      अगर (pid2 == 0) {
+        निकास(0);
+      } अन्यथा {
+        रुको(0);
+        रुको(0);
       }
     }
   }
 }
 
 // concurrent forks to try to expose locking bugs.
-void
-forkfork(char *s)
+व्योम
+forkfork(अक्षर *s)
 {
-  enum { N = 2 };
+  क्रमागत { N = 2 };
 
-  for (int i = 0; i < N; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed", s);
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < N; i++) {
+    पूर्णांक pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed", s);
+      निकास(1);
     }
-    if (pid == 0) {
-      for (int j = 0; j < 200; j++) {
-        int pid1 = fork();
-        if (pid1 < 0) {
-          exit(1);
+    अगर (pid == 0) {
+      क्रम (पूर्णांक j = 0; j < 200; j++) {
+        पूर्णांक pid1 = विभाजन();
+        अगर (pid1 < 0) {
+          निकास(1);
         }
-        if (pid1 == 0) {
-          exit(0);
+        अगर (pid1 == 0) {
+          निकास(0);
         }
-        wait(0);
+        रुको(0);
       }
-      exit(0);
+      निकास(0);
     }
   }
 
-  int xstatus;
-  for (int i = 0; i < N; i++) {
-    wait(&xstatus);
-    if (xstatus != 0) {
-      printf("%s: fork in child failed", s);
-      exit(1);
+  पूर्णांक xstatus;
+  क्रम (पूर्णांक i = 0; i < N; i++) {
+    रुको(&xstatus);
+    अगर (xstatus != 0) {
+      म_लिखो("%s: fork in child failed", s);
+      निकास(1);
     }
   }
 }
 
-void
-forkforkfork(char *s)
+व्योम
+forkforkfork(अक्षर *s)
 {
   unlink("stopforking");
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  पूर्णांक pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed", s);
+    निकास(1);
   }
-  if (pid == 0) {
-    while (1) {
-      int fd = open("stopforking", 0);
-      if (fd >= 0) {
-        exit(0);
+  अगर (pid == 0) {
+    जबतक (1) {
+      पूर्णांक fd = खोलो("stopforking", 0);
+      अगर (fd >= 0) {
+        निकास(0);
       }
-      if (fork() < 0) {
-        close(open("stopforking", O_CREATE | O_RDWR));
+      अगर (विभाजन() < 0) {
+        बंद(खोलो("stopforking", O_CREATE | O_RDWR));
       }
     }
 
-    exit(0);
+    निकास(0);
   }
 
-  pause(20); // two seconds
-  close(open("stopforking", O_CREATE | O_RDWR));
-  wait(0);
-  pause(10); // one second
+  छोड़ो(20); // two seconds
+  बंद(खोलो("stopforking", O_CREATE | O_RDWR));
+  रुको(0);
+  छोड़ो(10); // one second
 }
 
 // regression test. does reparent() violate the parent-then-child
@@ -1065,60 +1065,60 @@ forkforkfork(char *s)
 // deadlocks against init's wait()? also used to trigger a "panic:
 // release" due to exit() releasing a different p->parent->lock than
 // it acquired.
-void
-reparent2(char *s)
+व्योम
+reparent2(अक्षर *s)
 {
-  for (int i = 0; i < 800; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("fork failed\n");
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < 800; i++) {
+    पूर्णांक pid1 = विभाजन();
+    अगर (pid1 < 0) {
+      म_लिखो("fork failed\n");
+      निकास(1);
     }
-    if (pid1 == 0) {
-      fork();
-      fork();
-      exit(0);
+    अगर (pid1 == 0) {
+      विभाजन();
+      विभाजन();
+      निकास(0);
     }
-    wait(0);
+    रुको(0);
   }
 
-  exit(0);
+  निकास(0);
 }
 
 // allocate all mem, free it, and allocate again
-void
-mem(char *s)
+व्योम
+mem(अक्षर *s)
 {
-  void *m1, *m2;
-  int pid;
+  व्योम *m1, *m2;
+  पूर्णांक pid;
 
-  if ((pid = fork()) == 0) {
+  अगर ((pid = विभाजन()) == 0) {
     m1 = 0;
-    while ((m2 = malloc(10001)) != 0) {
-      *(char **)m2 = m1;
+    जबतक ((m2 = दो_स्मृति(10001)) != 0) {
+      *(अक्षर **)m2 = m1;
       m1 = m2;
     }
-    while (m1) {
-      m2 = *(char **)m1;
-      free(m1);
+    जबतक (m1) {
+      m2 = *(अक्षर **)m1;
+      मुक्त(m1);
       m1 = m2;
     }
-    m1 = malloc(1024 * 20);
-    if (m1 == 0) {
-      printf("%s: couldn't allocate mem?!!\n", s);
-      exit(1);
+    m1 = दो_स्मृति(1024 * 20);
+    अगर (m1 == 0) {
+      म_लिखो("%s: couldn't allocate mem?!!\n", s);
+      निकास(1);
     }
-    free(m1);
-    exit(0);
-  } else {
-    int xstatus;
-    wait(&xstatus);
-    if (xstatus == -1) {
+    मुक्त(m1);
+    निकास(0);
+  } अन्यथा {
+    पूर्णांक xstatus;
+    रुको(&xstatus);
+    अगर (xstatus == -1) {
       // probably page fault, so might be lazy lab,
       // so OK.
-      exit(0);
+      निकास(0);
     }
-    exit(xstatus);
+    निकास(xstatus);
   }
 }
 
@@ -1126,193 +1126,193 @@ mem(char *s)
 
 // two processes write to the same file descriptor
 // is the offset shared? does inode locking work?
-void
-sharedfd(char *s)
+व्योम
+sharedfd(अक्षर *s)
 {
-  int fd, pid, i, n, nc, np;
-  enum { N = 1000, SZ = 10 };
-  char buf[SZ];
+  पूर्णांक fd, pid, i, n, nc, np;
+  क्रमागत { N = 1000, SZ = 10 };
+  अक्षर buf[SZ];
 
   unlink("sharedfd");
-  fd = open("sharedfd", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for writing", s);
-    exit(1);
+  fd = खोलो("sharedfd", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot open sharedfd for writing", s);
+    निकास(1);
   }
-  pid = fork();
-  memset(buf, pid == 0 ? 'c' : 'p', sizeof(buf));
-  for (i = 0; i < N; i++) {
-    if (write(fd, buf, sizeof(buf)) != sizeof(buf)) {
-      printf("%s: write sharedfd failed\n", s);
-      exit(1);
+  pid = विभाजन();
+  स_रखो(buf, pid == 0 ? 'c' : 'p', माप(buf));
+  क्रम (i = 0; i < N; i++) {
+    अगर (ग_लिखो(fd, buf, माप(buf)) != माप(buf)) {
+      म_लिखो("%s: write sharedfd failed\n", s);
+      निकास(1);
     }
   }
-  if (pid == 0) {
-    exit(0);
-  } else {
-    int xstatus;
-    wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+  अगर (pid == 0) {
+    निकास(0);
+  } अन्यथा {
+    पूर्णांक xstatus;
+    रुको(&xstatus);
+    अगर (xstatus != 0)
+      निकास(xstatus);
   }
 
-  close(fd);
-  fd = open("sharedfd", 0);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for reading\n", s);
-    exit(1);
+  बंद(fd);
+  fd = खोलो("sharedfd", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot open sharedfd for reading\n", s);
+    निकास(1);
   }
   nc = np = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < sizeof(buf); i++) {
-      if (buf[i] == 'c')
+  जबतक ((n = पढ़ो(fd, buf, माप(buf))) > 0) {
+    क्रम (i = 0; i < माप(buf); i++) {
+      अगर (buf[i] == 'c')
         nc++;
-      if (buf[i] == 'p')
+      अगर (buf[i] == 'p')
         np++;
     }
   }
-  close(fd);
+  बंद(fd);
   unlink("sharedfd");
-  if (nc == N * SZ && np == N * SZ) {
-    exit(0);
-  } else {
-    printf("%s: nc/np test fails\n", s);
-    exit(1);
+  अगर (nc == N * SZ && np == N * SZ) {
+    निकास(0);
+  } अन्यथा {
+    म_लिखो("%s: nc/np test fails\n", s);
+    निकास(1);
   }
 }
 
 // four processes write different files at the same
 // time, to test block allocation.
-void
-fourfiles(char *s)
+व्योम
+fourfiles(अक्षर *s)
 {
-  int fd, pid, i, j, n, total, pi;
-  char *names[] = {"f0", "f1", "f2", "f3"};
-  char *fname;
-  enum { N = 12, NCHILD = 4, SZ = 500 };
+  पूर्णांक fd, pid, i, j, n, योग, pi;
+  अक्षर *names[] = {"f0", "f1", "f2", "f3"};
+  अक्षर *fname;
+  क्रमागत { N = 12, NCHILD = 4, SZ = 500 };
 
-  for (pi = 0; pi < NCHILD; pi++) {
+  क्रम (pi = 0; pi < NCHILD; pi++) {
     fname = names[pi];
     unlink(fname);
 
-    pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
 
-    if (pid == 0) {
-      fd = open(fname, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("%s: create failed\n", s);
-        exit(1);
+    अगर (pid == 0) {
+      fd = खोलो(fname, O_CREATE | O_RDWR);
+      अगर (fd < 0) {
+        म_लिखो("%s: create failed\n", s);
+        निकास(1);
       }
 
-      memset(buf, '0' + pi, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
-          printf("write failed %d\n", n);
-          exit(1);
+      स_रखो(buf, '0' + pi, SZ);
+      क्रम (i = 0; i < N; i++) {
+        अगर ((n = ग_लिखो(fd, buf, SZ)) != SZ) {
+          म_लिखो("write failed %d\n", n);
+          निकास(1);
         }
       }
-      exit(0);
+      निकास(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
-    wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+  पूर्णांक xstatus;
+  क्रम (pi = 0; pi < NCHILD; pi++) {
+    रुको(&xstatus);
+    अगर (xstatus != 0)
+      निकास(xstatus);
   }
 
-  for (i = 0; i < NCHILD; i++) {
+  क्रम (i = 0; i < NCHILD; i++) {
     fname = names[i];
-    fd = open(fname, 0);
-    total = 0;
-    while ((n = read(fd, buf, sizeof(buf))) > 0) {
-      for (j = 0; j < n; j++) {
-        if (buf[j] != '0' + i) {
-          printf("%s: wrong char\n", s);
-          exit(1);
+    fd = खोलो(fname, 0);
+    योग = 0;
+    जबतक ((n = पढ़ो(fd, buf, माप(buf))) > 0) {
+      क्रम (j = 0; j < n; j++) {
+        अगर (buf[j] != '0' + i) {
+          म_लिखो("%s: wrong char\n", s);
+          निकास(1);
         }
       }
-      total += n;
+      योग += n;
     }
-    close(fd);
-    if (total != N * SZ) {
-      printf("wrong length %d\n", total);
-      exit(1);
+    बंद(fd);
+    अगर (योग != N * SZ) {
+      म_लिखो("wrong length %d\n", योग);
+      निकास(1);
     }
     unlink(fname);
   }
 }
 
 // four processes create and delete different files in same directory
-void
-createdelete(char *s)
+व्योम
+createdelete(अक्षर *s)
 {
-  enum { N = 20, NCHILD = 4 };
-  int pid, i, fd, pi;
-  char name[32];
+  क्रमागत { N = 20, NCHILD = 4 };
+  पूर्णांक pid, i, fd, pi;
+  अक्षर name[32];
 
-  for (pi = 0; pi < NCHILD; pi++) {
-    pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  क्रम (pi = 0; pi < NCHILD; pi++) {
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
 
-    if (pid == 0) {
+    अगर (pid == 0) {
       name[0] = 'p' + pi;
       name[2] = '\0';
-      for (i = 0; i < N; i++) {
+      क्रम (i = 0; i < N; i++) {
         name[1] = '0' + i;
-        fd = open(name, O_CREATE | O_RDWR);
-        if (fd < 0) {
-          printf("%s: create failed\n", s);
-          exit(1);
+        fd = खोलो(name, O_CREATE | O_RDWR);
+        अगर (fd < 0) {
+          म_लिखो("%s: create failed\n", s);
+          निकास(1);
         }
-        close(fd);
-        if (i > 0 && (i % 2) == 0) {
+        बंद(fd);
+        अगर (i > 0 && (i % 2) == 0) {
           name[1] = '0' + (i / 2);
-          if (unlink(name) < 0) {
-            printf("%s: unlink failed\n", s);
-            exit(1);
+          अगर (unlink(name) < 0) {
+            म_लिखो("%s: unlink failed\n", s);
+            निकास(1);
           }
         }
       }
-      exit(0);
+      निकास(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
-    wait(&xstatus);
-    if (xstatus != 0)
-      exit(1);
+  पूर्णांक xstatus;
+  क्रम (pi = 0; pi < NCHILD; pi++) {
+    रुको(&xstatus);
+    अगर (xstatus != 0)
+      निकास(1);
   }
 
   name[0] = name[1] = name[2] = 0;
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  क्रम (i = 0; i < N; i++) {
+    क्रम (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
-      fd = open(name, 0);
-      if ((i == 0 || i >= N / 2) && fd < 0) {
-        printf("%s: oops createdelete %s didn't exist\n", s, name);
-        exit(1);
-      } else if ((i >= 1 && i < N / 2) && fd >= 0) {
-        printf("%s: oops createdelete %s did exist\n", s, name);
-        exit(1);
+      fd = खोलो(name, 0);
+      अगर ((i == 0 || i >= N / 2) && fd < 0) {
+        म_लिखो("%s: oops createdelete %s didn't exist\n", s, name);
+        निकास(1);
+      } अन्यथा अगर ((i >= 1 && i < N / 2) && fd >= 0) {
+        म_लिखो("%s: oops createdelete %s did exist\n", s, name);
+        निकास(1);
       }
-      if (fd >= 0)
-        close(fd);
+      अगर (fd >= 0)
+        बंद(fd);
     }
   }
 
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  क्रम (i = 0; i < N; i++) {
+    क्रम (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       unlink(name);
@@ -1321,192 +1321,192 @@ createdelete(char *s)
 }
 
 // can I unlink a file and still read it?
-void
-unlinkread(char *s)
+व्योम
+unlinkread(अक्षर *s)
 {
-  enum { SZ = 5 };
-  int fd, fd1;
+  क्रमागत { SZ = 5 };
+  पूर्णांक fd, fd1;
 
-  fd = open("unlinkread", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create unlinkread failed\n", s);
-    exit(1);
+  fd = खोलो("unlinkread", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: create unlinkread failed\n", s);
+    निकास(1);
   }
-  write(fd, "hello", SZ);
-  close(fd);
+  ग_लिखो(fd, "hello", SZ);
+  बंद(fd);
 
-  fd = open("unlinkread", O_RDWR);
-  if (fd < 0) {
-    printf("%s: open unlinkread failed\n", s);
-    exit(1);
+  fd = खोलो("unlinkread", O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: open unlinkread failed\n", s);
+    निकास(1);
   }
-  if (unlink("unlinkread") != 0) {
-    printf("%s: unlink unlinkread failed\n", s);
-    exit(1);
+  अगर (unlink("unlinkread") != 0) {
+    म_लिखो("%s: unlink unlinkread failed\n", s);
+    निकास(1);
   }
 
-  fd1 = open("unlinkread", O_CREATE | O_RDWR);
-  write(fd1, "yyy", 3);
-  close(fd1);
+  fd1 = खोलो("unlinkread", O_CREATE | O_RDWR);
+  ग_लिखो(fd1, "yyy", 3);
+  बंद(fd1);
 
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: unlinkread read failed", s);
-    exit(1);
+  अगर (पढ़ो(fd, buf, माप(buf)) != SZ) {
+    म_लिखो("%s: unlinkread read failed", s);
+    निकास(1);
   }
-  if (buf[0] != 'h') {
-    printf("%s: unlinkread wrong data\n", s);
-    exit(1);
+  अगर (buf[0] != 'h') {
+    म_लिखो("%s: unlinkread wrong data\n", s);
+    निकास(1);
   }
-  if (write(fd, buf, 10) != 10) {
-    printf("%s: unlinkread write failed\n", s);
-    exit(1);
+  अगर (ग_लिखो(fd, buf, 10) != 10) {
+    म_लिखो("%s: unlinkread write failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
   unlink("unlinkread");
 }
 
-void
-linktest(char *s)
+व्योम
+linktest(अक्षर *s)
 {
-  enum { SZ = 5 };
-  int fd;
+  क्रमागत { SZ = 5 };
+  पूर्णांक fd;
 
   unlink("lf1");
   unlink("lf2");
 
-  fd = open("lf1", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create lf1 failed\n", s);
-    exit(1);
+  fd = खोलो("lf1", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: create lf1 failed\n", s);
+    निकास(1);
   }
-  if (write(fd, "hello", SZ) != SZ) {
-    printf("%s: write lf1 failed\n", s);
-    exit(1);
+  अगर (ग_लिखो(fd, "hello", SZ) != SZ) {
+    म_लिखो("%s: write lf1 failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  if (link("lf1", "lf2") < 0) {
-    printf("%s: link lf1 lf2 failed\n", s);
-    exit(1);
+  अगर (link("lf1", "lf2") < 0) {
+    म_लिखो("%s: link lf1 lf2 failed\n", s);
+    निकास(1);
   }
   unlink("lf1");
 
-  if (open("lf1", 0) >= 0) {
-    printf("%s: unlinked lf1 but it is still there!\n", s);
-    exit(1);
+  अगर (खोलो("lf1", 0) >= 0) {
+    म_लिखो("%s: unlinked lf1 but it is still there!\n", s);
+    निकास(1);
   }
 
-  fd = open("lf2", 0);
-  if (fd < 0) {
-    printf("%s: open lf2 failed\n", s);
-    exit(1);
+  fd = खोलो("lf2", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: open lf2 failed\n", s);
+    निकास(1);
   }
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: read lf2 failed\n", s);
-    exit(1);
+  अगर (पढ़ो(fd, buf, माप(buf)) != SZ) {
+    म_लिखो("%s: read lf2 failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  if (link("lf2", "lf2") >= 0) {
-    printf("%s: link lf2 lf2 succeeded! oops\n", s);
-    exit(1);
+  अगर (link("lf2", "lf2") >= 0) {
+    म_लिखो("%s: link lf2 lf2 succeeded! oops\n", s);
+    निकास(1);
   }
 
   unlink("lf2");
-  if (link("lf2", "lf1") >= 0) {
-    printf("%s: link non-existent succeeded! oops\n", s);
-    exit(1);
+  अगर (link("lf2", "lf1") >= 0) {
+    म_लिखो("%s: link non-existent succeeded! oops\n", s);
+    निकास(1);
   }
 
-  if (link(".", "lf1") >= 0) {
-    printf("%s: link . lf1 succeeded! oops\n", s);
-    exit(1);
+  अगर (link(".", "lf1") >= 0) {
+    म_लिखो("%s: link . lf1 succeeded! oops\n", s);
+    निकास(1);
   }
 }
 
 // test concurrent create/link/unlink of the same file
-void
-concreate(char *s)
+व्योम
+concreate(अक्षर *s)
 {
-  enum { N = 40 };
-  char file[3];
-  int i, pid, n, fd;
-  char fa[N];
-  struct {
+  क्रमागत { N = 40 };
+  अक्षर file[3];
+  पूर्णांक i, pid, n, fd;
+  अक्षर fa[N];
+  काष्ठा {
     ushort inum;
-    char name[DIRSIZ];
+    अक्षर name[DIRSIZ];
   } de;
 
   file[0] = 'C';
   file[2] = '\0';
-  for (i = 0; i < N; i++) {
+  क्रम (i = 0; i < N; i++) {
     file[1] = '0' + i;
     unlink(file);
-    pid = fork();
-    if (pid && (i % 3) == 1) {
+    pid = विभाजन();
+    अगर (pid && (i % 3) == 1) {
       link("C0", file);
-    } else if (pid == 0 && (i % 5) == 1) {
+    } अन्यथा अगर (pid == 0 && (i % 5) == 1) {
       link("C0", file);
-    } else {
-      fd = open(file, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("concreate create %s failed\n", file);
-        exit(1);
+    } अन्यथा {
+      fd = खोलो(file, O_CREATE | O_RDWR);
+      अगर (fd < 0) {
+        म_लिखो("concreate create %s failed\n", file);
+        निकास(1);
       }
-      close(fd);
+      बंद(fd);
     }
-    if (pid == 0) {
-      exit(0);
-    } else {
-      int xstatus;
-      wait(&xstatus);
-      if (xstatus != 0)
-        exit(1);
+    अगर (pid == 0) {
+      निकास(0);
+    } अन्यथा {
+      पूर्णांक xstatus;
+      रुको(&xstatus);
+      अगर (xstatus != 0)
+        निकास(1);
     }
   }
 
-  memset(fa, 0, sizeof(fa));
-  fd = open(".", 0);
+  स_रखो(fa, 0, माप(fa));
+  fd = खोलो(".", 0);
   n = 0;
-  while (read(fd, &de, sizeof(de)) > 0) {
-    if (de.inum == 0)
-      continue;
-    if (de.name[0] == 'C' && de.name[2] == '\0') {
+  जबतक (पढ़ो(fd, &de, माप(de)) > 0) {
+    अगर (de.inum == 0)
+      जारी;
+    अगर (de.name[0] == 'C' && de.name[2] == '\0') {
       i = de.name[1] - '0';
-      if (i < 0 || i >= sizeof(fa)) {
-        printf("%s: concreate weird file %s\n", s, de.name);
-        exit(1);
+      अगर (i < 0 || i >= माप(fa)) {
+        म_लिखो("%s: concreate weird file %s\n", s, de.name);
+        निकास(1);
       }
-      if (fa[i]) {
-        printf("%s: concreate duplicate file %s\n", s, de.name);
-        exit(1);
+      अगर (fa[i]) {
+        म_लिखो("%s: concreate duplicate file %s\n", s, de.name);
+        निकास(1);
       }
       fa[i] = 1;
       n++;
     }
   }
-  close(fd);
+  बंद(fd);
 
-  if (n != N) {
-    printf("%s: concreate not enough files in directory listing\n", s);
-    exit(1);
+  अगर (n != N) {
+    म_लिखो("%s: concreate not enough files in directory listing\n", s);
+    निकास(1);
   }
 
-  for (i = 0; i < N; i++) {
+  क्रम (i = 0; i < N; i++) {
     file[1] = '0' + i;
-    pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
-      close(open(file, 0));
-      close(open(file, 0));
-      close(open(file, 0));
-      close(open(file, 0));
-      close(open(file, 0));
-      close(open(file, 0));
-    } else {
+    अगर (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
+      बंद(खोलो(file, 0));
+      बंद(खोलो(file, 0));
+      बंद(खोलो(file, 0));
+      बंद(खोलो(file, 0));
+      बंद(खोलो(file, 0));
+      बंद(खोलो(file, 0));
+    } अन्यथा {
       unlink(file);
       unlink(file);
       unlink(file);
@@ -1514,339 +1514,339 @@ concreate(char *s)
       unlink(file);
       unlink(file);
     }
-    if (pid == 0)
-      exit(0);
-    else
-      wait(0);
+    अगर (pid == 0)
+      निकास(0);
+    अन्यथा
+      रुको(0);
   }
 }
 
 // another concurrent link/unlink/create test,
 // to look for deadlocks.
-void
-linkunlink(char *s)
+व्योम
+linkunlink(अक्षर *s)
 {
-  int pid, i;
+  पूर्णांक pid, i;
 
   unlink("x");
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
 
-  unsigned int x = (pid ? 1 : 97);
-  for (i = 0; i < 100; i++) {
+  अचिन्हित पूर्णांक x = (pid ? 1 : 97);
+  क्रम (i = 0; i < 100; i++) {
     x = x * 1103515245 + 12345;
-    if ((x % 3) == 0) {
-      close(open("x", O_RDWR | O_CREATE));
-    } else if ((x % 3) == 1) {
+    अगर ((x % 3) == 0) {
+      बंद(खोलो("x", O_RDWR | O_CREATE));
+    } अन्यथा अगर ((x % 3) == 1) {
       link("cat", "x");
-    } else {
+    } अन्यथा {
       unlink("x");
     }
   }
 
-  if (pid)
-    wait(0);
-  else
-    exit(0);
+  अगर (pid)
+    रुको(0);
+  अन्यथा
+    निकास(0);
 }
 
-void
-subdir(char *s)
+व्योम
+subdir(अक्षर *s)
 {
-  int fd, cc;
+  पूर्णांक fd, cc;
 
   unlink("ff");
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("dd") != 0) {
+    म_लिखो("%s: mkdir dd failed\n", s);
+    निकास(1);
   }
 
-  fd = open("dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/ff failed\n", s);
-    exit(1);
+  fd = खोलो("dd/ff", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: create dd/ff failed\n", s);
+    निकास(1);
   }
-  write(fd, "ff", 2);
-  close(fd);
+  ग_लिखो(fd, "ff", 2);
+  बंद(fd);
 
-  if (unlink("dd") >= 0) {
-    printf("%s: unlink dd (non-empty dir) succeeded!\n", s);
-    exit(1);
-  }
-
-  if (mkdir("/dd/dd") != 0) {
-    printf("%s: subdir mkdir dd/dd failed\n", s);
-    exit(1);
+  अगर (unlink("dd") >= 0) {
+    म_लिखो("%s: unlink dd (non-empty dir) succeeded!\n", s);
+    निकास(1);
   }
 
-  fd = open("dd/dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/dd/ff failed\n", s);
-    exit(1);
-  }
-  write(fd, "FF", 2);
-  close(fd);
-
-  fd = open("dd/dd/../ff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/../ff failed\n", s);
-    exit(1);
-  }
-  cc = read(fd, buf, sizeof(buf));
-  if (cc != 2 || buf[0] != 'f') {
-    printf("%s: dd/dd/../ff wrong content\n", s);
-    exit(1);
-  }
-  close(fd);
-
-  if (link("dd/dd/ff", "dd/dd/ffff") != 0) {
-    printf("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("/dd/dd") != 0) {
+    म_लिखो("%s: subdir mkdir dd/dd failed\n", s);
+    निकास(1);
   }
 
-  if (unlink("dd/dd/ff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  fd = खोलो("dd/dd/ff", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: create dd/dd/ff failed\n", s);
+    निकास(1);
   }
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded\n", s);
-    exit(1);
+  ग_लिखो(fd, "FF", 2);
+  बंद(fd);
+
+  fd = खोलो("dd/dd/../ff", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: open dd/dd/../ff failed\n", s);
+    निकास(1);
+  }
+  cc = पढ़ो(fd, buf, माप(buf));
+  अगर (cc != 2 || buf[0] != 'f') {
+    म_लिखो("%s: dd/dd/../ff wrong content\n", s);
+    निकास(1);
+  }
+  बंद(fd);
+
+  अगर (link("dd/dd/ff", "dd/dd/ffff") != 0) {
+    म_लिखो("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
+    निकास(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  अगर (unlink("dd/dd/ff") != 0) {
+    म_लिखो("%s: unlink dd/dd/ff failed\n", s);
+    निकास(1);
   }
-  if (chdir("dd/../../dd") != 0) {
-    printf("%s: chdir dd/../../dd failed\n", s);
-    exit(1);
-  }
-  if (chdir("dd/../../../dd") != 0) {
-    printf("%s: chdir dd/../../../dd failed\n", s);
-    exit(1);
-  }
-  if (chdir("./..") != 0) {
-    printf("%s: chdir ./.. failed\n", s);
-    exit(1);
+  अगर (खोलो("dd/dd/ff", O_RDONLY) >= 0) {
+    म_लिखो("%s: open (unlinked) dd/dd/ff succeeded\n", s);
+    निकास(1);
   }
 
-  fd = open("dd/dd/ffff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/ffff failed\n", s);
-    exit(1);
+  अगर (स_बदलो("dd") != 0) {
+    म_लिखो("%s: chdir dd failed\n", s);
+    निकास(1);
   }
-  if (read(fd, buf, sizeof(buf)) != 2) {
-    printf("%s: read dd/dd/ffff wrong len\n", s);
-    exit(1);
+  अगर (स_बदलो("dd/../../dd") != 0) {
+    म_लिखो("%s: chdir dd/../../dd failed\n", s);
+    निकास(1);
   }
-  close(fd);
-
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
-    exit(1);
+  अगर (स_बदलो("dd/../../../dd") != 0) {
+    म_लिखो("%s: chdir dd/../../../dd failed\n", s);
+    निकास(1);
   }
-
-  if (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/ff/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/xx/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (open("dd", O_CREATE) >= 0) {
-    printf("%s: create dd succeeded!\n", s);
-    exit(1);
-  }
-  if (open("dd", O_RDWR) >= 0) {
-    printf("%s: open dd rdwr succeeded!\n", s);
-    exit(1);
-  }
-  if (open("dd", O_WRONLY) >= 0) {
-    printf("%s: open dd wronly succeeded!\n", s);
-    exit(1);
-  }
-  if (link("dd/ff/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
-  }
-  if (link("dd/xx/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
-  }
-  if (link("dd/ff", "dd/dd/ffff") == 0) {
-    printf("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
-    exit(1);
-  }
-  if (mkdir("dd/ff/ff") == 0) {
-    printf("%s: mkdir dd/ff/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (mkdir("dd/xx/ff") == 0) {
-    printf("%s: mkdir dd/xx/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (mkdir("dd/dd/ffff") == 0) {
-    printf("%s: mkdir dd/dd/ffff succeeded!\n", s);
-    exit(1);
-  }
-  if (unlink("dd/xx/ff") == 0) {
-    printf("%s: unlink dd/xx/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (unlink("dd/ff/ff") == 0) {
-    printf("%s: unlink dd/ff/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (chdir("dd/ff") == 0) {
-    printf("%s: chdir dd/ff succeeded!\n", s);
-    exit(1);
-  }
-  if (chdir("dd/xx") == 0) {
-    printf("%s: chdir dd/xx succeeded!\n", s);
-    exit(1);
+  अगर (स_बदलो("./..") != 0) {
+    म_लिखो("%s: chdir ./.. failed\n", s);
+    निकास(1);
   }
 
-  if (unlink("dd/dd/ffff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  fd = खोलो("dd/dd/ffff", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: open dd/dd/ffff failed\n", s);
+    निकास(1);
   }
-  if (unlink("dd/ff") != 0) {
-    printf("%s: unlink dd/ff failed\n", s);
-    exit(1);
+  अगर (पढ़ो(fd, buf, माप(buf)) != 2) {
+    म_लिखो("%s: read dd/dd/ffff wrong len\n", s);
+    निकास(1);
   }
-  if (unlink("dd") == 0) {
-    printf("%s: unlink non-empty dd succeeded!\n", s);
-    exit(1);
+  बंद(fd);
+
+  अगर (खोलो("dd/dd/ff", O_RDONLY) >= 0) {
+    म_लिखो("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
+    निकास(1);
   }
-  if (unlink("dd/dd") < 0) {
-    printf("%s: unlink dd/dd failed\n", s);
-    exit(1);
+
+  अगर (खोलो("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
+    म_लिखो("%s: create dd/ff/ff succeeded!\n", s);
+    निकास(1);
   }
-  if (unlink("dd") < 0) {
-    printf("%s: unlink dd failed\n", s);
-    exit(1);
+  अगर (खोलो("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
+    म_लिखो("%s: create dd/xx/ff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (खोलो("dd", O_CREATE) >= 0) {
+    म_लिखो("%s: create dd succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (खोलो("dd", O_RDWR) >= 0) {
+    म_लिखो("%s: open dd rdwr succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (खोलो("dd", O_WRONLY) >= 0) {
+    म_लिखो("%s: open dd wronly succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (link("dd/ff/ff", "dd/dd/xx") == 0) {
+    म_लिखो("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (link("dd/xx/ff", "dd/dd/xx") == 0) {
+    म_लिखो("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (link("dd/ff", "dd/dd/ffff") == 0) {
+    म_लिखो("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (सूची_गढ़ो("dd/ff/ff") == 0) {
+    म_लिखो("%s: mkdir dd/ff/ff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (सूची_गढ़ो("dd/xx/ff") == 0) {
+    म_लिखो("%s: mkdir dd/xx/ff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (सूची_गढ़ो("dd/dd/ffff") == 0) {
+    म_लिखो("%s: mkdir dd/dd/ffff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (unlink("dd/xx/ff") == 0) {
+    म_लिखो("%s: unlink dd/xx/ff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (unlink("dd/ff/ff") == 0) {
+    म_लिखो("%s: unlink dd/ff/ff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (स_बदलो("dd/ff") == 0) {
+    म_लिखो("%s: chdir dd/ff succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (स_बदलो("dd/xx") == 0) {
+    म_लिखो("%s: chdir dd/xx succeeded!\n", s);
+    निकास(1);
+  }
+
+  अगर (unlink("dd/dd/ffff") != 0) {
+    म_लिखो("%s: unlink dd/dd/ff failed\n", s);
+    निकास(1);
+  }
+  अगर (unlink("dd/ff") != 0) {
+    म_लिखो("%s: unlink dd/ff failed\n", s);
+    निकास(1);
+  }
+  अगर (unlink("dd") == 0) {
+    म_लिखो("%s: unlink non-empty dd succeeded!\n", s);
+    निकास(1);
+  }
+  अगर (unlink("dd/dd") < 0) {
+    म_लिखो("%s: unlink dd/dd failed\n", s);
+    निकास(1);
+  }
+  अगर (unlink("dd") < 0) {
+    म_लिखो("%s: unlink dd failed\n", s);
+    निकास(1);
   }
 }
 
 // test writes that are larger than the log.
-void
-bigwrite(char *s)
+व्योम
+bigwrite(अक्षर *s)
 {
-  int fd, sz;
+  पूर्णांक fd, sz;
 
   unlink("bigwrite");
-  for (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
-    fd = open("bigwrite", O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("%s: cannot create bigwrite\n", s);
-      exit(1);
+  क्रम (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
+    fd = खोलो("bigwrite", O_CREATE | O_RDWR);
+    अगर (fd < 0) {
+      म_लिखो("%s: cannot create bigwrite\n", s);
+      निकास(1);
     }
-    int i;
-    for (i = 0; i < 2; i++) {
-      int cc = write(fd, buf, sz);
-      if (cc != sz) {
-        printf("%s: write(%d) ret %d\n", s, sz, cc);
-        exit(1);
+    पूर्णांक i;
+    क्रम (i = 0; i < 2; i++) {
+      पूर्णांक cc = ग_लिखो(fd, buf, sz);
+      अगर (cc != sz) {
+        म_लिखो("%s: write(%d) ret %d\n", s, sz, cc);
+        निकास(1);
       }
     }
-    close(fd);
+    बंद(fd);
     unlink("bigwrite");
   }
 }
 
-void
-bigfile(char *s)
+व्योम
+bigfile(अक्षर *s)
 {
-  enum { N = 20, SZ = 600 };
-  int fd, i, total, cc;
+  क्रमागत { N = 20, SZ = 600 };
+  पूर्णांक fd, i, योग, cc;
 
   unlink("bigfile.dat");
-  fd = open("bigfile.dat", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create bigfile", s);
-    exit(1);
+  fd = खोलो("bigfile.dat", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot create bigfile", s);
+    निकास(1);
   }
-  for (i = 0; i < N; i++) {
-    memset(buf, i, SZ);
-    if (write(fd, buf, SZ) != SZ) {
-      printf("%s: write bigfile failed\n", s);
-      exit(1);
+  क्रम (i = 0; i < N; i++) {
+    स_रखो(buf, i, SZ);
+    अगर (ग_लिखो(fd, buf, SZ) != SZ) {
+      म_लिखो("%s: write bigfile failed\n", s);
+      निकास(1);
     }
   }
-  close(fd);
+  बंद(fd);
 
-  fd = open("bigfile.dat", 0);
-  if (fd < 0) {
-    printf("%s: cannot open bigfile\n", s);
-    exit(1);
+  fd = खोलो("bigfile.dat", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot open bigfile\n", s);
+    निकास(1);
   }
-  total = 0;
-  for (i = 0;; i++) {
-    cc = read(fd, buf, SZ / 2);
-    if (cc < 0) {
-      printf("%s: read bigfile failed\n", s);
-      exit(1);
+  योग = 0;
+  क्रम (i = 0;; i++) {
+    cc = पढ़ो(fd, buf, SZ / 2);
+    अगर (cc < 0) {
+      म_लिखो("%s: read bigfile failed\n", s);
+      निकास(1);
     }
-    if (cc == 0)
-      break;
-    if (cc != SZ / 2) {
-      printf("%s: short read bigfile\n", s);
-      exit(1);
+    अगर (cc == 0)
+      अवरोध;
+    अगर (cc != SZ / 2) {
+      म_लिखो("%s: short read bigfile\n", s);
+      निकास(1);
     }
-    if (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
-      printf("%s: read bigfile wrong data\n", s);
-      exit(1);
+    अगर (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
+      म_लिखो("%s: read bigfile wrong data\n", s);
+      निकास(1);
     }
-    total += cc;
+    योग += cc;
   }
-  close(fd);
-  if (total != N * SZ) {
-    printf("%s: read bigfile wrong total\n", s);
-    exit(1);
+  बंद(fd);
+  अगर (योग != N * SZ) {
+    म_लिखो("%s: read bigfile wrong total\n", s);
+    निकास(1);
   }
   unlink("bigfile.dat");
 }
 
-void
-fourteen(char *s)
+व्योम
+fourteen(अक्षर *s)
 {
-  int fd;
+  पूर्णांक fd;
 
   // DIRSIZ is 14.
 
-  if (mkdir("12345678901234") != 0) {
-    printf("%s: mkdir 12345678901234 failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("12345678901234") != 0) {
+    म_लिखो("%s: mkdir 12345678901234 failed\n", s);
+    निकास(1);
   }
-  if (mkdir("12345678901234/123456789012345") != 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("12345678901234/123456789012345") != 0) {
+    म_लिखो("%s: mkdir 12345678901234/123456789012345 failed\n", s);
+    निकास(1);
   }
-  fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
-  if (fd < 0) {
-    printf(
+  fd = खोलो("123456789012345/123456789012345/123456789012345", O_CREATE);
+  अगर (fd < 0) {
+    म_लिखो(
       "%s: create 123456789012345/123456789012345/123456789012345 failed\n", s);
-    exit(1);
+    निकास(1);
   }
-  close(fd);
-  fd = open("12345678901234/12345678901234/12345678901234", 0);
-  if (fd < 0) {
-    printf("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
-    exit(1);
+  बंद(fd);
+  fd = खोलो("12345678901234/12345678901234/12345678901234", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  if (mkdir("12345678901234/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("12345678901234/12345678901234") == 0) {
+    म_लिखो("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
+    निकास(1);
   }
-  if (mkdir("123456789012345/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("123456789012345/12345678901234") == 0) {
+    म_लिखो("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
+    निकास(1);
   }
 
   // clean up
@@ -1858,244 +1858,244 @@ fourteen(char *s)
   unlink("12345678901234");
 }
 
-void
-rmdot(char *s)
+व्योम
+rmdot(अक्षर *s)
 {
-  if (mkdir("dots") != 0) {
-    printf("%s: mkdir dots failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("dots") != 0) {
+    म_लिखो("%s: mkdir dots failed\n", s);
+    निकास(1);
   }
-  if (chdir("dots") != 0) {
-    printf("%s: chdir dots failed\n", s);
-    exit(1);
+  अगर (स_बदलो("dots") != 0) {
+    म_लिखो("%s: chdir dots failed\n", s);
+    निकास(1);
   }
-  if (unlink(".") == 0) {
-    printf("%s: rm . worked!\n", s);
-    exit(1);
+  अगर (unlink(".") == 0) {
+    म_लिखो("%s: rm . worked!\n", s);
+    निकास(1);
   }
-  if (unlink("..") == 0) {
-    printf("%s: rm .. worked!\n", s);
-    exit(1);
+  अगर (unlink("..") == 0) {
+    म_लिखो("%s: rm .. worked!\n", s);
+    निकास(1);
   }
-  if (chdir("/") != 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  अगर (स_बदलो("/") != 0) {
+    म_लिखो("%s: chdir / failed\n", s);
+    निकास(1);
   }
-  if (unlink("dots/.") == 0) {
-    printf("%s: unlink dots/. worked!\n", s);
-    exit(1);
+  अगर (unlink("dots/.") == 0) {
+    म_लिखो("%s: unlink dots/. worked!\n", s);
+    निकास(1);
   }
-  if (unlink("dots/..") == 0) {
-    printf("%s: unlink dots/.. worked!\n", s);
-    exit(1);
+  अगर (unlink("dots/..") == 0) {
+    म_लिखो("%s: unlink dots/.. worked!\n", s);
+    निकास(1);
   }
-  if (unlink("dots") != 0) {
-    printf("%s: unlink dots failed!\n", s);
-    exit(1);
+  अगर (unlink("dots") != 0) {
+    म_लिखो("%s: unlink dots failed!\n", s);
+    निकास(1);
   }
 }
 
-void
-dirfile(char *s)
+व्योम
+dirfile(अक्षर *s)
 {
-  int fd;
+  पूर्णांक fd;
 
-  fd = open("dirfile", O_CREATE);
-  if (fd < 0) {
-    printf("%s: create dirfile failed\n", s);
-    exit(1);
+  fd = खोलो("dirfile", O_CREATE);
+  अगर (fd < 0) {
+    म_लिखो("%s: create dirfile failed\n", s);
+    निकास(1);
   }
-  close(fd);
-  if (chdir("dirfile") == 0) {
-    printf("%s: chdir dirfile succeeded!\n", s);
-    exit(1);
+  बंद(fd);
+  अगर (स_बदलो("dirfile") == 0) {
+    म_लिखो("%s: chdir dirfile succeeded!\n", s);
+    निकास(1);
   }
-  fd = open("dirfile/xx", 0);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  fd = खोलो("dirfile/xx", 0);
+  अगर (fd >= 0) {
+    म_लिखो("%s: create dirfile/xx succeeded!\n", s);
+    निकास(1);
   }
-  fd = open("dirfile/xx", O_CREATE);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  fd = खोलो("dirfile/xx", O_CREATE);
+  अगर (fd >= 0) {
+    म_लिखो("%s: create dirfile/xx succeeded!\n", s);
+    निकास(1);
   }
-  if (mkdir("dirfile/xx") == 0) {
-    printf("%s: mkdir dirfile/xx succeeded!\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("dirfile/xx") == 0) {
+    म_लिखो("%s: mkdir dirfile/xx succeeded!\n", s);
+    निकास(1);
   }
-  if (unlink("dirfile/xx") == 0) {
-    printf("%s: unlink dirfile/xx succeeded!\n", s);
-    exit(1);
+  अगर (unlink("dirfile/xx") == 0) {
+    म_लिखो("%s: unlink dirfile/xx succeeded!\n", s);
+    निकास(1);
   }
-  if (link("README", "dirfile/xx") == 0) {
-    printf("%s: link to dirfile/xx succeeded!\n", s);
-    exit(1);
+  अगर (link("README", "dirfile/xx") == 0) {
+    म_लिखो("%s: link to dirfile/xx succeeded!\n", s);
+    निकास(1);
   }
-  if (unlink("dirfile") != 0) {
-    printf("%s: unlink dirfile failed!\n", s);
-    exit(1);
+  अगर (unlink("dirfile") != 0) {
+    म_लिखो("%s: unlink dirfile failed!\n", s);
+    निकास(1);
   }
 
-  fd = open(".", O_RDWR);
-  if (fd >= 0) {
-    printf("%s: open . for writing succeeded!\n", s);
-    exit(1);
+  fd = खोलो(".", O_RDWR);
+  अगर (fd >= 0) {
+    म_लिखो("%s: open . for writing succeeded!\n", s);
+    निकास(1);
   }
-  fd = open(".", 0);
-  if (write(fd, "x", 1) > 0) {
-    printf("%s: write . succeeded!\n", s);
-    exit(1);
+  fd = खोलो(".", 0);
+  अगर (ग_लिखो(fd, "x", 1) > 0) {
+    म_लिखो("%s: write . succeeded!\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 }
 
 // test that iput() is called at the end of _namei().
 // also tests empty file names.
-void
-iref(char *s)
+व्योम
+iref(अक्षर *s)
 {
-  int i, fd;
+  पूर्णांक i, fd;
 
-  for (i = 0; i < NINODE + 1; i++) {
-    if (mkdir("irefd") != 0) {
-      printf("%s: mkdir irefd failed\n", s);
-      exit(1);
+  क्रम (i = 0; i < NINODE + 1; i++) {
+    अगर (सूची_गढ़ो("irefd") != 0) {
+      म_लिखो("%s: mkdir irefd failed\n", s);
+      निकास(1);
     }
-    if (chdir("irefd") != 0) {
-      printf("%s: chdir irefd failed\n", s);
-      exit(1);
+    अगर (स_बदलो("irefd") != 0) {
+      म_लिखो("%s: chdir irefd failed\n", s);
+      निकास(1);
     }
 
-    mkdir("");
+    सूची_गढ़ो("");
     link("README", "");
-    fd = open("", O_CREATE);
-    if (fd >= 0)
-      close(fd);
-    fd = open("xx", O_CREATE);
-    if (fd >= 0)
-      close(fd);
+    fd = खोलो("", O_CREATE);
+    अगर (fd >= 0)
+      बंद(fd);
+    fd = खोलो("xx", O_CREATE);
+    अगर (fd >= 0)
+      बंद(fd);
     unlink("xx");
   }
 
   // clean up
-  for (i = 0; i < NINODE + 1; i++) {
-    chdir("..");
+  क्रम (i = 0; i < NINODE + 1; i++) {
+    स_बदलो("..");
     unlink("irefd");
   }
 
-  chdir("/");
+  स_बदलो("/");
 }
 
 // test that fork fails gracefully
 // the forktest binary also does this, but it runs out of proc entries first.
 // inside the bigger usertests binary, we run out of memory first.
-void
-forktest(char *s)
+व्योम
+forktest(अक्षर *s)
 {
-  enum { N = 1000 };
-  int n, pid;
+  क्रमागत { N = 1000 };
+  पूर्णांक n, pid;
 
-  for (n = 0; n < N; n++) {
-    pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+  क्रम (n = 0; n < N; n++) {
+    pid = विभाजन();
+    अगर (pid < 0)
+      अवरोध;
+    अगर (pid == 0)
+      निकास(0);
   }
 
-  if (n == 0) {
-    printf("%s: no fork at all!\n", s);
-    exit(1);
+  अगर (n == 0) {
+    म_लिखो("%s: no fork at all!\n", s);
+    निकास(1);
   }
 
-  if (n == N) {
-    printf("%s: fork claimed to work 1000 times!\n", s);
-    exit(1);
+  अगर (n == N) {
+    म_लिखो("%s: fork claimed to work 1000 times!\n", s);
+    निकास(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
-      printf("%s: wait stopped early\n", s);
-      exit(1);
+  क्रम (; n > 0; n--) {
+    अगर (रुको(0) < 0) {
+      म_लिखो("%s: wait stopped early\n", s);
+      निकास(1);
     }
   }
 
-  if (wait(0) != -1) {
-    printf("%s: wait got too many\n", s);
-    exit(1);
+  अगर (रुको(0) != -1) {
+    म_लिखो("%s: wait got too many\n", s);
+    निकास(1);
   }
 }
 
-void
-sbrkbasic(char *s)
+व्योम
+sbrkbasic(अक्षर *s)
 {
-  enum { TOOMUCH = 1024 * 1024 * 1024 };
-  int i, pid, xstatus;
-  char *c, *a, *b;
+  क्रमागत { TOOMUCH = 1024 * 1024 * 1024 };
+  पूर्णांक i, pid, xstatus;
+  अक्षर *c, *a, *b;
 
   // does sbrk() return the expected failure value?
-  pid = fork();
-  if (pid < 0) {
-    printf("fork failed in sbrkbasic\n");
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("fork failed in sbrkbasic\n");
+    निकास(1);
   }
-  if (pid == 0) {
+  अगर (pid == 0) {
     a = sbrk(TOOMUCH);
-    if (a == (char *)SBRK_ERROR) {
+    अगर (a == (अक्षर *)SBRK_ERROR) {
       // it's OK if this fails.
-      exit(0);
+      निकास(0);
     }
 
-    for (b = a; b < a + TOOMUCH; b += PGSIZE) {
+    क्रम (b = a; b < a + TOOMUCH; b += PGSIZE) {
       *b = 99;
     }
 
     // we should not get here! either sbrk(TOOMUCH)
     // should have failed, or (with lazy allocation)
     // a pagefault should have killed this process.
-    exit(1);
+    निकास(1);
   }
 
-  wait(&xstatus);
-  if (xstatus == 1) {
-    printf("%s: too much memory allocated!\n", s);
-    exit(1);
+  रुको(&xstatus);
+  अगर (xstatus == 1) {
+    म_लिखो("%s: too much memory allocated!\n", s);
+    निकास(1);
   }
 
   // can one sbrk() less than a page?
   a = sbrk(0);
-  for (i = 0; i < 5000; i++) {
+  क्रम (i = 0; i < 5000; i++) {
     b = sbrk(1);
-    if (b != a) {
-      printf("%s: sbrk test failed %d %p %p\n", s, i, a, b);
-      exit(1);
+    अगर (b != a) {
+      म_लिखो("%s: sbrk test failed %d %p %p\n", s, i, a, b);
+      निकास(1);
     }
     *b = 1;
     a = b + 1;
   }
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: sbrk test fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: sbrk test fork failed\n", s);
+    निकास(1);
   }
   c = sbrk(1);
   c = sbrk(1);
-  if (c != a + 1) {
-    printf("%s: sbrk test failed post-fork\n", s);
-    exit(1);
+  अगर (c != a + 1) {
+    म_लिखो("%s: sbrk test failed post-fork\n", s);
+    निकास(1);
   }
-  if (pid == 0)
-    exit(0);
-  wait(&xstatus);
-  exit(xstatus);
+  अगर (pid == 0)
+    निकास(0);
+  रुको(&xstatus);
+  निकास(xstatus);
 }
 
-void
-sbrkmuch(char *s)
+व्योम
+sbrkmuch(अक्षर *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  char *c, *oldbrk, *a, *lastaddr, *p;
+  क्रमागत { BIG = 100 * 1024 * 1024 };
+  अक्षर *c, *oldbrk, *a, *lastaddr, *p;
   uint64 amt;
 
   oldbrk = sbrk(0);
@@ -2104,227 +2104,227 @@ sbrkmuch(char *s)
   a = sbrk(0);
   amt = BIG - (uint64)a;
   p = sbrk(amt);
-  if (p != a) {
-    printf("%s: sbrk test failed to grow big address space; enough phys mem?\n",
+  अगर (p != a) {
+    म_लिखो("%s: sbrk test failed to grow big address space; enough phys mem?\n",
            s);
-    exit(1);
+    निकास(1);
   }
 
-  lastaddr = (char *)(BIG - 1);
+  lastaddr = (अक्षर *)(BIG - 1);
   *lastaddr = 99;
 
   // can one de-allocate?
   a = sbrk(0);
   c = sbrk(-PGSIZE);
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: sbrk could not deallocate\n", s);
-    exit(1);
+  अगर (c == (अक्षर *)SBRK_ERROR) {
+    म_लिखो("%s: sbrk could not deallocate\n", s);
+    निकास(1);
   }
   c = sbrk(0);
-  if (c != a - PGSIZE) {
-    printf("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
+  अगर (c != a - PGSIZE) {
+    म_लिखो("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
            c);
-    exit(1);
+    निकास(1);
   }
 
   // can one re-allocate that page?
   a = sbrk(0);
   c = sbrk(PGSIZE);
-  if (c != a || sbrk(0) != a + PGSIZE) {
-    printf("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
-    exit(1);
+  अगर (c != a || sbrk(0) != a + PGSIZE) {
+    म_लिखो("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
+    निकास(1);
   }
-  if (*lastaddr == 99) {
+  अगर (*lastaddr == 99) {
     // should be zero
-    printf("%s: sbrk de-allocation didn't really deallocate\n", s);
-    exit(1);
+    म_लिखो("%s: sbrk de-allocation didn't really deallocate\n", s);
+    निकास(1);
   }
 
   a = sbrk(0);
   c = sbrk(-(sbrk(0) - oldbrk));
-  if (c != a) {
-    printf("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
-    exit(1);
+  अगर (c != a) {
+    म_लिखो("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
+    निकास(1);
   }
 }
 
 // can we read the kernel's memory?
-void
-kernmem(char *s)
+व्योम
+kernmem(अक्षर *s)
 {
-  char *a;
-  int pid;
+  अक्षर *a;
+  पूर्णांक pid;
 
-  for (a = (char *)(KERNBASE); a < (char *)(KERNBASE + 2000000); a += 50000) {
-    pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  क्रम (a = (अक्षर *)(KERNBASE); a < (अक्षर *)(KERNBASE + 2000000); a += 50000) {
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (pid == 0) {
-      printf("%s: oops could read %p = %x\n", s, a, *a);
-      exit(1);
+    अगर (pid == 0) {
+      म_लिखो("%s: oops could read %p = %x\n", s, a, *a);
+      निकास(1);
     }
-    int xstatus;
-    wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    पूर्णांक xstatus;
+    रुको(&xstatus);
+    अगर (xstatus != -1) // did kernel kill child?
+      निकास(1);
   }
 }
 
 // user code should not be able to write to addresses above MAXVA.
-void
-MAXVAplus(char *s)
+व्योम
+MAXVAplus(अक्षर *s)
 {
-  volatile uint64 a = MAXVA;
-  for (; a != 0; a <<= 1) {
-    int pid;
-    pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  अस्थिर uint64 a = MAXVA;
+  क्रम (; a != 0; a <<= 1) {
+    पूर्णांक pid;
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    if (pid == 0) {
-      *(char *)a = 99;
-      printf("%s: oops wrote %p\n", s, (void *)a);
-      exit(1);
+    अगर (pid == 0) {
+      *(अक्षर *)a = 99;
+      म_लिखो("%s: oops wrote %p\n", s, (व्योम *)a);
+      निकास(1);
     }
-    int xstatus;
-    wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    पूर्णांक xstatus;
+    रुको(&xstatus);
+    अगर (xstatus != -1) // did kernel kill child?
+      निकास(1);
   }
 }
 
 // if we run the system out of memory, does it clean up the last
 // failed allocation?
-void
-sbrkfail(char *s)
+व्योम
+sbrkfail(अक्षर *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  int i, xstatus;
-  int fds[2];
-  char scratch;
-  char *c, *a;
-  int pids[10];
-  int pid;
-  int failed;
+  क्रमागत { BIG = 100 * 1024 * 1024 };
+  पूर्णांक i, xstatus;
+  पूर्णांक fds[2];
+  अक्षर scratch;
+  अक्षर *c, *a;
+  पूर्णांक pids[10];
+  पूर्णांक pid;
+  पूर्णांक failed;
 
   failed = 0;
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  अगर (pipe(fds) != 0) {
+    म_लिखो("%s: pipe() failed\n", s);
+    निकास(1);
   }
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if ((pids[i] = fork()) == 0) {
+  क्रम (i = 0; i < माप(pids) / माप(pids[0]); i++) {
+    अगर ((pids[i] = विभाजन()) == 0) {
       // allocate a lot of memory
-      if (sbrk(BIG - (uint64)sbrk(0)) == (char *)SBRK_ERROR)
-        write(fds[1], "0", 1);
-      else
-        write(fds[1], "1", 1);
+      अगर (sbrk(BIG - (uint64)sbrk(0)) == (अक्षर *)SBRK_ERROR)
+        ग_लिखो(fds[1], "0", 1);
+      अन्यथा
+        ग_लिखो(fds[1], "1", 1);
       // sit around until killed
-      for (;;)
-        pause(1000);
+      क्रम (;;)
+        छोड़ो(1000);
     }
-    if (pids[i] != -1) {
-      read(fds[0], &scratch, 1);
-      if (scratch == '0')
+    अगर (pids[i] != -1) {
+      पढ़ो(fds[0], &scratch, 1);
+      अगर (scratch == '0')
         failed = 1;
     }
   }
-  if (!failed) {
-    printf("%s: no allocation failed; allocate more?\n", s);
+  अगर (!failed) {
+    म_लिखो("%s: no allocation failed; allocate more?\n", s);
   }
 
   // if those failed allocations freed up the pages they did allocate,
   // we'll be able to allocate here
   c = sbrk(PGSIZE);
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if (pids[i] == -1)
-      continue;
-    kill(pids[i]);
-    wait(0);
+  क्रम (i = 0; i < माप(pids) / माप(pids[0]); i++) {
+    अगर (pids[i] == -1)
+      जारी;
+    समाप्त(pids[i]);
+    रुको(0);
   }
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: failed sbrk leaked memory\n", s);
-    exit(1);
+  अगर (c == (अक्षर *)SBRK_ERROR) {
+    म_लिखो("%s: failed sbrk leaked memory\n", s);
+    निकास(1);
   }
 
   // test running fork with the above allocated page
-  pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  if (pid == 0) {
+  अगर (pid == 0) {
     // allocate a lot of memory. this should produce an error
     a = sbrk(10 * BIG);
-    if (a == (char *)SBRK_ERROR) {
-      exit(0);
+    अगर (a == (अक्षर *)SBRK_ERROR) {
+      निकास(0);
     }
-    printf("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
-    exit(1);
+    म_लिखो("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
+    निकास(1);
   }
-  wait(&xstatus);
-  if (xstatus != 0)
-    exit(1);
+  रुको(&xstatus);
+  अगर (xstatus != 0)
+    निकास(1);
 }
 
 // test reads/writes from/to allocated memory
-void
-sbrkarg(char *s)
+व्योम
+sbrkarg(अक्षर *s)
 {
-  char *a;
-  int fd, n;
+  अक्षर *a;
+  पूर्णांक fd, n;
 
   a = sbrk(PGSIZE);
-  fd = open("sbrk", O_CREATE | O_WRONLY);
+  fd = खोलो("sbrk", O_CREATE | O_WRONLY);
   unlink("sbrk");
-  if (fd < 0) {
-    printf("%s: open sbrk failed\n", s);
-    exit(1);
+  अगर (fd < 0) {
+    म_लिखो("%s: open sbrk failed\n", s);
+    निकास(1);
   }
-  if ((n = write(fd, a, PGSIZE)) < 0) {
-    printf("%s: write sbrk failed\n", s);
-    exit(1);
+  अगर ((n = ग_लिखो(fd, a, PGSIZE)) < 0) {
+    म_लिखो("%s: write sbrk failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
   // test writes to allocated memory
   a = sbrk(PGSIZE);
-  if (pipe((int *)a) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  अगर (pipe((पूर्णांक *)a) != 0) {
+    म_लिखो("%s: pipe() failed\n", s);
+    निकास(1);
   }
 }
 
-void
-validatetest(char *s)
+व्योम
+validatetest(अक्षर *s)
 {
-  int hi;
+  पूर्णांक hi;
   uint64 p;
 
   hi = 1100 * 1024;
-  for (p = 0; p <= (uint)hi; p += PGSIZE) {
+  क्रम (p = 0; p <= (uint)hi; p += PGSIZE) {
     // try to crash the kernel by passing in a bad string pointer
-    if (link("nosuchfile", (char *)p) != -1) {
-      printf("%s: link should not succeed\n", s);
-      exit(1);
+    अगर (link("nosuchfile", (अक्षर *)p) != -1) {
+      म_लिखो("%s: link should not succeed\n", s);
+      निकास(1);
     }
   }
 }
 
 // does uninitialized data start out zero?
-char uninit[10000];
-void
-bsstest(char *s)
+अक्षर uninit[10000];
+व्योम
+bsstest(अक्षर *s)
 {
-  int i;
+  पूर्णांक i;
 
-  for (i = 0; i < sizeof(uninit); i++) {
-    if (uninit[i] != '\0') {
-      printf("%s: bss test failed\n", s);
-      exit(1);
+  क्रम (i = 0; i < माप(uninit); i++) {
+    अगर (uninit[i] != '\0') {
+      म_लिखो("%s: bss test failed\n", s);
+      निकास(1);
     }
   }
 }
@@ -2332,84 +2332,84 @@ bsstest(char *s)
 // does exec return an error if the arguments
 // are larger than a page? or does it write
 // below the stack and wreck the instructions/data?
-void
-bigargtest(char *s)
+व्योम
+bigargtest(अक्षर *s)
 {
-  int pid, fd, xstatus;
+  पूर्णांक pid, fd, xstatus;
 
   unlink("bigarg-ok");
-  pid = fork();
-  if (pid == 0) {
-    static char *args[MAXARG];
-    int i;
-    char big[400];
-    memset(big, ' ', sizeof(big));
-    big[sizeof(big) - 1] = '\0';
-    for (i = 0; i < MAXARG - 1; i++)
+  pid = विभाजन();
+  अगर (pid == 0) {
+    अटल अक्षर *args[MAXARG];
+    पूर्णांक i;
+    अक्षर big[400];
+    स_रखो(big, ' ', माप(big));
+    big[माप(big) - 1] = '\0';
+    क्रम (i = 0; i < MAXARG - 1; i++)
       args[i] = big;
     args[MAXARG - 1] = 0;
     // this exec() should fail (and return) because the
     // arguments are too large.
     exec("echo", args);
-    fd = open("bigarg-ok", O_CREATE);
-    close(fd);
-    exit(0);
-  } else if (pid < 0) {
-    printf("%s: bigargtest: fork failed\n", s);
-    exit(1);
+    fd = खोलो("bigarg-ok", O_CREATE);
+    बंद(fd);
+    निकास(0);
+  } अन्यथा अगर (pid < 0) {
+    म_लिखो("%s: bigargtest: fork failed\n", s);
+    निकास(1);
   }
 
-  wait(&xstatus);
-  if (xstatus != 0)
-    exit(xstatus);
-  fd = open("bigarg-ok", 0);
-  if (fd < 0) {
-    printf("%s: bigarg test failed!\n", s);
-    exit(1);
+  रुको(&xstatus);
+  अगर (xstatus != 0)
+    निकास(xstatus);
+  fd = खोलो("bigarg-ok", 0);
+  अगर (fd < 0) {
+    म_लिखो("%s: bigarg test failed!\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 }
 
 // what happens when the file system runs out of blocks?
 // answer: balloc panics, so this test is not useful.
-void
+व्योम
 fsfull()
 {
-  int nfiles;
-  int fsblocks = 0;
+  पूर्णांक nfiles;
+  पूर्णांक fsblocks = 0;
 
-  printf("fsfull test\n");
+  म_लिखो("fsfull test\n");
 
-  for (nfiles = 0;; nfiles++) {
-    char name[64];
+  क्रम (nfiles = 0;; nfiles++) {
+    अक्षर name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
     name[3] = '0' + (nfiles % 100) / 10;
     name[4] = '0' + (nfiles % 10);
     name[5] = '\0';
-    printf("writing %s\n", name);
-    int fd = open(name, O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("open %s failed\n", name);
-      break;
+    म_लिखो("writing %s\n", name);
+    पूर्णांक fd = खोलो(name, O_CREATE | O_RDWR);
+    अगर (fd < 0) {
+      म_लिखो("open %s failed\n", name);
+      अवरोध;
     }
-    int total = 0;
-    while (1) {
-      int cc = write(fd, buf, BSIZE);
-      if (cc < BSIZE)
-        break;
-      total += cc;
+    पूर्णांक योग = 0;
+    जबतक (1) {
+      पूर्णांक cc = ग_लिखो(fd, buf, BSIZE);
+      अगर (cc < BSIZE)
+        अवरोध;
+      योग += cc;
       fsblocks++;
     }
-    printf("wrote %d bytes\n", total);
-    close(fd);
-    if (total == 0)
-      break;
+    म_लिखो("wrote %d bytes\n", योग);
+    बंद(fd);
+    अगर (योग == 0)
+      अवरोध;
   }
 
-  while (nfiles >= 0) {
-    char name[64];
+  जबतक (nfiles >= 0) {
+    अक्षर name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
@@ -2420,55 +2420,55 @@ fsfull()
     nfiles--;
   }
 
-  printf("fsfull test finished, %d blocks\n", fsblocks);
+  म_लिखो("fsfull test finished, %d blocks\n", fsblocks);
 }
 
-void
-argptest(char *s)
+व्योम
+argptest(अक्षर *s)
 {
-  int fd;
-  fd = open("init", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  पूर्णांक fd;
+  fd = खोलो("init", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("%s: open failed\n", s);
+    निकास(1);
   }
-  read(fd, sbrk(0) - 1, -1);
-  close(fd);
+  पढ़ो(fd, sbrk(0) - 1, -1);
+  बंद(fd);
 }
 
 // check that there's an invalid page beneath
 // the user stack, to catch stack overflow.
-void
-stacktest(char *s)
+व्योम
+stacktest(अक्षर *s)
 {
-  int pid;
-  int xstatus;
+  पूर्णांक pid;
+  पूर्णांक xstatus;
 
-  pid = fork();
-  if (pid == 0) {
-    char *sp = (char *)r_sp();
+  pid = विभाजन();
+  अगर (pid == 0) {
+    अक्षर *sp = (अक्षर *)r_sp();
     sp -= USERSTACK * PGSIZE;
     // the *sp should cause a trap.
-    printf("%s: stacktest: read below stack %d\n", s, *sp);
-    exit(1);
-  } else if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+    म_लिखो("%s: stacktest: read below stack %d\n", s, *sp);
+    निकास(1);
+  } अन्यथा अगर (pid < 0) {
+    म_लिखो("%s: fork failed\n", s);
+    निकास(1);
   }
-  wait(&xstatus);
-  if (xstatus == -1) // kernel killed child?
-    exit(0);
-  else
-    exit(xstatus);
+  रुको(&xstatus);
+  अगर (xstatus == -1) // kernel killed child?
+    निकास(0);
+  अन्यथा
+    निकास(xstatus);
 }
 
 // check that writes to a few forbidden addresses
 // cause a fault, e.g. process's text and TRAMPOLINE.
-void
-nowrite(char *s)
+व्योम
+nowrite(अक्षर *s)
 {
-  int pid;
-  int xstatus;
+  पूर्णांक pid;
+  पूर्णांक xstatus;
   uint64 addrs[] = {0,
                     0x80000000LL,
                     0x3fffffe000,
@@ -2476,84 +2476,84 @@ nowrite(char *s)
                     0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
-    pid = fork();
-    if (pid == 0) {
-      volatile int *addr = (int *)addrs[ai];
+  क्रम (पूर्णांक ai = 0; ai < माप(addrs) / माप(addrs[0]); ai++) {
+    pid = विभाजन();
+    अगर (pid == 0) {
+      अस्थिर पूर्णांक *addr = (पूर्णांक *)addrs[ai];
       *addr = 10;
-      printf("%s: write to %p did not fail!\n", s, addr);
-      exit(0);
-    } else if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+      म_लिखो("%s: write to %p did not fail!\n", s, addr);
+      निकास(0);
+    } अन्यथा अगर (pid < 0) {
+      म_लिखो("%s: fork failed\n", s);
+      निकास(1);
     }
-    wait(&xstatus);
-    if (xstatus == 0) {
+    रुको(&xstatus);
+    अगर (xstatus == 0) {
       // kernel did not kill child!
-      exit(1);
+      निकास(1);
     }
   }
-  exit(0);
+  निकास(0);
 }
 
 // regression test. copyin(), copyout(), and copyinstr() used to cast
 // the virtual page address to uint, which (with certain wild system
 // call arguments) resulted in a kernel page faults.
-void *big = (void *)0xeaeb0b5b00002f5e;
-void
-pgbug(char *s)
+व्योम *big = (व्योम *)0xeaeb0b5b00002f5e;
+व्योम
+pgbug(अक्षर *s)
 {
-  char *argv[1];
+  अक्षर *argv[1];
   argv[0] = 0;
   exec(big, argv);
   pipe(big);
 
-  exit(0);
+  निकास(0);
 }
 
 // regression test. does the kernel panic if a process sbrk()s its
 // size to be less than a page, or zero, or reduces the break by an
 // amount too small to cause a page to be freed?
-void
-sbrkbugs(char *s)
+व्योम
+sbrkbugs(अक्षर *s)
 {
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  पूर्णांक pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("fork failed\n");
+    निकास(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  अगर (pid == 0) {
+    पूर्णांक sz = (uint64)sbrk(0);
     // free all user memory; there used to be a bug that
     // would not adjust p->sz correctly in this case,
     // causing exit() to panic.
     sbrk(-sz);
     // user page fault here.
-    exit(0);
+    निकास(0);
   }
-  wait(0);
+  रुको(0);
 
-  pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("fork failed\n");
+    निकास(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  अगर (pid == 0) {
+    पूर्णांक sz = (uint64)sbrk(0);
     // set the break to somewhere in the very first
     // page; there used to be a bug that would incorrectly
     // free the first page.
     sbrk(-(sz - 3500));
-    exit(0);
+    निकास(0);
   }
-  wait(0);
+  रुको(0);
 
-  pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  pid = विभाजन();
+  अगर (pid < 0) {
+    म_लिखो("fork failed\n");
+    निकास(1);
   }
-  if (pid == 0) {
+  अगर (pid == 0) {
     // set the break in the middle of a page.
     sbrk((10 * PGSIZE + 2048) - (uint64)sbrk(0));
 
@@ -2562,271 +2562,271 @@ sbrkbugs(char *s)
     // a panic.
     sbrk(-10);
 
-    exit(0);
+    निकास(0);
   }
-  wait(0);
+  रुको(0);
 
-  exit(0);
+  निकास(0);
 }
 
 // if process size was somewhat more than a page boundary, and then
 // shrunk to be somewhat less than that page boundary, can the kernel
 // still copyin() from addresses in the last page?
-void
-sbrklast(char *s)
+व्योम
+sbrklast(अक्षर *s)
 {
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0)
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 शीर्ष_2 = (uint64)sbrk(0);
+  अगर ((शीर्ष_2 % PGSIZE) != 0)
+    sbrk(PGSIZE - (शीर्ष_2 % PGSIZE));
   sbrk(PGSIZE);
   sbrk(10);
   sbrk(-20);
-  top = (uint64)sbrk(0);
-  char *p = (char *)(top - 64);
+  शीर्ष_2 = (uint64)sbrk(0);
+  अक्षर *p = (अक्षर *)(शीर्ष_2 - 64);
   p[0] = 'x';
   p[1] = '\0';
-  int fd = open(p, O_RDWR | O_CREATE);
-  write(fd, p, 1);
-  close(fd);
-  fd = open(p, O_RDWR);
+  पूर्णांक fd = खोलो(p, O_RDWR | O_CREATE);
+  ग_लिखो(fd, p, 1);
+  बंद(fd);
+  fd = खोलो(p, O_RDWR);
   p[0] = '\0';
-  read(fd, p, 1);
-  if (p[0] != 'x')
-    exit(1);
+  पढ़ो(fd, p, 1);
+  अगर (p[0] != 'x')
+    निकास(1);
 }
 
 // does sbrk handle signed int32 wrap-around with
 // negative arguments?
-void
-sbrk8000(char *s)
+व्योम
+sbrk8000(अक्षर *s)
 {
   sbrk(0x80000004);
-  volatile char *top = sbrk(0);
-  *(top - 1) = *(top - 1) + 1;
+  अस्थिर अक्षर *शीर्ष_2 = sbrk(0);
+  *(शीर्ष_2 - 1) = *(शीर्ष_2 - 1) + 1;
 }
 
 // regression test. test whether exec() leaks memory if one of the
 // arguments is invalid. the test passes if the kernel doesn't panic.
-void
-badarg(char *s)
+व्योम
+badarg(अक्षर *s)
 {
-  for (int i = 0; i < 50000; i++) {
-    char *argv[2];
-    argv[0] = (char *)0xffffffff;
+  क्रम (पूर्णांक i = 0; i < 50000; i++) {
+    अक्षर *argv[2];
+    argv[0] = (अक्षर *)0xffffffff;
     argv[1] = 0;
     exec("echo", argv);
   }
 
-  exit(0);
+  निकास(0);
 }
 
-#define REGION_SZ (1024 * 1024 * 1024)
+#घोषणा REGION_SZ (1024 * 1024 * 1024)
 
 // Touch a page every 64 pages, which with lazy allocation
 // causes one page to be allocated.
-void
-lazy_alloc(char *s)
+व्योम
+lazy_alloc(अक्षर *s)
 {
-  char *i, *prev_end, *new_end;
+  अक्षर *i, *पूर्व_end, *new_end;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  पूर्व_end = sbrklazy(REGION_SZ);
+  अगर (पूर्व_end == (अक्षर *)SBRK_ERROR) {
+    म_लिखो("sbrklazy() failed\n");
+    निकास(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_end = पूर्व_end + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE)
-    *(char **)i = i;
+  क्रम (i = पूर्व_end + PGSIZE; i < new_end; i += 64 * PGSIZE)
+    *(अक्षर **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE) {
-    if (*(char **)i != i) {
-      printf("failed to read value from memory\n");
-      exit(1);
+  क्रम (i = पूर्व_end + PGSIZE; i < new_end; i += 64 * PGSIZE) {
+    अगर (*(अक्षर **)i != i) {
+      म_लिखो("failed to read value from memory\n");
+      निकास(1);
     }
   }
 
-  exit(0);
+  निकास(0);
 }
 
 // Touch a page every 64 pages in region, which with lazy allocation
 // causes one page to be allocated. Check that freeing the region
 // frees the allocated pages.
-void
-lazy_unmap(char *s)
+व्योम
+lazy_unmap(अक्षर *s)
 {
-  int pid;
-  char *i, *prev_end, *new_end;
+  पूर्णांक pid;
+  अक्षर *i, *पूर्व_end, *new_end;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  पूर्व_end = sbrklazy(REGION_SZ);
+  अगर (पूर्व_end == (अक्षर *)SBRK_ERROR) {
+    म_लिखो("sbrklazy() failed\n");
+    निकास(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_end = पूर्व_end + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE)
-    *(char **)i = i;
+  क्रम (i = पूर्व_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE)
+    *(अक्षर **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE) {
-    pid = fork();
-    if (pid < 0) {
-      printf("error forking\n");
-      exit(1);
-    } else if (pid == 0) {
+  क्रम (i = पूर्व_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE) {
+    pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("error forking\n");
+      निकास(1);
+    } अन्यथा अगर (pid == 0) {
       sbrklazy(-1L * REGION_SZ);
-      *(char **)i = i;
-      exit(0);
-    } else {
-      int status;
-      wait(&status);
-      if (status == 0) {
-        printf("memory not unmapped\n");
-        exit(1);
+      *(अक्षर **)i = i;
+      निकास(0);
+    } अन्यथा {
+      पूर्णांक status;
+      रुको(&status);
+      अगर (status == 0) {
+        म_लिखो("memory not unmapped\n");
+        निकास(1);
       }
     }
   }
 
-  exit(0);
+  निकास(0);
 }
 
-void
-lazy_copy(char *s)
+व्योम
+lazy_copy(अक्षर *s)
 {
   // copyinstr on lazy page
   {
-    char *p = sbrk(0);
+    अक्षर *p = sbrk(0);
     sbrklazy(4 * PGSIZE);
-    open(p + 8192, 0);
+    खोलो(p + 8192, 0);
   }
 
   {
-    void *xx = sbrk(0);
-    void *ret = sbrk(-(((uint64)xx) + 1));
-    if (ret != xx) {
-      printf("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
-      exit(1);
+    व्योम *xx = sbrk(0);
+    व्योम *ret = sbrk(-(((uint64)xx) + 1));
+    अगर (ret != xx) {
+      म_लिखो("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
+      निकास(1);
     }
   }
 
   // read() and write() to these addresses should fail.
-  unsigned long bad[] = {
+  अचिन्हित दीर्घ bad[] = {
     0x3fffffc000, 0x3fffffd000, 0x3fffffe000,
     0x3ffffff000, 0x4000000000, 0x8000000000,
   };
-  for (int i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("cannot open README\n");
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < माप(bad) / माप(bad[0]); i++) {
+    पूर्णांक fd = खोलो("README", 0);
+    अगर (fd < 0) {
+      म_लिखो("cannot open README\n");
+      निकास(1);
     }
-    if (read(fd, (char *)bad[i], 512) >= 0) {
-      printf("read succeeded\n");
-      exit(1);
+    अगर (पढ़ो(fd, (अक्षर *)bad[i], 512) >= 0) {
+      म_लिखो("read succeeded\n");
+      निकास(1);
     }
-    close(fd);
-    fd = open("junk", O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
-      printf("cannot open junk\n");
-      exit(1);
+    बंद(fd);
+    fd = खोलो("junk", O_CREATE | O_RDWR | O_TRUNC);
+    अगर (fd < 0) {
+      म_लिखो("cannot open junk\n");
+      निकास(1);
     }
-    if (write(fd, (char *)bad[i], 512) >= 0) {
-      printf("write succeeded\n");
-      exit(1);
+    अगर (ग_लिखो(fd, (अक्षर *)bad[i], 512) >= 0) {
+      म_लिखो("write succeeded\n");
+      निकास(1);
     }
-    close(fd);
+    बंद(fd);
   }
 
-  exit(0);
+  निकास(0);
 }
 
-void
-lazy_copyinstr(char *s)
+व्योम
+lazy_copyinstr(अक्षर *s)
 {
-  char *p = sbrk(0);
+  अक्षर *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  अगर ((uint64)p % PGSIZE != 0) {
+    म_लिखो("%s: sbrk did not align\n", s);
+    निकास(1);
   }
 
   sbrklazy(2 * PGSIZE);
   p[4095] = '/';
-  int fd = open(&p[4095], O_RDONLY);
-  if (fd < 0) {
-    printf("could not open /");
-    exit(1);
+  पूर्णांक fd = खोलो(&p[4095], O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("could not open /");
+    निकास(1);
   }
 
-  struct stat st;
-  int r = fstat(fd, &st);
-  if (r < 0) {
-    printf("could not stat /");
-    exit(1);
+  काष्ठा stat st;
+  पूर्णांक r = ख_स्थिति(fd, &st);
+  अगर (r < 0) {
+    म_लिखो("could not stat /");
+    निकास(1);
   }
 
-  if (st.type != T_DIR) {
-    printf("/ is not T_DIR");
-    exit(1);
+  अगर (st.type != T_DIR) {
+    म_लिखो("/ is not T_DIR");
+    निकास(1);
   }
 
-  close(fd);
+  बंद(fd);
 }
 
-void
-lazy_sbrk(char *s)
+व्योम
+lazy_sbrk(अक्षर *s)
 {
   // sbrk() takes just int, so take 2^30-sized steps towards MAXVA
-  char *p = sbrk(0);
-  while ((uint64)p < MAXVA - (1 << 30)) {
+  अक्षर *p = sbrk(0);
+  जबतक ((uint64)p < MAXVA - (1 << 30)) {
     p = sbrklazy(1 << 30);
-    if (p < 0) {
-      printf("sbrklazy(%d) returned %p\n", 1 << 30, p);
-      exit(1);
+    अगर (p < 0) {
+      म_लिखो("sbrklazy(%d) returned %p\n", 1 << 30, p);
+      निकास(1);
     }
 
     p = sbrklazy(0);
   }
 
-  int n = TRAPFRAME - PGSIZE - (uint64)p;
+  पूर्णांक n = TRAPFRAME - PGSIZE - (uint64)p;
 
-  char *p1 = sbrklazy(n);
-  if (p1 < 0 || p1 != p) {
-    printf("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
-    exit(1);
+  अक्षर *p1 = sbrklazy(n);
+  अगर (p1 < 0 || p1 != p) {
+    म_लिखो("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
+    निकास(1);
   }
 
   p = sbrk(PGSIZE);
-  if (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
-    printf("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
-    exit(1);
+  अगर (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
+    म_लिखो("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
+    निकास(1);
   }
 
   p[0] = 1;
-  if (p[1] != 0) {
-    printf("sbrk() returned non-zero-filled memory\n");
-    exit(1);
+  अगर (p[1] != 0) {
+    म_लिखो("sbrk() returned non-zero-filled memory\n");
+    निकास(1);
   }
 
   p = sbrk(1);
-  if ((uint64)p != -1) {
-    printf("sbrk(1) returned %p, expected error\n", p);
-    exit(1);
+  अगर ((uint64)p != -1) {
+    म_लिखो("sbrk(1) returned %p, expected error\n", p);
+    निकास(1);
   }
 
   p = sbrklazy(1);
-  if ((uint64)p != -1) {
-    printf("sbrklazy(1) returned %p, expected error\n", p);
-    exit(1);
+  अगर ((uint64)p != -1) {
+    म_लिखो("sbrklazy(1) returned %p, expected error\n", p);
+    निकास(1);
   }
 
-  exit(0);
+  निकास(0);
 }
 
-void
-partial_write(char *s)
+व्योम
+partial_write(अक्षर *s)
 {
   // Create testfile containing "A".
   // write() 2 bytes that span page boundary: first is "X", second is unmapped.
@@ -2836,134 +2836,134 @@ partial_write(char *s)
   // read() from file should still return "X" (but might return "A" due to bug).
 
   unlink("testfile");
-  int fd = open("testfile", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create testfile\n", s);
-    exit(1);
+  पूर्णांक fd = खोलो("testfile", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot create testfile\n", s);
+    निकास(1);
   }
 
-  int cc = write(fd, "A", 1);
-  if (cc != 1) {
-    printf("%s: could not write A\n", s);
-    exit(1);
+  पूर्णांक cc = ग_लिखो(fd, "A", 1);
+  अगर (cc != 1) {
+    म_लिखो("%s: could not write A\n", s);
+    निकास(1);
   }
 
-  close(fd);
-  fd = open("testfile", O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  बंद(fd);
+  fd = खोलो("testfile", O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot re-open testfile\n", s);
+    निकास(1);
   }
 
-  char *p = sbrk(0);
+  अक्षर *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  अगर ((uint64)p % PGSIZE != 0) {
+    म_लिखो("%s: sbrk did not align\n", s);
+    निकास(1);
   }
 
   p[-1] = 'X';
 
-  cc = write(fd, p - 1, 2);
-  if (cc != -1) {
-    printf("%s: write succeeded, should have failed\n", s);
-    exit(1);
+  cc = ग_लिखो(fd, p - 1, 2);
+  अगर (cc != -1) {
+    म_लिखो("%s: write succeeded, should have failed\n", s);
+    निकास(1);
   }
 
-  close(fd);
+  बंद(fd);
 
-  fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  fd = खोलो("testfile", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot re-open testfile\n", s);
+    निकास(1);
   }
 
-  char b;
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  अक्षर b;
+  cc = पढ़ो(fd, &b, 1);
+  अगर (cc != 1) {
+    म_लिखो("%s: cannot read testfile\n", s);
+    निकास(1);
   }
 
-  close(fd);
+  बंद(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  अगर (b != 'X') {
+    म_लिखो("%s: read returned %c, expected X\n", s, b);
+    निकास(1);
   }
 
-  fd = open("bigfile", O_CREATE | O_RDWR);
-  for (int i = 0; i < 64; i++) {
-    char buf[1024];
-    memset(buf, 0, sizeof(buf));
-    cc = write(fd, buf, sizeof(buf));
-    if (cc != sizeof(buf)) {
-      printf("%s: could not write to bigfile\n", s);
-      exit(-1);
+  fd = खोलो("bigfile", O_CREATE | O_RDWR);
+  क्रम (पूर्णांक i = 0; i < 64; i++) {
+    अक्षर buf[1024];
+    स_रखो(buf, 0, माप(buf));
+    cc = ग_लिखो(fd, buf, माप(buf));
+    अगर (cc != माप(buf)) {
+      म_लिखो("%s: could not write to bigfile\n", s);
+      निकास(-1);
     }
   }
-  close(fd);
+  बंद(fd);
 
   unlink("bigfile");
 
-  fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  fd = खोलो("testfile", O_RDONLY);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot re-open testfile\n", s);
+    निकास(1);
   }
 
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  cc = पढ़ो(fd, &b, 1);
+  अगर (cc != 1) {
+    म_लिखो("%s: cannot read testfile\n", s);
+    निकास(1);
   }
 
-  close(fd);
+  बंद(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  अगर (b != 'X') {
+    म_लिखो("%s: read returned %c, expected X\n", s, b);
+    निकास(1);
   }
 
   unlink("testfile");
 }
 
-void
-unlinkcwd(char *s)
+व्योम
+unlinkcwd(अक्षर *s)
 {
-  if (mkdir("/a") < 0) {
-    printf("%s: mkdir /a failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("/a") < 0) {
+    म_लिखो("%s: mkdir /a failed\n", s);
+    निकास(1);
   }
-  if (mkdir("/a/b") < 0) {
-    printf("%s: mkdir /a/b failed\n", s);
-    exit(1);
+  अगर (सूची_गढ़ो("/a/b") < 0) {
+    म_लिखो("%s: mkdir /a/b failed\n", s);
+    निकास(1);
   }
-  if (chdir("/a/b") < 0) {
-    printf("%s: chdir failed\n", s);
-    exit(1);
+  अगर (स_बदलो("/a/b") < 0) {
+    म_लिखो("%s: chdir failed\n", s);
+    निकास(1);
   }
-  if (unlink("/a/b") < 0) {
-    printf("%s: unlink /a/b failed\n", s);
-    exit(1);
+  अगर (unlink("/a/b") < 0) {
+    म_लिखो("%s: unlink /a/b failed\n", s);
+    निकास(1);
   }
-  if (unlink("/a") < 0) {
-    printf("%s: unlink /a failed\n", s);
-    exit(1);
+  अगर (unlink("/a") < 0) {
+    म_लिखो("%s: unlink /a failed\n", s);
+    निकास(1);
   }
-  if (open("../", O_RDONLY) > 0) {
-    printf("%s: open ../ non-existing directory\n", s);
+  अगर (खोलो("../", O_RDONLY) > 0) {
+    म_लिखो("%s: open ../ non-existing directory\n", s);
   }
-  if (open("../c", O_CREATE) > 0) {
-    printf("%s: create ../c non-existing file\n", s);
+  अगर (खोलो("../c", O_CREATE) > 0) {
+    म_लिखो("%s: create ../c non-existing file\n", s);
   }
 }
 
-struct test {
-  void (*f)(char *);
-  char *s;
+काष्ठा test {
+  व्योम (*f)(अक्षर *);
+  अक्षर *s;
 } quicktests[] = {
   {copyin, "copyin"},
   {copyout, "copyout"},
@@ -3041,98 +3041,98 @@ struct test {
 //
 
 // directory that uses indirect blocks
-void
-bigdir(char *s)
+व्योम
+bigdir(अक्षर *s)
 {
-  enum { N = 500 };
-  int i, fd;
-  char name[10];
+  क्रमागत { N = 500 };
+  पूर्णांक i, fd;
+  अक्षर name[10];
 
   unlink("bd");
 
-  fd = open("bd", O_CREATE);
-  if (fd < 0) {
-    printf("%s: bigdir create failed\n", s);
-    exit(1);
+  fd = खोलो("bd", O_CREATE);
+  अगर (fd < 0) {
+    म_लिखो("%s: bigdir create failed\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  for (i = 0; i < N; i++) {
+  क्रम (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (link("bd", name) != 0) {
-      printf("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
-      exit(1);
+    अगर (link("bd", name) != 0) {
+      म_लिखो("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
+      निकास(1);
     }
   }
 
   unlink("bd");
-  for (i = 0; i < N; i++) {
+  क्रम (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (unlink(name) != 0) {
-      printf("%s: bigdir unlink failed", s);
-      exit(1);
+    अगर (unlink(name) != 0) {
+      म_लिखो("%s: bigdir unlink failed", s);
+      निकास(1);
     }
   }
 }
 
 // concurrent writes to try to provoke deadlock in the virtio disk
 // driver.
-void
-manywrites(char *s)
+व्योम
+manywrites(अक्षर *s)
 {
-  int nchildren = 4;
-  int howmany = 30; // increase to look for deadlock
+  पूर्णांक nchildren = 4;
+  पूर्णांक howmany = 30; // increase to look for deadlock
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
+  क्रम (पूर्णांक ci = 0; ci < nchildren; ci++) {
+    पूर्णांक pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("fork failed\n");
+      निकास(1);
     }
 
-    if (pid == 0) {
-      char name[3];
+    अगर (pid == 0) {
+      अक्षर name[3];
       name[0] = 'b';
       name[1] = 'a' + ci;
       name[2] = '\0';
       unlink(name);
 
-      for (int iters = 0; iters < howmany; iters++) {
-        for (int i = 0; i < ci + 1; i++) {
-          int fd = open(name, O_CREATE | O_RDWR);
-          if (fd < 0) {
-            printf("%s: cannot create %s\n", s, name);
-            exit(1);
+      क्रम (पूर्णांक iters = 0; iters < howmany; iters++) {
+        क्रम (पूर्णांक i = 0; i < ci + 1; i++) {
+          पूर्णांक fd = खोलो(name, O_CREATE | O_RDWR);
+          अगर (fd < 0) {
+            म_लिखो("%s: cannot create %s\n", s, name);
+            निकास(1);
           }
-          int sz = sizeof(buf);
-          int cc = write(fd, buf, sz);
-          if (cc != sz) {
-            printf("%s: write(%d) ret %d\n", s, sz, cc);
-            exit(1);
+          पूर्णांक sz = माप(buf);
+          पूर्णांक cc = ग_लिखो(fd, buf, sz);
+          अगर (cc != sz) {
+            म_लिखो("%s: write(%d) ret %d\n", s, sz, cc);
+            निकास(1);
           }
-          close(fd);
+          बंद(fd);
         }
         unlink(name);
       }
 
       unlink(name);
-      exit(0);
+      निकास(0);
     }
   }
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int st = 0;
-    wait(&st);
-    if (st != 0)
-      exit(st);
+  क्रम (पूर्णांक ci = 0; ci < nchildren; ci++) {
+    पूर्णांक st = 0;
+    रुको(&st);
+    अगर (st != 0)
+      निकास(st);
   }
-  exit(0);
+  निकास(0);
 }
 
 // regression test. does write() with an invalid buffer pointer cause
@@ -3140,137 +3140,137 @@ manywrites(char *s)
 // file is deleted? if the kernel has this bug, it will panic: balloc:
 // out of blocks. assumed_free may need to be raised to be more than
 // the number of free blocks. this test takes a long time.
-void
-badwrite(char *s)
+व्योम
+badwrite(अक्षर *s)
 {
-  int assumed_free = 600;
+  पूर्णांक assumed_free = 600;
 
   unlink("junk");
-  for (int i = 0; i < assumed_free; i++) {
-    int fd = open("junk", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open junk failed\n");
-      exit(1);
+  क्रम (पूर्णांक i = 0; i < assumed_free; i++) {
+    पूर्णांक fd = खोलो("junk", O_CREATE | O_WRONLY);
+    अगर (fd < 0) {
+      म_लिखो("open junk failed\n");
+      निकास(1);
     }
-    write(fd, (char *)0xffffffffffL, 1);
-    close(fd);
+    ग_लिखो(fd, (अक्षर *)0xffffffffffL, 1);
+    बंद(fd);
     unlink("junk");
   }
 
-  int fd = open("junk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open junk failed\n");
-    exit(1);
+  पूर्णांक fd = खोलो("junk", O_CREATE | O_WRONLY);
+  अगर (fd < 0) {
+    म_लिखो("open junk failed\n");
+    निकास(1);
   }
-  if (write(fd, "x", 1) != 1) {
-    printf("write failed\n");
-    exit(1);
+  अगर (ग_लिखो(fd, "x", 1) != 1) {
+    म_लिखो("write failed\n");
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
   unlink("junk");
 
-  exit(0);
+  निकास(0);
 }
 
 // test the exec() code that cleans up if it runs out
 // of memory. it's really a test that such a condition
 // doesn't cause a panic.
-void
-execout(char *s)
+व्योम
+execout(अक्षर *s)
 {
-  for (int avail = 0; avail < 15; avail++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
-    } else if (pid == 0) {
+  क्रम (पूर्णांक avail = 0; avail < 15; avail++) {
+    पूर्णांक pid = विभाजन();
+    अगर (pid < 0) {
+      म_लिखो("fork failed\n");
+      निकास(1);
+    } अन्यथा अगर (pid == 0) {
       // allocate all of memory.
-      while (1) {
-        char *a = sbrk(PGSIZE);
-        if (a == SBRK_ERROR)
-          break;
+      जबतक (1) {
+        अक्षर *a = sbrk(PGSIZE);
+        अगर (a == SBRK_ERROR)
+          अवरोध;
         *(a + PGSIZE - 1) = 1;
       }
 
       // free a few pages, in order to let exec() make some
       // progress.
-      for (int i = 0; i < avail; i++)
+      क्रम (पूर्णांक i = 0; i < avail; i++)
         sbrk(-PGSIZE);
 
-      close(1);
-      char *args[] = {"echo", "x", 0};
+      बंद(1);
+      अक्षर *args[] = {"echo", "x", 0};
       exec("echo", args);
-      exit(0);
-    } else {
-      wait((int *)0);
+      निकास(0);
+    } अन्यथा {
+      रुको((पूर्णांक *)0);
     }
   }
 
-  exit(0);
+  निकास(0);
 }
 
 // can the kernel tolerate running out of disk space?
-void
-diskfull(char *s)
+व्योम
+diskfull(अक्षर *s)
 {
-  int fi;
-  int done = 0;
+  पूर्णांक fi;
+  पूर्णांक done = 0;
 
   unlink("diskfulldir");
 
-  for (fi = 0; done == 0 && '0' + fi < 0177; fi++) {
-    char name[32];
+  क्रम (fi = 0; done == 0 && '0' + fi < 0177; fi++) {
+    अक्षर name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
     name[3] = '0' + fi;
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    पूर्णांक fd = खोलो(name, O_CREATE | O_RDWR | O_TRUNC);
+    अगर (fd < 0) {
       // oops, ran out of inodes before running out of blocks.
-      printf("%s: could not create file %s\n", s, name);
+      म_लिखो("%s: could not create file %s\n", s, name);
       done = 1;
-      break;
+      अवरोध;
     }
-    for (int i = 0; i < MAXFILE; i++) {
-      char buf[BSIZE];
-      if (write(fd, buf, BSIZE) != BSIZE) {
+    क्रम (पूर्णांक i = 0; i < MAXFILE; i++) {
+      अक्षर buf[BSIZE];
+      अगर (ग_लिखो(fd, buf, BSIZE) != BSIZE) {
         done = 1;
-        close(fd);
-        break;
+        बंद(fd);
+        अवरोध;
       }
     }
-    close(fd);
+    बंद(fd);
   }
 
   // now that there are no free blocks, test that dirlink()
   // merely fails (doesn't panic) if it can't extend
   // directory content. one of these file creations
   // is expected to fail.
-  int nzz = 128;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  पूर्णांक nzz = 128;
+  क्रम (पूर्णांक i = 0; i < nzz; i++) {
+    अक्षर name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0)
-      break;
-    close(fd);
+    पूर्णांक fd = खोलो(name, O_CREATE | O_RDWR | O_TRUNC);
+    अगर (fd < 0)
+      अवरोध;
+    बंद(fd);
   }
 
   // this mkdir() is expected to fail.
-  if (mkdir("diskfulldir") == 0)
-    printf("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
+  अगर (सूची_गढ़ो("diskfulldir") == 0)
+    म_लिखो("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
 
   unlink("diskfulldir");
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  क्रम (पूर्णांक i = 0; i < nzz; i++) {
+    अक्षर name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3279,8 +3279,8 @@ diskfull(char *s)
     unlink(name);
   }
 
-  for (int i = 0; '0' + i < 0177; i++) {
-    char name[32];
+  क्रम (पूर्णांक i = 0; '0' + i < 0177; i++) {
+    अक्षर name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
@@ -3290,28 +3290,28 @@ diskfull(char *s)
   }
 }
 
-void
-outofinodes(char *s)
+व्योम
+outofinodes(अक्षर *s)
 {
-  int nzz = 32 * 32;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  पूर्णांक nzz = 32 * 32;
+  क्रम (पूर्णांक i = 0; i < nzz; i++) {
+    अक्षर name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    पूर्णांक fd = खोलो(name, O_CREATE | O_RDWR | O_TRUNC);
+    अगर (fd < 0) {
       // failure is eventually expected.
-      break;
+      अवरोध;
     }
-    close(fd);
+    बंद(fd);
   }
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  क्रम (पूर्णांक i = 0; i < nzz; i++) {
+    अक्षर name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3321,36 +3321,36 @@ outofinodes(char *s)
   }
 }
 
-void
-linkoverflow(char *s)
+व्योम
+linkoverflow(अक्षर *s)
 {
-  enum { TARGET = 32768 };
-  enum { DIRS = 64 };
-  struct stat st;
-  int i;
+  क्रमागत { TARGET = 32768 };
+  क्रमागत { DIRS = 64 };
+  काष्ठा stat st;
+  पूर्णांक i;
 
   unlink("/lof");
-  int fd = open("/lof", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create /lof\n", s);
-    exit(1);
+  पूर्णांक fd = खोलो("/lof", O_CREATE | O_RDWR);
+  अगर (fd < 0) {
+    म_लिखो("%s: cannot create /lof\n", s);
+    निकास(1);
   }
-  close(fd);
+  बंद(fd);
 
-  for (i = 0; i < TARGET; i++) {
-    int d = i % DIRS;
-    int f = i / DIRS;
+  क्रम (i = 0; i < TARGET; i++) {
+    पूर्णांक d = i % DIRS;
+    पूर्णांक f = i / DIRS;
 
-    char pn[16];
+    अक्षर pn[16];
     pn[0] = '/';
     pn[1] = 'd';
     pn[2] = '_';
     pn[3] = 'a' + (d / 16);
     pn[4] = 'a' + (d % 16);
     pn[5] = '\0';
-    if (f == 0 && mkdir(pn) < 0) {
-      printf("%s: mkdir(%s) failed\n", s, pn);
-      exit(1);
+    अगर (f == 0 && सूची_गढ़ो(pn) < 0) {
+      म_लिखो("%s: mkdir(%s) failed\n", s, pn);
+      निकास(1);
     }
 
     pn[5] = '/';
@@ -3360,38 +3360,38 @@ linkoverflow(char *s)
     pn[9] = 'a' + (f % 16);
     pn[10] = '\0';
 
-    if (link("/lof", pn) < 0) {
-      if (stat("/lof", &st) < 0) {
-        printf("%s: stat(/lof) failed\n", s);
-        exit(1);
+    अगर (link("/lof", pn) < 0) {
+      अगर (stat("/lof", &st) < 0) {
+        म_लिखो("%s: stat(/lof) failed\n", s);
+        निकास(1);
       }
-      if (st.nlink >= 32767) {
+      अगर (st.nlink >= 32767) {
         // overflow check succeeded.
-        break;
+        अवरोध;
       }
-      printf("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
-      exit(1);
+      म_लिखो("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
+      निकास(1);
     }
 
-    if (i % 100 == 0) {
-      printf("%s: i=%d, pn=%s\n", s, i, pn);
+    अगर (i % 100 == 0) {
+      म_लिखो("%s: i=%d, pn=%s\n", s, i, pn);
     }
   }
 
-  if (stat("/lof", &st) < 0) {
-    printf("%s: stat(/lof) failed\n", s);
-    exit(1);
+  अगर (stat("/lof", &st) < 0) {
+    म_लिखो("%s: stat(/lof) failed\n", s);
+    निकास(1);
   }
 
   unlink("/lof");
 
-  if (st.nlink < 0) {
-    printf("%s: negative link count: %d\n", s, st.nlink);
-    exit(1);
+  अगर (st.nlink < 0) {
+    म_लिखो("%s: negative link count: %d\n", s, st.nlink);
+    निकास(1);
   }
 }
 
-struct test slowtests[] = {
+काष्ठा test slowtests[] = {
   {bigdir, "bigdir"},
   {manywrites, "manywrites"},
   {badwrite, "badwrite"},
@@ -3409,130 +3409,130 @@ struct test slowtests[] = {
 
 // run each test in its own process. run returns 1 if child's exit()
 // indicates success.
-int
-run(void f(char *), char *s)
+पूर्णांक
+run(व्योम f(अक्षर *), अक्षर *s)
 {
-  int pid;
-  int xstatus;
+  पूर्णांक pid;
+  पूर्णांक xstatus;
 
-  printf("test %s: ", s);
-  if ((pid = fork()) < 0) {
-    printf("runtest: fork error\n");
-    exit(1);
+  म_लिखो("test %s: ", s);
+  अगर ((pid = विभाजन()) < 0) {
+    म_लिखो("runtest: fork error\n");
+    निकास(1);
   }
-  if (pid == 0) {
+  अगर (pid == 0) {
     f(s);
-    exit(0);
-  } else {
-    wait(&xstatus);
-    if (xstatus != 0)
-      printf("FAILED\n");
-    else
-      printf("OK\n");
-    return xstatus == 0;
+    निकास(0);
+  } अन्यथा {
+    रुको(&xstatus);
+    अगर (xstatus != 0)
+      म_लिखो("FAILED\n");
+    अन्यथा
+      म_लिखो("OK\n");
+    वापस xstatus == 0;
   }
 }
 
-int
-runtests(struct test *tests, char *justone, int continuous)
+पूर्णांक
+runtests(काष्ठा test *tests, अक्षर *justone, पूर्णांक continuous)
 {
-  int ntests = 0;
-  for (struct test *t = tests; t->s != 0; t++) {
-    if ((justone == 0) || strcmp(t->s, justone) == 0) {
+  पूर्णांक ntests = 0;
+  क्रम (काष्ठा test *t = tests; t->s != 0; t++) {
+    अगर ((justone == 0) || म_भेद(t->s, justone) == 0) {
       ntests++;
-      if (!run(t->f, t->s)) {
-        if (continuous != 2) {
-          printf("SOME TESTS FAILED\n");
-          return -1;
+      अगर (!run(t->f, t->s)) {
+        अगर (continuous != 2) {
+          म_लिखो("SOME TESTS FAILED\n");
+          वापस -1;
         }
       }
     }
   }
-  return ntests;
+  वापस ntests;
 }
 
 // use sbrk() to count how many free physical memory pages there are.
-int
+पूर्णांक
 countfree()
 {
-  int n = 0;
+  पूर्णांक n = 0;
   uint64 sz0 = (uint64)sbrk(0);
-  while (1) {
-    char *a = sbrk(PGSIZE);
-    if (a == SBRK_ERROR) {
-      break;
+  जबतक (1) {
+    अक्षर *a = sbrk(PGSIZE);
+    अगर (a == SBRK_ERROR) {
+      अवरोध;
     }
     n += 1;
   }
   sbrk(-((uint64)sbrk(0) - sz0));
-  return n;
+  वापस n;
 }
 
-int
-drivetests(int quick, int continuous, char *justone)
+पूर्णांक
+drivetests(पूर्णांक quick, पूर्णांक continuous, अक्षर *justone)
 {
-  do {
-    printf("usertests starting\n");
-    int free0 = countfree();
-    int free1 = 0;
-    int ntests = 0;
-    int n;
+  करो {
+    म_लिखो("usertests starting\n");
+    पूर्णांक free0 = countfree();
+    पूर्णांक free1 = 0;
+    पूर्णांक ntests = 0;
+    पूर्णांक n;
     n = runtests(quicktests, justone, continuous);
-    if (n < 0) {
-      if (continuous != 2) {
-        return 1;
+    अगर (n < 0) {
+      अगर (continuous != 2) {
+        वापस 1;
       }
-    } else {
+    } अन्यथा {
       ntests += n;
     }
-    if (!quick) {
-      if (justone == 0)
-        printf("usertests slow tests starting\n");
+    अगर (!quick) {
+      अगर (justone == 0)
+        म_लिखो("usertests slow tests starting\n");
       n = runtests(slowtests, justone, continuous);
-      if (n < 0) {
-        if (continuous != 2) {
-          return 1;
+      अगर (n < 0) {
+        अगर (continuous != 2) {
+          वापस 1;
         }
-      } else {
+      } अन्यथा {
         ntests += n;
       }
     }
-    if ((free1 = countfree()) < free0) {
-      printf("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
-      if (continuous != 2) {
-        return 1;
+    अगर ((free1 = countfree()) < free0) {
+      म_लिखो("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
+      अगर (continuous != 2) {
+        वापस 1;
       }
     }
-    if (justone != 0 && ntests == 0) {
-      printf("NO TESTS EXECUTED\n");
-      return 1;
+    अगर (justone != 0 && ntests == 0) {
+      म_लिखो("NO TESTS EXECUTED\n");
+      वापस 1;
     }
-  } while (continuous);
-  return 0;
+  } जबतक (continuous);
+  वापस 0;
 }
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+मुख्य(पूर्णांक argc, अक्षर *argv[])
 {
-  int continuous = 0;
-  int quick = 0;
-  char *justone = 0;
+  पूर्णांक continuous = 0;
+  पूर्णांक quick = 0;
+  अक्षर *justone = 0;
 
-  if (argc == 2 && strcmp(argv[1], "-q") == 0) {
+  अगर (argc == 2 && म_भेद(argv[1], "-q") == 0) {
     quick = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-c") == 0) {
+  } अन्यथा अगर (argc == 2 && म_भेद(argv[1], "-c") == 0) {
     continuous = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-C") == 0) {
+  } अन्यथा अगर (argc == 2 && म_भेद(argv[1], "-C") == 0) {
     continuous = 2;
-  } else if (argc == 2 && argv[1][0] != '-') {
+  } अन्यथा अगर (argc == 2 && argv[1][0] != '-') {
     justone = argv[1];
-  } else if (argc > 1) {
-    printf("Usage: usertests [-c] [-C] [-q] [testname]\n");
-    exit(1);
+  } अन्यथा अगर (argc > 1) {
+    म_लिखो("Usage: usertests [-c] [-C] [-q] [testname]\n");
+    निकास(1);
   }
-  if (drivetests(quick, continuous, justone)) {
-    exit(1);
+  अगर (drivetests(quick, continuous, justone)) {
+    निकास(1);
   }
-  printf("ALL TESTS PASSED\n");
-  exit(0);
+  म_लिखो("ALL TESTS PASSED\n");
+  निकास(0);
 }

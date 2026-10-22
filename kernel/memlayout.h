@@ -18,38 +18,38 @@
 // PHYSTOP -- end RAM used by the kernel
 
 // qemu puts UART registers here in physical memory.
-#define UART0     0x10000000L
-#define UART0_IRQ 10
+#घोषणा UART0     0x10000000L
+#घोषणा UART0_IRQ 10
 
 // virtio mmio interface
-#define VIRTIO0     0x10001000
-#define VIRTIO0_IRQ 1
+#घोषणा VIRTIO0     0x10001000
+#घोषणा VIRTIO0_IRQ 1
 
 // core-local interrupt controller (CLINT)
-#define CLINT_BASE  0x02000000L
-#define CLINT(hart) (CLINT_BASE + (hart) * 4)
+#घोषणा CLINT_BASE  0x02000000L
+#घोषणा CLINT(hart) (CLINT_BASE + (hart) * 4)
 
 // qemu puts platform-level interrupt controller (PLIC) here.
-#define PLIC                 0x0c000000L
-#define PLIC_PRIORITY        (PLIC + 0x0)
-#define PLIC_PENDING         (PLIC + 0x1000)
-#define PLIC_SENABLE(hart)   (PLIC + 0x2080 + (hart) * 0x100)
-#define PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart) * 0x2000)
-#define PLIC_SCLAIM(hart)    (PLIC + 0x201004 + (hart) * 0x2000)
+#घोषणा PLIC                 0x0c000000L
+#घोषणा PLIC_PRIORITY        (PLIC + 0x0)
+#घोषणा PLIC_PENDING         (PLIC + 0x1000)
+#घोषणा PLIC_SENABLE(hart)   (PLIC + 0x2080 + (hart) * 0x100)
+#घोषणा PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart) * 0x2000)
+#घोषणा PLIC_SCLAIM(hart)    (PLIC + 0x201004 + (hart) * 0x2000)
 
 // the kernel expects there to be RAM
 // for use by the kernel and user pages
 // from physical address 0x80000000 to PHYSTOP.
-#define KERNBASE 0x80000000L
-#define PHYSTOP  (KERNBASE + 128 * 1024 * 1024)
+#घोषणा KERNBASE 0x80000000L
+#घोषणा PHYSTOP  (KERNBASE + 128 * 1024 * 1024)
 
 // map the trampoline page to the highest address,
 // in both user and kernel space.
-#define TRAMPOLINE (MAXVA - PGSIZE)
+#घोषणा TRAMPOLINE (MAXVA - PGSIZE)
 
 // map kernel stacks beneath the trampoline,
 // each surrounded by invalid guard pages.
-#define KSTACK(p) (TRAMPOLINE - ((p) + 1) * 2 * PGSIZE)
+#घोषणा KSTACK(p) (TRAMPOLINE - ((p) + 1) * 2 * PGSIZE)
 
 // User memory layout.
 // Address zero first:
@@ -60,4 +60,4 @@
 //   ...
 //   TRAPFRAME (p->trapframe, used by the trampoline)
 //   TRAMPOLINE (the same page as in the kernel)
-#define TRAPFRAME (TRAMPOLINE - PGSIZE)
+#घोषणा TRAPFRAME (TRAMPOLINE - PGSIZE)

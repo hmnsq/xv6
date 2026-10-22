@@ -1,84 +1,84 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "vm.h"
+#समावेश "types.h"
+#समावेश "riscv.h"
+#समावेश "defs.h"
+#समावेश "param.h"
+#समावेश "memlayout.h"
+#समावेश "spinlock.h"
+#समावेश "proc.h"
+#समावेश "vm.h"
 
 uint64
-sys_exit(void)
+sys_exit(व्योम)
 {
-  int n;
+  पूर्णांक n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  वापस 0; // not reached
 }
 
 uint64
-sys_getpid(void)
+sys_getpid(व्योम)
 {
-  return myproc()->pid;
+  वापस myproc()->pid;
 }
 
 uint64
-sys_fork(void)
+sys_fork(व्योम)
 {
-  return kfork();
+  वापस kfork();
 }
 
 uint64
-sys_wait(void)
+sys_wait(व्योम)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  वापस kwait(p);
 }
 
 uint64
-sys_sbrk(void)
+sys_sbrk(व्योम)
 {
   uint64 addr;
-  int t;
-  int n;
+  पूर्णांक t;
+  पूर्णांक n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  अगर (t == SBRK_EAGER || n < 0) {
+    अगर (growproc(n) < 0) {
+      वापस -1;
     }
-  } else {
+  } अन्यथा {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    अगर (addr + n < addr)
+      वापस -1;
+    अगर (addr + n > TRAPFRAME)
+      वापस -1;
     myproc()->sz += n;
   }
-  return addr;
+  वापस addr;
 }
 
 uint64
-sys_pause(void)
+sys_pause(व्योम)
 {
-  int n;
+  पूर्णांक n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  अगर (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  जबतक (ticks - ticks0 < n) {
+    अगर (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      वापस -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,27 +86,27 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  वापस 0;
 }
 
 uint64
-sys_kill(void)
+sys_kill(व्योम)
 {
-  int pid;
+  पूर्णांक pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  वापस kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
 // since start.
 uint64
-sys_uptime(void)
+sys_uptime(व्योम)
 {
   uint xticks;
 
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  वापस xticks;
 }

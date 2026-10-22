@@ -1,23 +1,23 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/stat.h"
+#समावेश "user/user.h"
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+मुख्य(पूर्णांक argc, अक्षर *argv[])
 {
-  int i;
+  पूर्णांक i;
 
-  if (argc < 2) {
-    fprintf(2, "Usage: mkdir files...\n");
-    exit(1);
+  अगर (argc < 2) {
+    ख_लिखो(2, "Usage: mkdir files...\n");
+    निकास(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (mkdir(argv[i]) < 0) {
-      fprintf(2, "mkdir: %s failed to create\n", argv[i]);
-      break;
+  क्रम (i = 1; i < argc; i++) {
+    अगर (सूची_गढ़ो(argv[i]) < 0) {
+      ख_लिखो(2, "mkdir: %s failed to create\n", argv[i]);
+      अवरोध;
     }
   }
 
-  exit(0);
+  निकास(0);
 }

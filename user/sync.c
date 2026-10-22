@@ -1,10 +1,10 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/stat.h"
+#समावेश "user/user.h"
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+मुख्य(पूर्णांक argc, अक्षर *argv[])
 {
   sync();
-  exit(0);
+  निकास(0);
 }

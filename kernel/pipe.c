@@ -1,35 +1,35 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
-#include "sleeplock.h"
-#include "file.h"
+#समावेश "types.h"
+#समावेश "riscv.h"
+#समावेश "defs.h"
+#समावेश "param.h"
+#समावेश "spinlock.h"
+#समावेश "proc.h"
+#समावेश "fs.h"
+#समावेश "sleeplock.h"
+#समावेश "file.h"
 
-#define PIPESIZE 512
+#घोषणा PIPESIZE 512
 
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
+काष्ठा pipe {
+  काष्ठा spinlock lock;
+  अक्षर तथ्य[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  पूर्णांक readopen;  // read fd is still open
+  पूर्णांक writeopen; // write fd is still open
 };
 
-int
-pipealloc(struct file **f0, struct file **f1)
+पूर्णांक
+pipealloc(काष्ठा file **f0, काष्ठा file **f1)
 {
-  struct pipe *pi;
+  काष्ठा pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
-    goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
-    goto bad;
+  अगर ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+    जाओ bad;
+  अगर ((pi = (काष्ठा pipe *)kalloc()) == 0)
+    जाओ bad;
   pi->readopen = 1;
   pi->writeopen = 1;
   pi->nwrite = 0;
@@ -43,101 +43,101 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  वापस 0;
 
 bad:
-  if (pi)
-    kfree((char *)pi);
-  if (*f0)
+  अगर (pi)
+    kfree((अक्षर *)pi);
+  अगर (*f0)
     fileclose(*f0);
-  if (*f1)
+  अगर (*f1)
     fileclose(*f1);
-  return -1;
+  वापस -1;
 }
 
-void
-pipeclose(struct pipe *pi, int writable)
+व्योम
+pipeclose(काष्ठा pipe *pi, पूर्णांक writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  अगर (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } अन्यथा {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  अगर (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
-    kfree((char *)pi);
-  } else
+    kfree((अक्षर *)pi);
+  } अन्यथा
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+पूर्णांक
+pipewrite(काष्ठा pipe *pi, uint64 addr, पूर्णांक n)
 {
-  int i = 0;
-  struct proc *pr = myproc();
+  पूर्णांक i = 0;
+  काष्ठा proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  जबतक (i < n) {
+    अगर (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      वापस -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    अगर (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
-      char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+    } अन्यथा {
+      अक्षर ch;
+      अगर (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        अगर (i == 0)
           i = -1;
-        break;
+        अवरोध;
       }
-      pi->data[pi->nwrite++ % PIPESIZE] = ch;
+      pi->तथ्य[pi->nwrite++ % PIPESIZE] = ch;
       i++;
     }
   }
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  वापस i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+पूर्णांक
+piperead(काष्ठा pipe *pi, uint64 addr, पूर्णांक n)
 {
-  int i;
-  struct proc *pr = myproc();
-  char ch;
+  पूर्णांक i;
+  काष्ठा proc *pr = myproc();
+  अक्षर ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  जबतक (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    अगर (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      वापस -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
-      break;
-    ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+  क्रम (i = 0; i < n; i++) { //DOC: piperead-copy
+    अगर (pi->nread == pi->nwrite)
+      अवरोध;
+    ch = pi->तथ्य[pi->nread % PIPESIZE];
+    अगर (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      अगर (i == 0)
         i = -1;
-      break;
+      अवरोध;
     }
     pi->nread++;
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  वापस i;
 }

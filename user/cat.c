@@ -1,43 +1,43 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/fcntl.h"
+#समावेश "user/user.h"
 
-char buf[512];
+अक्षर buf[512];
 
-void
-cat(int fd)
+व्योम
+cat(पूर्णांक fd)
 {
-  int n;
+  पूर्णांक n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
-      fprintf(2, "cat: write error\n");
-      exit(1);
+  जबतक ((n = पढ़ो(fd, buf, माप(buf))) > 0) {
+    अगर (ग_लिखो(1, buf, n) != n) {
+      ख_लिखो(2, "cat: write error\n");
+      निकास(1);
     }
   }
-  if (n < 0) {
-    fprintf(2, "cat: read error\n");
-    exit(1);
+  अगर (n < 0) {
+    ख_लिखो(2, "cat: read error\n");
+    निकास(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+मुख्य(पूर्णांक argc, अक्षर *argv[])
 {
-  int fd, i;
+  पूर्णांक fd, i;
 
-  if (argc <= 1) {
+  अगर (argc <= 1) {
     cat(0);
-    exit(0);
+    निकास(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      fprintf(2, "cat: cannot open %s\n", argv[i]);
-      exit(1);
+  क्रम (i = 1; i < argc; i++) {
+    अगर ((fd = खोलो(argv[i], O_RDONLY)) < 0) {
+      ख_लिखो(2, "cat: cannot open %s\n", argv[i]);
+      निकास(1);
     }
     cat(fd);
-    close(fd);
+    बंद(fd);
   }
-  exit(0);
+  निकास(0);
 }

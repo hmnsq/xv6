@@ -1,16 +1,16 @@
 // Sleeping locks
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "sleeplock.h"
+#समावेश "types.h"
+#समावेश "riscv.h"
+#समावेश "defs.h"
+#समावेश "param.h"
+#समावेश "memlayout.h"
+#समावेश "spinlock.h"
+#समावेश "proc.h"
+#समावेश "sleeplock.h"
 
-void
-initsleeplock(struct sleeplock *lk, char *name)
+व्योम
+initsleeplock(काष्ठा sleeplock *lk, अक्षर *name)
 {
   initlock(&lk->lk, "sleep lock");
   lk->name = name;
@@ -18,11 +18,11 @@ initsleeplock(struct sleeplock *lk, char *name)
   lk->pid = 0;
 }
 
-void
-acquiresleep(struct sleeplock *lk)
+व्योम
+acquiresleep(काष्ठा sleeplock *lk)
 {
   acquire(&lk->lk);
-  while (lk->locked) {
+  जबतक (lk->locked) {
     sleep_prepare(lk);
     release(&lk->lk);
     sleep();
@@ -33,8 +33,8 @@ acquiresleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-void
-releasesleep(struct sleeplock *lk)
+व्योम
+releasesleep(काष्ठा sleeplock *lk)
 {
   acquire(&lk->lk);
   lk->locked = 0;
@@ -43,13 +43,13 @@ releasesleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-int
-holdingsleep(struct sleeplock *lk)
+पूर्णांक
+holdingsleep(काष्ठा sleeplock *lk)
 {
-  int r;
+  पूर्णांक r;
 
   acquire(&lk->lk);
   r = lk->locked && (lk->pid == myproc()->pid);
   release(&lk->lk);
-  return r;
+  वापस r;
 }

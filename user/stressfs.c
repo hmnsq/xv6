@@ -7,44 +7,44 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/stat.h"
+#समावेश "user/user.h"
+#समावेश "kernel/fs.h"
+#समावेश "kernel/fcntl.h"
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+मुख्य(पूर्णांक argc, अक्षर *argv[])
 {
-  int fd, i;
-  char path[] = "stressfs0";
-  char data[512];
+  पूर्णांक fd, i;
+  अक्षर path[] = "stressfs0";
+  अक्षर तथ्य[512];
 
-  printf("stressfs starting\n");
-  memset(data, 'a', sizeof(data));
+  म_लिखो("stressfs starting\n");
+  स_रखो(तथ्य, 'a', माप(तथ्य));
 
-  for (i = 0; i < 4; i++)
-    if (fork() > 0)
-      break;
+  क्रम (i = 0; i < 4; i++)
+    अगर (विभाजन() > 0)
+      अवरोध;
 
-  printf("write %d\n", i);
+  म_लिखो("write %d\n", i);
 
   path[8] += i;
-  fd = open(path, O_CREATE | O_RDWR);
-  for (i = 0; i < 20; i++) {
+  fd = खोलो(path, O_CREATE | O_RDWR);
+  क्रम (i = 0; i < 20; i++) {
     // printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    ग_लिखो(fd, तथ्य, माप(तथ्य));
   }
-  close(fd);
+  बंद(fd);
 
-  printf("read\n");
+  म_लिखो("read\n");
 
-  fd = open(path, O_RDONLY);
-  for (i = 0; i < 20; i++)
-    read(fd, data, sizeof(data));
-  close(fd);
+  fd = खोलो(path, O_RDONLY);
+  क्रम (i = 0; i < 20; i++)
+    पढ़ो(fd, तथ्य, माप(तथ्य));
+  बंद(fd);
 
-  wait(0);
+  रुको(0);
 
-  exit(0);
+  निकास(0);
 }

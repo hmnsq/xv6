@@ -2,151 +2,151 @@
 // formatted console output -- printk, panic.
 //
 
-#include <stdarg.h>
+#समावेश <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#समावेश "types.h"
+#समावेश "param.h"
+#समावेश "spinlock.h"
+#समावेश "sleeplock.h"
+#समावेश "fs.h"
+#समावेश "file.h"
+#समावेश "memlayout.h"
+#समावेश "riscv.h"
+#समावेश "defs.h"
+#समावेश "proc.h"
 
-volatile int panicking = 0; // printing a panic message
-volatile int panicked = 0;  // spinning forever at end of a panic
+अस्थिर पूर्णांक panicking = 0; // printing a panic message
+अस्थिर पूर्णांक panicked = 0;  // spinning forever at end of a panic
 
 // lock to avoid interleaving concurrent printk's.
-static struct {
-  struct spinlock lock;
+अटल काष्ठा {
+  काष्ठा spinlock lock;
 } pr;
 
-static char digits[] = "0123456789abcdef";
+अटल अक्षर digits[] = "0123456789abcdef";
 
-static void
-printint(long long xx, int base, int sign)
+अटल व्योम
+printint(दीर्घ दीर्घ xx, पूर्णांक base, पूर्णांक sign)
 {
-  char buf[20];
-  int i;
-  unsigned long long x;
+  अक्षर buf[20];
+  पूर्णांक i;
+  अचिन्हित दीर्घ दीर्घ x;
 
-  if (sign && (sign = (xx < 0)))
+  अगर (sign && (sign = (xx < 0)))
     x = -xx;
-  else
+  अन्यथा
     x = xx;
 
   i = 0;
-  do {
+  करो {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  } जबतक ((x /= base) != 0);
 
-  if (sign)
+  अगर (sign)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  जबतक (--i >= 0)
     consputc(buf[i]);
 }
 
-static void
+अटल व्योम
 printptr(uint64 x)
 {
-  int i;
+  पूर्णांक i;
   consputc('0');
   consputc('x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
+  क्रम (i = 0; i < (माप(uint64) * 2); i++, x <<= 4)
+    consputc(digits[x >> (माप(uint64) * 8 - 4)]);
 }
 
 // Print to the console.
-int
-printk(char *fmt, ...)
+पूर्णांक
+printk(अक्षर *fmt, ...)
 {
-  va_list ap;
-  int i, cx, c0, c1, c2;
-  char *s;
+  बहु_सूची ap;
+  पूर्णांक i, cx, c0, c1, c2;
+  अक्षर *s;
 
-  if (panicking == 0)
+  अगर (panicking == 0)
     acquire(&pr.lock);
 
-  va_start(ap, fmt);
-  for (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
-    if (cx != '%') {
+  बहु_शुरू(ap, fmt);
+  क्रम (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
+    अगर (cx != '%') {
       consputc(cx);
-      continue;
+      जारी;
     }
     i++;
     c0 = fmt[i + 0] & 0xff;
     c1 = c2 = 0;
-    if (c0)
+    अगर (c0)
       c1 = fmt[i + 1] & 0xff;
-    if (c1)
+    अगर (c1)
       c2 = fmt[i + 2] & 0xff;
-    if (c0 == 'd') {
-      printint(va_arg(ap, int), 10, 1);
-    } else if (c0 == 'l' && c1 == 'd') {
-      printint(va_arg(ap, uint64), 10, 1);
+    अगर (c0 == 'd') {
+      printint(बहु_तर्क(ap, पूर्णांक), 10, 1);
+    } अन्यथा अगर (c0 == 'l' && c1 == 'd') {
+      printint(बहु_तर्क(ap, uint64), 10, 1);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
-      printint(va_arg(ap, uint64), 10, 1);
+    } अन्यथा अगर (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      printint(बहु_तर्क(ap, uint64), 10, 1);
       i += 2;
-    } else if (c0 == 'u') {
-      printint(va_arg(ap, uint32), 10, 0);
-    } else if (c0 == 'l' && c1 == 'u') {
-      printint(va_arg(ap, uint64), 10, 0);
+    } अन्यथा अगर (c0 == 'u') {
+      printint(बहु_तर्क(ap, uint32), 10, 0);
+    } अन्यथा अगर (c0 == 'l' && c1 == 'u') {
+      printint(बहु_तर्क(ap, uint64), 10, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
-      printint(va_arg(ap, uint64), 10, 0);
+    } अन्यथा अगर (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      printint(बहु_तर्क(ap, uint64), 10, 0);
       i += 2;
-    } else if (c0 == 'x') {
-      printint(va_arg(ap, uint32), 16, 0);
-    } else if (c0 == 'l' && c1 == 'x') {
-      printint(va_arg(ap, uint64), 16, 0);
+    } अन्यथा अगर (c0 == 'x') {
+      printint(बहु_तर्क(ap, uint32), 16, 0);
+    } अन्यथा अगर (c0 == 'l' && c1 == 'x') {
+      printint(बहु_तर्क(ap, uint64), 16, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
-      printint(va_arg(ap, uint64), 16, 0);
+    } अन्यथा अगर (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      printint(बहु_तर्क(ap, uint64), 16, 0);
       i += 2;
-    } else if (c0 == 'p') {
-      printptr(va_arg(ap, uint64));
-    } else if (c0 == 'c') {
-      consputc(va_arg(ap, uint));
-    } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+    } अन्यथा अगर (c0 == 'p') {
+      printptr(बहु_तर्क(ap, uint64));
+    } अन्यथा अगर (c0 == 'c') {
+      consputc(बहु_तर्क(ap, uint));
+    } अन्यथा अगर (c0 == 's') {
+      अगर ((s = बहु_तर्क(ap, अक्षर *)) == 0)
         s = "(null)";
-      for (; *s; s++)
+      क्रम (; *s; s++)
         consputc(*s);
-    } else if (c0 == '%') {
+    } अन्यथा अगर (c0 == '%') {
       consputc('%');
-    } else if (c0 == 0) {
-      break;
-    } else {
+    } अन्यथा अगर (c0 == 0) {
+      अवरोध;
+    } अन्यथा {
       // Print unknown % sequence to draw attention.
       consputc('%');
       consputc(c0);
     }
   }
-  va_end(ap);
+  बहु_पूर्ण(ap);
 
-  if (panicking == 0)
+  अगर (panicking == 0)
     release(&pr.lock);
 
-  return 0;
+  वापस 0;
 }
 
-void
-panic(char *s)
+व्योम
+panic(अक्षर *s)
 {
   panicking = 1;
   printk("panic: ");
   printk("%s\n", s);
   panicked = 1; // freeze uart output from other CPUs
-  for (;;)
+  क्रम (;;)
     ;
 }
 
-void
-printkinit(void)
+व्योम
+printkinit(व्योम)
 {
   initlock(&pr.lock, "pr");
 }

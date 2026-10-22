@@ -1,2 +1,2 @@
-#define SBRK_EAGER 1
-#define SBRK_LAZY  2
+#घोषणा SBRK_EAGER 1
+#घोषणा SBRK_LAZY  2

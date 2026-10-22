@@ -1,14 +1,14 @@
 // Create a zombie process that
 // must be reparented at exit.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#समावेश "kernel/types.h"
+#समावेश "kernel/stat.h"
+#समावेश "user/user.h"
 
-int
-main(void)
+पूर्णांक
+मुख्य(व्योम)
 {
-  if (fork() > 0)
-    pause(5); // Let child exit before parent.
-  exit(0);
+  अगर (विभाजन() > 0)
+    छोड़ो(5); // Let child exit before parent.
+  निकास(0);
 }
