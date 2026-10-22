@@ -9,10 +9,10 @@
 // wrapper so that it's OK if main() does not call exit().
 //
 void
-start(int argc, char **argv)
+start(정수 argc, char **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
+  정수 r;
+  extern 정수 main(정수 argc, char **argv);
   r = main(argc, argv);
   exit(r);
 }
@@ -23,140 +23,140 @@ strcpy(char *s, const char *t)
   char *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  동안 ((*s++ = *t++) != 0)
     ;
-  return os;
+  반환 os;
 }
 
-int
+정수
 strcmp(const char *p, const char *q)
 {
-  while (*p && *p == *q)
+  동안 (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  반환 (uchar)*p - (uchar)*q;
 }
 
 uint
 strlen(const char *s)
 {
-  int n;
+  정수 n;
 
-  for (n = 0; s[n]; n++)
+  위해 (n = 0; s[n]; n++)
     ;
-  return n;
+  반환 n;
 }
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, 정수 c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  정수 i;
+  위해 (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  반환 dst;
 }
 
 char *
 strchr(const char *s, char c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  위해 (; *s; s++)
+    만약 (*s == c)
+      반환 (char *)s;
+  반환 0;
 }
 
 char *
-gets(char *buf, int max)
+gets(char *buf, 정수 max)
 {
-  int i, cc;
+  정수 i, cc;
   char c;
 
-  for (i = 0; i + 1 < max;) {
+  위해 (i = 0; i + 1 < max;) {
     cc = read(0, &c, 1);
-    if (cc < 1)
+    만약 (cc < 1)
       break;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
+    만약 (c == '\n' || c == '\r')
       break;
   }
   buf[i] = '\0';
-  return buf;
+  반환 buf;
 }
 
-int
+정수
 stat(const char *n, struct stat *st)
 {
-  int fd;
-  int r;
+  정수 fd;
+  정수 r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  만약 (fd < 0)
+    반환 -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  반환 r;
 }
 
-int
+정수
 atoi(const char *s)
 {
-  int n;
+  정수 n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  동안 ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  반환 n;
 }
 
 void *
-memmove(void *vdst, const void *vsrc, int n)
+memmove(void *vdst, const void *vsrc, 정수 n)
 {
   char *dst;
   const char *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  만약 (src > dst) {
+    동안 (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } 아니면 {
     dst += n;
     src += n;
-    while (n-- > 0)
+    동안 (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  반환 vdst;
 }
 
-int
+정수
 memcmp(const void *s1, const void *s2, uint n)
 {
   const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  동안 (n-- > 0) {
+    만약 (*p1 != *p2) {
+      반환 *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  반환 0;
 }
 
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  반환 memmove(dst, src, n);
 }
 
 char *
-sbrk(int n)
+sbrk(정수 n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  반환 sys_sbrk(n, SBRK_EAGER);
 }
 
 char *
-sbrklazy(int n)
+sbrklazy(정수 n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  반환 sys_sbrk(n, SBRK_LAZY);
 }

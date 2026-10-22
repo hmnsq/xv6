@@ -15,20 +15,20 @@ struct pipe {
   char data[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  정수 readopen;  // read fd is still open
+  정수 writeopen; // write fd is still open
 };
 
-int
+정수
 pipealloc(struct file **f0, struct file **f1)
 {
   struct pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+  만약 ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
+  만약 ((pi = (struct pipe *)kalloc()) == 0)
     goto bad;
   pi->readopen = 1;
   pi->writeopen = 1;
@@ -43,58 +43,58 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  반환 0;
 
 bad:
-  if (pi)
+  만약 (pi)
     kfree((char *)pi);
-  if (*f0)
+  만약 (*f0)
     fileclose(*f0);
-  if (*f1)
+  만약 (*f1)
     fileclose(*f1);
-  return -1;
+  반환 -1;
 }
 
 void
-pipeclose(struct pipe *pi, int writable)
+pipeclose(struct pipe *pi, 정수 writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  만약 (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } 아니면 {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  만약 (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
     kfree((char *)pi);
-  } else
+  } 아니면
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+정수
+pipewrite(struct pipe *pi, uint64 addr, 정수 n)
 {
-  int i = 0;
+  정수 i = 0;
   struct proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  동안 (i < n) {
+    만약 (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      반환 -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    만약 (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
+    } 아니면 {
       char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+      만약 (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        만약 (i == 0)
           i = -1;
         break;
       }
@@ -105,33 +105,33 @@ pipewrite(struct pipe *pi, uint64 addr, int n)
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  반환 i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+정수
+piperead(struct pipe *pi, uint64 addr, 정수 n)
 {
-  int i;
+  정수 i;
   struct proc *pr = myproc();
   char ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  동안 (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    만약 (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      반환 -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
+  위해 (i = 0; i < n; i++) { //DOC: piperead-copy
+    만약 (pi->nread == pi->nwrite)
       break;
     ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+    만약 (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      만약 (i == 0)
         i = -1;
       break;
     }
@@ -139,5 +139,5 @@ piperead(struct pipe *pi, uint64 addr, int n)
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  반환 i;
 }

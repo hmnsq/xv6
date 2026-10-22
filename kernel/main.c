@@ -4,13 +4,13 @@
 #include "riscv.h"
 #include "defs.h"
 
-volatile static int started = 0;
+volatile static 정수 started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.
 void
 main()
 {
-  if (cpuid() == 0) {
+  만약 (cpuid() == 0) {
     consoleinit();
     printkinit();
     printk("\n");
@@ -31,8 +31,8 @@ main()
     userinit();         // first user process
 
     __atomic_store_n(&started, 1, __ATOMIC_RELEASE);
-  } else {
-    while (__atomic_load_n(&started, __ATOMIC_ACQUIRE) == 0)
+  } 아니면 {
+    동안 (__atomic_load_n(&started, __ATOMIC_ACQUIRE) == 0)
       ;
 
     printk("hart %d starting\n", cpuid());

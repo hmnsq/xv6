@@ -1,30 +1,30 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, 정수 c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  정수 i;
+  위해 (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  반환 dst;
 }
 
-int
+정수
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  동안 (n-- > 0) {
+    만약 (*s1 != *s2)
+      반환 *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  반환 0;
 }
 
 void *
@@ -33,74 +33,74 @@ memmove(void *dst, const void *src, uint n)
   const char *s;
   char *d;
 
-  if (n == 0)
-    return dst;
+  만약 (n == 0)
+    반환 dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  만약 (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    동안 (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } 아니면
+    동안 (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  반환 dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  반환 memmove(dst, src, n);
 }
 
-int
+정수
 strncmp(const char *p, const char *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  동안 (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  만약 (n == 0)
+    반환 0;
+  반환 (uchar)*p - (uchar)*q;
 }
 
 char *
-strncpy(char *s, const char *t, int n)
+strncpy(char *s, const char *t, 정수 n)
 {
   char *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  동안 (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  동안 (n-- > 0)
     *s++ = 0;
-  return os;
+  반환 os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
 char *
-safestrcpy(char *s, const char *t, int n)
+safestrcpy(char *s, const char *t, 정수 n)
 {
   char *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  만약 (n <= 0)
+    반환 os;
+  동안 (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  반환 os;
 }
 
-int
+정수
 strlen(const char *s)
 {
-  int n;
+  정수 n;
 
-  for (n = 0; s[n]; n++)
+  위해 (n = 0; s[n]; n++)
     ;
-  return n;
+  반환 n;
 }

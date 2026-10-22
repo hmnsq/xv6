@@ -40,10 +40,10 @@
 
 // for sending threads to serialize their writes
 static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+static 정수 tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+extern volatile 정수 panicking; // from printk.c
+extern volatile 정수 panicked;  // from printk.c
 
 void
 uartinit(void)
@@ -77,17 +77,17 @@ uartinit(void)
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
 void
-uartwrite(char buf[], int n)
+uartwrite(char buf[], 정수 n)
 {
   acquiresleep(&tx_lock);
 
-  int i = 0;
-  while (i < n) {
+  정수 i = 0;
+  동안 (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    만약 (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } 아니면 {
       sleep();
     }
   }
@@ -100,35 +100,35 @@ uartwrite(char buf[], int n)
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
 void
-uartputc_sync(int c)
+uartputc_sync(정수 c)
 {
-  if (panicking == 0)
+  만약 (panicking == 0)
     push_off();
 
-  if (panicked) {
-    for (;;)
+  만약 (panicked) {
+    위해 (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  동안 ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
+  만약 (panicking == 0)
     pop_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
+static 정수
 uartgetc(void)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  만약 (ReadReg(LSR) & LSR_RX_READY) {
+    반환 ReadReg(RHR);
+  } 아니면 {
+    반환 -1;
   }
 }
 
@@ -140,15 +140,15 @@ uartintr(void)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  만약 (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
+  동안 (1) {
+    정수 c = uartgetc();
+    만약 (c == -1)
       break;
     consoleintr(c);
   }

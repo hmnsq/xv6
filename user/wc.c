@@ -6,45 +6,45 @@
 char buf[512];
 
 void
-wc(int fd, char *name)
+wc(정수 fd, char *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  정수 i, n;
+  정수 l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  동안 ((n = read(fd, buf, sizeof(buf))) > 0) {
+    위해 (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      만약 (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      만약 (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      아니면 만약 (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  만약 (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+정수
+main(정수 argc, char *argv[])
 {
-  int fd, i;
+  정수 fd, i;
 
-  if (argc <= 1) {
+  만약 (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  위해 (i = 1; i < argc; i++) {
+    만약 ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

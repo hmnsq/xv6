@@ -15,8 +15,8 @@
 #include "defs.h"
 #include "proc.h"
 
-volatile int panicking = 0; // printing a panic message
-volatile int panicked = 0;  // spinning forever at end of a panic
+volatile 정수 panicking = 0; // printing a panic message
+volatile 정수 panicked = 0;  // spinning forever at end of a panic
 
 // lock to avoid interleaving concurrent printk's.
 static struct {
@@ -26,101 +26,101 @@ static struct {
 static char digits[] = "0123456789abcdef";
 
 static void
-printint(long long xx, int base, int sign)
+printint(long long xx, 정수 base, 정수 sign)
 {
   char buf[20];
-  int i;
+  정수 i;
   unsigned long long x;
 
-  if (sign && (sign = (xx < 0)))
+  만약 (sign && (sign = (xx < 0)))
     x = -xx;
-  else
+  아니면
     x = xx;
 
   i = 0;
   do {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  } 동안 ((x /= base) != 0);
 
-  if (sign)
+  만약 (sign)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  동안 (--i >= 0)
     consputc(buf[i]);
 }
 
 static void
 printptr(uint64 x)
 {
-  int i;
+  정수 i;
   consputc('0');
   consputc('x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
+  위해 (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
     consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
 }
 
 // Print to the console.
-int
+정수
 printk(char *fmt, ...)
 {
   va_list ap;
-  int i, cx, c0, c1, c2;
+  정수 i, cx, c0, c1, c2;
   char *s;
 
-  if (panicking == 0)
+  만약 (panicking == 0)
     acquire(&pr.lock);
 
   va_start(ap, fmt);
-  for (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
-    if (cx != '%') {
+  위해 (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
+    만약 (cx != '%') {
       consputc(cx);
       continue;
     }
     i++;
     c0 = fmt[i + 0] & 0xff;
     c1 = c2 = 0;
-    if (c0)
+    만약 (c0)
       c1 = fmt[i + 1] & 0xff;
-    if (c1)
+    만약 (c1)
       c2 = fmt[i + 2] & 0xff;
-    if (c0 == 'd') {
-      printint(va_arg(ap, int), 10, 1);
-    } else if (c0 == 'l' && c1 == 'd') {
+    만약 (c0 == 'd') {
+      printint(va_arg(ap, 정수), 10, 1);
+    } 아니면 만약 (c0 == 'l' && c1 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+    } 아니면 만약 (c0 == 'l' && c1 == 'l' && c2 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 2;
-    } else if (c0 == 'u') {
+    } 아니면 만약 (c0 == 'u') {
       printint(va_arg(ap, uint32), 10, 0);
-    } else if (c0 == 'l' && c1 == 'u') {
+    } 아니면 만약 (c0 == 'l' && c1 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+    } 아니면 만약 (c0 == 'l' && c1 == 'l' && c2 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 2;
-    } else if (c0 == 'x') {
+    } 아니면 만약 (c0 == 'x') {
       printint(va_arg(ap, uint32), 16, 0);
-    } else if (c0 == 'l' && c1 == 'x') {
+    } 아니면 만약 (c0 == 'l' && c1 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+    } 아니면 만약 (c0 == 'l' && c1 == 'l' && c2 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 2;
-    } else if (c0 == 'p') {
+    } 아니면 만약 (c0 == 'p') {
       printptr(va_arg(ap, uint64));
-    } else if (c0 == 'c') {
+    } 아니면 만약 (c0 == 'c') {
       consputc(va_arg(ap, uint));
-    } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+    } 아니면 만약 (c0 == 's') {
+      만약 ((s = va_arg(ap, char *)) == 0)
         s = "(null)";
-      for (; *s; s++)
+      위해 (; *s; s++)
         consputc(*s);
-    } else if (c0 == '%') {
+    } 아니면 만약 (c0 == '%') {
       consputc('%');
-    } else if (c0 == 0) {
+    } 아니면 만약 (c0 == 0) {
       break;
-    } else {
+    } 아니면 {
       // Print unknown % sequence to draw attention.
       consputc('%');
       consputc(c0);
@@ -128,10 +128,10 @@ printk(char *fmt, ...)
   }
   va_end(ap);
 
-  if (panicking == 0)
+  만약 (panicking == 0)
     release(&pr.lock);
 
-  return 0;
+  반환 0;
 }
 
 void
@@ -141,7 +141,7 @@ panic(char *s)
   printk("panic: ");
   printk("%s\n", s);
   panicked = 1; // freeze uart output from other CPUs
-  for (;;)
+  위해 (;;)
     ;
 }
 

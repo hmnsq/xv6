@@ -22,7 +22,7 @@ void
 acquiresleep(struct sleeplock *lk)
 {
   acquire(&lk->lk);
-  while (lk->locked) {
+  동안 (lk->locked) {
     sleep_prepare(lk);
     release(&lk->lk);
     sleep();
@@ -43,13 +43,13 @@ releasesleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-int
+정수
 holdingsleep(struct sleeplock *lk)
 {
-  int r;
+  정수 r;
 
   acquire(&lk->lk);
   r = lk->locked && (lk->pid == myproc()->pid);
   release(&lk->lk);
-  return r;
+  반환 r;
 }

@@ -5,34 +5,34 @@
 char buf[512];
 
 void
-cat(int fd)
+cat(정수 fd)
 {
-  int n;
+  정수 n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  동안 ((n = read(fd, buf, sizeof(buf))) > 0) {
+    만약 (write(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  만약 (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+정수
+main(정수 argc, char *argv[])
 {
-  int fd, i;
+  정수 fd, i;
 
-  if (argc <= 1) {
+  만약 (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  위해 (i = 1; i < argc; i++) {
+    만약 ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

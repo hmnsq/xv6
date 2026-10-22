@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+정수
+main(정수 argc, char *argv[])
 {
-  int i;
+  정수 i;
 
-  for (i = 1; i < argc; i++) {
+  위해 (i = 1; i < argc; i++) {
     write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
+    만약 (i + 1 < argc) {
       write(1, " ", 1);
-    } else {
+    } 아니면 {
       write(1, "\n", 1);
     }
   }

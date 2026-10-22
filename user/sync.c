@@ -2,8 +2,8 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+정수
+main(정수 argc, char *argv[])
 {
   sync();
   exit(0);

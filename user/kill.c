@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char **argv)
+정수
+main(정수 argc, char **argv)
 {
-  int i;
+  정수 i;
 
-  if (argc < 2) {
+  만약 (argc < 2) {
     fprintf(2, "usage: kill pid...\n");
     exit(1);
   }
-  for (i = 1; i < argc; i++)
+  위해 (i = 1; i < argc; i++)
     kill(atoi(argv[i]));
   exit(0);
 }

@@ -21,7 +21,7 @@ args = parser.parse_args()
 class QEMU(object):
 
     def __init__(self, reset=False):
-        if reset:
+        만약 reset:
             self.build_xv6()
             self.reset_fs()
         q = ["make", "qemu"]
@@ -56,15 +56,15 @@ class QEMU(object):
         print("Provided a bad results path. Error:", e)     
         
     def cmd(self, c):
-        if isinstance(c, str):
+        만약 isinstance(c, str):
             c = c.encode('utf-8')
         self.proc.stdin.write(c)
         self.proc.stdin.flush()
         
     def crash(self):
         ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
-        if len(kids) == 0:
+        kids = [정수(line) 위해 line in ps.stdout.splitlines()]
+        만약 len(kids) == 0:
             print("no qemu")
             sys.exit(1)
         print("kill", kids[0])
@@ -74,18 +74,18 @@ class QEMU(object):
         self.proc.terminate()
 
     def read(self):
-        while True:
+        동안 True:
             try:
                 buf = os.read(self.proc.stdout.fileno(), 4096)
             except BlockingIOError:
                 break
-            if len(buf) == 0:  # qemu exited
+            만약 len(buf) == 0:  # qemu exited
                 break
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
     def lines(self):
-        return self.output.splitlines()
+        반환 self.output.splitlines()
 
     def error(self, *regexps):
         print("FAIL: match failed", regexps)
@@ -95,38 +95,38 @@ class QEMU(object):
 
     def match(self, *regexps, exit=True):
         found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
+        위해 line in self.lines():
+            만약 any(re.match(r, line) 위해 r in regexps):
                 print(line)
                 found = True
-        if not found and exit:
+        만약 not found and exit:
             self.error(*regexps)
-        return found
+        반환 found
 
     # Print the lines matching regexp that have arrived since the last
     # call.  A trailing partial line is left for the next call, so that
     # each line is printed once, after all of it has been read.
     def progress(self, regexp):
         end = self.output.rfind("\n") + 1
-        if end <= self.reported:
-            return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
+        만약 end <= self.reported:
+            반환
+        위해 line in self.output[self.reported:end].splitlines():
+            만약 re.match(regexp, line):
                 print(line)
         self.reported = end
 
     def monitor(self, *regexps, progress="", timeout):
         deadline = time.time() + timeout
-        while True:
+        동안 True:
             time.sleep(1)
             timeleft = deadline - time.time()
-            if timeleft < 0:
+            만약 timeleft < 0:
                 self.error(*regexps)
             self.read()
-            if progress:
+            만약 progress:
                 self.progress(progress)
-            if self.match(*regexps, exit=False):
-                return
+            만약 self.match(*regexps, exit=False):
+                반환
 
 def crash_log():
     q = QEMU(True)
@@ -140,11 +140,11 @@ def recover_log():
     time.sleep(2)
     q.read()
     ok = q.match('^recovering', exit=False)
-    if ok:
+    만약 ok:
         q.cmd("ls\n")
         q.monitor('f5', timeout=30)
     q.stop()
-    return ok
+    반환 ok
 
 def forphan():
     q = QEMU(True)
@@ -167,12 +167,12 @@ def recover_orphan():
 
 def test_log():
     print("Test recovery of log")
-    for i in range(20):
+    위해 i in range(20):
         crash_log()
         ok = recover_log()
-        if ok:
+        만약 ok:
             print("OK")
-            return
+            반환
         print("log attempt ", i+1)
     print("FAIL")
     sys.exit(1)
@@ -197,7 +197,7 @@ def test_crash():
 def test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    만약 args.q:
         opt = " -q"
         timeout = 300
     elif test != "":
@@ -210,15 +210,15 @@ def test_usertests(test=""):
 def main():
     print(args)
     rex = r'%s' % args.testrex
-    funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
-                     if (inspect.isfunction(obj) and 
+    funcs = [(obj,name) 위해 name,obj in inspect.getmembers(sys.modules[__name__]) 
+                     만약 (inspect.isfunction(obj) and 
                          name.startswith('test'))]
     none = True
-    for (f,n) in funcs:
-        if re.search(rex, n):
+    위해 (f,n) in funcs:
+        만약 re.search(rex, n):
             none = False
             f()
-    if none:
+    만약 none:
         test_usertests(test=args.testrex)
 
 main()

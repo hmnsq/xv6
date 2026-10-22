@@ -1,6 +1,6 @@
 struct buf {
-  int valid; // has data been read from disk?
-  int disk;  // does disk "own" buf?
+  정수 valid; // has data been read from disk?
+  정수 disk;  // does disk "own" buf?
   uint dev;
   uint blockno;
   struct sleeplock lock;
