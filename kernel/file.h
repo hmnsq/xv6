@@ -1,6 +1,6 @@
 struct file {
   enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
-  int ref; // reference count
+  số_nguyên ref; // reference count
   char readable;
   char writable;
   struct pipe *pipe; // FD_PIPE
@@ -17,9 +17,9 @@ struct file {
 struct inode {
   uint dev;              // Device number
   uint inum;             // Inode number
-  int ref;               // Reference count
+  số_nguyên ref;               // Reference count
   struct sleeplock lock; // protects everything below here
-  int valid;             // inode has been read from disk?
+  số_nguyên valid;             // inode has been read from disk?
 
   short type; // copy of disk inode
   short major;
@@ -31,8 +31,8 @@ struct inode {
 
 // map major device number to device functions.
 struct devsw {
-  int (*read)(int, uint64, int);
-  int (*write)(int, uint64, int);
+  số_nguyên (*read)(số_nguyên, uint64, số_nguyên);
+  số_nguyên (*write)(số_nguyên, uint64, số_nguyên);
 };
 
 extern struct devsw devsw[];

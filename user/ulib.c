@@ -9,10 +9,10 @@
 // wrapper so that it's OK if main() does not call exit().
 //
 void
-start(int argc, char **argv)
+start(số_nguyên argc, char **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
+  số_nguyên r;
+  extern số_nguyên main(số_nguyên argc, char **argv);
   r = main(argc, argv);
   exit(r);
 }
@@ -23,140 +23,140 @@ strcpy(char *s, const char *t)
   char *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  trong_khi ((*s++ = *t++) != 0)
     ;
-  return os;
+  trả_về os;
 }
 
-int
+số_nguyên
 strcmp(const char *p, const char *q)
 {
-  while (*p && *p == *q)
+  trong_khi (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  trả_về (uchar)*p - (uchar)*q;
 }
 
 uint
 strlen(const char *s)
 {
-  int n;
+  số_nguyên n;
 
-  for (n = 0; s[n]; n++)
+  cho (n = 0; s[n]; n++)
     ;
-  return n;
+  trả_về n;
 }
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, số_nguyên c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  số_nguyên i;
+  cho (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  trả_về dst;
 }
 
 char *
 strchr(const char *s, char c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  cho (; *s; s++)
+    nếu (*s == c)
+      trả_về (char *)s;
+  trả_về 0;
 }
 
 char *
-gets(char *buf, int max)
+gets(char *buf, số_nguyên max)
 {
-  int i, cc;
+  số_nguyên i, cc;
   char c;
 
-  for (i = 0; i + 1 < max;) {
+  cho (i = 0; i + 1 < max;) {
     cc = read(0, &c, 1);
-    if (cc < 1)
+    nếu (cc < 1)
       break;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
+    nếu (c == '\n' || c == '\r')
       break;
   }
   buf[i] = '\0';
-  return buf;
+  trả_về buf;
 }
 
-int
+số_nguyên
 stat(const char *n, struct stat *st)
 {
-  int fd;
-  int r;
+  số_nguyên fd;
+  số_nguyên r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  nếu (fd < 0)
+    trả_về -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  trả_về r;
 }
 
-int
+số_nguyên
 atoi(const char *s)
 {
-  int n;
+  số_nguyên n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  trong_khi ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  trả_về n;
 }
 
 void *
-memmove(void *vdst, const void *vsrc, int n)
+memmove(void *vdst, const void *vsrc, số_nguyên n)
 {
   char *dst;
   const char *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  nếu (src > dst) {
+    trong_khi (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } không_thì {
     dst += n;
     src += n;
-    while (n-- > 0)
+    trong_khi (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  trả_về vdst;
 }
 
-int
+số_nguyên
 memcmp(const void *s1, const void *s2, uint n)
 {
   const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  trong_khi (n-- > 0) {
+    nếu (*p1 != *p2) {
+      trả_về *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  trả_về 0;
 }
 
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  trả_về memmove(dst, src, n);
 }
 
 char *
-sbrk(int n)
+sbrk(số_nguyên n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  trả_về sys_sbrk(n, SBRK_EAGER);
 }
 
 char *
-sbrklazy(int n)
+sbrklazy(số_nguyên n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  trả_về sys_sbrk(n, SBRK_LAZY);
 }

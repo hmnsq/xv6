@@ -11,78 +11,78 @@ fmtname(char *path)
   char *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  cho (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  nếu (strlen(p) >= DIRSIZ)
+    trả_về p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
   buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  trả_về buf;
 }
 
 void
 ls(char *path)
 {
   char buf[512], *p;
-  int fd;
+  số_nguyên fd;
   struct dirent de;
   struct stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  nếu ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    trả_về;
   }
 
-  if (fstat(fd, &st) < 0) {
+  nếu (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    trả_về;
   }
 
   switch (st.type) {
   case T_DEVICE:
   case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (số_nguyên)st.size);
     break;
 
   case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+    nếu (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
       printf("ls: path too long\n");
       break;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
+    trong_khi (read(fd, &de, sizeof(de)) == sizeof(de)) {
+      nếu (de.inum == 0)
         continue;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      nếu (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (số_nguyên)st.size);
     }
     break;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+số_nguyên
+main(số_nguyên argc, char *argv[])
 {
-  int i;
+  số_nguyên i;
 
-  if (argc < 2) {
+  nếu (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  cho (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

@@ -14,42 +14,42 @@
 #define MAXARGS 10
 
 struct cmd {
-  int type;
+  số_nguyên type;
 };
 
 struct execcmd {
-  int type;
+  số_nguyên type;
   char *argv[MAXARGS];
   char *eargv[MAXARGS];
 };
 
 struct redircmd {
-  int type;
+  số_nguyên type;
   struct cmd *cmd;
   char *file;
   char *efile;
-  int mode;
-  int fd;
+  số_nguyên mode;
+  số_nguyên fd;
 };
 
 struct pipecmd {
-  int type;
+  số_nguyên type;
   struct cmd *left;
   struct cmd *right;
 };
 
 struct listcmd {
-  int type;
+  số_nguyên type;
   struct cmd *left;
   struct cmd *right;
 };
 
 struct backcmd {
-  int type;
+  số_nguyên type;
   struct cmd *cmd;
 };
 
-int fork1(void); // Fork but panics on failure.
+số_nguyên fork1(void); // Fork but panics on failure.
 void panic(char *);
 struct cmd *parsecmd(char *);
 void runcmd(struct cmd *) __attribute__((noreturn));
@@ -58,14 +58,14 @@ void runcmd(struct cmd *) __attribute__((noreturn));
 void
 runcmd(struct cmd *cmd)
 {
-  int p[2];
+  số_nguyên p[2];
   struct backcmd *bcmd;
   struct execcmd *ecmd;
   struct listcmd *lcmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
 
-  if (cmd == 0)
+  nếu (cmd == 0)
     exit(1);
 
   switch (cmd->type) {
@@ -74,7 +74,7 @@ runcmd(struct cmd *cmd)
 
   case EXEC:
     ecmd = (struct execcmd *)cmd;
-    if (ecmd->argv[0] == 0)
+    nếu (ecmd->argv[0] == 0)
       exit(1);
     exec(ecmd->argv[0], ecmd->argv);
     fprintf(2, "exec %s failed\n", ecmd->argv[0]);
@@ -83,7 +83,7 @@ runcmd(struct cmd *cmd)
   case REDIR:
     rcmd = (struct redircmd *)cmd;
     close(rcmd->fd);
-    if (open(rcmd->file, rcmd->mode) < 0) {
+    nếu (open(rcmd->file, rcmd->mode) < 0) {
       fprintf(2, "open %s failed\n", rcmd->file);
       exit(1);
     }
@@ -92,7 +92,7 @@ runcmd(struct cmd *cmd)
 
   case LIST:
     lcmd = (struct listcmd *)cmd;
-    if (fork1() == 0)
+    nếu (fork1() == 0)
       runcmd(lcmd->left);
     wait(0);
     runcmd(lcmd->right);
@@ -100,16 +100,16 @@ runcmd(struct cmd *cmd)
 
   case PIPE:
     pcmd = (struct pipecmd *)cmd;
-    if (pipe(p) < 0)
+    nếu (pipe(p) < 0)
       panic("pipe");
-    if (fork1() == 0) {
+    nếu (fork1() == 0) {
       close(1);
       dup(p[1]);
       close(p[0]);
       close(p[1]);
       runcmd(pcmd->left);
     }
-    if (fork1() == 0) {
+    nếu (fork1() == 0) {
       close(0);
       dup(p[0]);
       close(p[0]);
@@ -124,52 +124,52 @@ runcmd(struct cmd *cmd)
 
   case BACK:
     bcmd = (struct backcmd *)cmd;
-    if (fork1() == 0)
+    nếu (fork1() == 0)
       runcmd(bcmd->cmd);
     break;
   }
   exit(0);
 }
 
-int
-getcmd(char *buf, int nbuf)
+số_nguyên
+getcmd(char *buf, số_nguyên nbuf)
 {
   write(2, "$ ", 2);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
-  if (buf[0] == 0) // EOF
-    return -1;
-  return 0;
+  nếu (buf[0] == 0) // EOF
+    trả_về -1;
+  trả_về 0;
 }
 
-int
+số_nguyên
 main(void)
 {
   static char buf[100];
-  int fd;
+  số_nguyên fd;
 
   // Ensure that three file descriptors are open.
-  while ((fd = open("console", O_RDWR)) >= 0) {
-    if (fd >= 3) {
+  trong_khi ((fd = open("console", O_RDWR)) >= 0) {
+    nếu (fd >= 3) {
       close(fd);
       break;
     }
   }
 
   // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) >= 0) {
+  trong_khi (getcmd(buf, sizeof(buf)) >= 0) {
     char *cmd = buf;
-    while (*cmd == ' ' || *cmd == '\t')
+    trong_khi (*cmd == ' ' || *cmd == '\t')
       cmd++;
-    if (*cmd == '\n') // is a blank command
+    nếu (*cmd == '\n') // is a blank command
       continue;
-    if (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
+    nếu (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
       // Chdir must be called by the parent, not the child.
       cmd[strlen(cmd) - 1] = 0; // chop \n
-      if (chdir(cmd + 3) < 0)
+      nếu (chdir(cmd + 3) < 0)
         fprintf(2, "cannot cd %s\n", cmd + 3);
-    } else {
-      if (fork1() == 0)
+    } không_thì {
+      nếu (fork1() == 0)
         runcmd(parsecmd(cmd));
       wait(0);
     }
@@ -184,15 +184,15 @@ panic(char *s)
   exit(1);
 }
 
-int
+số_nguyên
 fork1(void)
 {
-  int pid;
+  số_nguyên pid;
 
   pid = fork();
-  if (pid == -1)
+  nếu (pid == -1)
     panic("fork");
-  return pid;
+  trả_về pid;
 }
 
 //PAGEBREAK!
@@ -206,11 +206,11 @@ execcmd(void)
   cmd = malloc(sizeof(*cmd));
   memset(cmd, 0, sizeof(*cmd));
   cmd->type = EXEC;
-  return (struct cmd *)cmd;
+  trả_về (struct cmd *)cmd;
 }
 
 struct cmd *
-redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
+redircmd(struct cmd *subcmd, char *file, char *efile, số_nguyên mode, số_nguyên fd)
 {
   struct redircmd *cmd;
 
@@ -222,7 +222,7 @@ redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
   cmd->efile = efile;
   cmd->mode = mode;
   cmd->fd = fd;
-  return (struct cmd *)cmd;
+  trả_về (struct cmd *)cmd;
 }
 
 struct cmd *
@@ -235,7 +235,7 @@ pipecmd(struct cmd *left, struct cmd *right)
   cmd->type = PIPE;
   cmd->left = left;
   cmd->right = right;
-  return (struct cmd *)cmd;
+  trả_về (struct cmd *)cmd;
 }
 
 struct cmd *
@@ -248,7 +248,7 @@ listcmd(struct cmd *left, struct cmd *right)
   cmd->type = LIST;
   cmd->left = left;
   cmd->right = right;
-  return (struct cmd *)cmd;
+  trả_về (struct cmd *)cmd;
 }
 
 struct cmd *
@@ -260,7 +260,7 @@ backcmd(struct cmd *subcmd)
   memset(cmd, 0, sizeof(*cmd));
   cmd->type = BACK;
   cmd->cmd = subcmd;
-  return (struct cmd *)cmd;
+  trả_về (struct cmd *)cmd;
 }
 //PAGEBREAK!
 // Parsing
@@ -268,16 +268,16 @@ backcmd(struct cmd *subcmd)
 char whitespace[] = " \t\r\n\v";
 char symbols[] = "<|>&;()";
 
-int
+số_nguyên
 gettoken(char **ps, char *es, char **q, char **eq)
 {
   char *s;
-  int ret;
+  số_nguyên ret;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  trong_khi (s < es && strchr(whitespace, *s))
     s++;
-  if (q)
+  nếu (q)
     *q = s;
   ret = *s;
   switch (*s) {
@@ -293,36 +293,36 @@ gettoken(char **ps, char *es, char **q, char **eq)
     break;
   case '>':
     s++;
-    if (*s == '>') {
+    nếu (*s == '>') {
       ret = '+';
       s++;
     }
     break;
   default:
     ret = 'a';
-    while (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
+    trong_khi (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
       s++;
     break;
   }
-  if (eq)
+  nếu (eq)
     *eq = s;
 
-  while (s < es && strchr(whitespace, *s))
+  trong_khi (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return ret;
+  trả_về ret;
 }
 
-int
+số_nguyên
 peek(char **ps, char *es, char *toks)
 {
   char *s;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  trong_khi (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return *s && strchr(toks, *s);
+  trả_về *s && strchr(toks, *s);
 }
 
 struct cmd *parseline(char **, char *);
@@ -339,12 +339,12 @@ parsecmd(char *s)
   es = s + strlen(s);
   cmd = parseline(&s, es);
   peek(&s, es, "");
-  if (s != es) {
+  nếu (s != es) {
     fprintf(2, "leftovers: %s\n", s);
     panic("syntax");
   }
   nulterminate(cmd);
-  return cmd;
+  trả_về cmd;
 }
 
 struct cmd *
@@ -353,15 +353,15 @@ parseline(char **ps, char *es)
   struct cmd *cmd;
 
   cmd = parsepipe(ps, es);
-  while (peek(ps, es, "&")) {
+  trong_khi (peek(ps, es, "&")) {
     gettoken(ps, es, 0, 0);
     cmd = backcmd(cmd);
   }
-  if (peek(ps, es, ";")) {
+  nếu (peek(ps, es, ";")) {
     gettoken(ps, es, 0, 0);
     cmd = listcmd(cmd, parseline(ps, es));
   }
-  return cmd;
+  trả_về cmd;
 }
 
 struct cmd *
@@ -370,22 +370,22 @@ parsepipe(char **ps, char *es)
   struct cmd *cmd;
 
   cmd = parseexec(ps, es);
-  if (peek(ps, es, "|")) {
+  nếu (peek(ps, es, "|")) {
     gettoken(ps, es, 0, 0);
     cmd = pipecmd(cmd, parsepipe(ps, es));
   }
-  return cmd;
+  trả_về cmd;
 }
 
 struct cmd *
 parseredirs(struct cmd *cmd, char **ps, char *es)
 {
-  int tok;
+  số_nguyên tok;
   char *q, *eq;
 
-  while (peek(ps, es, "<>")) {
+  trong_khi (peek(ps, es, "<>")) {
     tok = gettoken(ps, es, 0, 0);
-    if (gettoken(ps, es, &q, &eq) != 'a')
+    nếu (gettoken(ps, es, &q, &eq) != 'a')
       panic("missing file for redirection");
     switch (tok) {
     case '<':
@@ -399,7 +399,7 @@ parseredirs(struct cmd *cmd, char **ps, char *es)
       break;
     }
   }
-  return cmd;
+  trả_về cmd;
 }
 
 struct cmd *
@@ -407,68 +407,68 @@ parseblock(char **ps, char *es)
 {
   struct cmd *cmd;
 
-  if (!peek(ps, es, "("))
+  nếu (!peek(ps, es, "("))
     panic("parseblock");
   gettoken(ps, es, 0, 0);
   cmd = parseline(ps, es);
-  if (!peek(ps, es, ")"))
+  nếu (!peek(ps, es, ")"))
     panic("syntax - missing )");
   gettoken(ps, es, 0, 0);
   cmd = parseredirs(cmd, ps, es);
-  return cmd;
+  trả_về cmd;
 }
 
 struct cmd *
 parseexec(char **ps, char *es)
 {
   char *q, *eq;
-  int tok, argc;
+  số_nguyên tok, argc;
   struct execcmd *cmd;
   struct cmd *ret;
 
-  if (peek(ps, es, "("))
-    return parseblock(ps, es);
+  nếu (peek(ps, es, "("))
+    trả_về parseblock(ps, es);
 
   ret = execcmd();
   cmd = (struct execcmd *)ret;
 
   argc = 0;
   ret = parseredirs(ret, ps, es);
-  while (!peek(ps, es, "|)&;")) {
-    if ((tok = gettoken(ps, es, &q, &eq)) == 0)
+  trong_khi (!peek(ps, es, "|)&;")) {
+    nếu ((tok = gettoken(ps, es, &q, &eq)) == 0)
       break;
-    if (tok != 'a')
+    nếu (tok != 'a')
       panic("syntax");
     cmd->argv[argc] = q;
     cmd->eargv[argc] = eq;
     argc++;
-    if (argc >= MAXARGS)
+    nếu (argc >= MAXARGS)
       panic("too many args");
     ret = parseredirs(ret, ps, es);
   }
   cmd->argv[argc] = 0;
   cmd->eargv[argc] = 0;
-  return ret;
+  trả_về ret;
 }
 
 // NUL-terminate all the counted strings.
 struct cmd *
 nulterminate(struct cmd *cmd)
 {
-  int i;
+  số_nguyên i;
   struct backcmd *bcmd;
   struct execcmd *ecmd;
   struct listcmd *lcmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
 
-  if (cmd == 0)
-    return 0;
+  nếu (cmd == 0)
+    trả_về 0;
 
   switch (cmd->type) {
   case EXEC:
     ecmd = (struct execcmd *)cmd;
-    for (i = 0; ecmd->argv[i]; i++)
+    cho (i = 0; ecmd->argv[i]; i++)
       *ecmd->eargv[i] = 0;
     break;
 
@@ -495,5 +495,5 @@ nulterminate(struct cmd *cmd)
     nulterminate(bcmd->cmd);
     break;
   }
-  return cmd;
+  trả_về cmd;
 }

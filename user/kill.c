@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char **argv)
+số_nguyên
+main(số_nguyên argc, char **argv)
 {
-  int i;
+  số_nguyên i;
 
-  if (argc < 2) {
+  nếu (argc < 2) {
     fprintf(2, "usage: kill pid...\n");
     exit(1);
   }
-  for (i = 1; i < argc; i++)
+  cho (i = 1; i < argc; i++)
     kill(atoi(argv[i]));
   exit(0);
 }

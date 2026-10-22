@@ -14,7 +14,7 @@ extern char trampoline[], uservec[];
 // in kernelvec.S, calls kerneltrap().
 void kernelvec();
 
-extern int devintr();
+extern số_nguyên devintr();
 
 void
 trapinit(void)
@@ -37,9 +37,9 @@ trapinithart(void)
 uint64
 usertrap(void)
 {
-  int which_dev = 0;
+  số_nguyên which_dev = 0;
 
-  if ((r_sstatus() & SSTATUS_SPP) != 0)
+  nếu ((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
 
   // send interrupts and exceptions to kerneltrap(),
@@ -51,10 +51,10 @@ usertrap(void)
   // save user program counter.
   p->trapframe->epc = r_sepc();
 
-  if (r_scause() == 8) {
+  nếu (r_scause() == 8) {
     // system call
 
-    if (killed(p))
+    nếu (killed(p))
       kexit(-1);
 
     // sepc points to the ecall instruction,
@@ -66,23 +66,23 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if ((which_dev = devintr()) != 0) {
+  } không_thì nếu ((which_dev = devintr()) != 0) {
     // ok
-  } else if ((r_scause() == 15 || r_scause() == 13) &&
+  } không_thì nếu ((r_scause() == 15 || r_scause() == 13) &&
              vmfault(p->pagetable, p->sz, r_stval(),
                      (r_scause() == 13) ? 1 : 0) != 0) {
     // page fault on lazily-allocated page
-  } else {
+  } không_thì {
     printk("usertrap(): unexpected scause 0x%lx pid=%d\n", r_scause(), p->pid);
     printk("            sepc=0x%lx stval=0x%lx\n", r_sepc(), r_stval());
     setkilled(p);
   }
 
-  if (killed(p))
+  nếu (killed(p))
     kexit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2)
+  nếu (which_dev == 2)
     yield();
 
   prepare_return();
@@ -91,7 +91,7 @@ usertrap(void)
   uint64 satp = MAKE_SATP(p->pagetable);
 
   // return to trampoline.S; satp value in a0.
-  return satp;
+  trả_về satp;
 }
 
 //
@@ -136,17 +136,17 @@ prepare_return(void)
 void
 kerneltrap()
 {
-  int which_dev = 0;
+  số_nguyên which_dev = 0;
   uint64 sepc = r_sepc();
   uint64 sstatus = r_sstatus();
   uint64 scause = r_scause();
 
-  if ((sstatus & SSTATUS_SPP) == 0)
+  nếu ((sstatus & SSTATUS_SPP) == 0)
     panic("kerneltrap: not from supervisor mode");
-  if (intr_get() != 0)
+  nếu (intr_get() != 0)
     panic("kerneltrap: interrupts enabled");
 
-  if ((which_dev = devintr()) == 0) {
+  nếu ((which_dev = devintr()) == 0) {
     // interrupt or trap from an unknown source
     printk("scause=0x%lx sepc=0x%lx stval=0x%lx\n", scause, r_sepc(),
            r_stval());
@@ -154,7 +154,7 @@ kerneltrap()
   }
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2 && myproc() != 0)
+  nếu (which_dev == 2 && myproc() != 0)
     yield();
 
   // the yield() may have caused some traps to occur,
@@ -166,7 +166,7 @@ kerneltrap()
 void
 clockintr()
 {
-  if (cpuid() == 0) {
+  nếu (cpuid() == 0) {
     acquire(&tickslock);
     ticks++;
     wakeup(&ticks);
@@ -184,37 +184,37 @@ clockintr()
 // returns 2 if timer interrupt,
 // 1 if other device,
 // 0 if not recognized.
-int
+số_nguyên
 devintr()
 {
   uint64 scause = r_scause();
 
-  if (scause == 0x8000000000000009L) {
+  nếu (scause == 0x8000000000000009L) {
     // this is a supervisor external interrupt, via PLIC.
 
     // irq indicates which device interrupted.
-    int irq = plic_claim();
+    số_nguyên irq = plic_claim();
 
-    if (irq == UART0_IRQ) {
+    nếu (irq == UART0_IRQ) {
       uartintr();
-    } else if (irq == VIRTIO0_IRQ) {
+    } không_thì nếu (irq == VIRTIO0_IRQ) {
       virtio_disk_intr();
-    } else if (irq) {
+    } không_thì nếu (irq) {
       printk("unexpected interrupt irq=%d\n", irq);
     }
 
     // the PLIC allows each device to raise at most one
     // interrupt at a time; tell the PLIC the device is
     // now allowed to interrupt again.
-    if (irq)
+    nếu (irq)
       plic_complete(irq);
 
-    return 1;
-  } else if (scause == 0x8000000000000005L) {
+    trả_về 1;
+  } không_thì nếu (scause == 0x8000000000000005L) {
     // timer interrupt.
     clockintr();
-    return 2;
-  } else {
-    return 0;
+    trả_về 2;
+  } không_thì {
+    trả_về 0;
   }
 }

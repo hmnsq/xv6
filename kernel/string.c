@@ -1,30 +1,30 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, số_nguyên c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  số_nguyên i;
+  cho (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  trả_về dst;
 }
 
-int
+số_nguyên
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  trong_khi (n-- > 0) {
+    nếu (*s1 != *s2)
+      trả_về *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  trả_về 0;
 }
 
 void *
@@ -33,74 +33,74 @@ memmove(void *dst, const void *src, uint n)
   const char *s;
   char *d;
 
-  if (n == 0)
-    return dst;
+  nếu (n == 0)
+    trả_về dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  nếu (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    trong_khi (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } không_thì
+    trong_khi (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  trả_về dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  trả_về memmove(dst, src, n);
 }
 
-int
+số_nguyên
 strncmp(const char *p, const char *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  trong_khi (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  nếu (n == 0)
+    trả_về 0;
+  trả_về (uchar)*p - (uchar)*q;
 }
 
 char *
-strncpy(char *s, const char *t, int n)
+strncpy(char *s, const char *t, số_nguyên n)
 {
   char *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  trong_khi (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  trong_khi (n-- > 0)
     *s++ = 0;
-  return os;
+  trả_về os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
 char *
-safestrcpy(char *s, const char *t, int n)
+safestrcpy(char *s, const char *t, số_nguyên n)
 {
   char *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  nếu (n <= 0)
+    trả_về os;
+  trong_khi (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  trả_về os;
 }
 
-int
+số_nguyên
 strlen(const char *s)
 {
-  int n;
+  số_nguyên n;
 
-  for (n = 0; s[n]; n++)
+  cho (n = 0; s[n]; n++)
     ;
-  return n;
+  trả_về n;
 }

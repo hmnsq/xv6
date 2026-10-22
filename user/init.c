@@ -11,42 +11,42 @@
 
 char *argv[] = {"sh", 0};
 
-int
+số_nguyên
 main(void)
 {
-  int pid, wpid;
+  số_nguyên pid, wpid;
 
-  if (open("console", O_RDWR) < 0) {
+  nếu (open("console", O_RDWR) < 0) {
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
   dup(0); // stdout
   dup(0); // stderr
 
-  for (;;) {
+  cho (;;) {
     printf("init: starting sh\n");
     pid = fork();
-    if (pid < 0) {
+    nếu (pid < 0) {
       printf("init: fork failed\n");
       exit(1);
     }
-    if (pid == 0) {
+    nếu (pid == 0) {
       exec("sh", argv);
       printf("init: exec sh failed\n");
       exit(1);
     }
 
-    for (;;) {
+    cho (;;) {
       // this call to wait() returns if the shell exits,
       // or if a parentless process exits.
-      wpid = wait((int *)0);
-      if (wpid == pid) {
+      wpid = wait((số_nguyên *)0);
+      nếu (wpid == pid) {
         // the shell exited; restart it.
         break;
-      } else if (wpid < 0) {
+      } không_thì nếu (wpid < 0) {
         printf("init: wait returned an error\n");
         exit(1);
-      } else {
+      } không_thì {
         // it was a parentless process; do nothing.
       }
     }
