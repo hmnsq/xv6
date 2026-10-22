@@ -1,106 +1,106 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, puur_naa_nka c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
+  var_na *cdst = (var_na *)dst;
+  puur_naa_nka i;
   for (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ᯀᯮᯞ dst;
 }
 
-int
+puur_naa_nka
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  ᯀᯬᯝ (n-- > 0) {
+    ᯀᯮᯝ (*s1 != *s2)
+      ᯀᯮᯞ *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  ᯀᯮᯞ 0;
 }
 
 void *
 memmove(void *dst, const void *src, uint n)
 {
-  const char *s;
-  char *d;
+  const var_na *s;
+  var_na *d;
 
-  if (n == 0)
-    return dst;
+  ᯀᯮᯝ (n == 0)
+    ᯀᯮᯞ dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  ᯀᯮᯝ (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    ᯀᯬᯝ (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } ᯀᯮᯝᯂᯪ
+    ᯀᯬᯝ (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  ᯀᯮᯞ dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  ᯀᯮᯞ memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+puur_naa_nka
+strncmp(const var_na *p, const var_na *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  ᯀᯬᯝ (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  ᯀᯮᯝ (n == 0)
+    ᯀᯮᯞ 0;
+  ᯀᯮᯞ (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+var_na *
+strncpy(var_na *s, const var_na *t, puur_naa_nka n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  ᯀᯬᯝ (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  ᯀᯬᯝ (n-- > 0)
     *s++ = 0;
-  return os;
+  ᯀᯮᯞ os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+var_na *
+safestrcpy(var_na *s, const var_na *t, puur_naa_nka n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  ᯀᯮᯝ (n <= 0)
+    ᯀᯮᯞ os;
+  ᯀᯬᯝ (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  ᯀᯮᯞ os;
 }
 
-int
-strlen(const char *s)
+puur_naa_nka
+strlen(const var_na *s)
 {
-  int n;
+  puur_naa_nka n;
 
   for (n = 0; s[n]; n++)
     ;
-  return n;
+  ᯀᯮᯞ n;
 }

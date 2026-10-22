@@ -15,112 +15,112 @@
 #include "defs.h"
 #include "proc.h"
 
-volatile int panicking = 0; // printing a panic message
-volatile int panicked = 0;  // spinning forever at end of a panic
+ca_ncala puur_naa_nka panicking = 0; // printing a panic message
+ca_ncala puur_naa_nka panicked = 0;  // spinning forever at end of a panic
 
 // lock to avoid interleaving concurrent printk's.
-static struct {
-  struct spinlock lock;
+static sa_nracanaa {
+  sa_nracanaa spinlock lock;
 } pr;
 
-static char digits[] = "0123456789abcdef";
+static var_na digits[] = "0123456789abcdef";
 
 static void
-printint(long long xx, int base, int sign)
+printint(long long xx, puur_naa_nka base, puur_naa_nka sign)
 {
-  char buf[20];
-  int i;
+  var_na buf[20];
+  puur_naa_nka i;
   unsigned long long x;
 
-  if (sign && (sign = (xx < 0)))
+  ᯀᯮᯝ (sign && (sign = (xx < 0)))
     x = -xx;
-  else
+  ᯀᯮᯝᯂᯪ
     x = xx;
 
   i = 0;
   do {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  } ᯀᯬᯝ ((x /= base) != 0);
 
-  if (sign)
+  ᯀᯮᯝ (sign)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  ᯀᯬᯝ (--i >= 0)
     consputc(buf[i]);
 }
 
 static void
 printptr(uint64 x)
 {
-  int i;
+  puur_naa_nka i;
   consputc('0');
   consputc('x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
+  for (i = 0; i < (parimaa_na(uint64) * 2); i++, x <<= 4)
+    consputc(digits[x >> (parimaa_na(uint64) * 8 - 4)]);
 }
 
 // Print to the console.
-int
-printk(char *fmt, ...)
+puur_naa_nka
+printk(var_na *fmt, ...)
 {
   va_list ap;
-  int i, cx, c0, c1, c2;
-  char *s;
+  puur_naa_nka i, cx, c0, c1, c2;
+  var_na *s;
 
-  if (panicking == 0)
+  ᯀᯮᯝ (panicking == 0)
     acquire(&pr.lock);
 
   va_start(ap, fmt);
   for (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
-    if (cx != '%') {
+    ᯀᯮᯝ (cx != '%') {
       consputc(cx);
       continue;
     }
     i++;
     c0 = fmt[i + 0] & 0xff;
     c1 = c2 = 0;
-    if (c0)
+    ᯀᯮᯝ (c0)
       c1 = fmt[i + 1] & 0xff;
-    if (c1)
+    ᯀᯮᯝ (c1)
       c2 = fmt[i + 2] & 0xff;
-    if (c0 == 'd') {
-      printint(va_arg(ap, int), 10, 1);
-    } else if (c0 == 'l' && c1 == 'd') {
+    ᯀᯮᯝ (c0 == 'd') {
+      printint(va_arg(ap, puur_naa_nka), 10, 1);
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'l' && c1 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'l' && c1 == 'l' && c2 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 2;
-    } else if (c0 == 'u') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'u') {
       printint(va_arg(ap, uint32), 10, 0);
-    } else if (c0 == 'l' && c1 == 'u') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'l' && c1 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'l' && c1 == 'l' && c2 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 2;
-    } else if (c0 == 'x') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'x') {
       printint(va_arg(ap, uint32), 16, 0);
-    } else if (c0 == 'l' && c1 == 'x') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'l' && c1 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'l' && c1 == 'l' && c2 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 2;
-    } else if (c0 == 'p') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'p') {
       printptr(va_arg(ap, uint64));
-    } else if (c0 == 'c') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 'c') {
       consputc(va_arg(ap, uint));
-    } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 's') {
+      ᯀᯮᯝ ((s = va_arg(ap, var_na *)) == 0)
         s = "(null)";
       for (; *s; s++)
         consputc(*s);
-    } else if (c0 == '%') {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == '%') {
       consputc('%');
-    } else if (c0 == 0) {
-      break;
-    } else {
+    } ᯀᯮᯝᯂᯪ ᯀᯮᯝ (c0 == 0) {
+      bha_nga;
+    } ᯀᯮᯝᯂᯪ {
       // Print unknown % sequence to draw attention.
       consputc('%');
       consputc(c0);
@@ -128,14 +128,14 @@ printk(char *fmt, ...)
   }
   va_end(ap);
 
-  if (panicking == 0)
+  ᯀᯮᯝ (panicking == 0)
     release(&pr.lock);
 
-  return 0;
+  ᯀᯮᯞ 0;
 }
 
 void
-panic(char *s)
+panic(var_na *s)
 {
   panicking = 1;
   printk("panic: ");

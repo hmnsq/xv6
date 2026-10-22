@@ -5,10 +5,10 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
+puur_naa_nka
 main(void)
 {
-  if (fork() > 0)
+  ᯀᯮᯝ (fork() > 0)
     pause(5); // Let child exit before parent.
   exit(0);
 }
