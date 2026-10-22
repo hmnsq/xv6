@@ -1,0 +1,522 @@
+# What is still missing
+
+76 languages. Each line says in how many languages it is missing.
+
+## Files in languages BURP cannot read yet
+
+- `.el`: 1 files
+- `.pl`: 1 files
+
+## Keywords with no word in a language's table
+
+- soochee:run: 75
+- soochee:args: 75
+- soochee:stop: 74
+- guru:close: 71
+- guru:fork: 71
+- guru:asm: 71
+- guru:fprintf: 71
+- guru:mkdir: 71
+- guru:chdir: 71
+- guru:va_arg: 71
+- guru:memmove: 71
+- guru:kill: 71
+- guru:putc: 71
+- guru:pause: 71
+- guru:strchr: 71
+- guru:fstat: 71
+- guru:memcmp: 71
+- guru:strncpy: 71
+- guru:va_list: 71
+- guru:va_start: 71
+- guru:atoi: 71
+- guru:vprintf: 71
+- guru:gets: 71
+- guru:va_end: 71
+- guru:stderr: 71
+- guru:perror: 71
+- soochee:close: 71
+- guru:open: 70
+- guru:wait: 70
+- guru:memset: 70
+- guru:strcmp: 70
+- guru:strcpy: 70
+- guru:rand: 70
+- guru:log: 67
+- soochee:def: 67
+- soochee:print: 67
+- soochee:len: 67
+- soochee:with: 67
+- soochee:range: 67
+- guru:#define: 66
+- guru:#ifndef: 66
+- guru:#endif: 66
+- guru:exit: 62
+- guru:printf: 62
+- guru:short: 62
+- guru:strlen: 62
+- guru:long: 62
+- guru:unsigned: 62
+- guru:malloc: 62
+- guru:strncmp: 62
+- guru:memcpy: 62
+- guru:main: 54
+- soochee:main: 54
+- yantra:global: 45
+- soochee:True: 26
+- soochee:False: 26
+- yantra:call: 26
+- soochee:except: 26
+- soochee:as: 26
+- soochee:elif: 26
+- guru:void: 25
+- guru:static: 25
+- guru:const: 25
+- guru:write: 25
+- guru:read: 25
+- guru:extern: 25
+- guru:goto: 25
+- guru:continue: 25
+- guru:free: 25
+- guru:typedef: 25
+- guru:switch: 25
+- guru:assert: 25
+- guru:do: 25
+- soochee:try: 25
+- soochee:read: 25
+- guru:default: 25
+- soochee:import: 25
+- soochee:write: 25
+- soochee:class: 25
+- soochee:int: 13
+- soochee:in: 10
+- soochee:and: 10
+- soochee:from: 10
+- soochee:not: 10
+- guru:for: 9
+- soochee:for: 9
+- guru:char: 9
+- guru:struct: 9
+- guru:sizeof: 9
+- guru:break: 9
+- guru:volatile: 9
+- guru:inline: 9
+- guru:case: 9
+- guru:enum: 9
+- soochee:sleep: 9
+- guru:union: 9
+- soochee:break: 9
+- guru:if: 1
+- guru:int: 1
+- guru:return: 1
+- guru:else: 1
+- guru:while: 1
+- soochee:if: 1
+- soochee:return: 1
+- soochee:while: 1
+
+## Names with no dictionary entry (the most common first)
+
+- `i`: 76
+- `s`: 76
+- `uint64`: 76
+- `p`: 76
+- `fd`: 76
+- `n`: 76
+- `ip`: 76
+- `buf`: 76
+- `pid`: 76
+- `name`: 76
+- `cmd`: 76
+- `x`: 76
+- `b`: 76
+- `uint`: 76
+- `PGSIZE`: 76
+- `f`: 76
+- `pagetable`: 76
+- `a`: 76
+- `argv`: 76
+- `proc`: 76
+- `c`: 76
+- `bp`: 76
+- `release`: 76
+- `sz`: 76
+- `addr`: 76
+- `type`: 76
+- `pi`: 76
+- `panic`: 76
+- `dev`: 76
+- `disk`: 76
+- `inum`: 76
+- `sbrk`: 76
+- `xstatus`: 76
+- `O_CREATE`: 76
+- `file`: 76
+- `argc`: 76
+- `de`: 76
+- `off`: 76
+- `inode`: 76
+- `acquire`: 76
+- `q`: 76
+- `BSIZE`: 76
+- `pagetable_t`: 76
+- `st`: 76
+- `lk`: 76
+- `r`: 76
+- `dp`: 76
+- `N`: 76
+- `pte`: 76
+- `addrs`: 76
+- `dst`: 76
+- `ret`: 76
+- `cc`: 76
+- `es`: 76
+- `SZ`: 76
+- `sb`: 76
+- `myproc`: 76
+- `ps`: 76
+- `c0`: 76
+- `bad`: 76
+- `ap`: 76
+- `idx`: 76
+- `trapframe`: 76
+- `va`: 76
+- `dip`: 76
+- `state`: 76
+- `cons`: 76
+- `iunlockput`: 76
+- `m`: 76
+- `bcache`: 76
+- `len`: 76
+- `nlink`: 76
+- `fds`: 76
+- `src`: 76
+- `pa`: 76
+- `pid1`: 76
+- `R`: 76
+- `major`: 76
+- `desc`: 76
+- `spinlock`: 76
+- `brelse`: 76
+- `lh`: 76
+- `dinode`: 76
+- `fd1`: 76
+- `din`: 76
+- `sp`: 76
+- `va0`: 76
+- `what`: 76
+- `uint32`: 76
+- `xint`: 76
+- `bread`: 76
+- `flags`: 76
+- `NDIRECT`: 76
+- `np`: 76
+- `pp`: 76
+- `stat`: 76
+- `printk`: 76
+- `MAXPATH`: 76
+- `printint`: 76
+- `c1`: 76
+- `mem`: 76
+- `re`: 76
+- `ptr`: 76
+- `DIRSIZ`: 76
+- `ilock`: 76
+- `ph`: 76
+- `ref`: 76
+- `max`: 76
+- `j`: 76
+- `wakeup`: 76
+- `t`: 76
+- `fmt`: 76
+- `pid2`: 76
+- `pn`: 76
+- `initlock`: 76
+- `context`: 76
+- `ushort`: 76
+- `ai`: 76
+- `consputc`: 76
+- `kalloc`: 76
+- `cpu`: 76
+- `mycpu`: 76
+- `oldsz`: 76
+- `bi`: 76
+- `bn`: 76
+- `T_DIR`: 76
+- `hart`: 76
+- `kpgtbl`: 76
+- `pa0`: 76
+- `big`: 76
+- `e`: 76
+- `killed`: 76
+- `sleep_prepare`: 76
+- `sleep`: 76
+- `itable`: 76
+- `ofile`: 76
+- `os`: 76
+- `kill`: 76
+- `sleeplock`: 76
+- `uchar`: 76
+- `kfree`: 76
+- `begin_op`: 76
+- `argint`: 76
+- `PTE_W`: 76
+- `minor`: 76
+- `tot`: 76
+- `PTE_R`: 76
+- `avail`: 76
+- `exec`: 76
+- `SBRK_ERROR`: 76
+- `nfiles`: 76
+- `continuous`: 76
+- `tickslock`: 76
+- `pte_t`: 76
+- `copyout`: 76
+- `ftable`: 76
+- `ff`: 76
+- `pr`: 76
+- `c2`: 76
+- `fbn`: 76
+- `bb`: 76
+- `blockno`: 76
+- `devsw`: 76
+- `fileclose`: 76
+- `iunlock`: 76
+- `iupdate`: 76
+- `log_write`: 76
+- `n1`: 76
+- `NPROC`: 76
+- `nread`: 76
+- `irq`: 76
+- `xx`: 76
+- `id`: 76
+- `chan`: 76
+- `PTE_V`: 76
+- `locked`: 76
+- `rcmd`: 76
+- `eq`: 76
+- `sbrklazy`: 76
+- `m1`: 76
+- `justone`: 76
+- `valid`: 76
+- `iput`: 76
+- `argstr`: 76
+- `PGROUNDUP`: 76
+- `IPB`: 76
+- `kmem`: 76
+- `PLIC`: 76
+- `d`: 76
+- `uint16`: 76
+- `WriteReg`: 76
+- `features`: 76
+- `newsz`: 76
+- `srcva`: 76
+- `rootino`: 76
+- `timeout`: 76
+- `aa`: 76
+- `execcmd`: 76
+- `redircmd`: 76
+- `ecmd`: 76
+- `peek`: 76
+- `w`: 76
+- `readi`: 76
+- `cpuid`: 76
+- `argaddr`: 76
+- `kvmmap`: 76
+- `walk`: 76
+- `elf`: 76
+- `cwd`: 76
+- `TRAMPOLINE`: 76
+- `nwrite`: 76
+- `f0`: 76
+- `f1`: 76
+- `trampoline`: 76
+- `intena`: 76
+- `s1`: 76
+- `s2`: 76
+- `fd0`: 76
+- `subprocess`: 76
+- `runcmd`: 76
+- `gettoken`: 76
+- `nulterminate`: 76
+- `NCHILD`: 76
+- `pids`: 76
+- `refcnt`: 76
+- `nameiparent`: 76
+- `ticks`: 76
+- `mappages`: 76
+- `uvmunmap`: 76
+- `perm`: 76
+- `writable`: 76
+- `IBLOCK`: 76
+- `dirent`: 76
+- `nlog`: 76
+- `xstate`: 76
+- `RUNNABLE`: 76
+- `r_scause`: 76
+- `level`: 76
+- `omode`: 76
+- `psz`: 76
+- `wsect`: 76
+- `die`: 76
+- `shortname`: 76
+- `regexps`: 76
+- `test`: 76
+- `BUFSZ`: 76
+- `pipecmd`: 76
+- `listcmd`: 76
+- `backcmd`: 76
+- `lcmd`: 76
+- `pcmd`: 76
+- `p1`: 76
+- `freep`: 76
+- `fd2`: 76
+- `pfds`: 76
+- `ci`: 76
+- `acquiresleep`: 76
+- `user_src`: 76
+- `user_dst`: 76
+- `superblock`: 76
+- `ialloc`: 76
+- `namei`: 76
+- `copyin`: 76
+- `MAXOPBLOCKS`: 76
+- `bzero`: 76
+- `balloc`: 76
+- `BPB`: 76
+- `ino`: 76
+- `logheader`: 76
+- `outstanding`: 76
+- `KERNBASE`: 76
+- `MAXVA`: 76
+- `TRAPFRAME`: 76
+- `panicking`: 76
+- `a0`: 76
+- `noff`: 76
+- `old`: 76
+- `T_FILE`: 76
+- `ReadReg`: 76
+- `info`: 76
+- `fsfd`: 76
+- `sec`: 76
+- `QEMU`: 76
+- `PIPE`: 76
+- `st1`: 76
+- `fork1`: 76
+- `prevp`: 76
+- `nunits`: 76
+- `xst`: 76
+- `fname`: 76
+- `BIG`: 76
+- `ntests`: 76
+- `releasesleep`: 76
+- `C`: 76
+- `uartputc_sync`: 76
+- `nn`: 76
+- `dirlink`: 76
+- `dirlookup`: 76
+- `swtch`: 76
+- `walkaddr`: 76
+
+## Comments with no translation
+
+- Caller must hold ip->lock.: 76
+- clang-format off: 76
+- clang-format on: 76
+- Return 0 on success, -1 on error.: 76
+- sit around until killed: 76
+- addr is a user virtual address.: 76
+- Inode number: 76
+- returns 0 if out of disk space.: 76
+- Disk layout:: 76
+- Number of data blocks: 76
+- turn on paging: 76
+- install kernel trap vector: 76
+- ask PLIC for device interrupts: 76
+- trampoline.S: 76
+- Returns 0 on success, -1 on error.: 76
+- kernel page table: 76
+- instruction address to which a return from: 76
+- exception will go.: 76
+- Supervisor Interrupt Enable: 76
+- Is the lock held?: 76
+- For debugging:: 76
+- Name of lock.: 76
+- s1 = &lk->locked: 76
+- fence rw,w: 76
+- give up the CPU if this is a timer interrupt.: 76
+- from printk.c: 76
+- write-only: 76
+- always zero: 76
+- read the disk: 76
+- write the disk: 76
+- PAGEBREAK!: 76
+- what if you pass ridiculous pointers to system calls: 76
+- clean up: 76
+- did kernel kill child?: 76
+- Buffer cache.: 76
+- The buffer cache is a linked list of buf structures holding: 76
+- cached copies of disk block contents.  Caching disk blocks: 76
+- in memory reduces the number of disk reads and also provides: 76
+- a synchronization point for disk blocks used by multiple processes.: 76
+- Interface:: 76
+- * To get a buffer for a particular disk block, call bread.: 76
+- * After changing buffer data, call bwrite to write it to disk.: 76
+- * When done with the buffer, call brelse.: 76
+- * Do not use the buffer after calling brelse.: 76
+- * Only one process at a time can use a buffer,: 76
+- so do not keep them longer than necessary.: 76
+- Linked list of all buffers, through prev/next.: 76
+- Sorted by how recently the buffer was used.: 76
+- head.next is most recent, head.prev is least.: 76
+- Create linked list of buffers: 76
+- Look through buffer cache for block on device dev.: 76
+- If not found, allocate a buffer.: 76
+- In either case, return locked buffer.: 76
+- Is the block already cached?: 76
+- Not cached.: 76
+- Recycle the least recently used (LRU) unused buffer.: 76
+- Return a locked buf with the contents of the indicated block.: 76
+- Write b's contents to disk.  Must be locked.: 76
+- Only the log calls bwrite.: 76
+- Release a locked buffer.: 76
+- Move to the head of the most-recently-used list.: 76
+- no one is waiting for it.: 76
+- has data been read from disk?: 76
+- does disk "own" buf?: 76
+- LRU cache list: 76
+- Console input and output, to the uart.: 76
+- Reads are line at a time.: 76
+- Implements special input characters:: 76
+- newline -- end of line: 76
+- control-h -- backspace: 76
+- control-u -- kill line: 76
+- control-d -- end of file: 76
+- control-p -- print process list: 76
+- erase the last output character: 76
+- Control-x: 76
+- send one character to the uart, but don't use: 76
+- interrupts or sleep(). safe to be called from: 76
+- interrupts, e.g. by printk and to echo input: 76
+- characters.: 76
+- if the user typed backspace, overwrite with a space.: 76
+- input circular buffer: 76
+- Read index: 76
+- Write index: 76
+- Edit index: 76
+- user write() system calls to the console go here.: 76
+- uses sleep() and UART interrupts.: 76
+- move batches from user space to uart.: 76
+- user read()s from the console go here.: 76
+- copy (up to) a whole input line to dst.: 76
+- user_dst indicates whether dst is a user: 76
+- or kernel address.: 76
+- wait until interrupt handler has put some: 76
+- input into cons.buffer.: 76
+- end-of-file: 76
+- Save ^D for next time, to make sure: 76
+- caller gets a 0-byte result.: 76
+- copy the input byte to the user-space buffer.: 76
+- a whole line has arrived, return to: 76
+- the user-level read().: 76
+- the console input interrupt handler.: 76
