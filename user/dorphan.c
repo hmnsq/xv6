@@ -1,35 +1,35 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
 // Create an orphaned directory and check if test-xv6.py recovers it.
 
-#define BUFSZ 500
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ BUFSZ 500
 
-char buf[BUFSZ];
+ਅੱਖਰ buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ **argv)
 {
-  char *s = argv[0];
+  ਅੱਖਰ *s = argv[0];
 
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("dd") != 0) {
+    ਲਿਖੋ("%s: mkdir dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  ਜੇ (chdir("dd") != 0) {
+    ਲਿਖੋ("%s: chdir dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (unlink("../dd") < 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  ਜੇ (unlink("../dd") < 0) {
+    ਲਿਖੋ("%s: unlink failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  printf("wait for kill and reclaim\n");
+  ਲਿਖੋ("wait for kill and reclaim\n");
   // sit around until killed
-  for (;;)
+  ਲਈ (;;)
     pause(1000);
 }

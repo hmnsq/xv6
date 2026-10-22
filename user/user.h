@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBRK_ERROR ((ਅੱਖਰ *)-1)
 
-struct stat;
+ਬਣਤਰ stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+ਪੂਰਨ fork(ਖਾਲੀ);
+ਪੂਰਨ ਬਾਹਰ_ਨਿਕਲੋ(ਪੂਰਨ) __attribute__((noreturn));
+ਪੂਰਨ wait(ਪੂਰਨ *);
+ਪੂਰਨ pipe(ਪੂਰਨ *);
+ਪੂਰਨ ਲਿਖ(ਪੂਰਨ, ਅਚਲ ਖਾਲੀ *, ਪੂਰਨ);
+ਪੂਰਨ ਪਠ(ਪੂਰਨ, ਖਾਲੀ *, ਪੂਰਨ);
+ਪੂਰਨ close(ਪੂਰਨ);
+ਪੂਰਨ kill(ਪੂਰਨ);
+ਪੂਰਨ exec(ਅਚਲ ਅੱਖਰ *, ਅੱਖਰ **);
+ਪੂਰਨ open(ਅਚਲ ਅੱਖਰ *, ਪੂਰਨ);
+ਪੂਰਨ mknod(ਅਚਲ ਅੱਖਰ *, ਛੋਟਾ, ਛੋਟਾ);
+ਪੂਰਨ unlink(ਅਚਲ ਅੱਖਰ *);
+ਪੂਰਨ fstat(ਪੂਰਨ fd, ਬਣਤਰ stat *);
+ਪੂਰਨ link(ਅਚਲ ਅੱਖਰ *, ਅਚਲ ਅੱਖਰ *);
+ਪੂਰਨ mkdir(ਅਚਲ ਅੱਖਰ *);
+ਪੂਰਨ chdir(ਅਚਲ ਅੱਖਰ *);
+ਪੂਰਨ dup(ਪੂਰਨ);
+ਪੂਰਨ getpid(ਖਾਲੀ);
+ਅੱਖਰ *sys_sbrk(ਪੂਰਨ, ਪੂਰਨ);
+ਪੂਰਨ pause(ਪੂਰਨ);
+ਪੂਰਨ uptime(ਖਾਲੀ);
+ਪੂਰਨ sync(ਖਾਲੀ);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+ਪੂਰਨ stat(ਅਚਲ ਅੱਖਰ *, ਬਣਤਰ stat *);
+ਅੱਖਰ *strcpy(ਅੱਖਰ *, ਅਚਲ ਅੱਖਰ *);
+ਖਾਲੀ *memmove(ਖਾਲੀ *, ਅਚਲ ਖਾਲੀ *, ਪੂਰਨ);
+ਅੱਖਰ *strchr(ਅਚਲ ਅੱਖਰ *, ਅੱਖਰ c);
+ਪੂਰਨ strcmp(ਅਚਲ ਅੱਖਰ *, ਅਚਲ ਅੱਖਰ *);
+ਅੱਖਰ *gets(ਅੱਖਰ *, ਪੂਰਨ max);
+uint ਲੜੀ_ਲੰਬਾਈ(ਅਚਲ ਅੱਖਰ *);
+ਖਾਲੀ *memset(ਖਾਲੀ *, ਪੂਰਨ, uint);
+ਪੂਰਨ atoi(ਅਚਲ ਅੱਖਰ *);
+ਪੂਰਨ memcmp(ਅਚਲ ਖਾਲੀ *, ਅਚਲ ਖਾਲੀ *, uint);
+ਖਾਲੀ *ਸਮ੍ਰਿਤੀ_ਨਕਲ(ਖਾਲੀ *, ਅਚਲ ਖਾਲੀ *, uint);
+ਅੱਖਰ *sbrk(ਪੂਰਨ);
+ਅੱਖਰ *sbrklazy(ਪੂਰਨ);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+ਖਾਲੀ fprintf(ਪੂਰਨ, ਅਚਲ ਅੱਖਰ *, ...) __attribute__((format(ਲਿਖੋ, 2, 3)));
+ਖਾਲੀ ਲਿਖੋ(ਅਚਲ ਅੱਖਰ *, ...) __attribute__((format(ਲਿਖੋ, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+ਖਾਲੀ *ਸਮ੍ਰਿਤੀ_ਦਿਓ(uint);
+ਖਾਲੀ ਮੁਕਤ(ਖਾਲੀ *);

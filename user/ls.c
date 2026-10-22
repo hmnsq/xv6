@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fs.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+ਅੱਖਰ *
+fmtname(ਅੱਖਰ *ਰਸਤਾ)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  ਸਥਿਰ ਅੱਖਰ buf[DIRSIZ + 1];
+  ਅੱਖਰ *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  ਲਈ (p = ਰਸਤਾ + ਲੜੀ_ਲੰਬਾਈ(ਰਸਤਾ); p >= ਰਸਤਾ && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
-  memmove(buf, p, strlen(p));
-  memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  ਜੇ (ਲੜੀ_ਲੰਬਾਈ(p) >= DIRSIZ)
+    ਵਾਪਸ p;
+  memmove(buf, p, ਲੜੀ_ਲੰਬਾਈ(p));
+  memset(buf + ਲੜੀ_ਲੰਬਾਈ(p), ' ', DIRSIZ - ਲੜੀ_ਲੰਬਾਈ(p));
+  buf[ਆਕਾਰ(buf) - 1] = '\0';
+  ਵਾਪਸ buf;
 }
 
-void
-ls(char *path)
+ਖਾਲੀ
+ls(ਅੱਖਰ *ਰਸਤਾ)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  ਅੱਖਰ buf[512], *p;
+  ਪੂਰਨ fd;
+  ਬਣਤਰ dirent de;
+  ਬਣਤਰ stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
-    fprintf(2, "ls: cannot open %s\n", path);
-    return;
+  ਜੇ ((fd = open(ਰਸਤਾ, O_RDONLY)) < 0) {
+    fprintf(2, "ls: cannot open %s\n", ਰਸਤਾ);
+    ਵਾਪਸ;
   }
 
-  if (fstat(fd, &st) < 0) {
-    fprintf(2, "ls: cannot stat %s\n", path);
+  ਜੇ (fstat(fd, &st) < 0) {
+    fprintf(2, "ls: cannot stat %s\n", ਰਸਤਾ);
     close(fd);
-    return;
+    ਵਾਪਸ;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  ਚੋਣ (st.type) {
+  ਹਾਲਤ T_DEVICE:
+  ਹਾਲਤ T_FILE:
+    ਲਿਖੋ("%s %d %d %d\n", fmtname(ਰਸਤਾ), st.type, st.ino, (ਪੂਰਨ)st.ਮਾਪ);
+    ਰੋਕੋ;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
-      printf("ls: path too long\n");
-      break;
+  ਹਾਲਤ T_DIR:
+    ਜੇ (ਲੜੀ_ਲੰਬਾਈ(ਰਸਤਾ) + 1 + DIRSIZ + 1 > ਆਕਾਰ buf) {
+      ਲਿਖੋ("ls: path too long\n");
+      ਰੋਕੋ;
     }
-    strcpy(buf, path);
-    p = buf + strlen(buf);
+    strcpy(buf, ਰਸਤਾ);
+    p = buf + ਲੜੀ_ਲੰਬਾਈ(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    ਜਦੋਂ (ਪਠ(fd, &de, ਆਕਾਰ(de)) == ਆਕਾਰ(de)) {
+      ਜੇ (de.inum == 0)
+        ਜਾਰੀ;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
-        printf("ls: cannot stat %s\n", buf);
-        continue;
+      ਜੇ (stat(buf, &st) < 0) {
+        ਲਿਖੋ("ls: cannot stat %s\n", buf);
+        ਜਾਰੀ;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      ਲਿਖੋ("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (ਪੂਰਨ)st.ਮਾਪ);
     }
-    break;
+    ਰੋਕੋ;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  int i;
+  ਪੂਰਨ i;
 
-  if (argc < 2) {
+  ਜੇ (argc < 2) {
     ls(".");
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
-  for (i = 1; i < argc; i++)
+  ਲਈ (i = 1; i < argc; i++)
     ls(argv[i]);
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

@@ -1,52 +1,52 @@
 // init: The initial user-level program
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/spinlock.h"
-#include "kernel/sleeplock.h"
-#include "kernel/fs.h"
-#include "kernel/file.h"
-#include "user/user.h"
-#include "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/spinlock.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/sleeplock.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fs.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/file.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
 
-char *argv[] = {"sh", 0};
+ਅੱਖਰ *argv[] = {"sh", 0};
 
-int
-main(void)
+ਪੂਰਨ
+ਮੁੱਖ(ਖਾਲੀ)
 {
-  int pid, wpid;
+  ਪੂਰਨ pid, wpid;
 
-  if (open("console", O_RDWR) < 0) {
+  ਜੇ (open("console", O_RDWR) < 0) {
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
   dup(0); // stdout
   dup(0); // stderr
 
-  for (;;) {
-    printf("init: starting sh\n");
+  ਲਈ (;;) {
+    ਲਿਖੋ("init: starting sh\n");
     pid = fork();
-    if (pid < 0) {
-      printf("init: fork failed\n");
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("init: fork failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid == 0) {
+    ਜੇ (pid == 0) {
       exec("sh", argv);
-      printf("init: exec sh failed\n");
-      exit(1);
+      ਲਿਖੋ("init: exec sh failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
-    for (;;) {
+    ਲਈ (;;) {
       // this call to wait() returns if the shell exits,
       // or if a parentless process exits.
-      wpid = wait((int *)0);
-      if (wpid == pid) {
+      wpid = wait((ਪੂਰਨ *)0);
+      ਜੇ (wpid == pid) {
         // the shell exited; restart it.
-        break;
-      } else if (wpid < 0) {
-        printf("init: wait returned an error\n");
-        exit(1);
-      } else {
+        ਰੋਕੋ;
+      } ਨਹੀਂਤਾਂ ਜੇ (wpid < 0) {
+        ਲਿਖੋ("init: wait returned an error\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
+      } ਨਹੀਂਤਾਂ {
         // it was a parentless process; do nothing.
       }
     }

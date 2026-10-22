@@ -1,55 +1,55 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
-char buf[512];
+ਅੱਖਰ buf[512];
 
-void
-wc(int fd, char *name)
+ਖਾਲੀ
+wc(ਪੂਰਨ fd, ਅੱਖਰ *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  ਪੂਰਨ i, n;
+  ਪੂਰਨ l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  ਜਦੋਂ ((n = ਪਠ(fd, buf, ਆਕਾਰ(buf))) > 0) {
+    ਲਈ (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      ਜੇ (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      ਜੇ (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      ਨਹੀਂਤਾਂ ਜੇ (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
-    printf("wc: read error\n");
-    exit(1);
+  ਜੇ (n < 0) {
+    ਲਿਖੋ("wc: read error\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  printf("%d %d %d %s\n", l, w, c, name);
+  ਲਿਖੋ("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  int fd, i;
+  ਪੂਰਨ fd, i;
 
-  if (argc <= 1) {
+  ਜੇ (argc <= 1) {
     wc(0, "");
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("wc: cannot open %s\n", argv[i]);
-      exit(1);
+  ਲਈ (i = 1; i < argc; i++) {
+    ਜੇ ((fd = open(argv[i], O_RDONLY)) < 0) {
+      ਲਿਖੋ("wc: cannot open %s\n", argv[i]);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     wc(fd, argv[i]);
     close(fd);
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

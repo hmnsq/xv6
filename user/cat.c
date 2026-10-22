@@ -1,43 +1,43 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
-char buf[512];
+ਅੱਖਰ buf[512];
 
-void
-cat(int fd)
+ਖਾਲੀ
+cat(ਪੂਰਨ fd)
 {
-  int n;
+  ਪੂਰਨ n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  ਜਦੋਂ ((n = ਪਠ(fd, buf, ਆਕਾਰ(buf))) > 0) {
+    ਜੇ (ਲਿਖ(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
-  if (n < 0) {
+  ਜੇ (n < 0) {
     fprintf(2, "cat: read error\n");
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  int fd, i;
+  ਪੂਰਨ fd, i;
 
-  if (argc <= 1) {
+  ਜੇ (argc <= 1) {
     cat(0);
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  ਲਈ (i = 1; i < argc; i++) {
+    ਜੇ ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     cat(fd);
     close(fd);
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

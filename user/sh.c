@@ -1,499 +1,499 @@
 // Shell.
 
-#include "kernel/types.h"
-#include "user/user.h"
-#include "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
 
 // Parsed command representation
-#define EXEC  1
-#define REDIR 2
-#define PIPE  3
-#define LIST  4
-#define BACK  5
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EXEC  1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ REDIR 2
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PIPE  3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LIST  4
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪਿੱਠ  5
 
-#define MAXARGS 10
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAXARGS 10
 
-struct cmd {
-  int type;
+ਬਣਤਰ cmd {
+  ਪੂਰਨ type;
 };
 
-struct execcmd {
-  int type;
-  char *argv[MAXARGS];
-  char *eargv[MAXARGS];
+ਬਣਤਰ execcmd {
+  ਪੂਰਨ type;
+  ਅੱਖਰ *argv[MAXARGS];
+  ਅੱਖਰ *eargv[MAXARGS];
 };
 
-struct redircmd {
-  int type;
-  struct cmd *cmd;
-  char *file;
-  char *efile;
-  int mode;
-  int fd;
+ਬਣਤਰ redircmd {
+  ਪੂਰਨ type;
+  ਬਣਤਰ cmd *cmd;
+  ਅੱਖਰ *file;
+  ਅੱਖਰ *efile;
+  ਪੂਰਨ ਬਹੁਲਕ;
+  ਪੂਰਨ fd;
 };
 
-struct pipecmd {
-  int type;
-  struct cmd *left;
-  struct cmd *right;
+ਬਣਤਰ pipecmd {
+  ਪੂਰਨ type;
+  ਬਣਤਰ cmd *ਖੱਬਾ;
+  ਬਣਤਰ cmd *ਸੱਜਾ;
 };
 
-struct listcmd {
-  int type;
-  struct cmd *left;
-  struct cmd *right;
+ਬਣਤਰ listcmd {
+  ਪੂਰਨ type;
+  ਬਣਤਰ cmd *ਖੱਬਾ;
+  ਬਣਤਰ cmd *ਸੱਜਾ;
 };
 
-struct backcmd {
-  int type;
-  struct cmd *cmd;
+ਬਣਤਰ backcmd {
+  ਪੂਰਨ type;
+  ਬਣਤਰ cmd *cmd;
 };
 
-int fork1(void); // Fork but panics on failure.
-void panic(char *);
-struct cmd *parsecmd(char *);
-void runcmd(struct cmd *) __attribute__((noreturn));
+ਪੂਰਨ fork1(ਖਾਲੀ); // Fork but panics on failure.
+ਖਾਲੀ panic(ਅੱਖਰ *);
+ਬਣਤਰ cmd *parsecmd(ਅੱਖਰ *);
+ਖਾਲੀ runcmd(ਬਣਤਰ cmd *) __attribute__((noreturn));
 
 // Execute cmd.  Never returns.
-void
-runcmd(struct cmd *cmd)
+ਖਾਲੀ
+runcmd(ਬਣਤਰ cmd *cmd)
 {
-  int p[2];
-  struct backcmd *bcmd;
-  struct execcmd *ecmd;
-  struct listcmd *lcmd;
-  struct pipecmd *pcmd;
-  struct redircmd *rcmd;
+  ਪੂਰਨ p[2];
+  ਬਣਤਰ backcmd *bcmd;
+  ਬਣਤਰ execcmd *ecmd;
+  ਬਣਤਰ listcmd *lcmd;
+  ਬਣਤਰ pipecmd *pcmd;
+  ਬਣਤਰ redircmd *rcmd;
 
-  if (cmd == 0)
-    exit(1);
+  ਜੇ (cmd == 0)
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
 
-  switch (cmd->type) {
-  default:
+  ਚੋਣ (cmd->type) {
+  ਮੂਲ:
     panic("runcmd");
 
-  case EXEC:
-    ecmd = (struct execcmd *)cmd;
-    if (ecmd->argv[0] == 0)
-      exit(1);
+  ਹਾਲਤ EXEC:
+    ecmd = (ਬਣਤਰ execcmd *)cmd;
+    ਜੇ (ecmd->argv[0] == 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     exec(ecmd->argv[0], ecmd->argv);
     fprintf(2, "exec %s failed\n", ecmd->argv[0]);
-    break;
+    ਰੋਕੋ;
 
-  case REDIR:
-    rcmd = (struct redircmd *)cmd;
+  ਹਾਲਤ REDIR:
+    rcmd = (ਬਣਤਰ redircmd *)cmd;
     close(rcmd->fd);
-    if (open(rcmd->file, rcmd->mode) < 0) {
+    ਜੇ (open(rcmd->file, rcmd->ਬਹੁਲਕ) < 0) {
       fprintf(2, "open %s failed\n", rcmd->file);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     runcmd(rcmd->cmd);
-    break;
+    ਰੋਕੋ;
 
-  case LIST:
-    lcmd = (struct listcmd *)cmd;
-    if (fork1() == 0)
-      runcmd(lcmd->left);
+  ਹਾਲਤ LIST:
+    lcmd = (ਬਣਤਰ listcmd *)cmd;
+    ਜੇ (fork1() == 0)
+      runcmd(lcmd->ਖੱਬਾ);
     wait(0);
-    runcmd(lcmd->right);
-    break;
+    runcmd(lcmd->ਸੱਜਾ);
+    ਰੋਕੋ;
 
-  case PIPE:
-    pcmd = (struct pipecmd *)cmd;
-    if (pipe(p) < 0)
+  ਹਾਲਤ PIPE:
+    pcmd = (ਬਣਤਰ pipecmd *)cmd;
+    ਜੇ (pipe(p) < 0)
       panic("pipe");
-    if (fork1() == 0) {
+    ਜੇ (fork1() == 0) {
       close(1);
       dup(p[1]);
       close(p[0]);
       close(p[1]);
-      runcmd(pcmd->left);
+      runcmd(pcmd->ਖੱਬਾ);
     }
-    if (fork1() == 0) {
+    ਜੇ (fork1() == 0) {
       close(0);
       dup(p[0]);
       close(p[0]);
       close(p[1]);
-      runcmd(pcmd->right);
+      runcmd(pcmd->ਸੱਜਾ);
     }
     close(p[0]);
     close(p[1]);
     wait(0);
     wait(0);
-    break;
+    ਰੋਕੋ;
 
-  case BACK:
-    bcmd = (struct backcmd *)cmd;
-    if (fork1() == 0)
+  ਹਾਲਤ ਪਿੱਠ:
+    bcmd = (ਬਣਤਰ backcmd *)cmd;
+    ਜੇ (fork1() == 0)
       runcmd(bcmd->cmd);
-    break;
+    ਰੋਕੋ;
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-int
-getcmd(char *buf, int nbuf)
+ਪੂਰਨ
+getcmd(ਅੱਖਰ *buf, ਪੂਰਨ nbuf)
 {
-  write(2, "$ ", 2);
+  ਲਿਖ(2, "$ ", 2);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
-  if (buf[0] == 0) // EOF
-    return -1;
-  return 0;
+  ਜੇ (buf[0] == 0) // EOF
+    ਵਾਪਸ -1;
+  ਵਾਪਸ 0;
 }
 
-int
-main(void)
+ਪੂਰਨ
+ਮੁੱਖ(ਖਾਲੀ)
 {
-  static char buf[100];
-  int fd;
+  ਸਥਿਰ ਅੱਖਰ buf[100];
+  ਪੂਰਨ fd;
 
   // Ensure that three file descriptors are open.
-  while ((fd = open("console", O_RDWR)) >= 0) {
-    if (fd >= 3) {
+  ਜਦੋਂ ((fd = open("console", O_RDWR)) >= 0) {
+    ਜੇ (fd >= 3) {
       close(fd);
-      break;
+      ਰੋਕੋ;
     }
   }
 
   // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) >= 0) {
-    char *cmd = buf;
-    while (*cmd == ' ' || *cmd == '\t')
+  ਜਦੋਂ (getcmd(buf, ਆਕਾਰ(buf)) >= 0) {
+    ਅੱਖਰ *cmd = buf;
+    ਜਦੋਂ (*cmd == ' ' || *cmd == '\t')
       cmd++;
-    if (*cmd == '\n') // is a blank command
-      continue;
-    if (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
+    ਜੇ (*cmd == '\n') // is a blank command
+      ਜਾਰੀ;
+    ਜੇ (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
       // Chdir must be called by the parent, not the child.
-      cmd[strlen(cmd) - 1] = 0; // chop \n
-      if (chdir(cmd + 3) < 0)
+      cmd[ਲੜੀ_ਲੰਬਾਈ(cmd) - 1] = 0; // chop \n
+      ਜੇ (chdir(cmd + 3) < 0)
         fprintf(2, "cannot cd %s\n", cmd + 3);
-    } else {
-      if (fork1() == 0)
+    } ਨਹੀਂਤਾਂ {
+      ਜੇ (fork1() == 0)
         runcmd(parsecmd(cmd));
       wait(0);
     }
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-void
-panic(char *s)
+ਖਾਲੀ
+panic(ਅੱਖਰ *s)
 {
   fprintf(2, "%s\n", s);
-  exit(1);
+  ਬਾਹਰ_ਨਿਕਲੋ(1);
 }
 
-int
-fork1(void)
+ਪੂਰਨ
+fork1(ਖਾਲੀ)
 {
-  int pid;
+  ਪੂਰਨ pid;
 
   pid = fork();
-  if (pid == -1)
+  ਜੇ (pid == -1)
     panic("fork");
-  return pid;
+  ਵਾਪਸ pid;
 }
 
 //PAGEBREAK!
 // Constructors
 
-struct cmd *
-execcmd(void)
+ਬਣਤਰ cmd *
+execcmd(ਖਾਲੀ)
 {
-  struct execcmd *cmd;
+  ਬਣਤਰ execcmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = ਸਮ੍ਰਿਤੀ_ਦਿਓ(ਆਕਾਰ(*cmd));
+  memset(cmd, 0, ਆਕਾਰ(*cmd));
   cmd->type = EXEC;
-  return (struct cmd *)cmd;
+  ਵਾਪਸ (ਬਣਤਰ cmd *)cmd;
 }
 
-struct cmd *
-redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
+ਬਣਤਰ cmd *
+redircmd(ਬਣਤਰ cmd *subcmd, ਅੱਖਰ *file, ਅੱਖਰ *efile, ਪੂਰਨ ਬਹੁਲਕ, ਪੂਰਨ fd)
 {
-  struct redircmd *cmd;
+  ਬਣਤਰ redircmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = ਸਮ੍ਰਿਤੀ_ਦਿਓ(ਆਕਾਰ(*cmd));
+  memset(cmd, 0, ਆਕਾਰ(*cmd));
   cmd->type = REDIR;
   cmd->cmd = subcmd;
   cmd->file = file;
   cmd->efile = efile;
-  cmd->mode = mode;
+  cmd->ਬਹੁਲਕ = ਬਹੁਲਕ;
   cmd->fd = fd;
-  return (struct cmd *)cmd;
+  ਵਾਪਸ (ਬਣਤਰ cmd *)cmd;
 }
 
-struct cmd *
-pipecmd(struct cmd *left, struct cmd *right)
+ਬਣਤਰ cmd *
+pipecmd(ਬਣਤਰ cmd *ਖੱਬਾ, ਬਣਤਰ cmd *ਸੱਜਾ)
 {
-  struct pipecmd *cmd;
+  ਬਣਤਰ pipecmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = ਸਮ੍ਰਿਤੀ_ਦਿਓ(ਆਕਾਰ(*cmd));
+  memset(cmd, 0, ਆਕਾਰ(*cmd));
   cmd->type = PIPE;
-  cmd->left = left;
-  cmd->right = right;
-  return (struct cmd *)cmd;
+  cmd->ਖੱਬਾ = ਖੱਬਾ;
+  cmd->ਸੱਜਾ = ਸੱਜਾ;
+  ਵਾਪਸ (ਬਣਤਰ cmd *)cmd;
 }
 
-struct cmd *
-listcmd(struct cmd *left, struct cmd *right)
+ਬਣਤਰ cmd *
+listcmd(ਬਣਤਰ cmd *ਖੱਬਾ, ਬਣਤਰ cmd *ਸੱਜਾ)
 {
-  struct listcmd *cmd;
+  ਬਣਤਰ listcmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = ਸਮ੍ਰਿਤੀ_ਦਿਓ(ਆਕਾਰ(*cmd));
+  memset(cmd, 0, ਆਕਾਰ(*cmd));
   cmd->type = LIST;
-  cmd->left = left;
-  cmd->right = right;
-  return (struct cmd *)cmd;
+  cmd->ਖੱਬਾ = ਖੱਬਾ;
+  cmd->ਸੱਜਾ = ਸੱਜਾ;
+  ਵਾਪਸ (ਬਣਤਰ cmd *)cmd;
 }
 
-struct cmd *
-backcmd(struct cmd *subcmd)
+ਬਣਤਰ cmd *
+backcmd(ਬਣਤਰ cmd *subcmd)
 {
-  struct backcmd *cmd;
+  ਬਣਤਰ backcmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
-  cmd->type = BACK;
+  cmd = ਸਮ੍ਰਿਤੀ_ਦਿਓ(ਆਕਾਰ(*cmd));
+  memset(cmd, 0, ਆਕਾਰ(*cmd));
+  cmd->type = ਪਿੱਠ;
   cmd->cmd = subcmd;
-  return (struct cmd *)cmd;
+  ਵਾਪਸ (ਬਣਤਰ cmd *)cmd;
 }
 //PAGEBREAK!
 // Parsing
 
-char whitespace[] = " \t\r\n\v";
-char symbols[] = "<|>&;()";
+ਅੱਖਰ whitespace[] = " \t\r\n\v";
+ਅੱਖਰ symbols[] = "<|>&;()";
 
-int
-gettoken(char **ps, char *es, char **q, char **eq)
+ਪੂਰਨ
+gettoken(ਅੱਖਰ **ps, ਅੱਖਰ *es, ਅੱਖਰ **q, ਅੱਖਰ **eq)
 {
-  char *s;
-  int ret;
+  ਅੱਖਰ *s;
+  ਪੂਰਨ ret;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  ਜਦੋਂ (s < es && strchr(whitespace, *s))
     s++;
-  if (q)
+  ਜੇ (q)
     *q = s;
   ret = *s;
-  switch (*s) {
-  case 0:
-    break;
-  case '|':
-  case '(':
-  case ')':
-  case ';':
-  case '&':
-  case '<':
+  ਚੋਣ (*s) {
+  ਹਾਲਤ 0:
+    ਰੋਕੋ;
+  ਹਾਲਤ '|':
+  ਹਾਲਤ '(':
+  ਹਾਲਤ ')':
+  ਹਾਲਤ ';':
+  ਹਾਲਤ '&':
+  ਹਾਲਤ '<':
     s++;
-    break;
-  case '>':
+    ਰੋਕੋ;
+  ਹਾਲਤ '>':
     s++;
-    if (*s == '>') {
+    ਜੇ (*s == '>') {
       ret = '+';
       s++;
     }
-    break;
-  default:
+    ਰੋਕੋ;
+  ਮੂਲ:
     ret = 'a';
-    while (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
+    ਜਦੋਂ (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
       s++;
-    break;
+    ਰੋਕੋ;
   }
-  if (eq)
+  ਜੇ (eq)
     *eq = s;
 
-  while (s < es && strchr(whitespace, *s))
+  ਜਦੋਂ (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return ret;
+  ਵਾਪਸ ret;
 }
 
-int
-peek(char **ps, char *es, char *toks)
+ਪੂਰਨ
+peek(ਅੱਖਰ **ps, ਅੱਖਰ *es, ਅੱਖਰ *toks)
 {
-  char *s;
+  ਅੱਖਰ *s;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  ਜਦੋਂ (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return *s && strchr(toks, *s);
+  ਵਾਪਸ *s && strchr(toks, *s);
 }
 
-struct cmd *parseline(char **, char *);
-struct cmd *parsepipe(char **, char *);
-struct cmd *parseexec(char **, char *);
-struct cmd *nulterminate(struct cmd *);
+ਬਣਤਰ cmd *parseline(ਅੱਖਰ **, ਅੱਖਰ *);
+ਬਣਤਰ cmd *parsepipe(ਅੱਖਰ **, ਅੱਖਰ *);
+ਬਣਤਰ cmd *parseexec(ਅੱਖਰ **, ਅੱਖਰ *);
+ਬਣਤਰ cmd *nulterminate(ਬਣਤਰ cmd *);
 
-struct cmd *
-parsecmd(char *s)
+ਬਣਤਰ cmd *
+parsecmd(ਅੱਖਰ *s)
 {
-  char *es;
-  struct cmd *cmd;
+  ਅੱਖਰ *es;
+  ਬਣਤਰ cmd *cmd;
 
-  es = s + strlen(s);
+  es = s + ਲੜੀ_ਲੰਬਾਈ(s);
   cmd = parseline(&s, es);
   peek(&s, es, "");
-  if (s != es) {
+  ਜੇ (s != es) {
     fprintf(2, "leftovers: %s\n", s);
     panic("syntax");
   }
   nulterminate(cmd);
-  return cmd;
+  ਵਾਪਸ cmd;
 }
 
-struct cmd *
-parseline(char **ps, char *es)
+ਬਣਤਰ cmd *
+parseline(ਅੱਖਰ **ps, ਅੱਖਰ *es)
 {
-  struct cmd *cmd;
+  ਬਣਤਰ cmd *cmd;
 
   cmd = parsepipe(ps, es);
-  while (peek(ps, es, "&")) {
+  ਜਦੋਂ (peek(ps, es, "&")) {
     gettoken(ps, es, 0, 0);
     cmd = backcmd(cmd);
   }
-  if (peek(ps, es, ";")) {
+  ਜੇ (peek(ps, es, ";")) {
     gettoken(ps, es, 0, 0);
     cmd = listcmd(cmd, parseline(ps, es));
   }
-  return cmd;
+  ਵਾਪਸ cmd;
 }
 
-struct cmd *
-parsepipe(char **ps, char *es)
+ਬਣਤਰ cmd *
+parsepipe(ਅੱਖਰ **ps, ਅੱਖਰ *es)
 {
-  struct cmd *cmd;
+  ਬਣਤਰ cmd *cmd;
 
   cmd = parseexec(ps, es);
-  if (peek(ps, es, "|")) {
+  ਜੇ (peek(ps, es, "|")) {
     gettoken(ps, es, 0, 0);
     cmd = pipecmd(cmd, parsepipe(ps, es));
   }
-  return cmd;
+  ਵਾਪਸ cmd;
 }
 
-struct cmd *
-parseredirs(struct cmd *cmd, char **ps, char *es)
+ਬਣਤਰ cmd *
+parseredirs(ਬਣਤਰ cmd *cmd, ਅੱਖਰ **ps, ਅੱਖਰ *es)
 {
-  int tok;
-  char *q, *eq;
+  ਪੂਰਨ tok;
+  ਅੱਖਰ *q, *eq;
 
-  while (peek(ps, es, "<>")) {
+  ਜਦੋਂ (peek(ps, es, "<>")) {
     tok = gettoken(ps, es, 0, 0);
-    if (gettoken(ps, es, &q, &eq) != 'a')
+    ਜੇ (gettoken(ps, es, &q, &eq) != 'a')
       panic("missing file for redirection");
-    switch (tok) {
-    case '<':
+    ਚੋਣ (tok) {
+    ਹਾਲਤ '<':
       cmd = redircmd(cmd, q, eq, O_RDONLY, 0);
-      break;
-    case '>':
+      ਰੋਕੋ;
+    ਹਾਲਤ '>':
       cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREATE | O_TRUNC, 1);
-      break;
-    case '+': // >>
+      ਰੋਕੋ;
+    ਹਾਲਤ '+': // >>
       cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREATE, 1);
-      break;
+      ਰੋਕੋ;
     }
   }
-  return cmd;
+  ਵਾਪਸ cmd;
 }
 
-struct cmd *
-parseblock(char **ps, char *es)
+ਬਣਤਰ cmd *
+parseblock(ਅੱਖਰ **ps, ਅੱਖਰ *es)
 {
-  struct cmd *cmd;
+  ਬਣਤਰ cmd *cmd;
 
-  if (!peek(ps, es, "("))
+  ਜੇ (!peek(ps, es, "("))
     panic("parseblock");
   gettoken(ps, es, 0, 0);
   cmd = parseline(ps, es);
-  if (!peek(ps, es, ")"))
+  ਜੇ (!peek(ps, es, ")"))
     panic("syntax - missing )");
   gettoken(ps, es, 0, 0);
   cmd = parseredirs(cmd, ps, es);
-  return cmd;
+  ਵਾਪਸ cmd;
 }
 
-struct cmd *
-parseexec(char **ps, char *es)
+ਬਣਤਰ cmd *
+parseexec(ਅੱਖਰ **ps, ਅੱਖਰ *es)
 {
-  char *q, *eq;
-  int tok, argc;
-  struct execcmd *cmd;
-  struct cmd *ret;
+  ਅੱਖਰ *q, *eq;
+  ਪੂਰਨ tok, argc;
+  ਬਣਤਰ execcmd *cmd;
+  ਬਣਤਰ cmd *ret;
 
-  if (peek(ps, es, "("))
-    return parseblock(ps, es);
+  ਜੇ (peek(ps, es, "("))
+    ਵਾਪਸ parseblock(ps, es);
 
   ret = execcmd();
-  cmd = (struct execcmd *)ret;
+  cmd = (ਬਣਤਰ execcmd *)ret;
 
   argc = 0;
   ret = parseredirs(ret, ps, es);
-  while (!peek(ps, es, "|)&;")) {
-    if ((tok = gettoken(ps, es, &q, &eq)) == 0)
-      break;
-    if (tok != 'a')
+  ਜਦੋਂ (!peek(ps, es, "|)&;")) {
+    ਜੇ ((tok = gettoken(ps, es, &q, &eq)) == 0)
+      ਰੋਕੋ;
+    ਜੇ (tok != 'a')
       panic("syntax");
     cmd->argv[argc] = q;
     cmd->eargv[argc] = eq;
     argc++;
-    if (argc >= MAXARGS)
+    ਜੇ (argc >= MAXARGS)
       panic("too many args");
     ret = parseredirs(ret, ps, es);
   }
   cmd->argv[argc] = 0;
   cmd->eargv[argc] = 0;
-  return ret;
+  ਵਾਪਸ ret;
 }
 
 // NUL-terminate all the counted strings.
-struct cmd *
-nulterminate(struct cmd *cmd)
+ਬਣਤਰ cmd *
+nulterminate(ਬਣਤਰ cmd *cmd)
 {
-  int i;
-  struct backcmd *bcmd;
-  struct execcmd *ecmd;
-  struct listcmd *lcmd;
-  struct pipecmd *pcmd;
-  struct redircmd *rcmd;
+  ਪੂਰਨ i;
+  ਬਣਤਰ backcmd *bcmd;
+  ਬਣਤਰ execcmd *ecmd;
+  ਬਣਤਰ listcmd *lcmd;
+  ਬਣਤਰ pipecmd *pcmd;
+  ਬਣਤਰ redircmd *rcmd;
 
-  if (cmd == 0)
-    return 0;
+  ਜੇ (cmd == 0)
+    ਵਾਪਸ 0;
 
-  switch (cmd->type) {
-  case EXEC:
-    ecmd = (struct execcmd *)cmd;
-    for (i = 0; ecmd->argv[i]; i++)
+  ਚੋਣ (cmd->type) {
+  ਹਾਲਤ EXEC:
+    ecmd = (ਬਣਤਰ execcmd *)cmd;
+    ਲਈ (i = 0; ecmd->argv[i]; i++)
       *ecmd->eargv[i] = 0;
-    break;
+    ਰੋਕੋ;
 
-  case REDIR:
-    rcmd = (struct redircmd *)cmd;
+  ਹਾਲਤ REDIR:
+    rcmd = (ਬਣਤਰ redircmd *)cmd;
     nulterminate(rcmd->cmd);
     *rcmd->efile = 0;
-    break;
+    ਰੋਕੋ;
 
-  case PIPE:
-    pcmd = (struct pipecmd *)cmd;
-    nulterminate(pcmd->left);
-    nulterminate(pcmd->right);
-    break;
+  ਹਾਲਤ PIPE:
+    pcmd = (ਬਣਤਰ pipecmd *)cmd;
+    nulterminate(pcmd->ਖੱਬਾ);
+    nulterminate(pcmd->ਸੱਜਾ);
+    ਰੋਕੋ;
 
-  case LIST:
-    lcmd = (struct listcmd *)cmd;
-    nulterminate(lcmd->left);
-    nulterminate(lcmd->right);
-    break;
+  ਹਾਲਤ LIST:
+    lcmd = (ਬਣਤਰ listcmd *)cmd;
+    nulterminate(lcmd->ਖੱਬਾ);
+    nulterminate(lcmd->ਸੱਜਾ);
+    ਰੋਕੋ;
 
-  case BACK:
-    bcmd = (struct backcmd *)cmd;
+  ਹਾਲਤ ਪਿੱਠ:
+    bcmd = (ਬਣਤਰ backcmd *)cmd;
     nulterminate(bcmd->cmd);
-    break;
+    ਰੋਕੋ;
   }
-  return cmd;
+  ਵਾਪਸ cmd;
 }

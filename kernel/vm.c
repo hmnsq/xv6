@@ -1,25 +1,25 @@
-#include "param.h"
-#include "types.h"
-#include "memlayout.h"
-#include "elf.h"
-#include "riscv.h"
-#include "defs.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "memlayout.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "elf.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "riscv.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "defs.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "spinlock.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "proc.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "fs.h"
 
 /*
  * the kernel's page table.
  */
 pagetable_t kernel_pagetable;
 
-extern char etext[]; // kernel.ld sets this to end of kernel code.
+ਬਾਹਰੀ ਅੱਖਰ etext[]; // kernel.ld sets this to end of kernel code.
 
-extern char trampoline[]; // trampoline.S
+ਬਾਹਰੀ ਅੱਖਰ trampoline[]; // trampoline.S
 
 // Make a direct-map page table for the kernel.
 pagetable_t
-kvmmake(void)
+kvmmake(ਖਾਲੀ)
 {
   pagetable_t kpgtbl;
 
@@ -49,29 +49,29 @@ kvmmake(void)
   // allocate and map a kernel stack for each process.
   proc_mapstacks(kpgtbl);
 
-  return kpgtbl;
+  ਵਾਪਸ kpgtbl;
 }
 
 // add a mapping to the kernel page table.
 // only used when booting.
 // does not flush TLB or enable paging.
-void
-kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)
+ਖਾਲੀ
+kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, ਪੂਰਨ perm)
 {
-  if (mappages(kpgtbl, va, sz, pa, perm) != 0)
+  ਜੇ (mappages(kpgtbl, va, sz, pa, perm) != 0)
     panic("kvmmap");
 }
 
 // Initialize the kernel_pagetable, shared by all CPUs.
-void
-kvminit(void)
+ਖਾਲੀ
+kvminit(ਖਾਲੀ)
 {
   kernel_pagetable = kvmmake();
 }
 
 // Switch the current CPU's h/w page table register to
 // the kernel's page table, and enable paging.
-void
+ਖਾਲੀ
 kvminithart()
 {
   // wait for any previous writes to the page table memory to finish.
@@ -96,23 +96,23 @@ kvminithart()
 //   12..20 -- 9 bits of level-0 index.
 //    0..11 -- 12 bits of byte offset within the page.
 pte_t *
-walk(pagetable_t pagetable, uint64 va, int alloc)
+walk(pagetable_t pagetable, uint64 va, ਪੂਰਨ alloc)
 {
-  if (va >= MAXVA)
+  ਜੇ (va >= MAXVA)
     panic("walk");
 
-  for (int level = 2; level > 0; level--) {
+  ਲਈ (ਪੂਰਨ level = 2; level > 0; level--) {
     pte_t *pte = &pagetable[PX(level, va)];
-    if (*pte & PTE_V) {
+    ਜੇ (*pte & PTE_V) {
       pagetable = (pagetable_t)PTE2PA(*pte);
-    } else {
-      if (!alloc || (pagetable = (pde_t *)kalloc()) == 0)
-        return 0;
+    } ਨਹੀਂਤਾਂ {
+      ਜੇ (!alloc || (pagetable = (pde_t *)kalloc()) == 0)
+        ਵਾਪਸ 0;
       memset(pagetable, 0, PGSIZE);
       *pte = PA2PTE(pagetable) | PTE_V;
     }
   }
-  return &pagetable[PX(0, va)];
+  ਵਾਪਸ &pagetable[PX(0, va)];
 }
 
 // Look up a virtual address, return the physical address,
@@ -124,18 +124,18 @@ walkaddr(pagetable_t pagetable, uint64 va)
   pte_t *pte;
   uint64 pa;
 
-  if (va >= MAXVA)
-    return 0;
+  ਜੇ (va >= MAXVA)
+    ਵਾਪਸ 0;
 
   pte = walk(pagetable, va, 0);
-  if (pte == 0)
-    return 0;
-  if ((*pte & PTE_V) == 0)
-    return 0;
-  if ((*pte & PTE_U) == 0)
-    return 0;
+  ਜੇ (pte == 0)
+    ਵਾਪਸ 0;
+  ਜੇ ((*pte & PTE_V) == 0)
+    ਵਾਪਸ 0;
+  ਜੇ ((*pte & PTE_U) == 0)
+    ਵਾਪਸ 0;
   pa = PTE2PA(*pte);
-  return pa;
+  ਵਾਪਸ pa;
 }
 
 // Create PTEs for virtual addresses starting at va that refer to
@@ -143,35 +143,35 @@ walkaddr(pagetable_t pagetable, uint64 va)
 // va and size MUST be page-aligned.
 // Returns 0 on success, -1 if walk() couldn't
 // allocate a needed page-table page.
-int
-mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
+ਪੂਰਨ
+mappages(pagetable_t pagetable, uint64 va, uint64 ਮਾਪ, uint64 pa, ਪੂਰਨ perm)
 {
-  uint64 a, last;
+  uint64 a, ਆਖਰੀ;
   pte_t *pte;
 
-  if ((va % PGSIZE) != 0)
+  ਜੇ ((va % PGSIZE) != 0)
     panic("mappages: va not aligned");
 
-  if ((size % PGSIZE) != 0)
+  ਜੇ ((ਮਾਪ % PGSIZE) != 0)
     panic("mappages: size not aligned");
 
-  if (size == 0)
+  ਜੇ (ਮਾਪ == 0)
     panic("mappages: size");
 
   a = va;
-  last = va + size - PGSIZE;
-  for (;;) {
-    if ((pte = walk(pagetable, a, 1)) == 0)
-      return -1;
-    if (*pte & PTE_V)
+  ਆਖਰੀ = va + ਮਾਪ - PGSIZE;
+  ਲਈ (;;) {
+    ਜੇ ((pte = walk(pagetable, a, 1)) == 0)
+      ਵਾਪਸ -1;
+    ਜੇ (*pte & PTE_V)
       panic("mappages: remap");
     *pte = PA2PTE(pa) | perm | PTE_V;
-    if (a == last)
-      break;
+    ਜੇ (a == ਆਖਰੀ)
+      ਰੋਕੋ;
     a += PGSIZE;
     pa += PGSIZE;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 // create an empty user page table.
@@ -181,32 +181,32 @@ uvmcreate()
 {
   pagetable_t pagetable;
   pagetable = (pagetable_t)kalloc();
-  if (pagetable == 0)
-    return 0;
+  ਜੇ (pagetable == 0)
+    ਵਾਪਸ 0;
   memset(pagetable, 0, PGSIZE);
-  return pagetable;
+  ਵਾਪਸ pagetable;
 }
 
 // Remove npages of mappings starting from va. va must be
 // page-aligned. It's OK if the mappings don't exist.
 // Optionally free the physical memory.
-void
-uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
+ਖਾਲੀ
+uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, ਪੂਰਨ do_free)
 {
   uint64 a;
   pte_t *pte;
 
-  if ((va % PGSIZE) != 0)
+  ਜੇ ((va % PGSIZE) != 0)
     panic("uvmunmap: not aligned");
 
-  for (a = va; a < va + npages * PGSIZE; a += PGSIZE) {
-    if ((pte = walk(pagetable, a, 0)) == 0) // leaf page table entry allocated?
-      continue;
-    if ((*pte & PTE_V) == 0) // has physical page been allocated?
-      continue;
-    if (do_free) {
+  ਲਈ (a = va; a < va + npages * PGSIZE; a += PGSIZE) {
+    ਜੇ ((pte = walk(pagetable, a, 0)) == 0) // leaf page table entry allocated?
+      ਜਾਰੀ;
+    ਜੇ ((*pte & PTE_V) == 0) // has physical page been allocated?
+      ਜਾਰੀ;
+    ਜੇ (do_free) {
       uint64 pa = PTE2PA(*pte);
-      kfree((void *)pa);
+      kfree((ਖਾਲੀ *)pa);
     }
     *pte = 0;
   }
@@ -215,30 +215,30 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
 // Allocate PTEs and physical memory to grow a process from oldsz to
 // newsz, which need not be page aligned.  Returns new size or 0 on error.
 uint64
-uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
+uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, ਪੂਰਨ xperm)
 {
-  char *mem;
+  ਅੱਖਰ *mem;
   uint64 a;
 
-  if (newsz < oldsz)
-    return oldsz;
+  ਜੇ (newsz < oldsz)
+    ਵਾਪਸ oldsz;
 
   oldsz = PGROUNDUP(oldsz);
-  for (a = oldsz; a < newsz; a += PGSIZE) {
+  ਲਈ (a = oldsz; a < newsz; a += PGSIZE) {
     mem = kalloc();
-    if (mem == 0) {
+    ਜੇ (mem == 0) {
       uvmdealloc(pagetable, a, oldsz);
-      return 0;
+      ਵਾਪਸ 0;
     }
     memset(mem, 0, PGSIZE);
-    if (mappages(pagetable, a, PGSIZE, (uint64)mem, PTE_R | PTE_U | xperm) !=
+    ਜੇ (mappages(pagetable, a, PGSIZE, (uint64)mem, PTE_R | PTE_U | xperm) !=
         0) {
       kfree(mem);
       uvmdealloc(pagetable, a, oldsz);
-      return 0;
+      ਵਾਪਸ 0;
     }
   }
-  return newsz;
+  ਵਾਪਸ newsz;
 }
 
 // Deallocate user pages to bring the process size from oldsz to
@@ -248,43 +248,43 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
 uint64
 uvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz)
 {
-  if (newsz >= oldsz)
-    return oldsz;
+  ਜੇ (newsz >= oldsz)
+    ਵਾਪਸ oldsz;
 
-  if (PGROUNDUP(newsz) < PGROUNDUP(oldsz)) {
-    int npages = (PGROUNDUP(oldsz) - PGROUNDUP(newsz)) / PGSIZE;
+  ਜੇ (PGROUNDUP(newsz) < PGROUNDUP(oldsz)) {
+    ਪੂਰਨ npages = (PGROUNDUP(oldsz) - PGROUNDUP(newsz)) / PGSIZE;
     uvmunmap(pagetable, PGROUNDUP(newsz), npages, 1);
   }
 
-  return newsz;
+  ਵਾਪਸ newsz;
 }
 
 // Recursively free page-table pages.
 // All leaf mappings must already have been removed.
-void
+ਖਾਲੀ
 freewalk(pagetable_t pagetable)
 {
   // there are 2^9 = 512 PTEs in a page table.
-  for (int i = 0; i < 512; i++) {
+  ਲਈ (ਪੂਰਨ i = 0; i < 512; i++) {
     pte_t pte = pagetable[i];
-    if ((pte & PTE_V) && (pte & (PTE_R | PTE_W | PTE_X)) == 0) {
+    ਜੇ ((pte & PTE_V) && (pte & (PTE_R | PTE_W | PTE_X)) == 0) {
       // this PTE points to a lower-level page table.
-      uint64 child = PTE2PA(pte);
-      freewalk((pagetable_t)child);
+      uint64 ਬੱਚਾ = PTE2PA(pte);
+      freewalk((pagetable_t)ਬੱਚਾ);
       pagetable[i] = 0;
-    } else if (pte & PTE_V) {
+    } ਨਹੀਂਤਾਂ ਜੇ (pte & PTE_V) {
       panic("freewalk: leaf");
     }
   }
-  kfree((void *)pagetable);
+  kfree((ਖਾਲੀ *)pagetable);
 }
 
 // Free user memory pages,
 // then free page-table pages.
-void
+ਖਾਲੀ
 uvmfree(pagetable_t pagetable, uint64 sz)
 {
-  if (sz > 0)
+  ਜੇ (sz > 0)
     uvmunmap(pagetable, 0, PGROUNDUP(sz) / PGSIZE, 1);
   freewalk(pagetable);
 }
@@ -295,45 +295,45 @@ uvmfree(pagetable_t pagetable, uint64 sz)
 // physical memory.
 // returns 0 on success, -1 on failure.
 // frees any allocated pages on failure.
-int
+ਪੂਰਨ
 uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
 {
   pte_t *pte;
   uint64 pa, i;
   uint flags;
-  char *mem;
+  ਅੱਖਰ *mem;
 
-  for (i = 0; i < sz; i += PGSIZE) {
-    if ((pte = walk(old, i, 0)) == 0)
-      continue; // page table entry hasn't been allocated
-    if ((*pte & PTE_V) == 0)
-      continue; // physical page hasn't been allocated
+  ਲਈ (i = 0; i < sz; i += PGSIZE) {
+    ਜੇ ((pte = walk(old, i, 0)) == 0)
+      ਜਾਰੀ; // page table entry hasn't been allocated
+    ਜੇ ((*pte & PTE_V) == 0)
+      ਜਾਰੀ; // physical page hasn't been allocated
     pa = PTE2PA(*pte);
     flags = PTE_FLAGS(*pte);
-    if ((mem = kalloc()) == 0)
-      goto err;
-    memmove(mem, (char *)pa, PGSIZE);
-    if (mappages(new, i, PGSIZE, (uint64)mem, flags) != 0) {
+    ਜੇ ((mem = kalloc()) == 0)
+      ਜਾਓ err;
+    memmove(mem, (ਅੱਖਰ *)pa, PGSIZE);
+    ਜੇ (mappages(new, i, PGSIZE, (uint64)mem, flags) != 0) {
       kfree(mem);
-      goto err;
+      ਜਾਓ err;
     }
   }
-  return 0;
+  ਵਾਪਸ 0;
 
 err:
   uvmunmap(new, 0, i / PGSIZE, 1);
-  return -1;
+  ਵਾਪਸ -1;
 }
 
 // mark a PTE invalid for user access.
 // used by exec for the user stack guard page.
-void
+ਖਾਲੀ
 uvmclear(pagetable_t pagetable, uint64 va)
 {
   pte_t *pte;
 
   pte = walk(pagetable, va, 0);
-  if (pte == 0)
+  ਜੇ (pte == 0)
     panic("uvmclear");
   *pte &= ~PTE_U;
 }
@@ -341,99 +341,99 @@ uvmclear(pagetable_t pagetable, uint64 va)
 // Copy from kernel to user.
 // Copy len bytes from src to virtual address dstva in a given page table.
 // Return 0 on success, -1 on error.
-int
-copyout(pagetable_t pagetable, uint64 psz, uint64 dstva, char *src, uint64 len)
+ਪੂਰਨ
+copyout(pagetable_t pagetable, uint64 psz, uint64 dstva, ਅੱਖਰ *src, uint64 len)
 {
   uint64 n, va0, pa0;
   pte_t *pte;
 
-  while (len > 0) {
+  ਜਦੋਂ (len > 0) {
     va0 = PGROUNDDOWN(dstva);
-    if (va0 >= MAXVA)
-      return -1;
+    ਜੇ (va0 >= MAXVA)
+      ਵਾਪਸ -1;
 
     pa0 = walkaddr(pagetable, va0);
-    if (pa0 == 0) {
-      if ((pa0 = vmfault(pagetable, psz, va0, 0)) == 0) {
-        return -1;
+    ਜੇ (pa0 == 0) {
+      ਜੇ ((pa0 = vmfault(pagetable, psz, va0, 0)) == 0) {
+        ਵਾਪਸ -1;
       }
     }
 
     pte = walk(pagetable, va0, 0);
     // forbid copyout over read-only user text pages.
-    if ((*pte & PTE_W) == 0)
-      return -1;
+    ਜੇ ((*pte & PTE_W) == 0)
+      ਵਾਪਸ -1;
 
     n = PGSIZE - (dstva - va0);
-    if (n > len)
+    ਜੇ (n > len)
       n = len;
-    memmove((void *)(pa0 + (dstva - va0)), src, n);
+    memmove((ਖਾਲੀ *)(pa0 + (dstva - va0)), src, n);
 
     len -= n;
     src += n;
     dstva = va0 + PGSIZE;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 // Copy from user to kernel.
 // Copy len bytes to dst from virtual address srcva in a given page table.
 // Return 0 on success, -1 on error.
-int
-copyin(pagetable_t pagetable, uint64 psz, char *dst, uint64 srcva, uint64 len)
+ਪੂਰਨ
+copyin(pagetable_t pagetable, uint64 psz, ਅੱਖਰ *dst, uint64 srcva, uint64 len)
 {
   uint64 n, va0, pa0;
 
-  while (len > 0) {
+  ਜਦੋਂ (len > 0) {
     va0 = PGROUNDDOWN(srcva);
     pa0 = walkaddr(pagetable, va0);
-    if (pa0 == 0) {
-      if ((pa0 = vmfault(pagetable, psz, va0, 1)) == 0) {
-        return -1;
+    ਜੇ (pa0 == 0) {
+      ਜੇ ((pa0 = vmfault(pagetable, psz, va0, 1)) == 0) {
+        ਵਾਪਸ -1;
       }
     }
     n = PGSIZE - (srcva - va0);
-    if (n > len)
+    ਜੇ (n > len)
       n = len;
-    memmove(dst, (void *)(pa0 + (srcva - va0)), n);
+    memmove(dst, (ਖਾਲੀ *)(pa0 + (srcva - va0)), n);
 
     len -= n;
     dst += n;
     srcva = va0 + PGSIZE;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 // Copy a null-terminated string from user to kernel.
 // Copy bytes to dst from virtual address srcva in a given page table,
 // until a '\0', or max.
 // Return 0 on success, -1 on error.
-int
-copyinstr(pagetable_t pagetable, uint64 psz, char *dst, uint64 srcva,
+ਪੂਰਨ
+copyinstr(pagetable_t pagetable, uint64 psz, ਅੱਖਰ *dst, uint64 srcva,
           uint64 max)
 {
   uint64 n, va0, pa0;
-  int got_null = 0;
+  ਪੂਰਨ got_null = 0;
 
-  while (got_null == 0 && max > 0) {
+  ਜਦੋਂ (got_null == 0 && max > 0) {
     va0 = PGROUNDDOWN(srcva);
     pa0 = walkaddr(pagetable, va0);
-    if (pa0 == 0) {
-      if ((pa0 = vmfault(pagetable, psz, va0, 1)) == 0) {
-        return -1;
+    ਜੇ (pa0 == 0) {
+      ਜੇ ((pa0 = vmfault(pagetable, psz, va0, 1)) == 0) {
+        ਵਾਪਸ -1;
       }
     }
     n = PGSIZE - (srcva - va0);
-    if (n > max)
+    ਜੇ (n > max)
       n = max;
 
-    char *p = (char *)(pa0 + (srcva - va0));
-    while (n > 0) {
-      if (*p == '\0') {
+    ਅੱਖਰ *p = (ਅੱਖਰ *)(pa0 + (srcva - va0));
+    ਜਦੋਂ (n > 0) {
+      ਜੇ (*p == '\0') {
         *dst = '\0';
         got_null = 1;
-        break;
-      } else {
+        ਰੋਕੋ;
+      } ਨਹੀਂਤਾਂ {
         *dst = *p;
       }
       --n;
@@ -444,10 +444,10 @@ copyinstr(pagetable_t pagetable, uint64 psz, char *dst, uint64 srcva,
 
     srcva = va0 + PGSIZE;
   }
-  if (got_null) {
-    return 0;
-  } else {
-    return -1;
+  ਜੇ (got_null) {
+    ਵਾਪਸ 0;
+  } ਨਹੀਂਤਾਂ {
+    ਵਾਪਸ -1;
   }
 }
 
@@ -456,36 +456,36 @@ copyinstr(pagetable_t pagetable, uint64 psz, char *dst, uint64 srcva,
 // returns 0 if va is invalid or already mapped, or if
 // out of physical memory, and physical address if successful.
 uint64
-vmfault(pagetable_t pagetable, uint64 psz, uint64 va, int read)
+vmfault(pagetable_t pagetable, uint64 psz, uint64 va, ਪੂਰਨ ਪਠ)
 {
   uint64 mem;
 
-  if (va >= psz)
-    return 0;
+  ਜੇ (va >= psz)
+    ਵਾਪਸ 0;
   va = PGROUNDDOWN(va);
-  if (ismapped(pagetable, va)) {
-    return 0;
+  ਜੇ (ismapped(pagetable, va)) {
+    ਵਾਪਸ 0;
   }
   mem = (uint64)kalloc();
-  if (mem == 0)
-    return 0;
-  memset((void *)mem, 0, PGSIZE);
-  if (mappages(pagetable, va, PGSIZE, mem, PTE_W | PTE_U | PTE_R) != 0) {
-    kfree((void *)mem);
-    return 0;
+  ਜੇ (mem == 0)
+    ਵਾਪਸ 0;
+  memset((ਖਾਲੀ *)mem, 0, PGSIZE);
+  ਜੇ (mappages(pagetable, va, PGSIZE, mem, PTE_W | PTE_U | PTE_R) != 0) {
+    kfree((ਖਾਲੀ *)mem);
+    ਵਾਪਸ 0;
   }
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-int
+ਪੂਰਨ
 ismapped(pagetable_t pagetable, uint64 va)
 {
   pte_t *pte = walk(pagetable, va, 0);
-  if (pte == 0) {
-    return 0;
+  ਜੇ (pte == 0) {
+    ਵਾਪਸ 0;
   }
-  if (*pte & PTE_V) {
-    return 1;
+  ਜੇ (*pte & PTE_V) {
+    ਵਾਪਸ 1;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }

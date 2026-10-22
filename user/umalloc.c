@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਲੰਮਾ Align;
 
-union header {
-  struct {
-    union header *ptr;
-    uint size;
+ਸੰਘ ਸਿਰਲੇਖ {
+  ਬਣਤਰ {
+    ਸੰਘ ਸਿਰਲੇਖ *ptr;
+    uint ਮਾਪ;
   } s;
   Align x;
 };
 
-typedef union header Header;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਸੰਘ ਸਿਰਲੇਖ ਸਿਰਲੇਖ_2;
 
-static Header base;
-static Header *freep;
+ਸਥਿਰ ਸਿਰਲੇਖ_2 ਅਧਾਰ;
+ਸਥਿਰ ਸਿਰਲੇਖ_2 *freep;
 
-void
-free(void *ap)
+ਖਾਲੀ
+ਮੁਕਤ(ਖਾਲੀ *ap)
 {
-  Header *bp, *p;
+  ਸਿਰਲੇਖ_2 *bp, *p;
 
-  bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
-    bp->s.size += p->s.ptr->s.size;
+  bp = (ਸਿਰਲੇਖ_2 *)ap - 1;
+  ਲਈ (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    ਜੇ (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      ਰੋਕੋ;
+  ਜੇ (bp + bp->s.ਮਾਪ == p->s.ptr) {
+    bp->s.ਮਾਪ += p->s.ptr->s.ਮਾਪ;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } ਨਹੀਂਤਾਂ
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
-    p->s.size += bp->s.size;
+  ਜੇ (p + p->s.ਮਾਪ == bp) {
+    p->s.ਮਾਪ += bp->s.ਮਾਪ;
     p->s.ptr = bp->s.ptr;
-  } else
+  } ਨਹੀਂਤਾਂ
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+ਸਥਿਰ ਸਿਰਲੇਖ_2 *
 morecore(uint nu)
 {
-  char *p;
-  Header *hp;
+  ਅੱਖਰ *p;
+  ਸਿਰਲੇਖ_2 *hp;
 
-  if (nu < 4096)
+  ਜੇ (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
-  hp = (Header *)p;
-  hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  p = sbrk(nu * ਆਕਾਰ(ਸਿਰਲੇਖ_2));
+  ਜੇ (p == SBRK_ERROR)
+    ਵਾਪਸ 0;
+  hp = (ਸਿਰਲੇਖ_2 *)p;
+  hp->s.ਮਾਪ = nu;
+  ਮੁਕਤ((ਖਾਲੀ *)(hp + 1));
+  ਵਾਪਸ freep;
 }
 
-void *
-malloc(uint nbytes)
+ਖਾਲੀ *
+ਸਮ੍ਰਿਤੀ_ਦਿਓ(uint nbytes)
 {
-  Header *p, *prevp;
+  ਸਿਰਲੇਖ_2 *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
-    base.s.ptr = freep = prevp = &base;
-    base.s.size = 0;
+  nunits = (nbytes + ਆਕਾਰ(ਸਿਰਲੇਖ_2) - 1) / ਆਕਾਰ(ਸਿਰਲੇਖ_2) + 1;
+  ਜੇ ((prevp = freep) == 0) {
+    ਅਧਾਰ.s.ptr = freep = prevp = &ਅਧਾਰ;
+    ਅਧਾਰ.s.ਮਾਪ = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  ਲਈ (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    ਜੇ (p->s.ਮਾਪ >= nunits) {
+      ਜੇ (p->s.ਮਾਪ == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
-        p->s.size -= nunits;
-        p += p->s.size;
-        p->s.size = nunits;
+      ਨਹੀਂਤਾਂ {
+        p->s.ਮਾਪ -= nunits;
+        p += p->s.ਮਾਪ;
+        p->s.ਮਾਪ = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      ਵਾਪਸ (ਖਾਲੀ *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    ਜੇ (p == freep)
+      ਜੇ ((p = morecore(nunits)) == 0)
+        ਵਾਪਸ 0;
   }
 }

@@ -2,19 +2,19 @@
 // run random system calls in parallel forever.
 //
 
-#include "kernel/param.h"
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
-#include "kernel/syscall.h"
-#include "kernel/memlayout.h"
-#include "kernel/riscv.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fs.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/syscall.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/memlayout.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/riscv.h"
 
 // from FreeBSD.
-int
-do_rand(unsigned long *ctx)
+ਪੂਰਨ
+do_rand(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *ctx)
 {
   /*
    * Compute x = (7^5 * x) mod (2^31 - 1)
@@ -24,328 +24,328 @@ do_rand(unsigned long *ctx)
    * Park and Miller, Communications of the ACM, vol. 31, no. 10,
    * October 1988, p. 1195.
    */
-  long hi, lo, x;
+  ਲੰਮਾ hi, lo, x;
 
   /* Transform to [1, 0x7ffffffe] range. */
   x = (*ctx % 0x7ffffffe) + 1;
   hi = x / 127773;
   lo = x % 127773;
   x = 16807 * lo - 2836 * hi;
-  if (x < 0)
+  ਜੇ (x < 0)
     x += 0x7fffffff;
   /* Transform to [0, 0x7ffffffd] range. */
   x--;
   *ctx = x;
-  return (x);
+  ਵਾਪਸ (x);
 }
 
-unsigned long rand_next = 1;
+ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ rand_ਅਗਲਾ = 1;
 
-int
-rand(void)
+ਪੂਰਨ
+rand(ਖਾਲੀ)
 {
-  return (do_rand(&rand_next));
+  ਵਾਪਸ (do_rand(&rand_ਅਗਲਾ));
 }
 
-void
-go(int which_child)
+ਖਾਲੀ
+go(ਪੂਰਨ which_ਬੱਚਾ)
 {
-  int fd = -1;
-  static char buf[999];
-  char *break0 = sbrk(0);
+  ਪੂਰਨ fd = -1;
+  ਸਥਿਰ ਅੱਖਰ buf[999];
+  ਅੱਖਰ *break0 = sbrk(0);
   uint64 iters = 0;
 
   mkdir("grindir");
-  if (chdir("grindir") != 0) {
-    printf("grind: chdir grindir failed\n");
-    exit(1);
+  ਜੇ (chdir("grindir") != 0) {
+    ਲਿਖੋ("grind: chdir grindir failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   chdir("/");
 
-  while (1) {
+  ਜਦੋਂ (1) {
     iters++;
-    if ((iters % 500) == 0)
-      write(1, which_child ? "B" : "A", 1);
-    int what = rand() % 23;
-    if (what == 1) {
+    ਜੇ ((iters % 500) == 0)
+      ਲਿਖ(1, which_ਬੱਚਾ ? "B" : "A", 1);
+    ਪੂਰਨ what = rand() % 23;
+    ਜੇ (what == 1) {
       close(open("grindir/../a", O_CREATE | O_RDWR));
-    } else if (what == 2) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 2) {
       close(open("grindir/../grindir/../b", O_CREATE | O_RDWR));
-    } else if (what == 3) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 3) {
       unlink("grindir/../a");
-    } else if (what == 4) {
-      if (chdir("grindir") != 0) {
-        printf("grind: chdir grindir failed\n");
-        exit(1);
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 4) {
+      ਜੇ (chdir("grindir") != 0) {
+        ਲਿਖੋ("grind: chdir grindir failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       unlink("../b");
       chdir("/");
-    } else if (what == 5) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 5) {
       close(fd);
       fd = open("/grindir/../a", O_CREATE | O_RDWR);
-    } else if (what == 6) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 6) {
       close(fd);
       fd = open("/./grindir/./../b", O_CREATE | O_RDWR);
-    } else if (what == 7) {
-      write(fd, buf, sizeof(buf));
-    } else if (what == 8) {
-      read(fd, buf, sizeof(buf));
-    } else if (what == 9) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 7) {
+      ਲਿਖ(fd, buf, ਆਕਾਰ(buf));
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 8) {
+      ਪਠ(fd, buf, ਆਕਾਰ(buf));
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 9) {
       mkdir("grindir/../a");
       close(open("a/../a/./a", O_CREATE | O_RDWR));
       unlink("a/a");
-    } else if (what == 10) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 10) {
       mkdir("/../b");
       close(open("grindir/../b/b", O_CREATE | O_RDWR));
       unlink("b/b");
-    } else if (what == 11) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 11) {
       unlink("b");
       link("../grindir/./../a", "../b");
-    } else if (what == 12) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 12) {
       unlink("../grindir/../a");
       link(".././b", "/grindir/../a");
-    } else if (what == 13) {
-      int pid = fork();
-      if (pid == 0) {
-        exit(0);
-      } else if (pid < 0) {
-        printf("grind: fork failed\n");
-        exit(1);
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 13) {
+      ਪੂਰਨ pid = fork();
+      ਜੇ (pid == 0) {
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+        ਲਿਖੋ("grind: fork failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       wait(0);
-    } else if (what == 14) {
-      int pid = fork();
-      if (pid == 0) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 14) {
+      ਪੂਰਨ pid = fork();
+      ਜੇ (pid == 0) {
         fork();
         fork();
-        exit(0);
-      } else if (pid < 0) {
-        printf("grind: fork failed\n");
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+        ਲਿਖੋ("grind: fork failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       wait(0);
-    } else if (what == 15) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 15) {
       sbrk(6011);
-    } else if (what == 16) {
-      if (sbrk(0) > break0)
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 16) {
+      ਜੇ (sbrk(0) > break0)
         sbrk(-(sbrk(0) - break0));
-    } else if (what == 17) {
-      int pid = fork();
-      if (pid == 0) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 17) {
+      ਪੂਰਨ pid = fork();
+      ਜੇ (pid == 0) {
         close(open("a", O_CREATE | O_RDWR));
-        exit(0);
-      } else if (pid < 0) {
-        printf("grind: fork failed\n");
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+        ਲਿਖੋ("grind: fork failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (chdir("../grindir/..") != 0) {
-        printf("grind: chdir failed\n");
-        exit(1);
+      ਜੇ (chdir("../grindir/..") != 0) {
+        ਲਿਖੋ("grind: chdir failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       kill(pid);
       wait(0);
-    } else if (what == 18) {
-      int pid = fork();
-      if (pid == 0) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 18) {
+      ਪੂਰਨ pid = fork();
+      ਜੇ (pid == 0) {
         kill(getpid());
-        exit(0);
-      } else if (pid < 0) {
-        printf("grind: fork failed\n");
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+        ਲਿਖੋ("grind: fork failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       wait(0);
-    } else if (what == 19) {
-      int fds[2];
-      if (pipe(fds) < 0) {
-        printf("grind: pipe failed\n");
-        exit(1);
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 19) {
+      ਪੂਰਨ fds[2];
+      ਜੇ (pipe(fds) < 0) {
+        ਲਿਖੋ("grind: pipe failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      int pid = fork();
-      if (pid == 0) {
+      ਪੂਰਨ pid = fork();
+      ਜੇ (pid == 0) {
         fork();
         fork();
-        if (write(fds[1], "x", 1) != 1)
-          printf("grind: pipe write failed\n");
-        char c;
-        if (read(fds[0], &c, 1) != 1)
-          printf("grind: pipe read failed\n");
-        exit(0);
-      } else if (pid < 0) {
-        printf("grind: fork failed\n");
-        exit(1);
+        ਜੇ (ਲਿਖ(fds[1], "x", 1) != 1)
+          ਲਿਖੋ("grind: pipe write failed\n");
+        ਅੱਖਰ c;
+        ਜੇ (ਪਠ(fds[0], &c, 1) != 1)
+          ਲਿਖੋ("grind: pipe read failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+        ਲਿਖੋ("grind: fork failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       close(fds[0]);
       close(fds[1]);
       wait(0);
-    } else if (what == 20) {
-      int pid = fork();
-      if (pid == 0) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 20) {
+      ਪੂਰਨ pid = fork();
+      ਜੇ (pid == 0) {
         unlink("a");
         mkdir("a");
         chdir("a");
         unlink("../a");
         fd = open("x", O_CREATE | O_RDWR);
         unlink("x");
-        exit(0);
-      } else if (pid < 0) {
-        printf("grind: fork failed\n");
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+        ਲਿਖੋ("grind: fork failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       wait(0);
-    } else if (what == 21) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 21) {
       unlink("c");
       // should always succeed. check that there are free i-nodes,
       // file descriptors, blocks.
-      int fd1 = open("c", O_CREATE | O_RDWR);
-      if (fd1 < 0) {
-        printf("grind: create c failed\n");
-        exit(1);
+      ਪੂਰਨ fd1 = open("c", O_CREATE | O_RDWR);
+      ਜੇ (fd1 < 0) {
+        ਲਿਖੋ("grind: create c failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (write(fd1, "x", 1) != 1) {
-        printf("grind: write c failed\n");
-        exit(1);
+      ਜੇ (ਲਿਖ(fd1, "x", 1) != 1) {
+        ਲਿਖੋ("grind: write c failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      struct stat st;
-      if (fstat(fd1, &st) != 0) {
-        printf("grind: fstat failed\n");
-        exit(1);
+      ਬਣਤਰ stat st;
+      ਜੇ (fstat(fd1, &st) != 0) {
+        ਲਿਖੋ("grind: fstat failed\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (st.size != 1) {
-        printf("grind: fstat reports wrong size %d\n", (int)st.size);
-        exit(1);
+      ਜੇ (st.ਮਾਪ != 1) {
+        ਲਿਖੋ("grind: fstat reports wrong size %d\n", (ਪੂਰਨ)st.ਮਾਪ);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (st.ino > 200) {
-        printf("grind: fstat reports crazy i-number %d\n", st.ino);
-        exit(1);
+      ਜੇ (st.ino > 200) {
+        ਲਿਖੋ("grind: fstat reports crazy i-number %d\n", st.ino);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       close(fd1);
       unlink("c");
-    } else if (what == 22) {
+    } ਨਹੀਂਤਾਂ ਜੇ (what == 22) {
       // echo hi | cat
-      int aa[2], bb[2];
-      if (pipe(aa) < 0) {
+      ਪੂਰਨ aa[2], bb[2];
+      ਜੇ (pipe(aa) < 0) {
         fprintf(2, "grind: pipe failed\n");
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (pipe(bb) < 0) {
+      ਜੇ (pipe(bb) < 0) {
         fprintf(2, "grind: pipe failed\n");
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      int pid1 = fork();
-      if (pid1 == 0) {
+      ਪੂਰਨ pid1 = fork();
+      ਜੇ (pid1 == 0) {
         close(bb[0]);
         close(bb[1]);
         close(aa[0]);
         close(1);
-        if (dup(aa[1]) != 1) {
+        ਜੇ (dup(aa[1]) != 1) {
           fprintf(2, "grind: dup failed\n");
-          exit(1);
+          ਬਾਹਰ_ਨਿਕਲੋ(1);
         }
         close(aa[1]);
-        char *args[3] = {"echo", "hi", 0};
-        exec("grindir/../echo", args);
+        ਅੱਖਰ *ਦਲੀਲਾਂ[3] = {"echo", "hi", 0};
+        exec("grindir/../echo", ਦਲੀਲਾਂ);
         fprintf(2, "grind: echo: not found\n");
-        exit(2);
-      } else if (pid1 < 0) {
+        ਬਾਹਰ_ਨਿਕਲੋ(2);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid1 < 0) {
         fprintf(2, "grind: fork failed\n");
-        exit(3);
+        ਬਾਹਰ_ਨਿਕਲੋ(3);
       }
-      int pid2 = fork();
-      if (pid2 == 0) {
+      ਪੂਰਨ pid2 = fork();
+      ਜੇ (pid2 == 0) {
         close(aa[1]);
         close(bb[0]);
         close(0);
-        if (dup(aa[0]) != 0) {
+        ਜੇ (dup(aa[0]) != 0) {
           fprintf(2, "grind: dup failed\n");
-          exit(4);
+          ਬਾਹਰ_ਨਿਕਲੋ(4);
         }
         close(aa[0]);
         close(1);
-        if (dup(bb[1]) != 1) {
+        ਜੇ (dup(bb[1]) != 1) {
           fprintf(2, "grind: dup failed\n");
-          exit(5);
+          ਬਾਹਰ_ਨਿਕਲੋ(5);
         }
         close(bb[1]);
-        char *args[2] = {"cat", 0};
-        exec("/cat", args);
+        ਅੱਖਰ *ਦਲੀਲਾਂ[2] = {"cat", 0};
+        exec("/cat", ਦਲੀਲਾਂ);
         fprintf(2, "grind: cat: not found\n");
-        exit(6);
-      } else if (pid2 < 0) {
+        ਬਾਹਰ_ਨਿਕਲੋ(6);
+      } ਨਹੀਂਤਾਂ ਜੇ (pid2 < 0) {
         fprintf(2, "grind: fork failed\n");
-        exit(7);
+        ਬਾਹਰ_ਨਿਕਲੋ(7);
       }
       close(aa[0]);
       close(aa[1]);
       close(bb[1]);
-      char buf[4] = {0, 0, 0, 0};
-      read(bb[0], buf + 0, 1);
-      read(bb[0], buf + 1, 1);
-      read(bb[0], buf + 2, 1);
+      ਅੱਖਰ buf[4] = {0, 0, 0, 0};
+      ਪਠ(bb[0], buf + 0, 1);
+      ਪਠ(bb[0], buf + 1, 1);
+      ਪਠ(bb[0], buf + 2, 1);
       close(bb[0]);
-      int st1, st2;
+      ਪੂਰਨ st1, st2;
       wait(&st1);
       wait(&st2);
-      if (st1 != 0 || st2 != 0 || strcmp(buf, "hi\n") != 0) {
-        printf("grind: exec pipeline failed %d %d \"%s\"\n", st1, st2, buf);
-        exit(1);
+      ਜੇ (st1 != 0 || st2 != 0 || strcmp(buf, "hi\n") != 0) {
+        ਲਿਖੋ("grind: exec pipeline failed %d %d \"%s\"\n", st1, st2, buf);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
     }
   }
 }
 
-void
+ਖਾਲੀ
 iter()
 {
   unlink("a");
   unlink("b");
 
-  int pid1 = fork();
-  if (pid1 < 0) {
-    printf("grind: fork failed\n");
-    exit(1);
+  ਪੂਰਨ pid1 = fork();
+  ਜੇ (pid1 < 0) {
+    ਲਿਖੋ("grind: fork failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid1 == 0) {
-    rand_next ^= 31;
+  ਜੇ (pid1 == 0) {
+    rand_ਅਗਲਾ ^= 31;
     go(0);
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  int pid2 = fork();
-  if (pid2 < 0) {
-    printf("grind: fork failed\n");
-    exit(1);
+  ਪੂਰਨ pid2 = fork();
+  ਜੇ (pid2 < 0) {
+    ਲਿਖੋ("grind: fork failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid2 == 0) {
-    rand_next ^= 7177;
+  ਜੇ (pid2 == 0) {
+    rand_ਅਗਲਾ ^= 7177;
     go(1);
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  int st1 = -1;
+  ਪੂਰਨ st1 = -1;
   wait(&st1);
-  if (st1 != 0) {
+  ਜੇ (st1 != 0) {
     kill(pid1);
     kill(pid2);
   }
-  int st2 = -1;
+  ਪੂਰਨ st2 = -1;
   wait(&st2);
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-int
-main()
+ਪੂਰਨ
+ਮੁੱਖ()
 {
-  while (1) {
-    int pid = fork();
-    if (pid == 0) {
+  ਜਦੋਂ (1) {
+    ਪੂਰਨ pid = fork();
+    ਜੇ (pid == 0) {
       iter();
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
-    if (pid > 0) {
+    ਜੇ (pid > 0) {
       wait(0);
     }
     pause(20);
-    rand_next += 1;
+    rand_ਅਗਲਾ += 1;
   }
 }

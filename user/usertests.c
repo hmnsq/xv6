@@ -1,12 +1,12 @@
-#include "kernel/param.h"
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
-#include "kernel/syscall.h"
-#include "kernel/memlayout.h"
-#include "kernel/riscv.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fs.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/fcntl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/syscall.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/memlayout.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/riscv.h"
 
 //
 // Tests xv6 system calls.  usertests without arguments runs them all
@@ -17,9 +17,9 @@
 // prints "OK".
 //
 
-#define BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
 
-char buf[BUFSZ];
+ਅੱਖਰ buf[BUFSZ];
 
 //
 // Section with tests that run fairly quickly.  Use -q if you want to
@@ -29,44 +29,44 @@ char buf[BUFSZ];
 
 // what if you pass ridiculous pointers to system calls
 // that read user memory with copyin?
-void
-copyin(char *s)
+ਖਾਲੀ
+copyin(ਅੱਖਰ *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  ਲਈ (ਪੂਰਨ ai = 0; ai < ਆਕਾਰ(addrs) / ਆਕਾਰ(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("copyin1", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open(copyin1) failed\n");
-      exit(1);
+    ਪੂਰਨ fd = open("copyin1", O_CREATE | O_WRONLY);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("open(copyin1) failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    int n = write(fd, (void *)addr, 8192);
-    if (n >= 0) {
-      printf("write(fd, %p, 8192) returned %d, not -1\n", (void *)addr, n);
-      exit(1);
+    ਪੂਰਨ n = ਲਿਖ(fd, (ਖਾਲੀ *)addr, 8192);
+    ਜੇ (n >= 0) {
+      ਲਿਖੋ("write(fd, %p, 8192) returned %d, not -1\n", (ਖਾਲੀ *)addr, n);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fd);
     unlink("copyin1");
 
-    n = write(1, (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(1, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    n = ਲਿਖ(1, (ਅੱਖਰ *)addr, 8192);
+    ਜੇ (n > 0) {
+      ਲਿਖੋ("write(1, %p, 8192) returned %d, not -1 or 0\n", (ਖਾਲੀ *)addr, n);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    ਪੂਰਨ fds[2];
+    ਜੇ (pipe(fds) < 0) {
+      ਲਿਖੋ("pipe() failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    n = write(fds[1], (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = ਲਿਖ(fds[1], (ਅੱਖਰ *)addr, 8192);
+    ਜੇ (n > 0) {
+      ਲਿਖੋ("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (ਖਾਲੀ *)addr,
              n);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fds[0]);
     close(fds[1]);
@@ -75,42 +75,42 @@ copyin(char *s)
 
 // what if you pass ridiculous pointers to system calls
 // that write user memory with copyout?
-void
-copyout(char *s)
+ਖਾਲੀ
+copyout(ਅੱਖਰ *s)
 {
   uint64 addrs[] = {0LL,          0x80000000LL, 0x3fffffe000,
                     0x3ffffff000, 0x4000000000, 0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  ਲਈ (ਪੂਰਨ ai = 0; ai < ਆਕਾਰ(addrs) / ਆਕਾਰ(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("open(README) failed\n");
-      exit(1);
+    ਪੂਰਨ fd = open("README", 0);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("open(README) failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    int n = read(fd, (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(fd, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    ਪੂਰਨ n = ਪਠ(fd, (ਖਾਲੀ *)addr, 8192);
+    ਜੇ (n > 0) {
+      ਲਿਖੋ("read(fd, %p, 8192) returned %d, not -1 or 0\n", (ਖਾਲੀ *)addr, n);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fd);
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    ਪੂਰਨ fds[2];
+    ਜੇ (pipe(fds) < 0) {
+      ਲਿਖੋ("pipe() failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    n = write(fds[1], "x", 1);
-    if (n != 1) {
-      printf("pipe write failed\n");
-      exit(1);
+    n = ਲਿਖ(fds[1], "x", 1);
+    ਜੇ (n != 1) {
+      ਲਿਖੋ("pipe write failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    n = read(fds[0], (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = ਪਠ(fds[0], (ਖਾਲੀ *)addr, 8192);
+    ਜੇ (n > 0) {
+      ਲਿਖੋ("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (ਖਾਲੀ *)addr,
              n);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fds[0]);
     close(fds[1]);
@@ -118,19 +118,19 @@ copyout(char *s)
 }
 
 // what if you pass ridiculous string pointers to system calls?
-void
-copyinstr1(char *s)
+ਖਾਲੀ
+copyinstr1(ਅੱਖਰ *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  ਲਈ (ਪੂਰਨ ai = 0; ai < ਆਕਾਰ(addrs) / ਆਕਾਰ(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open((char *)addr, O_CREATE | O_WRONLY);
-    if (fd >= 0) {
-      printf("open(%p) returned %d, not -1\n", (void *)addr, fd);
-      exit(1);
+    ਪੂਰਨ fd = open((ਅੱਖਰ *)addr, O_CREATE | O_WRONLY);
+    ਜੇ (fd >= 0) {
+      ਲਿਖੋ("open(%p) returned %d, not -1\n", (ਖਾਲੀ *)addr, fd);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 }
@@ -138,205 +138,205 @@ copyinstr1(char *s)
 // what if a string system call argument is exactly the size
 // of the kernel buffer it is copied into, so that the null
 // would fall just beyond the end of the kernel buffer?
-void
-copyinstr2(char *s)
+ਖਾਲੀ
+copyinstr2(ਅੱਖਰ *s)
 {
-  char b[MAXPATH + 1];
+  ਅੱਖਰ b[MAXPATH + 1];
 
-  for (int i = 0; i < MAXPATH; i++)
+  ਲਈ (ਪੂਰਨ i = 0; i < MAXPATH; i++)
     b[i] = 'x';
   b[MAXPATH] = '\0';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  ਪੂਰਨ ret = unlink(b);
+  ਜੇ (ret != -1) {
+    ਲਿਖੋ("unlink(%s) returned %d, not -1\n", b, ret);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  ਪੂਰਨ fd = open(b, O_CREATE | O_WRONLY);
+  ਜੇ (fd != -1) {
+    ਲਿਖੋ("open(%s) returned %d, not -1\n", b, fd);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  ਜੇ (ret != -1) {
+    ਲਿਖੋ("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  ਅੱਖਰ *ਦਲੀਲਾਂ[] = {"xx", 0};
+  ret = exec(b, ਦਲੀਲਾਂ);
+  ਜੇ (ret != -1) {
+    ਲਿਖੋ("exec(%s) returned %d, not -1\n", b, fd);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  ਪੂਰਨ pid = fork();
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("fork failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    static char big[PGSIZE + 1];
-    for (int i = 0; i < PGSIZE; i++)
+  ਜੇ (pid == 0) {
+    ਸਥਿਰ ਅੱਖਰ big[PGSIZE + 1];
+    ਲਈ (ਪੂਰਨ i = 0; i < PGSIZE; i++)
       big[i] = 'x';
     big[PGSIZE] = '\0';
-    char *args2[] = {big, big, big, 0};
+    ਅੱਖਰ *args2[] = {big, big, big, 0};
     ret = exec("echo", args2);
-    if (ret != -1) {
-      printf("exec(echo, BIG) returned %d, not -1\n", fd);
-      exit(1);
+    ਜੇ (ret != -1) {
+      ਲਿਖੋ("exec(echo, BIG) returned %d, not -1\n", fd);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    exit(747); // OK
+    ਬਾਹਰ_ਨਿਕਲੋ(747); // OK
   }
 
-  int st = 0;
+  ਪੂਰਨ st = 0;
   wait(&st);
-  if (st != 747) {
-    printf("exec(echo, BIG) succeeded, should have failed\n");
-    exit(1);
+  ਜੇ (st != 747) {
+    ਲਿਖੋ("exec(echo, BIG) succeeded, should have failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // what if a string argument crosses over the end of last user page?
-void
-copyinstr3(char *s)
+ਖਾਲੀ
+copyinstr3(ਅੱਖਰ *s)
 {
   sbrk(8192);
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0) {
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 ਸਿਖਰ = (uint64)sbrk(0);
+  ਜੇ ((ਸਿਖਰ % PGSIZE) != 0) {
+    sbrk(PGSIZE - (ਸਿਖਰ % PGSIZE));
   }
-  top = (uint64)sbrk(0);
-  if (top % PGSIZE) {
-    printf("oops\n");
-    exit(1);
+  ਸਿਖਰ = (uint64)sbrk(0);
+  ਜੇ (ਸਿਖਰ % PGSIZE) {
+    ਲਿਖੋ("oops\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  char *b = (char *)(top - 1);
+  ਅੱਖਰ *b = (ਅੱਖਰ *)(ਸਿਖਰ - 1);
   *b = 'x';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  ਪੂਰਨ ret = unlink(b);
+  ਜੇ (ret != -1) {
+    ਲਿਖੋ("unlink(%s) returned %d, not -1\n", b, ret);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  ਪੂਰਨ fd = open(b, O_CREATE | O_WRONLY);
+  ਜੇ (fd != -1) {
+    ਲਿਖੋ("open(%s) returned %d, not -1\n", b, fd);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  ਜੇ (ret != -1) {
+    ਲਿਖੋ("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  ਅੱਖਰ *ਦਲੀਲਾਂ[] = {"xx", 0};
+  ret = exec(b, ਦਲੀਲਾਂ);
+  ਜੇ (ret != -1) {
+    ਲਿਖੋ("exec(%s) returned %d, not -1\n", b, fd);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // See if the kernel refuses to read/write user memory that the
 // application doesn't have anymore, because it returned it.
-void
-rwsbrk(char *s)
+ਖਾਲੀ
+rwsbrk(ਅੱਖਰ *s)
 {
-  int fd, n;
+  ਪੂਰਨ fd, n;
 
   uint64 a = (uint64)sbrk(8192);
 
-  if (a == (uint64)SBRK_ERROR) {
-    printf("sbrk(rwsbrk) failed\n");
-    exit(1);
+  ਜੇ (a == (uint64)SBRK_ERROR) {
+    ਲਿਖੋ("sbrk(rwsbrk) failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (sbrk(-8192) == SBRK_ERROR) {
-    printf("sbrk(rwsbrk) shrink failed\n");
-    exit(1);
+  ਜੇ (sbrk(-8192) == SBRK_ERROR) {
+    ਲਿਖੋ("sbrk(rwsbrk) shrink failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("rwsbrk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open(rwsbrk) failed\n");
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("open(rwsbrk) failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  n = write(fd, (void *)(a + PGSIZE), 1024);
-  if (n >= 0) {
-    printf("write(fd, %p, 1024) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = ਲਿਖ(fd, (ਖਾਲੀ *)(a + PGSIZE), 1024);
+  ਜੇ (n >= 0) {
+    ਲਿਖੋ("write(fd, %p, 1024) returned %d, not -1\n", (ਖਾਲੀ *)a + PGSIZE, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
   unlink("rwsbrk");
 
   fd = open("README", O_RDONLY);
-  if (fd < 0) {
-    printf("open(README) failed\n");
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("open(README) failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  n = read(fd, (void *)(a + PGSIZE), 10);
-  if (n >= 0) {
-    printf("read(fd, %p, 10) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = ਪਠ(fd, (ਖਾਲੀ *)(a + PGSIZE), 10);
+  ਜੇ (n >= 0) {
+    ਲਿਖੋ("read(fd, %p, 10) returned %d, not -1\n", (ਖਾਲੀ *)a + PGSIZE, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // test O_TRUNC.
-void
-truncate1(char *s)
+ਖਾਲੀ
+truncate1(ਅੱਖਰ *s)
 {
-  char buf[32];
+  ਅੱਖਰ buf[32];
 
   unlink("truncfile");
-  int fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-  write(fd1, "abcd", 4);
+  ਪੂਰਨ fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+  ਲਿਖ(fd1, "abcd", 4);
   close(fd1);
 
-  int fd2 = open("truncfile", O_RDONLY);
-  int n = read(fd2, buf, sizeof(buf));
-  if (n != 4) {
-    printf("%s: read %d bytes, wanted 4\n", s, n);
-    exit(1);
+  ਪੂਰਨ fd2 = open("truncfile", O_RDONLY);
+  ਪੂਰਨ n = ਪਠ(fd2, buf, ਆਕਾਰ(buf));
+  ਜੇ (n != 4) {
+    ਲਿਖੋ("%s: read %d bytes, wanted 4\n", s, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd1 = open("truncfile", O_WRONLY | O_TRUNC);
 
-  int fd3 = open("truncfile", O_RDONLY);
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 0) {
-    printf("aaa fd3=%d\n", fd3);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  ਪੂਰਨ fd3 = open("truncfile", O_RDONLY);
+  n = ਪਠ(fd3, buf, ਆਕਾਰ(buf));
+  ਜੇ (n != 0) {
+    ਲਿਖੋ("aaa fd3=%d\n", fd3);
+    ਲਿਖੋ("%s: read %d bytes, wanted 0\n", s, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 0) {
-    printf("bbb fd2=%d\n", fd2);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  n = ਪਠ(fd2, buf, ਆਕਾਰ(buf));
+  ਜੇ (n != 0) {
+    ਲਿਖੋ("bbb fd2=%d\n", fd2);
+    ਲਿਖੋ("%s: read %d bytes, wanted 0\n", s, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  write(fd1, "abcdef", 6);
+  ਲਿਖ(fd1, "abcdef", 6);
 
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 6) {
-    printf("%s: read %d bytes, wanted 6\n", s, n);
-    exit(1);
+  n = ਪਠ(fd3, buf, ਆਕਾਰ(buf));
+  ਜੇ (n != 6) {
+    ਲਿਖੋ("%s: read %d bytes, wanted 6\n", s, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 2) {
-    printf("%s: read %d bytes, wanted 2\n", s, n);
-    exit(1);
+  n = ਪਠ(fd2, buf, ਆਕਾਰ(buf));
+  ਜੇ (n != 2) {
+    ਲਿਖੋ("%s: read %d bytes, wanted 2\n", s, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   unlink("truncfile");
@@ -350,20 +350,20 @@ truncate1(char *s)
 // this causes a write at an offset beyond the end of the file.
 // such writes fail on xv6 (unlike POSIX) but at least
 // they don't crash.
-void
-truncate2(char *s)
+ਖਾਲੀ
+truncate2(ਅੱਖਰ *s)
 {
   unlink("truncfile");
 
-  int fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
-  write(fd1, "abcd", 4);
+  ਪੂਰਨ fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
+  ਲਿਖ(fd1, "abcd", 4);
 
-  int fd2 = open("truncfile", O_TRUNC | O_WRONLY);
+  ਪੂਰਨ fd2 = open("truncfile", O_TRUNC | O_WRONLY);
 
-  int n = write(fd1, "x", 1);
-  if (n != -1) {
-    printf("%s: write returned %d, expected -1\n", s, n);
-    exit(1);
+  ਪੂਰਨ n = ਲਿਖ(fd1, "x", 1);
+  ਜੇ (n != -1) {
+    ਲਿਖੋ("%s: write returned %d, expected -1\n", s, n);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   unlink("truncfile");
@@ -371,109 +371,109 @@ truncate2(char *s)
   close(fd2);
 }
 
-void
-truncate3(char *s)
+ਖਾਲੀ
+truncate3(ਅੱਖਰ *s)
 {
-  int pid, xstatus;
+  ਪੂਰਨ pid, xstatus;
 
   close(open("truncfile", O_CREATE | O_TRUNC | O_WRONLY));
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (pid == 0) {
-    for (int i = 0; i < 100; i++) {
-      char buf[32];
-      int fd = open("truncfile", O_WRONLY);
-      if (fd < 0) {
-        printf("%s: open failed\n", s);
-        exit(1);
+  ਜੇ (pid == 0) {
+    ਲਈ (ਪੂਰਨ i = 0; i < 100; i++) {
+      ਅੱਖਰ buf[32];
+      ਪੂਰਨ fd = open("truncfile", O_WRONLY);
+      ਜੇ (fd < 0) {
+        ਲਿਖੋ("%s: open failed\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      int n = write(fd, "1234567890", 10);
-      if (n != 10) {
-        printf("%s: write got %d, expected 10\n", s, n);
-        exit(1);
+      ਪੂਰਨ n = ਲਿਖ(fd, "1234567890", 10);
+      ਜੇ (n != 10) {
+        ਲਿਖੋ("%s: write got %d, expected 10\n", s, n);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       close(fd);
       fd = open("truncfile", O_RDONLY);
-      read(fd, buf, sizeof(buf));
+      ਪਠ(fd, buf, ਆਕਾਰ(buf));
       close(fd);
     }
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  for (int i = 0; i < 150; i++) {
-    int fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-    if (fd < 0) {
-      printf("%s: open failed\n", s);
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < 150; i++) {
+    ਪੂਰਨ fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("%s: open failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    int n = write(fd, "xxx", 3);
-    if (n != 3) {
-      printf("%s: write got %d, expected 3\n", s, n);
-      exit(1);
+    ਪੂਰਨ n = ਲਿਖ(fd, "xxx", 3);
+    ਜੇ (n != 3) {
+      ਲਿਖੋ("%s: write got %d, expected 3\n", s, n);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fd);
   }
 
   wait(&xstatus);
   unlink("truncfile");
-  exit(xstatus);
+  ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
 }
 
 // does chdir() call iput(p->cwd) in a transaction?
-void
-iputtest(char *s)
+ਖਾਲੀ
+iputtest(ਅੱਖਰ *s)
 {
-  if (mkdir("iputdir") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("iputdir") < 0) {
+    ਲਿਖੋ("%s: mkdir failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("iputdir") < 0) {
-    printf("%s: chdir iputdir failed\n", s);
-    exit(1);
+  ਜੇ (chdir("iputdir") < 0) {
+    ਲਿਖੋ("%s: chdir iputdir failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("../iputdir") < 0) {
-    printf("%s: unlink ../iputdir failed\n", s);
-    exit(1);
+  ਜੇ (unlink("../iputdir") < 0) {
+    ਲਿਖੋ("%s: unlink ../iputdir failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("/") < 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  ਜੇ (chdir("/") < 0) {
+    ਲਿਖੋ("%s: chdir / failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // does exit() call iput(p->cwd) in a transaction?
-void
-exitiputtest(char *s)
+ਖਾਲੀ
+exitiputtest(ਅੱਖਰ *s)
 {
-  int pid, xstatus;
+  ਪੂਰਨ pid, xstatus;
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    if (mkdir("iputdir") < 0) {
-      printf("%s: mkdir failed\n", s);
-      exit(1);
+  ਜੇ (pid == 0) {
+    ਜੇ (mkdir("iputdir") < 0) {
+      ਲਿਖੋ("%s: mkdir failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (chdir("iputdir") < 0) {
-      printf("%s: child chdir failed\n", s);
-      exit(1);
+    ਜੇ (chdir("iputdir") < 0) {
+      ਲਿਖੋ("%s: child chdir failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (unlink("../iputdir") < 0) {
-      printf("%s: unlink ../iputdir failed\n", s);
-      exit(1);
+    ਜੇ (unlink("../iputdir") < 0) {
+      ਲਿਖੋ("%s: unlink ../iputdir failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
   wait(&xstatus);
-  exit(xstatus);
+  ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
 }
 
 // does the error path in open() for attempt to write a
@@ -487,450 +487,450 @@ exitiputtest(char *s)
 //      for(i = 0; i < 10000; i++)
 //        yield();
 //    }
-void
-openiputtest(char *s)
+ਖਾਲੀ
+openiputtest(ਅੱਖਰ *s)
 {
-  int pid, xstatus;
+  ਪੂਰਨ pid, xstatus;
 
-  if (mkdir("oidir") < 0) {
-    printf("%s: mkdir oidir failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("oidir") < 0) {
+    ਲਿਖੋ("%s: mkdir oidir failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    int fd = open("oidir", O_RDWR);
-    if (fd >= 0) {
-      printf("%s: open directory for write succeeded\n", s);
-      exit(1);
+  ਜੇ (pid == 0) {
+    ਪੂਰਨ fd = open("oidir", O_RDWR);
+    ਜੇ (fd >= 0) {
+      ਲਿਖੋ("%s: open directory for write succeeded\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
   pause(1);
-  if (unlink("oidir") != 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  ਜੇ (unlink("oidir") != 0) {
+    ਲਿਖੋ("%s: unlink failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   wait(&xstatus);
-  exit(xstatus);
+  ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
 }
 
 // simple file system tests
 
-void
-opentest(char *s)
+ਖਾਲੀ
+opentest(ਅੱਖਰ *s)
 {
-  int fd;
+  ਪੂਰਨ fd;
 
   fd = open("echo", 0);
-  if (fd < 0) {
-    printf("%s: open echo failed!\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open echo failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
   fd = open("doesnotexist", 0);
-  if (fd >= 0) {
-    printf("%s: open doesnotexist succeeded!\n", s);
-    exit(1);
+  ਜੇ (fd >= 0) {
+    ਲਿਖੋ("%s: open doesnotexist succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-void
-writetest(char *s)
+ਖਾਲੀ
+writetest(ਅੱਖਰ *s)
 {
-  int fd;
-  int i;
-  enum { N = 100, SZ = 10 };
+  ਪੂਰਨ fd;
+  ਪੂਰਨ i;
+  ਗਿਣਤੀ { N = 100, SZ = 10 };
 
   fd = open("small", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat small failed!\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: error: creat small failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  for (i = 0; i < N; i++) {
-    if (write(fd, "aaaaaaaaaa", SZ) != SZ) {
-      printf("%s: error: write aa %d new file failed\n", s, i);
-      exit(1);
+  ਲਈ (i = 0; i < N; i++) {
+    ਜੇ (ਲਿਖ(fd, "aaaaaaaaaa", SZ) != SZ) {
+      ਲਿਖੋ("%s: error: write aa %d new file failed\n", s, i);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (write(fd, "bbbbbbbbbb", SZ) != SZ) {
-      printf("%s: error: write bb %d new file failed\n", s, i);
-      exit(1);
+    ਜੇ (ਲਿਖ(fd, "bbbbbbbbbb", SZ) != SZ) {
+      ਲਿਖੋ("%s: error: write bb %d new file failed\n", s, i);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
   close(fd);
   fd = open("small", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open small failed!\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: error: open small failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  i = read(fd, buf, N * SZ * 2);
-  if (i != N * SZ * 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  i = ਪਠ(fd, buf, N * SZ * 2);
+  ਜੇ (i != N * SZ * 2) {
+    ਲਿਖੋ("%s: read failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  if (unlink("small") < 0) {
-    printf("%s: unlink small failed\n", s);
-    exit(1);
+  ਜੇ (unlink("small") < 0) {
+    ਲਿਖੋ("%s: unlink small failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-void
-writebig(char *s)
+ਖਾਲੀ
+writebig(ਅੱਖਰ *s)
 {
-  int i, fd, n;
+  ਪੂਰਨ i, fd, n;
 
   fd = open("big", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat big failed!\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: error: creat big failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  for (i = 0; i < MAXFILE; i++) {
-    ((int *)buf)[0] = i;
-    if (write(fd, buf, BSIZE) != BSIZE) {
-      printf("%s: error: write big file failed i=%d\n", s, i);
-      exit(1);
+  ਲਈ (i = 0; i < MAXFILE; i++) {
+    ((ਪੂਰਨ *)buf)[0] = i;
+    ਜੇ (ਲਿਖ(fd, buf, BSIZE) != BSIZE) {
+      ਲਿਖੋ("%s: error: write big file failed i=%d\n", s, i);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
   close(fd);
 
   fd = open("big", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open big failed!\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: error: open big failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   n = 0;
-  for (;;) {
-    i = read(fd, buf, BSIZE);
-    if (i == 0) {
-      if (n != MAXFILE) {
-        printf("%s: read only %d blocks from big", s, n);
-        exit(1);
+  ਲਈ (;;) {
+    i = ਪਠ(fd, buf, BSIZE);
+    ਜੇ (i == 0) {
+      ਜੇ (n != MAXFILE) {
+        ਲਿਖੋ("%s: read only %d blocks from big", s, n);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      break;
-    } else if (i != BSIZE) {
-      printf("%s: read failed %d\n", s, i);
-      exit(1);
+      ਰੋਕੋ;
+    } ਨਹੀਂਤਾਂ ਜੇ (i != BSIZE) {
+      ਲਿਖੋ("%s: read failed %d\n", s, i);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (((int *)buf)[0] != n) {
-      printf("%s: read content of block %d is %d\n", s, n, ((int *)buf)[0]);
-      exit(1);
+    ਜੇ (((ਪੂਰਨ *)buf)[0] != n) {
+      ਲਿਖੋ("%s: read content of block %d is %d\n", s, n, ((ਪੂਰਨ *)buf)[0]);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     n++;
   }
   close(fd);
-  if (unlink("big") < 0) {
-    printf("%s: unlink big failed\n", s);
-    exit(1);
+  ਜੇ (unlink("big") < 0) {
+    ਲਿਖੋ("%s: unlink big failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // many creates, followed by unlink test
-void
-createtest(char *s)
+ਖਾਲੀ
+createtest(ਅੱਖਰ *s)
 {
-  int i, fd;
-  enum { N = 52 };
+  ਪੂਰਨ i, fd;
+  ਗਿਣਤੀ { N = 52 };
 
-  char name[3];
+  ਅੱਖਰ name[3];
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     name[1] = '0' + i;
     fd = open(name, O_CREATE | O_RDWR);
     close(fd);
   }
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     name[1] = '0' + i;
     unlink(name);
   }
 }
 
-void
-dirtest(char *s)
+ਖਾਲੀ
+dirtest(ਅੱਖਰ *s)
 {
-  if (mkdir("dir0") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("dir0") < 0) {
+    ਲਿਖੋ("%s: mkdir failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (chdir("dir0") < 0) {
-    printf("%s: chdir dir0 failed\n", s);
-    exit(1);
+  ਜੇ (chdir("dir0") < 0) {
+    ਲਿਖੋ("%s: chdir dir0 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (chdir("..") < 0) {
-    printf("%s: chdir .. failed\n", s);
-    exit(1);
+  ਜੇ (chdir("..") < 0) {
+    ਲਿਖੋ("%s: chdir .. failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (unlink("dir0") < 0) {
-    printf("%s: unlink dir0 failed\n", s);
-    exit(1);
+  ਜੇ (unlink("dir0") < 0) {
+    ਲਿਖੋ("%s: unlink dir0 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-void
-exectest(char *s)
+ਖਾਲੀ
+exectest(ਅੱਖਰ *s)
 {
-  int fd, xstatus, pid;
-  char *echoargv[] = {"echo", "OK", 0};
-  char buf[3];
+  ਪੂਰਨ fd, xstatus, pid;
+  ਅੱਖਰ *echoargv[] = {"echo", "OK", 0};
+  ਅੱਖਰ buf[3];
 
   unlink("echo-ok");
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    int errfd = dup(1);
-    if (errfd < 0) {
-      printf("%s: dup failed\n", s);
-      exit(1);
+  ਜੇ (pid == 0) {
+    ਪੂਰਨ errfd = dup(1);
+    ਜੇ (errfd < 0) {
+      ਲਿਖੋ("%s: dup failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(1);
     fd = open("echo-ok", O_CREATE | O_WRONLY);
-    if (fd < 0) {
+    ਜੇ (fd < 0) {
       fprintf(errfd, "%s: create failed\n", s);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (fd != 1) {
+    ਜੇ (fd != 1) {
       fprintf(errfd, "%s: wrong fd\n", s);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (exec("echo", echoargv) < 0) {
+    ਜੇ (exec("echo", echoargv) < 0) {
       fprintf(errfd, "%s: exec echo failed\n", s);
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     // won't get to here
   }
-  if (wait(&xstatus) != pid) {
-    printf("%s: wait failed!\n", s);
+  ਜੇ (wait(&xstatus) != pid) {
+    ਲਿਖੋ("%s: wait failed!\n", s);
   }
-  if (xstatus != 0) {
-    printf("%s: nonzero wait status %d\n", s, xstatus);
-    exit(1);
+  ਜੇ (xstatus != 0) {
+    ਲਿਖੋ("%s: nonzero wait status %d\n", s, xstatus);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("echo-ok", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (read(fd, buf, 2) != 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  ਜੇ (ਪਠ(fd, buf, 2) != 2) {
+    ਲਿਖੋ("%s: read failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   unlink("echo-ok");
-  if (buf[0] == 'O' && buf[1] == 'K')
-    exit(0);
-  else {
-    printf("%s: wrong output\n", s);
-    exit(1);
+  ਜੇ (buf[0] == 'O' && buf[1] == 'K')
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  ਨਹੀਂਤਾਂ {
+    ਲਿਖੋ("%s: wrong output\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // simple fork and pipe read/write
 
-void
-pipe1(char *s)
+ਖਾਲੀ
+pipe1(ਅੱਖਰ *s)
 {
-  int fds[2], pid, xstatus;
-  int seq, i, n, cc, total;
-  enum { N = 5, SZ = 1033 };
+  ਪੂਰਨ fds[2], pid, xstatus;
+  ਪੂਰਨ seq, i, n, cc, ਕੁੱਲ;
+  ਗਿਣਤੀ { N = 5, SZ = 1033 };
 
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  ਜੇ (pipe(fds) != 0) {
+    ਲਿਖੋ("%s: pipe() failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   pid = fork();
   seq = 0;
-  if (pid == 0) {
+  ਜੇ (pid == 0) {
     close(fds[0]);
-    for (n = 0; n < N; n++) {
-      for (i = 0; i < SZ; i++)
+    ਲਈ (n = 0; n < N; n++) {
+      ਲਈ (i = 0; i < SZ; i++)
         buf[i] = seq++;
-      if (write(fds[1], buf, SZ) != SZ) {
-        printf("%s: pipe1 oops 1\n", s);
-        exit(1);
+      ਜੇ (ਲਿਖ(fds[1], buf, SZ) != SZ) {
+        ਲਿਖੋ("%s: pipe1 oops 1\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
     }
-    exit(0);
-  } else if (pid > 0) {
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  } ਨਹੀਂਤਾਂ ਜੇ (pid > 0) {
     close(fds[1]);
-    total = 0;
+    ਕੁੱਲ = 0;
     cc = 1;
-    while ((n = read(fds[0], buf, cc)) > 0) {
-      for (i = 0; i < n; i++) {
-        if ((buf[i] & 0xff) != (seq++ & 0xff)) {
-          printf("%s: pipe1 oops 2\n", s);
-          return;
+    ਜਦੋਂ ((n = ਪਠ(fds[0], buf, cc)) > 0) {
+      ਲਈ (i = 0; i < n; i++) {
+        ਜੇ ((buf[i] & 0xff) != (seq++ & 0xff)) {
+          ਲਿਖੋ("%s: pipe1 oops 2\n", s);
+          ਵਾਪਸ;
         }
       }
-      total += n;
+      ਕੁੱਲ += n;
       cc = cc * 2;
-      if (cc > sizeof(buf))
-        cc = sizeof(buf);
+      ਜੇ (cc > ਆਕਾਰ(buf))
+        cc = ਆਕਾਰ(buf);
     }
-    if (total != N * SZ) {
-      printf("%s: pipe1 oops 3 total %d\n", s, total);
-      exit(1);
+    ਜੇ (ਕੁੱਲ != N * SZ) {
+      ਲਿਖੋ("%s: pipe1 oops 3 total %d\n", s, ਕੁੱਲ);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fds[0]);
     wait(&xstatus);
-    exit(xstatus);
-  } else {
-    printf("%s: fork() failed\n", s);
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
+  } ਨਹੀਂਤਾਂ {
+    ਲਿਖੋ("%s: fork() failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // test if child is killed (status = -1)
-void
-killstatus(char *s)
+ਖਾਲੀ
+killstatus(ਅੱਖਰ *s)
 {
-  int xst;
+  ਪੂਰਨ xst;
 
-  for (int i = 0; i < 100; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < 100; i++) {
+    ਪੂਰਨ pid1 = fork();
+    ਜੇ (pid1 < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid1 == 0) {
-      while (1) {
+    ਜੇ (pid1 == 0) {
+      ਜਦੋਂ (1) {
         getpid();
       }
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
     pause(1);
     kill(pid1);
     wait(&xst);
-    if (xst != -1) {
-      printf("%s: status should be -1\n", s);
-      exit(1);
+    ਜੇ (xst != -1) {
+      ਲਿਖੋ("%s: status should be -1\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // test that kill on unused process 0 doesn't set the killed flag
-void
-killzero(char *s)
+ਖਾਲੀ
+killzero(ਅੱਖਰ *s)
 {
-  int pid, xst;
+  ਪੂਰਨ pid, xst;
 
   kill(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    exit(7);
+  ਜੇ (pid == 0) {
+    ਬਾਹਰ_ਨਿਕਲੋ(7);
   }
-  if (wait(&xst) != pid) {
-    printf("%s: wait wrong pid\n", s);
-    exit(1);
+  ਜੇ (wait(&xst) != pid) {
+    ਲਿਖੋ("%s: wait wrong pid\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (xst != 7) {
-    printf("%s: child exited with status %d, expected 7\n", s, xst);
-    exit(1);
+  ਜੇ (xst != 7) {
+    ਲਿਖੋ("%s: child exited with status %d, expected 7\n", s, xst);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // meant to be run w/ at most two CPUs
-void
-preempt(char *s)
+ਖਾਲੀ
+preempt(ਅੱਖਰ *s)
 {
-  int pid1, pid2, pid3;
-  int pfds[2];
+  ਪੂਰਨ pid1, pid2, pid3;
+  ਪੂਰਨ pfds[2];
 
   pid1 = fork();
-  if (pid1 < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  ਜੇ (pid1 < 0) {
+    ਲਿਖੋ("%s: fork failed", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid1 == 0)
-    for (;;)
+  ਜੇ (pid1 == 0)
+    ਲਈ (;;)
       ;
 
   pid2 = fork();
-  if (pid2 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid2 < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid2 == 0)
-    for (;;)
+  ਜੇ (pid2 == 0)
+    ਲਈ (;;)
       ;
 
   pipe(pfds);
   pid3 = fork();
-  if (pid3 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid3 < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid3 == 0) {
+  ਜੇ (pid3 == 0) {
     close(pfds[0]);
-    if (write(pfds[1], "x", 1) != 1)
-      printf("%s: preempt write error", s);
+    ਜੇ (ਲਿਖ(pfds[1], "x", 1) != 1)
+      ਲਿਖੋ("%s: preempt write error", s);
     close(pfds[1]);
-    for (;;)
+    ਲਈ (;;)
       ;
   }
 
   close(pfds[1]);
-  if (read(pfds[0], buf, sizeof(buf)) != 1) {
-    printf("%s: preempt read error", s);
-    return;
+  ਜੇ (ਪਠ(pfds[0], buf, ਆਕਾਰ(buf)) != 1) {
+    ਲਿਖੋ("%s: preempt read error", s);
+    ਵਾਪਸ;
   }
   close(pfds[0]);
-  printf("kill... ");
+  ਲਿਖੋ("kill... ");
   kill(pid1);
   kill(pid2);
   kill(pid3);
-  printf("wait... ");
+  ਲਿਖੋ("wait... ");
   wait(0);
   wait(0);
   wait(0);
 }
 
 // try to find any races between exit and wait
-void
-exitwait(char *s)
+ਖਾਲੀ
+exitwait(ਅੱਖਰ *s)
 {
-  int i, pid;
+  ਪੂਰਨ i, pid;
 
-  for (i = 0; i < 100; i++) {
+  ਲਈ (i = 0; i < 100; i++) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid) {
-      int xstate;
-      if (wait(&xstate) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    ਜੇ (pid) {
+      ਪੂਰਨ xstate;
+      ਜੇ (wait(&xstate) != pid) {
+        ਲਿਖੋ("%s: wait wrong pid\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (i != xstate) {
-        printf("%s: wait wrong exit status\n", s);
-        exit(1);
+      ਜੇ (i != xstate) {
+        ਲਿਖੋ("%s: wait wrong exit status\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-    } else {
-      exit(i);
+    } ਨਹੀਂਤਾਂ {
+      ਬਾਹਰ_ਨਿਕਲੋ(i);
     }
   }
 }
@@ -938,54 +938,54 @@ exitwait(char *s)
 // try to find races in the reparenting
 // code that handles a parent exiting
 // when it still has live children.
-void
-reparent(char *s)
+ਖਾਲੀ
+reparent(ਅੱਖਰ *s)
 {
-  int master_pid = getpid();
-  for (int i = 0; i < 200; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  ਪੂਰਨ master_pid = getpid();
+  ਲਈ (ਪੂਰਨ i = 0; i < 200; i++) {
+    ਪੂਰਨ pid = fork();
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid) {
-      if (wait(0) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    ਜੇ (pid) {
+      ਜੇ (wait(0) != pid) {
+        ਲਿਖੋ("%s: wait wrong pid\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
+    } ਨਹੀਂਤਾਂ {
+      ਪੂਰਨ pid2 = fork();
+      ਜੇ (pid2 < 0) {
         kill(master_pid);
-        exit(1);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // what if two children exit() at the same time?
-void
-twochildren(char *s)
+ਖਾਲੀ
+twochildren(ਅੱਖਰ *s)
 {
-  for (int i = 0; i < 1000; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < 1000; i++) {
+    ਪੂਰਨ pid1 = fork();
+    ਜੇ (pid1 < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid1 == 0) {
-      exit(0);
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
-        printf("%s: fork failed\n", s);
-        exit(1);
+    ਜੇ (pid1 == 0) {
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
+    } ਨਹੀਂਤਾਂ {
+      ਪੂਰਨ pid2 = fork();
+      ਜੇ (pid2 < 0) {
+        ਲਿਖੋ("%s: fork failed\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (pid2 == 0) {
-        exit(0);
-      } else {
+      ਜੇ (pid2 == 0) {
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
+      } ਨਹੀਂਤਾਂ {
         wait(0);
         wait(0);
       }
@@ -994,64 +994,64 @@ twochildren(char *s)
 }
 
 // concurrent forks to try to expose locking bugs.
-void
-forkfork(char *s)
+ਖਾਲੀ
+forkfork(ਅੱਖਰ *s)
 {
-  enum { N = 2 };
+  ਗਿਣਤੀ { N = 2 };
 
-  for (int i = 0; i < N; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed", s);
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < N; i++) {
+    ਪੂਰਨ pid = fork();
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid == 0) {
-      for (int j = 0; j < 200; j++) {
-        int pid1 = fork();
-        if (pid1 < 0) {
-          exit(1);
+    ਜੇ (pid == 0) {
+      ਲਈ (ਪੂਰਨ j = 0; j < 200; j++) {
+        ਪੂਰਨ pid1 = fork();
+        ਜੇ (pid1 < 0) {
+          ਬਾਹਰ_ਨਿਕਲੋ(1);
         }
-        if (pid1 == 0) {
-          exit(0);
+        ਜੇ (pid1 == 0) {
+          ਬਾਹਰ_ਨਿਕਲੋ(0);
         }
         wait(0);
       }
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
   }
 
-  int xstatus;
-  for (int i = 0; i < N; i++) {
+  ਪੂਰਨ xstatus;
+  ਲਈ (ਪੂਰਨ i = 0; i < N; i++) {
     wait(&xstatus);
-    if (xstatus != 0) {
-      printf("%s: fork in child failed", s);
-      exit(1);
+    ਜੇ (xstatus != 0) {
+      ਲਿਖੋ("%s: fork in child failed", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 }
 
-void
-forkforkfork(char *s)
+ਖਾਲੀ
+forkforkfork(ਅੱਖਰ *s)
 {
   unlink("stopforking");
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  ਪੂਰਨ pid = fork();
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    while (1) {
-      int fd = open("stopforking", 0);
-      if (fd >= 0) {
-        exit(0);
+  ਜੇ (pid == 0) {
+    ਜਦੋਂ (1) {
+      ਪੂਰਨ fd = open("stopforking", 0);
+      ਜੇ (fd >= 0) {
+        ਬਾਹਰ_ਨਿਕਲੋ(0);
       }
-      if (fork() < 0) {
+      ਜੇ (fork() < 0) {
         close(open("stopforking", O_CREATE | O_RDWR));
       }
     }
 
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
   pause(20); // two seconds
@@ -1065,60 +1065,60 @@ forkforkfork(char *s)
 // deadlocks against init's wait()? also used to trigger a "panic:
 // release" due to exit() releasing a different p->parent->lock than
 // it acquired.
-void
-reparent2(char *s)
+ਖਾਲੀ
+reparent2(ਅੱਖਰ *s)
 {
-  for (int i = 0; i < 800; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("fork failed\n");
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < 800; i++) {
+    ਪੂਰਨ pid1 = fork();
+    ਜੇ (pid1 < 0) {
+      ਲਿਖੋ("fork failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid1 == 0) {
+    ਜੇ (pid1 == 0) {
       fork();
       fork();
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
     wait(0);
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // allocate all mem, free it, and allocate again
-void
-mem(char *s)
+ਖਾਲੀ
+mem(ਅੱਖਰ *s)
 {
-  void *m1, *m2;
-  int pid;
+  ਖਾਲੀ *m1, *m2;
+  ਪੂਰਨ pid;
 
-  if ((pid = fork()) == 0) {
+  ਜੇ ((pid = fork()) == 0) {
     m1 = 0;
-    while ((m2 = malloc(10001)) != 0) {
-      *(char **)m2 = m1;
+    ਜਦੋਂ ((m2 = ਸਮ੍ਰਿਤੀ_ਦਿਓ(10001)) != 0) {
+      *(ਅੱਖਰ **)m2 = m1;
       m1 = m2;
     }
-    while (m1) {
-      m2 = *(char **)m1;
-      free(m1);
+    ਜਦੋਂ (m1) {
+      m2 = *(ਅੱਖਰ **)m1;
+      ਮੁਕਤ(m1);
       m1 = m2;
     }
-    m1 = malloc(1024 * 20);
-    if (m1 == 0) {
-      printf("%s: couldn't allocate mem?!!\n", s);
-      exit(1);
+    m1 = ਸਮ੍ਰਿਤੀ_ਦਿਓ(1024 * 20);
+    ਜੇ (m1 == 0) {
+      ਲਿਖੋ("%s: couldn't allocate mem?!!\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    free(m1);
-    exit(0);
-  } else {
-    int xstatus;
+    ਮੁਕਤ(m1);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  } ਨਹੀਂਤਾਂ {
+    ਪੂਰਨ xstatus;
     wait(&xstatus);
-    if (xstatus == -1) {
+    ਜੇ (xstatus == -1) {
       // probably page fault, so might be lazy lab,
       // so OK.
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
-    exit(xstatus);
+    ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
   }
 }
 
@@ -1126,193 +1126,193 @@ mem(char *s)
 
 // two processes write to the same file descriptor
 // is the offset shared? does inode locking work?
-void
-sharedfd(char *s)
+ਖਾਲੀ
+sharedfd(ਅੱਖਰ *s)
 {
-  int fd, pid, i, n, nc, np;
-  enum { N = 1000, SZ = 10 };
-  char buf[SZ];
+  ਪੂਰਨ fd, pid, i, n, nc, np;
+  ਗਿਣਤੀ { N = 1000, SZ = 10 };
+  ਅੱਖਰ buf[SZ];
 
   unlink("sharedfd");
   fd = open("sharedfd", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for writing", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot open sharedfd for writing", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   pid = fork();
-  memset(buf, pid == 0 ? 'c' : 'p', sizeof(buf));
-  for (i = 0; i < N; i++) {
-    if (write(fd, buf, sizeof(buf)) != sizeof(buf)) {
-      printf("%s: write sharedfd failed\n", s);
-      exit(1);
+  memset(buf, pid == 0 ? 'c' : 'p', ਆਕਾਰ(buf));
+  ਲਈ (i = 0; i < N; i++) {
+    ਜੇ (ਲਿਖ(fd, buf, ਆਕਾਰ(buf)) != ਆਕਾਰ(buf)) {
+      ਲਿਖੋ("%s: write sharedfd failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
-  if (pid == 0) {
-    exit(0);
-  } else {
-    int xstatus;
+  ਜੇ (pid == 0) {
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  } ਨਹੀਂਤਾਂ {
+    ਪੂਰਨ xstatus;
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    ਜੇ (xstatus != 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
   }
 
   close(fd);
   fd = open("sharedfd", 0);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for reading\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot open sharedfd for reading\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   nc = np = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < sizeof(buf); i++) {
-      if (buf[i] == 'c')
+  ਜਦੋਂ ((n = ਪਠ(fd, buf, ਆਕਾਰ(buf))) > 0) {
+    ਲਈ (i = 0; i < ਆਕਾਰ(buf); i++) {
+      ਜੇ (buf[i] == 'c')
         nc++;
-      if (buf[i] == 'p')
+      ਜੇ (buf[i] == 'p')
         np++;
     }
   }
   close(fd);
   unlink("sharedfd");
-  if (nc == N * SZ && np == N * SZ) {
-    exit(0);
-  } else {
-    printf("%s: nc/np test fails\n", s);
-    exit(1);
+  ਜੇ (nc == N * SZ && np == N * SZ) {
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  } ਨਹੀਂਤਾਂ {
+    ਲਿਖੋ("%s: nc/np test fails\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // four processes write different files at the same
 // time, to test block allocation.
-void
-fourfiles(char *s)
+ਖਾਲੀ
+fourfiles(ਅੱਖਰ *s)
 {
-  int fd, pid, i, j, n, total, pi;
-  char *names[] = {"f0", "f1", "f2", "f3"};
-  char *fname;
-  enum { N = 12, NCHILD = 4, SZ = 500 };
+  ਪੂਰਨ fd, pid, i, j, n, ਕੁੱਲ, pi;
+  ਅੱਖਰ *ਨਾਂ[] = {"f0", "f1", "f2", "f3"};
+  ਅੱਖਰ *fname;
+  ਗਿਣਤੀ { N = 12, NCHILD = 4, SZ = 500 };
 
-  for (pi = 0; pi < NCHILD; pi++) {
-    fname = names[pi];
+  ਲਈ (pi = 0; pi < NCHILD; pi++) {
+    fname = ਨਾਂ[pi];
     unlink(fname);
 
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
-    if (pid == 0) {
+    ਜੇ (pid == 0) {
       fd = open(fname, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("%s: create failed\n", s);
-        exit(1);
+      ਜੇ (fd < 0) {
+        ਲਿਖੋ("%s: create failed\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
 
       memset(buf, '0' + pi, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
-          printf("write failed %d\n", n);
-          exit(1);
+      ਲਈ (i = 0; i < N; i++) {
+        ਜੇ ((n = ਲਿਖ(fd, buf, SZ)) != SZ) {
+          ਲਿਖੋ("write failed %d\n", n);
+          ਬਾਹਰ_ਨਿਕਲੋ(1);
         }
       }
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
+  ਪੂਰਨ xstatus;
+  ਲਈ (pi = 0; pi < NCHILD; pi++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    ਜੇ (xstatus != 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
   }
 
-  for (i = 0; i < NCHILD; i++) {
-    fname = names[i];
+  ਲਈ (i = 0; i < NCHILD; i++) {
+    fname = ਨਾਂ[i];
     fd = open(fname, 0);
-    total = 0;
-    while ((n = read(fd, buf, sizeof(buf))) > 0) {
-      for (j = 0; j < n; j++) {
-        if (buf[j] != '0' + i) {
-          printf("%s: wrong char\n", s);
-          exit(1);
+    ਕੁੱਲ = 0;
+    ਜਦੋਂ ((n = ਪਠ(fd, buf, ਆਕਾਰ(buf))) > 0) {
+      ਲਈ (j = 0; j < n; j++) {
+        ਜੇ (buf[j] != '0' + i) {
+          ਲਿਖੋ("%s: wrong char\n", s);
+          ਬਾਹਰ_ਨਿਕਲੋ(1);
         }
       }
-      total += n;
+      ਕੁੱਲ += n;
     }
     close(fd);
-    if (total != N * SZ) {
-      printf("wrong length %d\n", total);
-      exit(1);
+    ਜੇ (ਕੁੱਲ != N * SZ) {
+      ਲਿਖੋ("wrong length %d\n", ਕੁੱਲ);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     unlink(fname);
   }
 }
 
 // four processes create and delete different files in same directory
-void
-createdelete(char *s)
+ਖਾਲੀ
+createdelete(ਅੱਖਰ *s)
 {
-  enum { N = 20, NCHILD = 4 };
-  int pid, i, fd, pi;
-  char name[32];
+  ਗਿਣਤੀ { N = 20, NCHILD = 4 };
+  ਪੂਰਨ pid, i, fd, pi;
+  ਅੱਖਰ name[32];
 
-  for (pi = 0; pi < NCHILD; pi++) {
+  ਲਈ (pi = 0; pi < NCHILD; pi++) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
-    if (pid == 0) {
+    ਜੇ (pid == 0) {
       name[0] = 'p' + pi;
       name[2] = '\0';
-      for (i = 0; i < N; i++) {
+      ਲਈ (i = 0; i < N; i++) {
         name[1] = '0' + i;
         fd = open(name, O_CREATE | O_RDWR);
-        if (fd < 0) {
-          printf("%s: create failed\n", s);
-          exit(1);
+        ਜੇ (fd < 0) {
+          ਲਿਖੋ("%s: create failed\n", s);
+          ਬਾਹਰ_ਨਿਕਲੋ(1);
         }
         close(fd);
-        if (i > 0 && (i % 2) == 0) {
+        ਜੇ (i > 0 && (i % 2) == 0) {
           name[1] = '0' + (i / 2);
-          if (unlink(name) < 0) {
-            printf("%s: unlink failed\n", s);
-            exit(1);
+          ਜੇ (unlink(name) < 0) {
+            ਲਿਖੋ("%s: unlink failed\n", s);
+            ਬਾਹਰ_ਨਿਕਲੋ(1);
           }
         }
       }
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
+  ਪੂਰਨ xstatus;
+  ਲਈ (pi = 0; pi < NCHILD; pi++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(1);
+    ਜੇ (xstatus != 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   name[0] = name[1] = name[2] = 0;
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  ਲਈ (i = 0; i < N; i++) {
+    ਲਈ (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       fd = open(name, 0);
-      if ((i == 0 || i >= N / 2) && fd < 0) {
-        printf("%s: oops createdelete %s didn't exist\n", s, name);
-        exit(1);
-      } else if ((i >= 1 && i < N / 2) && fd >= 0) {
-        printf("%s: oops createdelete %s did exist\n", s, name);
-        exit(1);
+      ਜੇ ((i == 0 || i >= N / 2) && fd < 0) {
+        ਲਿਖੋ("%s: oops createdelete %s didn't exist\n", s, name);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
+      } ਨਹੀਂਤਾਂ ਜੇ ((i >= 1 && i < N / 2) && fd >= 0) {
+        ਲਿਖੋ("%s: oops createdelete %s did exist\n", s, name);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (fd >= 0)
+      ਜੇ (fd >= 0)
         close(fd);
     }
   }
 
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  ਲਈ (i = 0; i < N; i++) {
+    ਲਈ (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       unlink(name);
@@ -1321,165 +1321,165 @@ createdelete(char *s)
 }
 
 // can I unlink a file and still read it?
-void
-unlinkread(char *s)
+ਖਾਲੀ
+unlinkread(ਅੱਖਰ *s)
 {
-  enum { SZ = 5 };
-  int fd, fd1;
+  ਗਿਣਤੀ { SZ = 5 };
+  ਪੂਰਨ fd, fd1;
 
   fd = open("unlinkread", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create unlinkread failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: create unlinkread failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  write(fd, "hello", SZ);
+  ਲਿਖ(fd, "hello", SZ);
   close(fd);
 
   fd = open("unlinkread", O_RDWR);
-  if (fd < 0) {
-    printf("%s: open unlinkread failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open unlinkread failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("unlinkread") != 0) {
-    printf("%s: unlink unlinkread failed\n", s);
-    exit(1);
+  ਜੇ (unlink("unlinkread") != 0) {
+    ਲਿਖੋ("%s: unlink unlinkread failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd1 = open("unlinkread", O_CREATE | O_RDWR);
-  write(fd1, "yyy", 3);
+  ਲਿਖ(fd1, "yyy", 3);
   close(fd1);
 
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: unlinkread read failed", s);
-    exit(1);
+  ਜੇ (ਪਠ(fd, buf, ਆਕਾਰ(buf)) != SZ) {
+    ਲਿਖੋ("%s: unlinkread read failed", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (buf[0] != 'h') {
-    printf("%s: unlinkread wrong data\n", s);
-    exit(1);
+  ਜੇ (buf[0] != 'h') {
+    ਲਿਖੋ("%s: unlinkread wrong data\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (write(fd, buf, 10) != 10) {
-    printf("%s: unlinkread write failed\n", s);
-    exit(1);
+  ਜੇ (ਲਿਖ(fd, buf, 10) != 10) {
+    ਲਿਖੋ("%s: unlinkread write failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
   unlink("unlinkread");
 }
 
-void
-linktest(char *s)
+ਖਾਲੀ
+linktest(ਅੱਖਰ *s)
 {
-  enum { SZ = 5 };
-  int fd;
+  ਗਿਣਤੀ { SZ = 5 };
+  ਪੂਰਨ fd;
 
   unlink("lf1");
   unlink("lf2");
 
   fd = open("lf1", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create lf1 failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: create lf1 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (write(fd, "hello", SZ) != SZ) {
-    printf("%s: write lf1 failed\n", s);
-    exit(1);
+  ਜੇ (ਲਿਖ(fd, "hello", SZ) != SZ) {
+    ਲਿਖੋ("%s: write lf1 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  if (link("lf1", "lf2") < 0) {
-    printf("%s: link lf1 lf2 failed\n", s);
-    exit(1);
+  ਜੇ (link("lf1", "lf2") < 0) {
+    ਲਿਖੋ("%s: link lf1 lf2 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   unlink("lf1");
 
-  if (open("lf1", 0) >= 0) {
-    printf("%s: unlinked lf1 but it is still there!\n", s);
-    exit(1);
+  ਜੇ (open("lf1", 0) >= 0) {
+    ਲਿਖੋ("%s: unlinked lf1 but it is still there!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("lf2", 0);
-  if (fd < 0) {
-    printf("%s: open lf2 failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open lf2 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: read lf2 failed\n", s);
-    exit(1);
+  ਜੇ (ਪਠ(fd, buf, ਆਕਾਰ(buf)) != SZ) {
+    ਲਿਖੋ("%s: read lf2 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  if (link("lf2", "lf2") >= 0) {
-    printf("%s: link lf2 lf2 succeeded! oops\n", s);
-    exit(1);
+  ਜੇ (link("lf2", "lf2") >= 0) {
+    ਲਿਖੋ("%s: link lf2 lf2 succeeded! oops\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   unlink("lf2");
-  if (link("lf2", "lf1") >= 0) {
-    printf("%s: link non-existent succeeded! oops\n", s);
-    exit(1);
+  ਜੇ (link("lf2", "lf1") >= 0) {
+    ਲਿਖੋ("%s: link non-existent succeeded! oops\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (link(".", "lf1") >= 0) {
-    printf("%s: link . lf1 succeeded! oops\n", s);
-    exit(1);
+  ਜੇ (link(".", "lf1") >= 0) {
+    ਲਿਖੋ("%s: link . lf1 succeeded! oops\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // test concurrent create/link/unlink of the same file
-void
-concreate(char *s)
+ਖਾਲੀ
+concreate(ਅੱਖਰ *s)
 {
-  enum { N = 40 };
-  char file[3];
-  int i, pid, n, fd;
-  char fa[N];
-  struct {
+  ਗਿਣਤੀ { N = 40 };
+  ਅੱਖਰ file[3];
+  ਪੂਰਨ i, pid, n, fd;
+  ਅੱਖਰ fa[N];
+  ਬਣਤਰ {
     ushort inum;
-    char name[DIRSIZ];
+    ਅੱਖਰ name[DIRSIZ];
   } de;
 
   file[0] = 'C';
   file[2] = '\0';
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     file[1] = '0' + i;
     unlink(file);
     pid = fork();
-    if (pid && (i % 3) == 1) {
+    ਜੇ (pid && (i % 3) == 1) {
       link("C0", file);
-    } else if (pid == 0 && (i % 5) == 1) {
+    } ਨਹੀਂਤਾਂ ਜੇ (pid == 0 && (i % 5) == 1) {
       link("C0", file);
-    } else {
+    } ਨਹੀਂਤਾਂ {
       fd = open(file, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("concreate create %s failed\n", file);
-        exit(1);
+      ਜੇ (fd < 0) {
+        ਲਿਖੋ("concreate create %s failed\n", file);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       close(fd);
     }
-    if (pid == 0) {
-      exit(0);
-    } else {
-      int xstatus;
+    ਜੇ (pid == 0) {
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
+    } ਨਹੀਂਤਾਂ {
+      ਪੂਰਨ xstatus;
       wait(&xstatus);
-      if (xstatus != 0)
-        exit(1);
+      ਜੇ (xstatus != 0)
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
-  memset(fa, 0, sizeof(fa));
+  memset(fa, 0, ਆਕਾਰ(fa));
   fd = open(".", 0);
   n = 0;
-  while (read(fd, &de, sizeof(de)) > 0) {
-    if (de.inum == 0)
-      continue;
-    if (de.name[0] == 'C' && de.name[2] == '\0') {
+  ਜਦੋਂ (ਪਠ(fd, &de, ਆਕਾਰ(de)) > 0) {
+    ਜੇ (de.inum == 0)
+      ਜਾਰੀ;
+    ਜੇ (de.name[0] == 'C' && de.name[2] == '\0') {
       i = de.name[1] - '0';
-      if (i < 0 || i >= sizeof(fa)) {
-        printf("%s: concreate weird file %s\n", s, de.name);
-        exit(1);
+      ਜੇ (i < 0 || i >= ਆਕਾਰ(fa)) {
+        ਲਿਖੋ("%s: concreate weird file %s\n", s, de.name);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (fa[i]) {
-        printf("%s: concreate duplicate file %s\n", s, de.name);
-        exit(1);
+      ਜੇ (fa[i]) {
+        ਲਿਖੋ("%s: concreate duplicate file %s\n", s, de.name);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
       fa[i] = 1;
       n++;
@@ -1487,26 +1487,26 @@ concreate(char *s)
   }
   close(fd);
 
-  if (n != N) {
-    printf("%s: concreate not enough files in directory listing\n", s);
-    exit(1);
+  ਜੇ (n != N) {
+    ਲਿਖੋ("%s: concreate not enough files in directory listing\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     file[1] = '0' + i;
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
+    ਜੇ (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
-    } else {
+    } ਨਹੀਂਤਾਂ {
       unlink(file);
       unlink(file);
       unlink(file);
@@ -1514,243 +1514,243 @@ concreate(char *s)
       unlink(file);
       unlink(file);
     }
-    if (pid == 0)
-      exit(0);
-    else
+    ਜੇ (pid == 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
+    ਨਹੀਂਤਾਂ
       wait(0);
   }
 }
 
 // another concurrent link/unlink/create test,
 // to look for deadlocks.
-void
-linkunlink(char *s)
+ਖਾਲੀ
+linkunlink(ਅੱਖਰ *s)
 {
-  int pid, i;
+  ਪੂਰਨ pid, i;
 
   unlink("x");
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  unsigned int x = (pid ? 1 : 97);
-  for (i = 0; i < 100; i++) {
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ x = (pid ? 1 : 97);
+  ਲਈ (i = 0; i < 100; i++) {
     x = x * 1103515245 + 12345;
-    if ((x % 3) == 0) {
+    ਜੇ ((x % 3) == 0) {
       close(open("x", O_RDWR | O_CREATE));
-    } else if ((x % 3) == 1) {
+    } ਨਹੀਂਤਾਂ ਜੇ ((x % 3) == 1) {
       link("cat", "x");
-    } else {
+    } ਨਹੀਂਤਾਂ {
       unlink("x");
     }
   }
 
-  if (pid)
+  ਜੇ (pid)
     wait(0);
-  else
-    exit(0);
+  ਨਹੀਂਤਾਂ
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-void
-subdir(char *s)
+ਖਾਲੀ
+subdir(ਅੱਖਰ *s)
 {
-  int fd, cc;
+  ਪੂਰਨ fd, cc;
 
   unlink("ff");
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("dd") != 0) {
+    ਲਿਖੋ("%s: mkdir dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/ff failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: create dd/ff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  write(fd, "ff", 2);
+  ਲਿਖ(fd, "ff", 2);
   close(fd);
 
-  if (unlink("dd") >= 0) {
-    printf("%s: unlink dd (non-empty dir) succeeded!\n", s);
-    exit(1);
+  ਜੇ (unlink("dd") >= 0) {
+    ਲਿਖੋ("%s: unlink dd (non-empty dir) succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (mkdir("/dd/dd") != 0) {
-    printf("%s: subdir mkdir dd/dd failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("/dd/dd") != 0) {
+    ਲਿਖੋ("%s: subdir mkdir dd/dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("dd/dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/dd/ff failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: create dd/dd/ff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  write(fd, "FF", 2);
+  ਲਿਖ(fd, "FF", 2);
   close(fd);
 
   fd = open("dd/dd/../ff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/../ff failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open dd/dd/../ff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  cc = read(fd, buf, sizeof(buf));
-  if (cc != 2 || buf[0] != 'f') {
-    printf("%s: dd/dd/../ff wrong content\n", s);
-    exit(1);
+  cc = ਪਠ(fd, buf, ਆਕਾਰ(buf));
+  ਜੇ (cc != 2 || buf[0] != 'f') {
+    ਲਿਖੋ("%s: dd/dd/../ff wrong content\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  if (link("dd/dd/ff", "dd/dd/ffff") != 0) {
-    printf("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
-    exit(1);
+  ਜੇ (link("dd/dd/ff", "dd/dd/ffff") != 0) {
+    ਲਿਖੋ("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (unlink("dd/dd/ff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  ਜੇ (unlink("dd/dd/ff") != 0) {
+    ਲਿਖੋ("%s: unlink dd/dd/ff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded\n", s);
-    exit(1);
+  ਜੇ (open("dd/dd/ff", O_RDONLY) >= 0) {
+    ਲਿਖੋ("%s: open (unlinked) dd/dd/ff succeeded\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  ਜੇ (chdir("dd") != 0) {
+    ਲਿਖੋ("%s: chdir dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("dd/../../dd") != 0) {
-    printf("%s: chdir dd/../../dd failed\n", s);
-    exit(1);
+  ਜੇ (chdir("dd/../../dd") != 0) {
+    ਲਿਖੋ("%s: chdir dd/../../dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("dd/../../../dd") != 0) {
-    printf("%s: chdir dd/../../../dd failed\n", s);
-    exit(1);
+  ਜੇ (chdir("dd/../../../dd") != 0) {
+    ਲਿਖੋ("%s: chdir dd/../../../dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("./..") != 0) {
-    printf("%s: chdir ./.. failed\n", s);
-    exit(1);
+  ਜੇ (chdir("./..") != 0) {
+    ਲਿਖੋ("%s: chdir ./.. failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("dd/dd/ffff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/ffff failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open dd/dd/ffff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (read(fd, buf, sizeof(buf)) != 2) {
-    printf("%s: read dd/dd/ffff wrong len\n", s);
-    exit(1);
+  ਜੇ (ਪਠ(fd, buf, ਆਕਾਰ(buf)) != 2) {
+    ਲਿਖੋ("%s: read dd/dd/ffff wrong len\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (open("dd/dd/ff", O_RDONLY) >= 0) {
+    ਲਿਖੋ("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/ff/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
+    ਲਿਖੋ("%s: create dd/ff/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/xx/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
+    ਲਿਖੋ("%s: create dd/xx/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (open("dd", O_CREATE) >= 0) {
-    printf("%s: create dd succeeded!\n", s);
-    exit(1);
+  ਜੇ (open("dd", O_CREATE) >= 0) {
+    ਲਿਖੋ("%s: create dd succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (open("dd", O_RDWR) >= 0) {
-    printf("%s: open dd rdwr succeeded!\n", s);
-    exit(1);
+  ਜੇ (open("dd", O_RDWR) >= 0) {
+    ਲਿਖੋ("%s: open dd rdwr succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (open("dd", O_WRONLY) >= 0) {
-    printf("%s: open dd wronly succeeded!\n", s);
-    exit(1);
+  ਜੇ (open("dd", O_WRONLY) >= 0) {
+    ਲਿਖੋ("%s: open dd wronly succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (link("dd/ff/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (link("dd/ff/ff", "dd/dd/xx") == 0) {
+    ਲਿਖੋ("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (link("dd/xx/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (link("dd/xx/ff", "dd/dd/xx") == 0) {
+    ਲਿਖੋ("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (link("dd/ff", "dd/dd/ffff") == 0) {
-    printf("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
-    exit(1);
+  ਜੇ (link("dd/ff", "dd/dd/ffff") == 0) {
+    ਲਿਖੋ("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("dd/ff/ff") == 0) {
-    printf("%s: mkdir dd/ff/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (mkdir("dd/ff/ff") == 0) {
+    ਲਿਖੋ("%s: mkdir dd/ff/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("dd/xx/ff") == 0) {
-    printf("%s: mkdir dd/xx/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (mkdir("dd/xx/ff") == 0) {
+    ਲਿਖੋ("%s: mkdir dd/xx/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("dd/dd/ffff") == 0) {
-    printf("%s: mkdir dd/dd/ffff succeeded!\n", s);
-    exit(1);
+  ਜੇ (mkdir("dd/dd/ffff") == 0) {
+    ਲਿਖੋ("%s: mkdir dd/dd/ffff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dd/xx/ff") == 0) {
-    printf("%s: unlink dd/xx/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (unlink("dd/xx/ff") == 0) {
+    ਲਿਖੋ("%s: unlink dd/xx/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dd/ff/ff") == 0) {
-    printf("%s: unlink dd/ff/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (unlink("dd/ff/ff") == 0) {
+    ਲਿਖੋ("%s: unlink dd/ff/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("dd/ff") == 0) {
-    printf("%s: chdir dd/ff succeeded!\n", s);
-    exit(1);
+  ਜੇ (chdir("dd/ff") == 0) {
+    ਲਿਖੋ("%s: chdir dd/ff succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("dd/xx") == 0) {
-    printf("%s: chdir dd/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (chdir("dd/xx") == 0) {
+    ਲਿਖੋ("%s: chdir dd/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (unlink("dd/dd/ffff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  ਜੇ (unlink("dd/dd/ffff") != 0) {
+    ਲਿਖੋ("%s: unlink dd/dd/ff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dd/ff") != 0) {
-    printf("%s: unlink dd/ff failed\n", s);
-    exit(1);
+  ਜੇ (unlink("dd/ff") != 0) {
+    ਲਿਖੋ("%s: unlink dd/ff failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dd") == 0) {
-    printf("%s: unlink non-empty dd succeeded!\n", s);
-    exit(1);
+  ਜੇ (unlink("dd") == 0) {
+    ਲਿਖੋ("%s: unlink non-empty dd succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dd/dd") < 0) {
-    printf("%s: unlink dd/dd failed\n", s);
-    exit(1);
+  ਜੇ (unlink("dd/dd") < 0) {
+    ਲਿਖੋ("%s: unlink dd/dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dd") < 0) {
-    printf("%s: unlink dd failed\n", s);
-    exit(1);
+  ਜੇ (unlink("dd") < 0) {
+    ਲਿਖੋ("%s: unlink dd failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // test writes that are larger than the log.
-void
-bigwrite(char *s)
+ਖਾਲੀ
+bigwrite(ਅੱਖਰ *s)
 {
-  int fd, sz;
+  ਪੂਰਨ fd, sz;
 
   unlink("bigwrite");
-  for (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
+  ਲਈ (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
     fd = open("bigwrite", O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("%s: cannot create bigwrite\n", s);
-      exit(1);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("%s: cannot create bigwrite\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    int i;
-    for (i = 0; i < 2; i++) {
-      int cc = write(fd, buf, sz);
-      if (cc != sz) {
-        printf("%s: write(%d) ret %d\n", s, sz, cc);
-        exit(1);
+    ਪੂਰਨ i;
+    ਲਈ (i = 0; i < 2; i++) {
+      ਪੂਰਨ cc = ਲਿਖ(fd, buf, sz);
+      ਜੇ (cc != sz) {
+        ਲਿਖੋ("%s: write(%d) ret %d\n", s, sz, cc);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
     }
     close(fd);
@@ -1758,95 +1758,95 @@ bigwrite(char *s)
   }
 }
 
-void
-bigfile(char *s)
+ਖਾਲੀ
+bigfile(ਅੱਖਰ *s)
 {
-  enum { N = 20, SZ = 600 };
-  int fd, i, total, cc;
+  ਗਿਣਤੀ { N = 20, SZ = 600 };
+  ਪੂਰਨ fd, i, ਕੁੱਲ, cc;
 
   unlink("bigfile.dat");
   fd = open("bigfile.dat", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create bigfile", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot create bigfile", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     memset(buf, i, SZ);
-    if (write(fd, buf, SZ) != SZ) {
-      printf("%s: write bigfile failed\n", s);
-      exit(1);
+    ਜੇ (ਲਿਖ(fd, buf, SZ) != SZ) {
+      ਲਿਖੋ("%s: write bigfile failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
   close(fd);
 
   fd = open("bigfile.dat", 0);
-  if (fd < 0) {
-    printf("%s: cannot open bigfile\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot open bigfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  total = 0;
-  for (i = 0;; i++) {
-    cc = read(fd, buf, SZ / 2);
-    if (cc < 0) {
-      printf("%s: read bigfile failed\n", s);
-      exit(1);
+  ਕੁੱਲ = 0;
+  ਲਈ (i = 0;; i++) {
+    cc = ਪਠ(fd, buf, SZ / 2);
+    ਜੇ (cc < 0) {
+      ਲਿਖੋ("%s: read bigfile failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (cc == 0)
-      break;
-    if (cc != SZ / 2) {
-      printf("%s: short read bigfile\n", s);
-      exit(1);
+    ਜੇ (cc == 0)
+      ਰੋਕੋ;
+    ਜੇ (cc != SZ / 2) {
+      ਲਿਖੋ("%s: short read bigfile\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
-      printf("%s: read bigfile wrong data\n", s);
-      exit(1);
+    ਜੇ (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
+      ਲਿਖੋ("%s: read bigfile wrong data\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    total += cc;
+    ਕੁੱਲ += cc;
   }
   close(fd);
-  if (total != N * SZ) {
-    printf("%s: read bigfile wrong total\n", s);
-    exit(1);
+  ਜੇ (ਕੁੱਲ != N * SZ) {
+    ਲਿਖੋ("%s: read bigfile wrong total\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   unlink("bigfile.dat");
 }
 
-void
-fourteen(char *s)
+ਖਾਲੀ
+fourteen(ਅੱਖਰ *s)
 {
-  int fd;
+  ਪੂਰਨ fd;
 
   // DIRSIZ is 14.
 
-  if (mkdir("12345678901234") != 0) {
-    printf("%s: mkdir 12345678901234 failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("12345678901234") != 0) {
+    ਲਿਖੋ("%s: mkdir 12345678901234 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("12345678901234/123456789012345") != 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("12345678901234/123456789012345") != 0) {
+    ਲਿਖੋ("%s: mkdir 12345678901234/123456789012345 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
-  if (fd < 0) {
-    printf(
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ(
       "%s: create 123456789012345/123456789012345/123456789012345 failed\n", s);
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
   fd = open("12345678901234/12345678901234/12345678901234", 0);
-  if (fd < 0) {
-    printf("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  if (mkdir("12345678901234/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
-    exit(1);
+  ਜੇ (mkdir("12345678901234/12345678901234") == 0) {
+    ਲਿਖੋ("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("123456789012345/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
-    exit(1);
+  ਜੇ (mkdir("123456789012345/12345678901234") == 0) {
+    ਲਿਖੋ("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   // clean up
@@ -1858,128 +1858,128 @@ fourteen(char *s)
   unlink("12345678901234");
 }
 
-void
-rmdot(char *s)
+ਖਾਲੀ
+rmdot(ਅੱਖਰ *s)
 {
-  if (mkdir("dots") != 0) {
-    printf("%s: mkdir dots failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("dots") != 0) {
+    ਲਿਖੋ("%s: mkdir dots failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("dots") != 0) {
-    printf("%s: chdir dots failed\n", s);
-    exit(1);
+  ਜੇ (chdir("dots") != 0) {
+    ਲਿਖੋ("%s: chdir dots failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink(".") == 0) {
-    printf("%s: rm . worked!\n", s);
-    exit(1);
+  ਜੇ (unlink(".") == 0) {
+    ਲਿਖੋ("%s: rm . worked!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("..") == 0) {
-    printf("%s: rm .. worked!\n", s);
-    exit(1);
+  ਜੇ (unlink("..") == 0) {
+    ਲਿਖੋ("%s: rm .. worked!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("/") != 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  ਜੇ (chdir("/") != 0) {
+    ਲਿਖੋ("%s: chdir / failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dots/.") == 0) {
-    printf("%s: unlink dots/. worked!\n", s);
-    exit(1);
+  ਜੇ (unlink("dots/.") == 0) {
+    ਲਿਖੋ("%s: unlink dots/. worked!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dots/..") == 0) {
-    printf("%s: unlink dots/.. worked!\n", s);
-    exit(1);
+  ਜੇ (unlink("dots/..") == 0) {
+    ਲਿਖੋ("%s: unlink dots/.. worked!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dots") != 0) {
-    printf("%s: unlink dots failed!\n", s);
-    exit(1);
+  ਜੇ (unlink("dots") != 0) {
+    ਲਿਖੋ("%s: unlink dots failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-void
-dirfile(char *s)
+ਖਾਲੀ
+dirfile(ਅੱਖਰ *s)
 {
-  int fd;
+  ਪੂਰਨ fd;
 
   fd = open("dirfile", O_CREATE);
-  if (fd < 0) {
-    printf("%s: create dirfile failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: create dirfile failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
-  if (chdir("dirfile") == 0) {
-    printf("%s: chdir dirfile succeeded!\n", s);
-    exit(1);
+  ਜੇ (chdir("dirfile") == 0) {
+    ਲਿਖੋ("%s: chdir dirfile succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   fd = open("dirfile/xx", 0);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (fd >= 0) {
+    ਲਿਖੋ("%s: create dirfile/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   fd = open("dirfile/xx", O_CREATE);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (fd >= 0) {
+    ਲਿਖੋ("%s: create dirfile/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("dirfile/xx") == 0) {
-    printf("%s: mkdir dirfile/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (mkdir("dirfile/xx") == 0) {
+    ਲਿਖੋ("%s: mkdir dirfile/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dirfile/xx") == 0) {
-    printf("%s: unlink dirfile/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (unlink("dirfile/xx") == 0) {
+    ਲਿਖੋ("%s: unlink dirfile/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (link("README", "dirfile/xx") == 0) {
-    printf("%s: link to dirfile/xx succeeded!\n", s);
-    exit(1);
+  ਜੇ (link("README", "dirfile/xx") == 0) {
+    ਲਿਖੋ("%s: link to dirfile/xx succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("dirfile") != 0) {
-    printf("%s: unlink dirfile failed!\n", s);
-    exit(1);
+  ਜੇ (unlink("dirfile") != 0) {
+    ਲਿਖੋ("%s: unlink dirfile failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open(".", O_RDWR);
-  if (fd >= 0) {
-    printf("%s: open . for writing succeeded!\n", s);
-    exit(1);
+  ਜੇ (fd >= 0) {
+    ਲਿਖੋ("%s: open . for writing succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   fd = open(".", 0);
-  if (write(fd, "x", 1) > 0) {
-    printf("%s: write . succeeded!\n", s);
-    exit(1);
+  ਜੇ (ਲਿਖ(fd, "x", 1) > 0) {
+    ਲਿਖੋ("%s: write . succeeded!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 }
 
 // test that iput() is called at the end of _namei().
 // also tests empty file names.
-void
-iref(char *s)
+ਖਾਲੀ
+iref(ਅੱਖਰ *s)
 {
-  int i, fd;
+  ਪੂਰਨ i, fd;
 
-  for (i = 0; i < NINODE + 1; i++) {
-    if (mkdir("irefd") != 0) {
-      printf("%s: mkdir irefd failed\n", s);
-      exit(1);
+  ਲਈ (i = 0; i < NINODE + 1; i++) {
+    ਜੇ (mkdir("irefd") != 0) {
+      ਲਿਖੋ("%s: mkdir irefd failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (chdir("irefd") != 0) {
-      printf("%s: chdir irefd failed\n", s);
-      exit(1);
+    ਜੇ (chdir("irefd") != 0) {
+      ਲਿਖੋ("%s: chdir irefd failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
     mkdir("");
     link("README", "");
     fd = open("", O_CREATE);
-    if (fd >= 0)
+    ਜੇ (fd >= 0)
       close(fd);
     fd = open("xx", O_CREATE);
-    if (fd >= 0)
+    ਜੇ (fd >= 0)
       close(fd);
     unlink("xx");
   }
 
   // clean up
-  for (i = 0; i < NINODE + 1; i++) {
+  ਲਈ (i = 0; i < NINODE + 1; i++) {
     chdir("..");
     unlink("irefd");
   }
@@ -1990,112 +1990,112 @@ iref(char *s)
 // test that fork fails gracefully
 // the forktest binary also does this, but it runs out of proc entries first.
 // inside the bigger usertests binary, we run out of memory first.
-void
-forktest(char *s)
+ਖਾਲੀ
+forktest(ਅੱਖਰ *s)
 {
-  enum { N = 1000 };
-  int n, pid;
+  ਗਿਣਤੀ { N = 1000 };
+  ਪੂਰਨ n, pid;
 
-  for (n = 0; n < N; n++) {
+  ਲਈ (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    ਜੇ (pid < 0)
+      ਰੋਕੋ;
+    ਜੇ (pid == 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  if (n == 0) {
-    printf("%s: no fork at all!\n", s);
-    exit(1);
+  ਜੇ (n == 0) {
+    ਲਿਖੋ("%s: no fork at all!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (n == N) {
-    printf("%s: fork claimed to work 1000 times!\n", s);
-    exit(1);
+  ਜੇ (n == N) {
+    ਲਿਖੋ("%s: fork claimed to work 1000 times!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
-      printf("%s: wait stopped early\n", s);
-      exit(1);
+  ਲਈ (; n > 0; n--) {
+    ਜੇ (wait(0) < 0) {
+      ਲਿਖੋ("%s: wait stopped early\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
-  if (wait(0) != -1) {
-    printf("%s: wait got too many\n", s);
-    exit(1);
+  ਜੇ (wait(0) != -1) {
+    ਲਿਖੋ("%s: wait got too many\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-void
-sbrkbasic(char *s)
+ਖਾਲੀ
+sbrkbasic(ਅੱਖਰ *s)
 {
-  enum { TOOMUCH = 1024 * 1024 * 1024 };
-  int i, pid, xstatus;
-  char *c, *a, *b;
+  ਗਿਣਤੀ { TOOMUCH = 1024 * 1024 * 1024 };
+  ਪੂਰਨ i, pid, xstatus;
+  ਅੱਖਰ *c, *a, *b;
 
   // does sbrk() return the expected failure value?
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed in sbrkbasic\n");
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("fork failed in sbrkbasic\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
+  ਜੇ (pid == 0) {
     a = sbrk(TOOMUCH);
-    if (a == (char *)SBRK_ERROR) {
+    ਜੇ (a == (ਅੱਖਰ *)SBRK_ERROR) {
       // it's OK if this fails.
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
 
-    for (b = a; b < a + TOOMUCH; b += PGSIZE) {
+    ਲਈ (b = a; b < a + TOOMUCH; b += PGSIZE) {
       *b = 99;
     }
 
     // we should not get here! either sbrk(TOOMUCH)
     // should have failed, or (with lazy allocation)
     // a pagefault should have killed this process.
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   wait(&xstatus);
-  if (xstatus == 1) {
-    printf("%s: too much memory allocated!\n", s);
-    exit(1);
+  ਜੇ (xstatus == 1) {
+    ਲਿਖੋ("%s: too much memory allocated!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   // can one sbrk() less than a page?
   a = sbrk(0);
-  for (i = 0; i < 5000; i++) {
+  ਲਈ (i = 0; i < 5000; i++) {
     b = sbrk(1);
-    if (b != a) {
-      printf("%s: sbrk test failed %d %p %p\n", s, i, a, b);
-      exit(1);
+    ਜੇ (b != a) {
+      ਲਿਖੋ("%s: sbrk test failed %d %p %p\n", s, i, a, b);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     *b = 1;
     a = b + 1;
   }
   pid = fork();
-  if (pid < 0) {
-    printf("%s: sbrk test fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: sbrk test fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   c = sbrk(1);
   c = sbrk(1);
-  if (c != a + 1) {
-    printf("%s: sbrk test failed post-fork\n", s);
-    exit(1);
+  ਜੇ (c != a + 1) {
+    ਲਿਖੋ("%s: sbrk test failed post-fork\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0)
-    exit(0);
+  ਜੇ (pid == 0)
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   wait(&xstatus);
-  exit(xstatus);
+  ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
 }
 
-void
-sbrkmuch(char *s)
+ਖਾਲੀ
+sbrkmuch(ਅੱਖਰ *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  char *c, *oldbrk, *a, *lastaddr, *p;
+  ਗਿਣਤੀ { BIG = 100 * 1024 * 1024 };
+  ਅੱਖਰ *c, *oldbrk, *a, *lastaddr, *p;
   uint64 amt;
 
   oldbrk = sbrk(0);
@@ -2104,227 +2104,227 @@ sbrkmuch(char *s)
   a = sbrk(0);
   amt = BIG - (uint64)a;
   p = sbrk(amt);
-  if (p != a) {
-    printf("%s: sbrk test failed to grow big address space; enough phys mem?\n",
+  ਜੇ (p != a) {
+    ਲਿਖੋ("%s: sbrk test failed to grow big address space; enough phys mem?\n",
            s);
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  lastaddr = (char *)(BIG - 1);
+  lastaddr = (ਅੱਖਰ *)(BIG - 1);
   *lastaddr = 99;
 
   // can one de-allocate?
   a = sbrk(0);
   c = sbrk(-PGSIZE);
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: sbrk could not deallocate\n", s);
-    exit(1);
+  ਜੇ (c == (ਅੱਖਰ *)SBRK_ERROR) {
+    ਲਿਖੋ("%s: sbrk could not deallocate\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   c = sbrk(0);
-  if (c != a - PGSIZE) {
-    printf("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
+  ਜੇ (c != a - PGSIZE) {
+    ਲਿਖੋ("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
            c);
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   // can one re-allocate that page?
   a = sbrk(0);
   c = sbrk(PGSIZE);
-  if (c != a || sbrk(0) != a + PGSIZE) {
-    printf("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
-    exit(1);
+  ਜੇ (c != a || sbrk(0) != a + PGSIZE) {
+    ਲਿਖੋ("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (*lastaddr == 99) {
+  ਜੇ (*lastaddr == 99) {
     // should be zero
-    printf("%s: sbrk de-allocation didn't really deallocate\n", s);
-    exit(1);
+    ਲਿਖੋ("%s: sbrk de-allocation didn't really deallocate\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   a = sbrk(0);
   c = sbrk(-(sbrk(0) - oldbrk));
-  if (c != a) {
-    printf("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
-    exit(1);
+  ਜੇ (c != a) {
+    ਲਿਖੋ("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // can we read the kernel's memory?
-void
-kernmem(char *s)
+ਖਾਲੀ
+kernmem(ਅੱਖਰ *s)
 {
-  char *a;
-  int pid;
+  ਅੱਖਰ *a;
+  ਪੂਰਨ pid;
 
-  for (a = (char *)(KERNBASE); a < (char *)(KERNBASE + 2000000); a += 50000) {
+  ਲਈ (a = (ਅੱਖਰ *)(KERNBASE); a < (ਅੱਖਰ *)(KERNBASE + 2000000); a += 50000) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid == 0) {
-      printf("%s: oops could read %p = %x\n", s, a, *a);
-      exit(1);
+    ਜੇ (pid == 0) {
+      ਲਿਖੋ("%s: oops could read %p = %x\n", s, a, *a);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    int xstatus;
+    ਪੂਰਨ xstatus;
     wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    ਜੇ (xstatus != -1) // did kernel kill child?
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // user code should not be able to write to addresses above MAXVA.
-void
-MAXVAplus(char *s)
+ਖਾਲੀ
+MAXVAplus(ਅੱਖਰ *s)
 {
-  volatile uint64 a = MAXVA;
-  for (; a != 0; a <<= 1) {
-    int pid;
+  ਅਸਥਿਰ uint64 a = MAXVA;
+  ਲਈ (; a != 0; a <<= 1) {
+    ਪੂਰਨ pid;
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (pid == 0) {
-      *(char *)a = 99;
-      printf("%s: oops wrote %p\n", s, (void *)a);
-      exit(1);
+    ਜੇ (pid == 0) {
+      *(ਅੱਖਰ *)a = 99;
+      ਲਿਖੋ("%s: oops wrote %p\n", s, (ਖਾਲੀ *)a);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    int xstatus;
+    ਪੂਰਨ xstatus;
     wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    ਜੇ (xstatus != -1) // did kernel kill child?
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
 // if we run the system out of memory, does it clean up the last
 // failed allocation?
-void
-sbrkfail(char *s)
+ਖਾਲੀ
+sbrkfail(ਅੱਖਰ *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  int i, xstatus;
-  int fds[2];
-  char scratch;
-  char *c, *a;
-  int pids[10];
-  int pid;
-  int failed;
+  ਗਿਣਤੀ { BIG = 100 * 1024 * 1024 };
+  ਪੂਰਨ i, xstatus;
+  ਪੂਰਨ fds[2];
+  ਅੱਖਰ scratch;
+  ਅੱਖਰ *c, *a;
+  ਪੂਰਨ pids[10];
+  ਪੂਰਨ pid;
+  ਪੂਰਨ failed;
 
   failed = 0;
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  ਜੇ (pipe(fds) != 0) {
+    ਲਿਖੋ("%s: pipe() failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if ((pids[i] = fork()) == 0) {
+  ਲਈ (i = 0; i < ਆਕਾਰ(pids) / ਆਕਾਰ(pids[0]); i++) {
+    ਜੇ ((pids[i] = fork()) == 0) {
       // allocate a lot of memory
-      if (sbrk(BIG - (uint64)sbrk(0)) == (char *)SBRK_ERROR)
-        write(fds[1], "0", 1);
-      else
-        write(fds[1], "1", 1);
+      ਜੇ (sbrk(BIG - (uint64)sbrk(0)) == (ਅੱਖਰ *)SBRK_ERROR)
+        ਲਿਖ(fds[1], "0", 1);
+      ਨਹੀਂਤਾਂ
+        ਲਿਖ(fds[1], "1", 1);
       // sit around until killed
-      for (;;)
+      ਲਈ (;;)
         pause(1000);
     }
-    if (pids[i] != -1) {
-      read(fds[0], &scratch, 1);
-      if (scratch == '0')
+    ਜੇ (pids[i] != -1) {
+      ਪਠ(fds[0], &scratch, 1);
+      ਜੇ (scratch == '0')
         failed = 1;
     }
   }
-  if (!failed) {
-    printf("%s: no allocation failed; allocate more?\n", s);
+  ਜੇ (!failed) {
+    ਲਿਖੋ("%s: no allocation failed; allocate more?\n", s);
   }
 
   // if those failed allocations freed up the pages they did allocate,
   // we'll be able to allocate here
   c = sbrk(PGSIZE);
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if (pids[i] == -1)
-      continue;
+  ਲਈ (i = 0; i < ਆਕਾਰ(pids) / ਆਕਾਰ(pids[0]); i++) {
+    ਜੇ (pids[i] == -1)
+      ਜਾਰੀ;
     kill(pids[i]);
     wait(0);
   }
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: failed sbrk leaked memory\n", s);
-    exit(1);
+  ਜੇ (c == (ਅੱਖਰ *)SBRK_ERROR) {
+    ਲਿਖੋ("%s: failed sbrk leaked memory\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   // test running fork with the above allocated page
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
+  ਜੇ (pid == 0) {
     // allocate a lot of memory. this should produce an error
     a = sbrk(10 * BIG);
-    if (a == (char *)SBRK_ERROR) {
-      exit(0);
+    ਜੇ (a == (ਅੱਖਰ *)SBRK_ERROR) {
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
-    printf("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
-    exit(1);
+    ਲਿਖੋ("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   wait(&xstatus);
-  if (xstatus != 0)
-    exit(1);
+  ਜੇ (xstatus != 0)
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
 }
 
 // test reads/writes from/to allocated memory
-void
-sbrkarg(char *s)
+ਖਾਲੀ
+sbrkarg(ਅੱਖਰ *s)
 {
-  char *a;
-  int fd, n;
+  ਅੱਖਰ *a;
+  ਪੂਰਨ fd, n;
 
   a = sbrk(PGSIZE);
   fd = open("sbrk", O_CREATE | O_WRONLY);
   unlink("sbrk");
-  if (fd < 0) {
-    printf("%s: open sbrk failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open sbrk failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if ((n = write(fd, a, PGSIZE)) < 0) {
-    printf("%s: write sbrk failed\n", s);
-    exit(1);
+  ਜੇ ((n = ਲਿਖ(fd, a, PGSIZE)) < 0) {
+    ਲਿਖੋ("%s: write sbrk failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
   // test writes to allocated memory
   a = sbrk(PGSIZE);
-  if (pipe((int *)a) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  ਜੇ (pipe((ਪੂਰਨ *)a) != 0) {
+    ਲਿਖੋ("%s: pipe() failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-void
-validatetest(char *s)
+ਖਾਲੀ
+validatetest(ਅੱਖਰ *s)
 {
-  int hi;
+  ਪੂਰਨ hi;
   uint64 p;
 
   hi = 1100 * 1024;
-  for (p = 0; p <= (uint)hi; p += PGSIZE) {
+  ਲਈ (p = 0; p <= (uint)hi; p += PGSIZE) {
     // try to crash the kernel by passing in a bad string pointer
-    if (link("nosuchfile", (char *)p) != -1) {
-      printf("%s: link should not succeed\n", s);
-      exit(1);
+    ਜੇ (link("nosuchfile", (ਅੱਖਰ *)p) != -1) {
+      ਲਿਖੋ("%s: link should not succeed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 }
 
 // does uninitialized data start out zero?
-char uninit[10000];
-void
-bsstest(char *s)
+ਅੱਖਰ uninit[10000];
+ਖਾਲੀ
+bsstest(ਅੱਖਰ *s)
 {
-  int i;
+  ਪੂਰਨ i;
 
-  for (i = 0; i < sizeof(uninit); i++) {
-    if (uninit[i] != '\0') {
-      printf("%s: bss test failed\n", s);
-      exit(1);
+  ਲਈ (i = 0; i < ਆਕਾਰ(uninit); i++) {
+    ਜੇ (uninit[i] != '\0') {
+      ਲਿਖੋ("%s: bss test failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 }
@@ -2332,84 +2332,84 @@ bsstest(char *s)
 // does exec return an error if the arguments
 // are larger than a page? or does it write
 // below the stack and wreck the instructions/data?
-void
-bigargtest(char *s)
+ਖਾਲੀ
+bigargtest(ਅੱਖਰ *s)
 {
-  int pid, fd, xstatus;
+  ਪੂਰਨ pid, fd, xstatus;
 
   unlink("bigarg-ok");
   pid = fork();
-  if (pid == 0) {
-    static char *args[MAXARG];
-    int i;
-    char big[400];
-    memset(big, ' ', sizeof(big));
-    big[sizeof(big) - 1] = '\0';
-    for (i = 0; i < MAXARG - 1; i++)
-      args[i] = big;
-    args[MAXARG - 1] = 0;
+  ਜੇ (pid == 0) {
+    ਸਥਿਰ ਅੱਖਰ *ਦਲੀਲਾਂ[MAXARG];
+    ਪੂਰਨ i;
+    ਅੱਖਰ big[400];
+    memset(big, ' ', ਆਕਾਰ(big));
+    big[ਆਕਾਰ(big) - 1] = '\0';
+    ਲਈ (i = 0; i < MAXARG - 1; i++)
+      ਦਲੀਲਾਂ[i] = big;
+    ਦਲੀਲਾਂ[MAXARG - 1] = 0;
     // this exec() should fail (and return) because the
     // arguments are too large.
-    exec("echo", args);
+    exec("echo", ਦਲੀਲਾਂ);
     fd = open("bigarg-ok", O_CREATE);
     close(fd);
-    exit(0);
-  } else if (pid < 0) {
-    printf("%s: bigargtest: fork failed\n", s);
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: bigargtest: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   wait(&xstatus);
-  if (xstatus != 0)
-    exit(xstatus);
+  ਜੇ (xstatus != 0)
+    ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
   fd = open("bigarg-ok", 0);
-  if (fd < 0) {
-    printf("%s: bigarg test failed!\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: bigarg test failed!\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 }
 
 // what happens when the file system runs out of blocks?
 // answer: balloc panics, so this test is not useful.
-void
+ਖਾਲੀ
 fsfull()
 {
-  int nfiles;
-  int fsblocks = 0;
+  ਪੂਰਨ nfiles;
+  ਪੂਰਨ fsblocks = 0;
 
-  printf("fsfull test\n");
+  ਲਿਖੋ("fsfull test\n");
 
-  for (nfiles = 0;; nfiles++) {
-    char name[64];
+  ਲਈ (nfiles = 0;; nfiles++) {
+    ਅੱਖਰ name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
     name[3] = '0' + (nfiles % 100) / 10;
     name[4] = '0' + (nfiles % 10);
     name[5] = '\0';
-    printf("writing %s\n", name);
-    int fd = open(name, O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("open %s failed\n", name);
-      break;
+    ਲਿਖੋ("writing %s\n", name);
+    ਪੂਰਨ fd = open(name, O_CREATE | O_RDWR);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("open %s failed\n", name);
+      ਰੋਕੋ;
     }
-    int total = 0;
-    while (1) {
-      int cc = write(fd, buf, BSIZE);
-      if (cc < BSIZE)
-        break;
-      total += cc;
+    ਪੂਰਨ ਕੁੱਲ = 0;
+    ਜਦੋਂ (1) {
+      ਪੂਰਨ cc = ਲਿਖ(fd, buf, BSIZE);
+      ਜੇ (cc < BSIZE)
+        ਰੋਕੋ;
+      ਕੁੱਲ += cc;
       fsblocks++;
     }
-    printf("wrote %d bytes\n", total);
+    ਲਿਖੋ("wrote %d bytes\n", ਕੁੱਲ);
     close(fd);
-    if (total == 0)
-      break;
+    ਜੇ (ਕੁੱਲ == 0)
+      ਰੋਕੋ;
   }
 
-  while (nfiles >= 0) {
-    char name[64];
+  ਜਦੋਂ (nfiles >= 0) {
+    ਅੱਖਰ name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
@@ -2420,55 +2420,55 @@ fsfull()
     nfiles--;
   }
 
-  printf("fsfull test finished, %d blocks\n", fsblocks);
+  ਲਿਖੋ("fsfull test finished, %d blocks\n", fsblocks);
 }
 
-void
-argptest(char *s)
+ਖਾਲੀ
+argptest(ਅੱਖਰ *s)
 {
-  int fd;
+  ਪੂਰਨ fd;
   fd = open("init", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: open failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  read(fd, sbrk(0) - 1, -1);
+  ਪਠ(fd, sbrk(0) - 1, -1);
   close(fd);
 }
 
 // check that there's an invalid page beneath
 // the user stack, to catch stack overflow.
-void
-stacktest(char *s)
+ਖਾਲੀ
+stacktest(ਅੱਖਰ *s)
 {
-  int pid;
-  int xstatus;
+  ਪੂਰਨ pid;
+  ਪੂਰਨ xstatus;
 
   pid = fork();
-  if (pid == 0) {
-    char *sp = (char *)r_sp();
+  ਜੇ (pid == 0) {
+    ਅੱਖਰ *sp = (ਅੱਖਰ *)r_sp();
     sp -= USERSTACK * PGSIZE;
     // the *sp should cause a trap.
-    printf("%s: stacktest: read below stack %d\n", s, *sp);
-    exit(1);
-  } else if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+    ਲਿਖੋ("%s: stacktest: read below stack %d\n", s, *sp);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
+  } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+    ਲਿਖੋ("%s: fork failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   wait(&xstatus);
-  if (xstatus == -1) // kernel killed child?
-    exit(0);
-  else
-    exit(xstatus);
+  ਜੇ (xstatus == -1) // kernel killed child?
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  ਨਹੀਂਤਾਂ
+    ਬਾਹਰ_ਨਿਕਲੋ(xstatus);
 }
 
 // check that writes to a few forbidden addresses
 // cause a fault, e.g. process's text and TRAMPOLINE.
-void
-nowrite(char *s)
+ਖਾਲੀ
+nowrite(ਅੱਖਰ *s)
 {
-  int pid;
-  int xstatus;
+  ਪੂਰਨ pid;
+  ਪੂਰਨ xstatus;
   uint64 addrs[] = {0,
                     0x80000000LL,
                     0x3fffffe000,
@@ -2476,84 +2476,84 @@ nowrite(char *s)
                     0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  ਲਈ (ਪੂਰਨ ai = 0; ai < ਆਕਾਰ(addrs) / ਆਕਾਰ(addrs[0]); ai++) {
     pid = fork();
-    if (pid == 0) {
-      volatile int *addr = (int *)addrs[ai];
+    ਜੇ (pid == 0) {
+      ਅਸਥਿਰ ਪੂਰਨ *addr = (ਪੂਰਨ *)addrs[ai];
       *addr = 10;
-      printf("%s: write to %p did not fail!\n", s, addr);
-      exit(0);
-    } else if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+      ਲਿਖੋ("%s: write to %p did not fail!\n", s, addr);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
+    } ਨਹੀਂਤਾਂ ਜੇ (pid < 0) {
+      ਲਿਖੋ("%s: fork failed\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     wait(&xstatus);
-    if (xstatus == 0) {
+    ਜੇ (xstatus == 0) {
       // kernel did not kill child!
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // regression test. copyin(), copyout(), and copyinstr() used to cast
 // the virtual page address to uint, which (with certain wild system
 // call arguments) resulted in a kernel page faults.
-void *big = (void *)0xeaeb0b5b00002f5e;
-void
-pgbug(char *s)
+ਖਾਲੀ *big = (ਖਾਲੀ *)0xeaeb0b5b00002f5e;
+ਖਾਲੀ
+pgbug(ਅੱਖਰ *s)
 {
-  char *argv[1];
+  ਅੱਖਰ *argv[1];
   argv[0] = 0;
   exec(big, argv);
   pipe(big);
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // regression test. does the kernel panic if a process sbrk()s its
 // size to be less than a page, or zero, or reduces the break by an
 // amount too small to cause a page to be freed?
-void
-sbrkbugs(char *s)
+ਖਾਲੀ
+sbrkbugs(ਅੱਖਰ *s)
 {
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  ਪੂਰਨ pid = fork();
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("fork failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  ਜੇ (pid == 0) {
+    ਪੂਰਨ sz = (uint64)sbrk(0);
     // free all user memory; there used to be a bug that
     // would not adjust p->sz correctly in this case,
     // causing exit() to panic.
     sbrk(-sz);
     // user page fault here.
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
   wait(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("fork failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  ਜੇ (pid == 0) {
+    ਪੂਰਨ sz = (uint64)sbrk(0);
     // set the break to somewhere in the very first
     // page; there used to be a bug that would incorrectly
     // free the first page.
     sbrk(-(sz - 3500));
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
   wait(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  ਜੇ (pid < 0) {
+    ਲਿਖੋ("fork failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
+  ਜੇ (pid == 0) {
     // set the break in the middle of a page.
     sbrk((10 * PGSIZE + 2048) - (uint64)sbrk(0));
 
@@ -2562,271 +2562,271 @@ sbrkbugs(char *s)
     // a panic.
     sbrk(-10);
 
-    exit(0);
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
   wait(0);
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // if process size was somewhat more than a page boundary, and then
 // shrunk to be somewhat less than that page boundary, can the kernel
 // still copyin() from addresses in the last page?
-void
-sbrklast(char *s)
+ਖਾਲੀ
+sbrklast(ਅੱਖਰ *s)
 {
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0)
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 ਸਿਖਰ = (uint64)sbrk(0);
+  ਜੇ ((ਸਿਖਰ % PGSIZE) != 0)
+    sbrk(PGSIZE - (ਸਿਖਰ % PGSIZE));
   sbrk(PGSIZE);
   sbrk(10);
   sbrk(-20);
-  top = (uint64)sbrk(0);
-  char *p = (char *)(top - 64);
+  ਸਿਖਰ = (uint64)sbrk(0);
+  ਅੱਖਰ *p = (ਅੱਖਰ *)(ਸਿਖਰ - 64);
   p[0] = 'x';
   p[1] = '\0';
-  int fd = open(p, O_RDWR | O_CREATE);
-  write(fd, p, 1);
+  ਪੂਰਨ fd = open(p, O_RDWR | O_CREATE);
+  ਲਿਖ(fd, p, 1);
   close(fd);
   fd = open(p, O_RDWR);
   p[0] = '\0';
-  read(fd, p, 1);
-  if (p[0] != 'x')
-    exit(1);
+  ਪਠ(fd, p, 1);
+  ਜੇ (p[0] != 'x')
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
 }
 
 // does sbrk handle signed int32 wrap-around with
 // negative arguments?
-void
-sbrk8000(char *s)
+ਖਾਲੀ
+sbrk8000(ਅੱਖਰ *s)
 {
   sbrk(0x80000004);
-  volatile char *top = sbrk(0);
-  *(top - 1) = *(top - 1) + 1;
+  ਅਸਥਿਰ ਅੱਖਰ *ਸਿਖਰ = sbrk(0);
+  *(ਸਿਖਰ - 1) = *(ਸਿਖਰ - 1) + 1;
 }
 
 // regression test. test whether exec() leaks memory if one of the
 // arguments is invalid. the test passes if the kernel doesn't panic.
-void
-badarg(char *s)
+ਖਾਲੀ
+badarg(ਅੱਖਰ *s)
 {
-  for (int i = 0; i < 50000; i++) {
-    char *argv[2];
-    argv[0] = (char *)0xffffffff;
+  ਲਈ (ਪੂਰਨ i = 0; i < 50000; i++) {
+    ਅੱਖਰ *argv[2];
+    argv[0] = (ਅੱਖਰ *)0xffffffff;
     argv[1] = 0;
     exec("echo", argv);
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-#define REGION_SZ (1024 * 1024 * 1024)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ REGION_SZ (1024 * 1024 * 1024)
 
 // Touch a page every 64 pages, which with lazy allocation
 // causes one page to be allocated.
-void
-lazy_alloc(char *s)
+ਖਾਲੀ
+lazy_alloc(ਅੱਖਰ *s)
 {
-  char *i, *prev_end, *new_end;
+  ਅੱਖਰ *i, *prev_ਸਿਰਾ, *new_ਸਿਰਾ;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  prev_ਸਿਰਾ = sbrklazy(REGION_SZ);
+  ਜੇ (prev_ਸਿਰਾ == (ਅੱਖਰ *)SBRK_ERROR) {
+    ਲਿਖੋ("sbrklazy() failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_ਸਿਰਾ = prev_ਸਿਰਾ + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE)
-    *(char **)i = i;
+  ਲਈ (i = prev_ਸਿਰਾ + PGSIZE; i < new_ਸਿਰਾ; i += 64 * PGSIZE)
+    *(ਅੱਖਰ **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE) {
-    if (*(char **)i != i) {
-      printf("failed to read value from memory\n");
-      exit(1);
+  ਲਈ (i = prev_ਸਿਰਾ + PGSIZE; i < new_ਸਿਰਾ; i += 64 * PGSIZE) {
+    ਜੇ (*(ਅੱਖਰ **)i != i) {
+      ਲਿਖੋ("failed to read value from memory\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // Touch a page every 64 pages in region, which with lazy allocation
 // causes one page to be allocated. Check that freeing the region
 // frees the allocated pages.
-void
-lazy_unmap(char *s)
+ਖਾਲੀ
+lazy_unmap(ਅੱਖਰ *s)
 {
-  int pid;
-  char *i, *prev_end, *new_end;
+  ਪੂਰਨ pid;
+  ਅੱਖਰ *i, *prev_ਸਿਰਾ, *new_ਸਿਰਾ;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  prev_ਸਿਰਾ = sbrklazy(REGION_SZ);
+  ਜੇ (prev_ਸਿਰਾ == (ਅੱਖਰ *)SBRK_ERROR) {
+    ਲਿਖੋ("sbrklazy() failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_ਸਿਰਾ = prev_ਸਿਰਾ + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE)
-    *(char **)i = i;
+  ਲਈ (i = prev_ਸਿਰਾ + PGSIZE; i < new_ਸਿਰਾ; i += PGSIZE * PGSIZE)
+    *(ਅੱਖਰ **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE) {
+  ਲਈ (i = prev_ਸਿਰਾ + PGSIZE; i < new_ਸਿਰਾ; i += PGSIZE * PGSIZE) {
     pid = fork();
-    if (pid < 0) {
-      printf("error forking\n");
-      exit(1);
-    } else if (pid == 0) {
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("error forking\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
+    } ਨਹੀਂਤਾਂ ਜੇ (pid == 0) {
       sbrklazy(-1L * REGION_SZ);
-      *(char **)i = i;
-      exit(0);
-    } else {
-      int status;
-      wait(&status);
-      if (status == 0) {
-        printf("memory not unmapped\n");
-        exit(1);
+      *(ਅੱਖਰ **)i = i;
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
+    } ਨਹੀਂਤਾਂ {
+      ਪੂਰਨ ਸਥਿਤੀ;
+      wait(&ਸਥਿਤੀ);
+      ਜੇ (ਸਥਿਤੀ == 0) {
+        ਲਿਖੋ("memory not unmapped\n");
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
     }
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-void
-lazy_copy(char *s)
+ਖਾਲੀ
+lazy_copy(ਅੱਖਰ *s)
 {
   // copyinstr on lazy page
   {
-    char *p = sbrk(0);
+    ਅੱਖਰ *p = sbrk(0);
     sbrklazy(4 * PGSIZE);
     open(p + 8192, 0);
   }
 
   {
-    void *xx = sbrk(0);
-    void *ret = sbrk(-(((uint64)xx) + 1));
-    if (ret != xx) {
-      printf("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
-      exit(1);
+    ਖਾਲੀ *xx = sbrk(0);
+    ਖਾਲੀ *ret = sbrk(-(((uint64)xx) + 1));
+    ਜੇ (ret != xx) {
+      ਲਿਖੋ("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
   // read() and write() to these addresses should fail.
-  unsigned long bad[] = {
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ bad[] = {
     0x3fffffc000, 0x3fffffd000, 0x3fffffe000,
     0x3ffffff000, 0x4000000000, 0x8000000000,
   };
-  for (int i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("cannot open README\n");
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < ਆਕਾਰ(bad) / ਆਕਾਰ(bad[0]); i++) {
+    ਪੂਰਨ fd = open("README", 0);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("cannot open README\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (read(fd, (char *)bad[i], 512) >= 0) {
-      printf("read succeeded\n");
-      exit(1);
+    ਜੇ (ਪਠ(fd, (ਅੱਖਰ *)bad[i], 512) >= 0) {
+      ਲਿਖੋ("read succeeded\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fd);
     fd = open("junk", O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
-      printf("cannot open junk\n");
-      exit(1);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("cannot open junk\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    if (write(fd, (char *)bad[i], 512) >= 0) {
-      printf("write succeeded\n");
-      exit(1);
+    ਜੇ (ਲਿਖ(fd, (ਅੱਖਰ *)bad[i], 512) >= 0) {
+      ਲਿਖੋ("write succeeded\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
     close(fd);
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-void
-lazy_copyinstr(char *s)
+ਖਾਲੀ
+lazy_copyinstr(ਅੱਖਰ *s)
 {
-  char *p = sbrk(0);
+  ਅੱਖਰ *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  ਜੇ ((uint64)p % PGSIZE != 0) {
+    ਲਿਖੋ("%s: sbrk did not align\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   sbrklazy(2 * PGSIZE);
   p[4095] = '/';
-  int fd = open(&p[4095], O_RDONLY);
-  if (fd < 0) {
-    printf("could not open /");
-    exit(1);
+  ਪੂਰਨ fd = open(&p[4095], O_RDONLY);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("could not open /");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  struct stat st;
-  int r = fstat(fd, &st);
-  if (r < 0) {
-    printf("could not stat /");
-    exit(1);
+  ਬਣਤਰ stat st;
+  ਪੂਰਨ r = fstat(fd, &st);
+  ਜੇ (r < 0) {
+    ਲਿਖੋ("could not stat /");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  if (st.type != T_DIR) {
-    printf("/ is not T_DIR");
-    exit(1);
+  ਜੇ (st.type != T_DIR) {
+    ਲਿਖੋ("/ is not T_DIR");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   close(fd);
 }
 
-void
-lazy_sbrk(char *s)
+ਖਾਲੀ
+lazy_sbrk(ਅੱਖਰ *s)
 {
   // sbrk() takes just int, so take 2^30-sized steps towards MAXVA
-  char *p = sbrk(0);
-  while ((uint64)p < MAXVA - (1 << 30)) {
+  ਅੱਖਰ *p = sbrk(0);
+  ਜਦੋਂ ((uint64)p < MAXVA - (1 << 30)) {
     p = sbrklazy(1 << 30);
-    if (p < 0) {
-      printf("sbrklazy(%d) returned %p\n", 1 << 30, p);
-      exit(1);
+    ਜੇ (p < 0) {
+      ਲਿਖੋ("sbrklazy(%d) returned %p\n", 1 << 30, p);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
     p = sbrklazy(0);
   }
 
-  int n = TRAPFRAME - PGSIZE - (uint64)p;
+  ਪੂਰਨ n = TRAPFRAME - PGSIZE - (uint64)p;
 
-  char *p1 = sbrklazy(n);
-  if (p1 < 0 || p1 != p) {
-    printf("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
-    exit(1);
+  ਅੱਖਰ *p1 = sbrklazy(n);
+  ਜੇ (p1 < 0 || p1 != p) {
+    ਲਿਖੋ("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   p = sbrk(PGSIZE);
-  if (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
-    printf("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
-    exit(1);
+  ਜੇ (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
+    ਲਿਖੋ("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   p[0] = 1;
-  if (p[1] != 0) {
-    printf("sbrk() returned non-zero-filled memory\n");
-    exit(1);
+  ਜੇ (p[1] != 0) {
+    ਲਿਖੋ("sbrk() returned non-zero-filled memory\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   p = sbrk(1);
-  if ((uint64)p != -1) {
-    printf("sbrk(1) returned %p, expected error\n", p);
-    exit(1);
+  ਜੇ ((uint64)p != -1) {
+    ਲਿਖੋ("sbrk(1) returned %p, expected error\n", p);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   p = sbrklazy(1);
-  if ((uint64)p != -1) {
-    printf("sbrklazy(1) returned %p, expected error\n", p);
-    exit(1);
+  ਜੇ ((uint64)p != -1) {
+    ਲਿਖੋ("sbrklazy(1) returned %p, expected error\n", p);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
-void
-partial_write(char *s)
+ਖਾਲੀ
+partial_write(ਅੱਖਰ *s)
 {
   // Create testfile containing "A".
   // write() 2 bytes that span page boundary: first is "X", second is unmapped.
@@ -2836,72 +2836,72 @@ partial_write(char *s)
   // read() from file should still return "X" (but might return "A" due to bug).
 
   unlink("testfile");
-  int fd = open("testfile", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create testfile\n", s);
-    exit(1);
+  ਪੂਰਨ fd = open("testfile", O_CREATE | O_RDWR);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot create testfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  int cc = write(fd, "A", 1);
-  if (cc != 1) {
-    printf("%s: could not write A\n", s);
-    exit(1);
+  ਪੂਰਨ cc = ਲਿਖ(fd, "A", 1);
+  ਜੇ (cc != 1) {
+    ਲਿਖੋ("%s: could not write A\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   close(fd);
   fd = open("testfile", O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot re-open testfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  char *p = sbrk(0);
+  ਅੱਖਰ *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  ਜੇ ((uint64)p % PGSIZE != 0) {
+    ਲਿਖੋ("%s: sbrk did not align\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   p[-1] = 'X';
 
-  cc = write(fd, p - 1, 2);
-  if (cc != -1) {
-    printf("%s: write succeeded, should have failed\n", s);
-    exit(1);
+  cc = ਲਿਖ(fd, p - 1, 2);
+  ਜੇ (cc != -1) {
+    ਲਿਖੋ("%s: write succeeded, should have failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   close(fd);
 
   fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot re-open testfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  char b;
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  ਅੱਖਰ b;
+  cc = ਪਠ(fd, &b, 1);
+  ਜੇ (cc != 1) {
+    ਲਿਖੋ("%s: cannot read testfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   close(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  ਜੇ (b != 'X') {
+    ਲਿਖੋ("%s: read returned %c, expected X\n", s, b);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   fd = open("bigfile", O_CREATE | O_RDWR);
-  for (int i = 0; i < 64; i++) {
-    char buf[1024];
-    memset(buf, 0, sizeof(buf));
-    cc = write(fd, buf, sizeof(buf));
-    if (cc != sizeof(buf)) {
-      printf("%s: could not write to bigfile\n", s);
-      exit(-1);
+  ਲਈ (ਪੂਰਨ i = 0; i < 64; i++) {
+    ਅੱਖਰ buf[1024];
+    memset(buf, 0, ਆਕਾਰ(buf));
+    cc = ਲਿਖ(fd, buf, ਆਕਾਰ(buf));
+    ਜੇ (cc != ਆਕਾਰ(buf)) {
+      ਲਿਖੋ("%s: could not write to bigfile\n", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(-1);
     }
   }
   close(fd);
@@ -2909,61 +2909,61 @@ partial_write(char *s)
   unlink("bigfile");
 
   fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot re-open testfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  cc = ਪਠ(fd, &b, 1);
+  ਜੇ (cc != 1) {
+    ਲਿਖੋ("%s: cannot read testfile\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   close(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  ਜੇ (b != 'X') {
+    ਲਿਖੋ("%s: read returned %c, expected X\n", s, b);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   unlink("testfile");
 }
 
-void
-unlinkcwd(char *s)
+ਖਾਲੀ
+unlinkcwd(ਅੱਖਰ *s)
 {
-  if (mkdir("/a") < 0) {
-    printf("%s: mkdir /a failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("/a") < 0) {
+    ਲਿਖੋ("%s: mkdir /a failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (mkdir("/a/b") < 0) {
-    printf("%s: mkdir /a/b failed\n", s);
-    exit(1);
+  ਜੇ (mkdir("/a/b") < 0) {
+    ਲਿਖੋ("%s: mkdir /a/b failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (chdir("/a/b") < 0) {
-    printf("%s: chdir failed\n", s);
-    exit(1);
+  ਜੇ (chdir("/a/b") < 0) {
+    ਲਿਖੋ("%s: chdir failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("/a/b") < 0) {
-    printf("%s: unlink /a/b failed\n", s);
-    exit(1);
+  ਜੇ (unlink("/a/b") < 0) {
+    ਲਿਖੋ("%s: unlink /a/b failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (unlink("/a") < 0) {
-    printf("%s: unlink /a failed\n", s);
-    exit(1);
+  ਜੇ (unlink("/a") < 0) {
+    ਲਿਖੋ("%s: unlink /a failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (open("../", O_RDONLY) > 0) {
-    printf("%s: open ../ non-existing directory\n", s);
+  ਜੇ (open("../", O_RDONLY) > 0) {
+    ਲਿਖੋ("%s: open ../ non-existing directory\n", s);
   }
-  if (open("../c", O_CREATE) > 0) {
-    printf("%s: create ../c non-existing file\n", s);
+  ਜੇ (open("../c", O_CREATE) > 0) {
+    ਲਿਖੋ("%s: create ../c non-existing file\n", s);
   }
 }
 
-struct test {
-  void (*f)(char *);
-  char *s;
+ਬਣਤਰ test {
+  ਖਾਲੀ (*f)(ਅੱਖਰ *);
+  ਅੱਖਰ *s;
 } quicktests[] = {
   {copyin, "copyin"},
   {copyout, "copyout"},
@@ -3041,80 +3041,80 @@ struct test {
 //
 
 // directory that uses indirect blocks
-void
-bigdir(char *s)
+ਖਾਲੀ
+bigdir(ਅੱਖਰ *s)
 {
-  enum { N = 500 };
-  int i, fd;
-  char name[10];
+  ਗਿਣਤੀ { N = 500 };
+  ਪੂਰਨ i, fd;
+  ਅੱਖਰ name[10];
 
   unlink("bd");
 
   fd = open("bd", O_CREATE);
-  if (fd < 0) {
-    printf("%s: bigdir create failed\n", s);
-    exit(1);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: bigdir create failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (link("bd", name) != 0) {
-      printf("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
-      exit(1);
+    ਜੇ (link("bd", name) != 0) {
+      ਲਿਖੋ("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
   unlink("bd");
-  for (i = 0; i < N; i++) {
+  ਲਈ (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (unlink(name) != 0) {
-      printf("%s: bigdir unlink failed", s);
-      exit(1);
+    ਜੇ (unlink(name) != 0) {
+      ਲਿਖੋ("%s: bigdir unlink failed", s);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 }
 
 // concurrent writes to try to provoke deadlock in the virtio disk
 // driver.
-void
-manywrites(char *s)
+ਖਾਲੀ
+manywrites(ਅੱਖਰ *s)
 {
-  int nchildren = 4;
-  int howmany = 30; // increase to look for deadlock
+  ਪੂਰਨ nchildren = 4;
+  ਪੂਰਨ howmany = 30; // increase to look for deadlock
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
+  ਲਈ (ਪੂਰਨ ci = 0; ci < nchildren; ci++) {
+    ਪੂਰਨ pid = fork();
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("fork failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
-    if (pid == 0) {
-      char name[3];
+    ਜੇ (pid == 0) {
+      ਅੱਖਰ name[3];
       name[0] = 'b';
       name[1] = 'a' + ci;
       name[2] = '\0';
       unlink(name);
 
-      for (int iters = 0; iters < howmany; iters++) {
-        for (int i = 0; i < ci + 1; i++) {
-          int fd = open(name, O_CREATE | O_RDWR);
-          if (fd < 0) {
-            printf("%s: cannot create %s\n", s, name);
-            exit(1);
+      ਲਈ (ਪੂਰਨ iters = 0; iters < howmany; iters++) {
+        ਲਈ (ਪੂਰਨ i = 0; i < ci + 1; i++) {
+          ਪੂਰਨ fd = open(name, O_CREATE | O_RDWR);
+          ਜੇ (fd < 0) {
+            ਲਿਖੋ("%s: cannot create %s\n", s, name);
+            ਬਾਹਰ_ਨਿਕਲੋ(1);
           }
-          int sz = sizeof(buf);
-          int cc = write(fd, buf, sz);
-          if (cc != sz) {
-            printf("%s: write(%d) ret %d\n", s, sz, cc);
-            exit(1);
+          ਪੂਰਨ sz = ਆਕਾਰ(buf);
+          ਪੂਰਨ cc = ਲਿਖ(fd, buf, sz);
+          ਜੇ (cc != sz) {
+            ਲਿਖੋ("%s: write(%d) ret %d\n", s, sz, cc);
+            ਬਾਹਰ_ਨਿਕਲੋ(1);
           }
           close(fd);
         }
@@ -3122,17 +3122,17 @@ manywrites(char *s)
       }
 
       unlink(name);
-      exit(0);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
     }
   }
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int st = 0;
+  ਲਈ (ਪੂਰਨ ci = 0; ci < nchildren; ci++) {
+    ਪੂਰਨ st = 0;
     wait(&st);
-    if (st != 0)
-      exit(st);
+    ਜੇ (st != 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(st);
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // regression test. does write() with an invalid buffer pointer cause
@@ -3140,105 +3140,105 @@ manywrites(char *s)
 // file is deleted? if the kernel has this bug, it will panic: balloc:
 // out of blocks. assumed_free may need to be raised to be more than
 // the number of free blocks. this test takes a long time.
-void
-badwrite(char *s)
+ਖਾਲੀ
+badwrite(ਅੱਖਰ *s)
 {
-  int assumed_free = 600;
+  ਪੂਰਨ assumed_free = 600;
 
   unlink("junk");
-  for (int i = 0; i < assumed_free; i++) {
-    int fd = open("junk", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open junk failed\n");
-      exit(1);
+  ਲਈ (ਪੂਰਨ i = 0; i < assumed_free; i++) {
+    ਪੂਰਨ fd = open("junk", O_CREATE | O_WRONLY);
+    ਜੇ (fd < 0) {
+      ਲਿਖੋ("open junk failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
-    write(fd, (char *)0xffffffffffL, 1);
+    ਲਿਖ(fd, (ਅੱਖਰ *)0xffffffffffL, 1);
     close(fd);
     unlink("junk");
   }
 
-  int fd = open("junk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open junk failed\n");
-    exit(1);
+  ਪੂਰਨ fd = open("junk", O_CREATE | O_WRONLY);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("open junk failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (write(fd, "x", 1) != 1) {
-    printf("write failed\n");
-    exit(1);
+  ਜੇ (ਲਿਖ(fd, "x", 1) != 1) {
+    ਲਿਖੋ("write failed\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
   unlink("junk");
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // test the exec() code that cleans up if it runs out
 // of memory. it's really a test that such a condition
 // doesn't cause a panic.
-void
-execout(char *s)
+ਖਾਲੀ
+execout(ਅੱਖਰ *s)
 {
-  for (int avail = 0; avail < 15; avail++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
-    } else if (pid == 0) {
+  ਲਈ (ਪੂਰਨ avail = 0; avail < 15; avail++) {
+    ਪੂਰਨ pid = fork();
+    ਜੇ (pid < 0) {
+      ਲਿਖੋ("fork failed\n");
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
+    } ਨਹੀਂਤਾਂ ਜੇ (pid == 0) {
       // allocate all of memory.
-      while (1) {
-        char *a = sbrk(PGSIZE);
-        if (a == SBRK_ERROR)
-          break;
+      ਜਦੋਂ (1) {
+        ਅੱਖਰ *a = sbrk(PGSIZE);
+        ਜੇ (a == SBRK_ERROR)
+          ਰੋਕੋ;
         *(a + PGSIZE - 1) = 1;
       }
 
       // free a few pages, in order to let exec() make some
       // progress.
-      for (int i = 0; i < avail; i++)
+      ਲਈ (ਪੂਰਨ i = 0; i < avail; i++)
         sbrk(-PGSIZE);
 
       close(1);
-      char *args[] = {"echo", "x", 0};
-      exec("echo", args);
-      exit(0);
-    } else {
-      wait((int *)0);
+      ਅੱਖਰ *ਦਲੀਲਾਂ[] = {"echo", "x", 0};
+      exec("echo", ਦਲੀਲਾਂ);
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
+    } ਨਹੀਂਤਾਂ {
+      wait((ਪੂਰਨ *)0);
     }
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
 
 // can the kernel tolerate running out of disk space?
-void
-diskfull(char *s)
+ਖਾਲੀ
+diskfull(ਅੱਖਰ *s)
 {
-  int fi;
-  int done = 0;
+  ਪੂਰਨ fi;
+  ਪੂਰਨ ਪੂਰਾ = 0;
 
   unlink("diskfulldir");
 
-  for (fi = 0; done == 0 && '0' + fi < 0177; fi++) {
-    char name[32];
+  ਲਈ (fi = 0; ਪੂਰਾ == 0 && '0' + fi < 0177; fi++) {
+    ਅੱਖਰ name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
     name[3] = '0' + fi;
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    ਪੂਰਨ fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    ਜੇ (fd < 0) {
       // oops, ran out of inodes before running out of blocks.
-      printf("%s: could not create file %s\n", s, name);
-      done = 1;
-      break;
+      ਲਿਖੋ("%s: could not create file %s\n", s, name);
+      ਪੂਰਾ = 1;
+      ਰੋਕੋ;
     }
-    for (int i = 0; i < MAXFILE; i++) {
-      char buf[BSIZE];
-      if (write(fd, buf, BSIZE) != BSIZE) {
-        done = 1;
+    ਲਈ (ਪੂਰਨ i = 0; i < MAXFILE; i++) {
+      ਅੱਖਰ buf[BSIZE];
+      ਜੇ (ਲਿਖ(fd, buf, BSIZE) != BSIZE) {
+        ਪੂਰਾ = 1;
         close(fd);
-        break;
+        ਰੋਕੋ;
       }
     }
     close(fd);
@@ -3248,29 +3248,29 @@ diskfull(char *s)
   // merely fails (doesn't panic) if it can't extend
   // directory content. one of these file creations
   // is expected to fail.
-  int nzz = 128;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  ਪੂਰਨ nzz = 128;
+  ਲਈ (ਪੂਰਨ i = 0; i < nzz; i++) {
+    ਅੱਖਰ name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0)
-      break;
+    ਪੂਰਨ fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    ਜੇ (fd < 0)
+      ਰੋਕੋ;
     close(fd);
   }
 
   // this mkdir() is expected to fail.
-  if (mkdir("diskfulldir") == 0)
-    printf("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
+  ਜੇ (mkdir("diskfulldir") == 0)
+    ਲਿਖੋ("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
 
   unlink("diskfulldir");
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  ਲਈ (ਪੂਰਨ i = 0; i < nzz; i++) {
+    ਅੱਖਰ name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3279,8 +3279,8 @@ diskfull(char *s)
     unlink(name);
   }
 
-  for (int i = 0; '0' + i < 0177; i++) {
-    char name[32];
+  ਲਈ (ਪੂਰਨ i = 0; '0' + i < 0177; i++) {
+    ਅੱਖਰ name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
@@ -3290,28 +3290,28 @@ diskfull(char *s)
   }
 }
 
-void
-outofinodes(char *s)
+ਖਾਲੀ
+outofinodes(ਅੱਖਰ *s)
 {
-  int nzz = 32 * 32;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  ਪੂਰਨ nzz = 32 * 32;
+  ਲਈ (ਪੂਰਨ i = 0; i < nzz; i++) {
+    ਅੱਖਰ name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    ਪੂਰਨ fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    ਜੇ (fd < 0) {
       // failure is eventually expected.
-      break;
+      ਰੋਕੋ;
     }
     close(fd);
   }
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  ਲਈ (ਪੂਰਨ i = 0; i < nzz; i++) {
+    ਅੱਖਰ name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3321,36 +3321,36 @@ outofinodes(char *s)
   }
 }
 
-void
-linkoverflow(char *s)
+ਖਾਲੀ
+linkoverflow(ਅੱਖਰ *s)
 {
-  enum { TARGET = 32768 };
-  enum { DIRS = 64 };
-  struct stat st;
-  int i;
+  ਗਿਣਤੀ { ਨਿਸ਼ਾਨਾ_2 = 32768 };
+  ਗਿਣਤੀ { DIRS = 64 };
+  ਬਣਤਰ stat st;
+  ਪੂਰਨ i;
 
   unlink("/lof");
-  int fd = open("/lof", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create /lof\n", s);
-    exit(1);
+  ਪੂਰਨ fd = open("/lof", O_CREATE | O_RDWR);
+  ਜੇ (fd < 0) {
+    ਲਿਖੋ("%s: cannot create /lof\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
   close(fd);
 
-  for (i = 0; i < TARGET; i++) {
-    int d = i % DIRS;
-    int f = i / DIRS;
+  ਲਈ (i = 0; i < ਨਿਸ਼ਾਨਾ_2; i++) {
+    ਪੂਰਨ d = i % DIRS;
+    ਪੂਰਨ f = i / DIRS;
 
-    char pn[16];
+    ਅੱਖਰ pn[16];
     pn[0] = '/';
     pn[1] = 'd';
     pn[2] = '_';
     pn[3] = 'a' + (d / 16);
     pn[4] = 'a' + (d % 16);
     pn[5] = '\0';
-    if (f == 0 && mkdir(pn) < 0) {
-      printf("%s: mkdir(%s) failed\n", s, pn);
-      exit(1);
+    ਜੇ (f == 0 && mkdir(pn) < 0) {
+      ਲਿਖੋ("%s: mkdir(%s) failed\n", s, pn);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
     pn[5] = '/';
@@ -3360,38 +3360,38 @@ linkoverflow(char *s)
     pn[9] = 'a' + (f % 16);
     pn[10] = '\0';
 
-    if (link("/lof", pn) < 0) {
-      if (stat("/lof", &st) < 0) {
-        printf("%s: stat(/lof) failed\n", s);
-        exit(1);
+    ਜੇ (link("/lof", pn) < 0) {
+      ਜੇ (stat("/lof", &st) < 0) {
+        ਲਿਖੋ("%s: stat(/lof) failed\n", s);
+        ਬਾਹਰ_ਨਿਕਲੋ(1);
       }
-      if (st.nlink >= 32767) {
+      ਜੇ (st.nlink >= 32767) {
         // overflow check succeeded.
-        break;
+        ਰੋਕੋ;
       }
-      printf("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
-      exit(1);
+      ਲਿਖੋ("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
 
-    if (i % 100 == 0) {
-      printf("%s: i=%d, pn=%s\n", s, i, pn);
+    ਜੇ (i % 100 == 0) {
+      ਲਿਖੋ("%s: i=%d, pn=%s\n", s, i, pn);
     }
   }
 
-  if (stat("/lof", &st) < 0) {
-    printf("%s: stat(/lof) failed\n", s);
-    exit(1);
+  ਜੇ (stat("/lof", &st) < 0) {
+    ਲਿਖੋ("%s: stat(/lof) failed\n", s);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   unlink("/lof");
 
-  if (st.nlink < 0) {
-    printf("%s: negative link count: %d\n", s, st.nlink);
-    exit(1);
+  ਜੇ (st.nlink < 0) {
+    ਲਿਖੋ("%s: negative link count: %d\n", s, st.nlink);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 }
 
-struct test slowtests[] = {
+ਬਣਤਰ test slowtests[] = {
   {bigdir, "bigdir"},
   {manywrites, "manywrites"},
   {badwrite, "badwrite"},
@@ -3409,130 +3409,130 @@ struct test slowtests[] = {
 
 // run each test in its own process. run returns 1 if child's exit()
 // indicates success.
-int
-run(void f(char *), char *s)
+ਪੂਰਨ
+ਲੜੀਵਾਰ(ਖਾਲੀ f(ਅੱਖਰ *), ਅੱਖਰ *s)
 {
-  int pid;
-  int xstatus;
+  ਪੂਰਨ pid;
+  ਪੂਰਨ xstatus;
 
-  printf("test %s: ", s);
-  if ((pid = fork()) < 0) {
-    printf("runtest: fork error\n");
-    exit(1);
+  ਲਿਖੋ("test %s: ", s);
+  ਜੇ ((pid = fork()) < 0) {
+    ਲਿਖੋ("runtest: fork error\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (pid == 0) {
+  ਜੇ (pid == 0) {
     f(s);
-    exit(0);
-  } else {
+    ਬਾਹਰ_ਨਿਕਲੋ(0);
+  } ਨਹੀਂਤਾਂ {
     wait(&xstatus);
-    if (xstatus != 0)
-      printf("FAILED\n");
-    else
-      printf("OK\n");
-    return xstatus == 0;
+    ਜੇ (xstatus != 0)
+      ਲਿਖੋ("FAILED\n");
+    ਨਹੀਂਤਾਂ
+      ਲਿਖੋ("OK\n");
+    ਵਾਪਸ xstatus == 0;
   }
 }
 
-int
-runtests(struct test *tests, char *justone, int continuous)
+ਪੂਰਨ
+runtests(ਬਣਤਰ test *tests, ਅੱਖਰ *justone, ਪੂਰਨ continuous)
 {
-  int ntests = 0;
-  for (struct test *t = tests; t->s != 0; t++) {
-    if ((justone == 0) || strcmp(t->s, justone) == 0) {
+  ਪੂਰਨ ntests = 0;
+  ਲਈ (ਬਣਤਰ test *t = tests; t->s != 0; t++) {
+    ਜੇ ((justone == 0) || strcmp(t->s, justone) == 0) {
       ntests++;
-      if (!run(t->f, t->s)) {
-        if (continuous != 2) {
-          printf("SOME TESTS FAILED\n");
-          return -1;
+      ਜੇ (!ਲੜੀਵਾਰ(t->f, t->s)) {
+        ਜੇ (continuous != 2) {
+          ਲਿਖੋ("SOME TESTS FAILED\n");
+          ਵਾਪਸ -1;
         }
       }
     }
   }
-  return ntests;
+  ਵਾਪਸ ntests;
 }
 
 // use sbrk() to count how many free physical memory pages there are.
-int
+ਪੂਰਨ
 countfree()
 {
-  int n = 0;
+  ਪੂਰਨ n = 0;
   uint64 sz0 = (uint64)sbrk(0);
-  while (1) {
-    char *a = sbrk(PGSIZE);
-    if (a == SBRK_ERROR) {
-      break;
+  ਜਦੋਂ (1) {
+    ਅੱਖਰ *a = sbrk(PGSIZE);
+    ਜੇ (a == SBRK_ERROR) {
+      ਰੋਕੋ;
     }
     n += 1;
   }
   sbrk(-((uint64)sbrk(0) - sz0));
-  return n;
+  ਵਾਪਸ n;
 }
 
-int
-drivetests(int quick, int continuous, char *justone)
+ਪੂਰਨ
+drivetests(ਪੂਰਨ ਤੇਜ਼, ਪੂਰਨ continuous, ਅੱਖਰ *justone)
 {
-  do {
-    printf("usertests starting\n");
-    int free0 = countfree();
-    int free1 = 0;
-    int ntests = 0;
-    int n;
+  ਕਰੋ {
+    ਲਿਖੋ("usertests starting\n");
+    ਪੂਰਨ free0 = countfree();
+    ਪੂਰਨ free1 = 0;
+    ਪੂਰਨ ntests = 0;
+    ਪੂਰਨ n;
     n = runtests(quicktests, justone, continuous);
-    if (n < 0) {
-      if (continuous != 2) {
-        return 1;
+    ਜੇ (n < 0) {
+      ਜੇ (continuous != 2) {
+        ਵਾਪਸ 1;
       }
-    } else {
+    } ਨਹੀਂਤਾਂ {
       ntests += n;
     }
-    if (!quick) {
-      if (justone == 0)
-        printf("usertests slow tests starting\n");
+    ਜੇ (!ਤੇਜ਼) {
+      ਜੇ (justone == 0)
+        ਲਿਖੋ("usertests slow tests starting\n");
       n = runtests(slowtests, justone, continuous);
-      if (n < 0) {
-        if (continuous != 2) {
-          return 1;
+      ਜੇ (n < 0) {
+        ਜੇ (continuous != 2) {
+          ਵਾਪਸ 1;
         }
-      } else {
+      } ਨਹੀਂਤਾਂ {
         ntests += n;
       }
     }
-    if ((free1 = countfree()) < free0) {
-      printf("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
-      if (continuous != 2) {
-        return 1;
+    ਜੇ ((free1 = countfree()) < free0) {
+      ਲਿਖੋ("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
+      ਜੇ (continuous != 2) {
+        ਵਾਪਸ 1;
       }
     }
-    if (justone != 0 && ntests == 0) {
-      printf("NO TESTS EXECUTED\n");
-      return 1;
+    ਜੇ (justone != 0 && ntests == 0) {
+      ਲਿਖੋ("NO TESTS EXECUTED\n");
+      ਵਾਪਸ 1;
     }
-  } while (continuous);
-  return 0;
+  } ਜਦੋਂ (continuous);
+  ਵਾਪਸ 0;
 }
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  int continuous = 0;
-  int quick = 0;
-  char *justone = 0;
+  ਪੂਰਨ continuous = 0;
+  ਪੂਰਨ ਤੇਜ਼ = 0;
+  ਅੱਖਰ *justone = 0;
 
-  if (argc == 2 && strcmp(argv[1], "-q") == 0) {
-    quick = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-c") == 0) {
+  ਜੇ (argc == 2 && strcmp(argv[1], "-q") == 0) {
+    ਤੇਜ਼ = 1;
+  } ਨਹੀਂਤਾਂ ਜੇ (argc == 2 && strcmp(argv[1], "-c") == 0) {
     continuous = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-C") == 0) {
+  } ਨਹੀਂਤਾਂ ਜੇ (argc == 2 && strcmp(argv[1], "-C") == 0) {
     continuous = 2;
-  } else if (argc == 2 && argv[1][0] != '-') {
+  } ਨਹੀਂਤਾਂ ਜੇ (argc == 2 && argv[1][0] != '-') {
     justone = argv[1];
-  } else if (argc > 1) {
-    printf("Usage: usertests [-c] [-C] [-q] [testname]\n");
-    exit(1);
+  } ਨਹੀਂਤਾਂ ਜੇ (argc > 1) {
+    ਲਿਖੋ("Usage: usertests [-c] [-C] [-q] [testname]\n");
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (drivetests(quick, continuous, justone)) {
-    exit(1);
+  ਜੇ (drivetests(ਤੇਜ਼, continuous, justone)) {
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  printf("ALL TESTS PASSED\n");
-  exit(0);
+  ਲਿਖੋ("ALL TESTS PASSED\n");
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

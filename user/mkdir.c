@@ -1,23 +1,23 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  int i;
+  ਪੂਰਨ i;
 
-  if (argc < 2) {
+  ਜੇ (argc < 2) {
     fprintf(2, "Usage: mkdir files...\n");
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (mkdir(argv[i]) < 0) {
+  ਲਈ (i = 1; i < argc; i++) {
+    ਜੇ (mkdir(argv[i]) < 0) {
       fprintf(2, "mkdir: %s failed to create\n", argv[i]);
-      break;
+      ਰੋਕੋ;
     }
   }
 
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

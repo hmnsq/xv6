@@ -1,56 +1,56 @@
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
-#define N 1000
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ N 1000
 
-void
-print(const char *s)
+ਖਾਲੀ
+print(ਅਚਲ ਅੱਖਰ *s)
 {
-  write(1, s, strlen(s));
+  ਲਿਖ(1, s, ਲੜੀ_ਲੰਬਾਈ(s));
 }
 
-void
-forktest(void)
+ਖਾਲੀ
+forktest(ਖਾਲੀ)
 {
-  int n, pid;
+  ਪੂਰਨ n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  ਲਈ (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    ਜੇ (pid < 0)
+      ਰੋਕੋ;
+    ਜੇ (pid == 0)
+      ਬਾਹਰ_ਨਿਕਲੋ(0);
   }
 
-  if (n == N) {
+  ਜੇ (n == N) {
     print("fork claimed to work N times!\n");
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  ਲਈ (; n > 0; n--) {
+    ਜੇ (wait(0) < 0) {
       print("wait stopped early\n");
-      exit(1);
+      ਬਾਹਰ_ਨਿਕਲੋ(1);
     }
   }
 
-  if (wait(0) != -1) {
+  ਜੇ (wait(0) != -1) {
     print("wait got too many\n");
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
 
   print("fork test OK\n");
 }
 
-int
-main(void)
+ਪੂਰਨ
+ਮੁੱਖ(ਖਾਲੀ)
 {
   forktest();
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

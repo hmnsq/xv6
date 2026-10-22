@@ -1,15 +1,15 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  if (argc != 3) {
+  ਜੇ (argc != 3) {
     fprintf(2, "Usage: ln old new\n");
-    exit(1);
+    ਬਾਹਰ_ਨਿਕਲੋ(1);
   }
-  if (link(argv[1], argv[2]) < 0)
+  ਜੇ (link(argv[1], argv[2]) < 0)
     fprintf(2, "link %s %s: failed\n", argv[1], argv[2]);
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }

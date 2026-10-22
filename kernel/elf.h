@@ -1,15 +1,15 @@
 // Format of an ELF executable file
 
-#define ELF_MAGIC 0x464C457FU // "\x7FELF" in little endian
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ELF_MAGIC 0x464C457FU // "\x7FELF" in little endian
 
 // File header
-struct elfhdr {
+ਬਣਤਰ elfhdr {
   uint magic; // must equal ELF_MAGIC
   uchar elf[12];
   ushort type;
   ushort machine;
-  uint version;
-  uint64 entry;
+  uint ਸੰਸਕਰਣ;
+  uint64 ਇੰਦਰਾਜ;
   uint64 phoff;
   uint64 shoff;
   uint flags;
@@ -22,7 +22,7 @@ struct elfhdr {
 };
 
 // Program section header
-struct proghdr {
+ਬਣਤਰ proghdr {
   uint32 type;
   uint32 flags;
   uint64 off;
@@ -34,9 +34,9 @@ struct proghdr {
 };
 
 // Values for Proghdr type
-#define ELF_PROG_LOAD 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ELF_PROG_ਲੱਦੋ 1
 
 // Flag bits for Proghdr flags
-#define ELF_PROG_FLAG_EXEC  1
-#define ELF_PROG_FLAG_WRITE 2
-#define ELF_PROG_FLAG_READ  4
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ELF_PROG_FLAG_EXEC  1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ELF_PROG_FLAG_WRITE 2
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ELF_PROG_FLAG_READ  4

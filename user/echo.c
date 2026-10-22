@@ -1,19 +1,19 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/types.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "kernel/stat.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "user/user.h"
 
-int
-main(int argc, char *argv[])
+ਪੂਰਨ
+ਮੁੱਖ(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
-  int i;
+  ਪੂਰਨ i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  ਲਈ (i = 1; i < argc; i++) {
+    ਲਿਖ(1, argv[i], ਲੜੀ_ਲੰਬਾਈ(argv[i]));
+    ਜੇ (i + 1 < argc) {
+      ਲਿਖ(1, " ", 1);
+    } ਨਹੀਂਤਾਂ {
+      ਲਿਖ(1, "\n", 1);
     }
   }
-  exit(0);
+  ਬਾਹਰ_ਨਿਕਲੋ(0);
 }
