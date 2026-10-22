@@ -8,29 +8,29 @@
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+var_na buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+puur_naa_nka
+main(puur_naa_nka argc, var_na **argv)
 {
-  int fd, n;
-  enum { N = 250, SZ = 2000 };
+  puur_naa_nka fd, n;
+  ga_nanaa { N = 250, SZ = 2000 };
 
-  for (int i = 1; i < argc; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
+  for (puur_naa_nka i = 1; i < argc; i++) {
+    puur_naa_nka pid1 = fork();
+    ᮚᮦᮔ᮪ (pid1 < 0) {
       printf("%s: fork failed\n", argv[0]);
       exit(1);
     }
-    if (pid1 == 0) {
+    ᮚᮦᮔ᮪ (pid1 == 0) {
       fd = open(argv[i], O_CREATE | O_RDWR);
-      if (fd < 0) {
+      ᮚᮦᮔ᮪ (fd < 0) {
         printf("%s: create %s failed\n", argv[0], argv[i]);
         exit(1);
       }
       memset(buf, '0' + i, SZ);
       for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
+        ᮚᮦᮔ᮪ ((n = write(fd, buf, SZ)) != SZ) {
           printf("write failed %d\n", n);
           exit(1);
         }
@@ -38,11 +38,11 @@ main(int argc, char **argv)
       exit(0);
     }
   }
-  int xstatus;
-  for (int i = 1; i < argc; i++) {
+  puur_naa_nka xstatus;
+  for (puur_naa_nka i = 1; i < argc; i++) {
     wait(&xstatus);
-    if (xstatus != 0)
+    ᮚᮦᮔ᮪ (xstatus != 0)
       exit(xstatus);
   }
-  return 0;
+  ᮝᮜᮤ 0;
 }

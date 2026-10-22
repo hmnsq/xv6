@@ -8,15 +8,15 @@
 
 typedef long Align;
 
-union header {
-  struct {
-    union header *ptr;
+sa_ngha header {
+  sa_nracanaa {
+    sa_ngha header *ptr;
     uint size;
   } s;
   Align x;
 };
 
-typedef union header Header;
+typedef sa_ngha header Header;
 
 static Header base;
 static Header *freep;
@@ -28,17 +28,17 @@ free(void *ap)
 
   bp = (Header *)ap - 1;
   for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
+    ᮚᮦᮔ᮪ (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      bha_nga;
+  ᮚᮦᮔ᮪ (bp + bp->s.size == p->s.ptr) {
     bp->s.size += p->s.ptr->s.size;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } ᮜᮤᮚ
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
+  ᮚᮦᮔ᮪ (p + p->s.size == bp) {
     p->s.size += bp->s.size;
     p->s.ptr = bp->s.ptr;
-  } else
+  } ᮜᮤᮚ
     p->s.ptr = bp;
   freep = p;
 }
@@ -46,18 +46,18 @@ free(void *ap)
 static Header *
 morecore(uint nu)
 {
-  char *p;
+  var_na *p;
   Header *hp;
 
-  if (nu < 4096)
+  ᮚᮦᮔ᮪ (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
+  p = sbrk(nu * parimaa_na(Header));
+  ᮚᮦᮔ᮪ (p == SBRK_ERROR)
+    ᮝᮜᮤ 0;
   hp = (Header *)p;
   hp->s.size = nu;
   free((void *)(hp + 1));
-  return freep;
+  ᮝᮜᮤ freep;
 }
 
 void *
@@ -66,25 +66,25 @@ malloc(uint nbytes)
   Header *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
+  nunits = (nbytes + parimaa_na(Header) - 1) / parimaa_na(Header) + 1;
+  ᮚᮦᮔ᮪ ((prevp = freep) == 0) {
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
   for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+    ᮚᮦᮔ᮪ (p->s.size >= nunits) {
+      ᮚᮦᮔ᮪ (p->s.size == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
+      ᮜᮤᮚ {
         p->s.size -= nunits;
         p += p->s.size;
         p->s.size = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      ᮝᮜᮤ (void *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    ᮚᮦᮔ᮪ (p == freep)
+      ᮚᮦᮔ᮪ ((p = morecore(nunits)) == 0)
+        ᮝᮜᮤ 0;
   }
 }

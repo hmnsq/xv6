@@ -7,29 +7,29 @@
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+var_na buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+puur_naa_nka
+main(puur_naa_nka argc, var_na **argv)
 {
-  int fd = 0;
-  char *s = argv[0];
-  struct stat st;
-  char *ff = "file0";
+  puur_naa_nka fd = 0;
+  var_na *s = argv[0];
+  sa_nracanaa stat st;
+  var_na *ff = "file0";
 
-  if ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
+  ᮚᮦᮔ᮪ ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
     printf("%s: open failed\n", s);
     exit(1);
   }
-  if (fstat(fd, &st) < 0) {
+  ᮚᮦᮔ᮪ (fstat(fd, &st) < 0) {
     fprintf(2, "%s: cannot stat %s\n", s, "ff");
     exit(1);
   }
-  if (unlink(ff) < 0) {
+  ᮚᮦᮔ᮪ (unlink(ff) < 0) {
     printf("%s: unlink failed\n", s);
     exit(1);
   }
-  if (open(ff, O_RDONLY) != -1) {
+  ᮚᮦᮔ᮪ (open(ff, O_RDONLY) != -1) {
     printf("%s: open successed\n", s);
     exit(1);
   }
