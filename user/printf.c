@@ -1,111 +1,111 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "user/user.h"
 
-#include <stdarg.h>
+#अन्तर्भाव <stdarg.h>
 
-static char digits[] = "0123456789ABCDEF";
+स्थिर वर्ण digits[] = "0123456789ABCDEF";
 
-static void
-putc(int fd, char c)
+स्थिर शून्य
+putc(पूर्णाङ्क fd, वर्ण c)
 {
-  write(fd, &c, 1);
+  लिख(fd, &c, 1);
 }
 
-static void
-printint(int fd, long long xx, int base, int sgn)
+स्थिर शून्य
+printint(पूर्णाङ्क fd, long long xx, पूर्णाङ्क base, पूर्णाङ्क sgn)
 {
-  char buf[20];
-  int i, neg;
+  वर्ण buf[20];
+  पूर्णाङ्क i, neg;
   unsigned long long x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  जइ (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } अण्णहा {
     x = xx;
   }
 
   i = 0;
-  do {
+  करेहि {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  } जाव ((x /= base) != 0);
+  जइ (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  जाव (--i >= 0)
     putc(fd, buf[i]);
 }
 
-static void
-printptr(int fd, uint64 x)
+स्थिर शून्य
+printptr(पूर्णाङ्क fd, uint64 x)
 {
-  int i;
+  पूर्णाङ्क i;
   putc(fd, '0');
   putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
+  प्रति (i = 0; i < (परिमाण(uint64) * 2); i++, x <<= 4)
+    putc(fd, digits[x >> (परिमाण(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
-void
-vprintf(int fd, const char *fmt, va_list ap)
+शून्य
+vprintf(पूर्णाङ्क fd, ध्रुव वर्ण *fmt, va_list ap)
 {
-  char *s;
-  int c0, c1, c2, i, state;
+  वर्ण *s;
+  पूर्णाङ्क c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  प्रति (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    जइ (state == 0) {
+      जइ (c0 == '%') {
         state = '%';
-      } else {
+      } अण्णहा {
         putc(fd, c0);
       }
-    } else if (state == '%') {
+    } अण्णहा जइ (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      जइ (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      जइ (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
+      जइ (c0 == 'd') {
+        printint(fd, va_arg(ap, पूर्णाङ्क), 10, 1);
+      } अण्णहा जइ (c0 == 'l' && c1 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      } अण्णहा जइ (c0 == 'l' && c1 == 'l' && c2 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
+      } अण्णहा जइ (c0 == 'u') {
         printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
+      } अण्णहा जइ (c0 == 'l' && c1 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      } अण्णहा जइ (c0 == 'l' && c1 == 'l' && c2 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
+      } अण्णहा जइ (c0 == 'x') {
         printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
+      } अण्णहा जइ (c0 == 'l' && c1 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      } अण्णहा जइ (c0 == 'l' && c1 == 'l' && c2 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
+      } अण्णहा जइ (c0 == 'p') {
         printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
+      } अण्णहा जइ (c0 == 'c') {
         putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } अण्णहा जइ (c0 == 's') {
+        जइ ((s = va_arg(ap, वर्ण *)) == 0)
           s = "(null)";
-        for (; *s; s++)
+        प्रति (; *s; s++)
           putc(fd, *s);
-      } else if (c0 == '%') {
+      } अण्णहा जइ (c0 == '%') {
         putc(fd, '%');
-      } else {
+      } अण्णहा {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
@@ -116,8 +116,8 @@ vprintf(int fd, const char *fmt, va_list ap)
   }
 }
 
-void
-fprintf(int fd, const char *fmt, ...)
+शून्य
+fprintf(पूर्णाङ्क fd, ध्रुव वर्ण *fmt, ...)
 {
   va_list ap;
 
@@ -125,8 +125,8 @@ fprintf(int fd, const char *fmt, ...)
   vprintf(fd, fmt, ap);
 }
 
-void
-printf(const char *fmt, ...)
+शून्य
+printf(ध्रुव वर्ण *fmt, ...)
 {
   va_list ap;
 
