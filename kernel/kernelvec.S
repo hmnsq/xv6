@@ -3,7 +3,7 @@
         # mode come here.
         #
         # the current stack is a kernel stack.
-        # push registers, call kerneltrap().
+        # push registers, आह्वान kerneltrap().
         # when kerneltrap() returns, restore registers, return.
         #
 .globl kerneltrap
@@ -34,8 +34,8 @@ kernelvec:
         sd t5, 232(sp)
         sd t6, 240(sp)
 
-        # call the C trap handler in trap.c
-        call kerneltrap
+        # आह्वान the C trap handler in trap.c
+        आह्वान kerneltrap
 
         # restore registers.
         ld ra, 0(sp)

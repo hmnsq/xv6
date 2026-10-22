@@ -8,63 +8,63 @@
 # ./test-xv6.py crash  (runs the crash tests)
 # ./test-xv6.py log (runs the log crash test)
 
-import argparse, os, inspect, re, signal, subprocess, sys, time
-from subprocess import run
+आनयन argparse, os, inspect, re, signal, subprocess, sys, time
+तः subprocess आनयन run
 
-sys.stdout.reconfigure(line_buffering=True)
+sys.stdout.reconfigure(पंक्ति_buffering=सत्य)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('testrex', help="test name or regular expression")
 parser.add_argument("-q", action='store_true', help="usertests quick")
 args = parser.parse_args()
 
-class QEMU(object):
+वर्ग QEMU(object):
 
-    def __init__(self, reset=False):
-        if reset:
+    def __init__(self, reset=असत्य):
+        यदि reset:
             self.build_xv6()
             self.reset_fs()
         q = ["make", "qemu"]
         self.proc = subprocess.Popen(q, stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.STDOUT)
-        os.set_blocking(self.proc.stdout.fileno(), False)
+        os.set_blocking(self.proc.stdout.fileno(), असत्य)
         self.output = ""
         self.outbytes = bytearray()
         self.reported = 0
-        time.sleep(1)
+        time.सुषुप्ति(1)
 
     def reset_fs(self):
-        try:
-            run(["rm", "-f", "fs.img"], check=True)
-            run(["make", "fs.img"], check=True)
-        except subprocess.CalledProcessError as e:
+        यत्न:
+            run(["rm", "-f", "fs.img"], check=सत्य)
+            run(["make", "fs.img"], check=सत्य)
+        अपवाद subprocess.CalledProcessError इव e:
             print(f"Command failed with exit code {e.returncode}")
 
     def build_xv6(self):
-        try:
-            run(["make", "kernel/kernel"], check=True)
-        except subprocess.CalledProcessError as e:
+        यत्न:
+            run(["make", "kernel/kernel"], check=सत्य)
+        अपवाद subprocess.CalledProcessError इव e:
             print(f"Command failed with exit code {e.returncode}")
 
     def save_output(self):
-      try:
-        with open("test-xv6.out", "w") as f:
-            f.write(self.output)
+      यत्न:
+        with open("test-xv6.out", "w") इव f:
+            f.लिख(self.output)
             f.close()
-      except OSError as e:
+      अपवाद OSError इव e:
         print("Provided a bad results path. Error:", e)     
         
     def cmd(self, c):
-        if isinstance(c, str):
+        यदि isinstance(c, str):
             c = c.encode('utf-8')
-        self.proc.stdin.write(c)
+        self.proc.stdin.लिख(c)
         self.proc.stdin.flush()
         
     def crash(self):
         ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
-        if len(kids) == 0:
+        kids = [पूर्णाङ्क(पंक्ति) प्रति पंक्ति अन्तः ps.stdout.splitlines()]
+        यदि len(kids) == 0:
             print("no qemu")
             sys.exit(1)
         print("kill", kids[0])
@@ -73,19 +73,19 @@ class QEMU(object):
     def stop(self):
         self.proc.terminate()
 
-    def read(self):
-        while True:
-            try:
-                buf = os.read(self.proc.stdout.fileno(), 4096)
-            except BlockingIOError:
-                break
-            if len(buf) == 0:  # qemu exited
-                break
+    def पठ(self):
+        यावत् सत्य:
+            यत्न:
+                buf = os.पठ(self.proc.stdout.fileno(), 4096)
+            अपवाद BlockingIOError:
+                भङ्ग
+            यदि len(buf) == 0:  # qemu exited
+                भङ्ग
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
-    def lines(self):
-        return self.output.splitlines()
+    def पंक्तियाँ(self):
+        प्रत्यागम self.output.splitlines()
 
     def error(self, *regexps):
         print("FAIL: match failed", regexps)
@@ -93,68 +93,68 @@ class QEMU(object):
         self.stop()
         sys.exit(1)
 
-    def match(self, *regexps, exit=True):
-        found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
-                print(line)
-                found = True
-        if not found and exit:
+    def match(self, *regexps, exit=सत्य):
+        found = असत्य
+        प्रति पंक्ति अन्तः self.पंक्तियाँ():
+            यदि any(re.match(r, पंक्ति) प्रति r अन्तः regexps):
+                print(पंक्ति)
+                found = सत्य
+        यदि न found च exit:
             self.error(*regexps)
-        return found
+        प्रत्यागम found
 
     # Print the lines matching regexp that have arrived since the last
     # call.  A trailing partial line is left for the next call, so that
     # each line is printed once, after all of it has been read.
     def progress(self, regexp):
         end = self.output.rfind("\n") + 1
-        if end <= self.reported:
-            return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
-                print(line)
+        यदि end <= self.reported:
+            प्रत्यागम
+        प्रति पंक्ति अन्तः self.output[self.reported:end].splitlines():
+            यदि re.match(regexp, पंक्ति):
+                print(पंक्ति)
         self.reported = end
 
     def monitor(self, *regexps, progress="", timeout):
         deadline = time.time() + timeout
-        while True:
-            time.sleep(1)
+        यावत् सत्य:
+            time.सुषुप्ति(1)
             timeleft = deadline - time.time()
-            if timeleft < 0:
+            यदि timeleft < 0:
                 self.error(*regexps)
-            self.read()
-            if progress:
+            self.पठ()
+            यदि progress:
                 self.progress(progress)
-            if self.match(*regexps, exit=False):
-                return
+            यदि self.match(*regexps, exit=असत्य):
+                प्रत्यागम
 
 def crash_log():
-    q = QEMU(True)
+    q = QEMU(सत्य)
     q.cmd("logstress f0 f1 f2 f3 f4 f5\n")
-    time.sleep(2)
+    time.सुषुप्ति(2)
     q.crash()
     q.stop()
 
 def recover_log():
     q = QEMU()
-    time.sleep(2)
-    q.read()
-    ok = q.match('^recovering', exit=False)
-    if ok:
+    time.सुषुप्ति(2)
+    q.पठ()
+    ok = q.match('^recovering', exit=असत्य)
+    यदि ok:
         q.cmd("ls\n")
         q.monitor('f5', timeout=30)
     q.stop()
-    return ok
+    प्रत्यागम ok
 
 def forphan():
-    q = QEMU(True)
+    q = QEMU(सत्य)
     q.cmd("forphan\n")
     q.monitor('wait', timeout=30)
     q.crash()
     q.stop()
 
 def dorphan():
-    q = QEMU(True)
+    q = QEMU(सत्य)
     q.cmd("dorphan\n")
     q.monitor('wait', timeout=30)
     q.crash()
@@ -167,12 +167,12 @@ def recover_orphan():
 
 def test_log():
     print("Test recovery of log")
-    for i in range(20):
+    प्रति i अन्तः range(20):
         crash_log()
         ok = recover_log()
-        if ok:
+        यदि ok:
             print("OK")
-            return
+            प्रत्यागम
         print("log attempt ", i+1)
     print("FAIL")
     sys.exit(1)
@@ -197,12 +197,12 @@ def test_crash():
 def test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    यदि args.q:
         opt = " -q"
         timeout = 300
-    elif test != "":
+    नोचेद्यदि test != "":
         opt += " " + test
-    q = QEMU(True)
+    q = QEMU(सत्य)
     q.cmd("usertests" + opt + "\n")
     q.monitor('^ALL TESTS PASSED', progress='test', timeout=timeout)
     q.stop()
@@ -210,15 +210,15 @@ def test_usertests(test=""):
 def main():
     print(args)
     rex = r'%s' % args.testrex
-    funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
-                     if (inspect.isfunction(obj) and 
+    funcs = [(obj,name) प्रति name,obj अन्तः inspect.getmembers(sys.modules[__name__]) 
+                     यदि (inspect.isfunction(obj) च 
                          name.startswith('test'))]
-    none = True
-    for (f,n) in funcs:
-        if re.search(rex, n):
-            none = False
+    none = सत्य
+    प्रति (f,n) अन्तः funcs:
+        यदि re.खोज(rex, n):
+            none = असत्य
             f()
-    if none:
+    यदि none:
         test_usertests(test=args.testrex)
 
 main()
