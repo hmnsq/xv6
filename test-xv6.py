@@ -8,217 +8,217 @@
 # ./test-xv6.py crash  (runs the crash tests)
 # ./test-xv6.py log (runs the log crash test)
 
-import argparse, os, inspect, re, signal, subprocess, sys, time
-from subprocess import run
+استورد argparse, os, inspect, re, signal, subprocess, sys, وقت
+من subprocess استورد لاڳيتو
 
-sys.stdout.reconfigure(line_buffering=True)
+sys.stdout.reconfigure(سٽ_buffering=سچ)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('testrex', help="test name or regular expression")
-parser.add_argument("-q", action='store_true', help="usertests quick")
-args = parser.parse_args()
+parser = argparse.دليل_Parser()
+parser.جوڙيو_دليل('testrex', help="test name or regular expression")
+parser.جوڙيو_دليل("-q", action='store_true', help="usertests quick")
+دليلون = parser.parse_دليلون()
 
-class QEMU(object):
+صنف QEMU(object):
 
-    def __init__(self, reset=False):
-        if reset:
+    وصف __init__(self, reset=خطأ):
+        إذا reset:
             self.build_xv6()
             self.reset_fs()
         q = ["make", "qemu"]
         self.proc = subprocess.Popen(q, stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.STDOUT)
-        os.set_blocking(self.proc.stdout.fileno(), False)
+        os.سيٽ_blocking(self.proc.stdout.fileno(), خطأ)
         self.output = ""
         self.outbytes = bytearray()
         self.reported = 0
-        time.sleep(1)
+        وقت.نوم(1)
 
-    def reset_fs(self):
-        try:
-            run(["rm", "-f", "fs.img"], check=True)
-            run(["make", "fs.img"], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Command failed with exit code {e.returncode}")
+    وصف reset_fs(self):
+        حاول:
+            لاڳيتو(["rm", "-f", "fs.img"], check=سچ)
+            لاڳيتو(["make", "fs.img"], check=سچ)
+        استثناء subprocess.CalledProcessError كـ e:
+            ڇاپيو(f"Command failed with exit code {e.returncode}")
 
-    def build_xv6(self):
-        try:
-            run(["make", "kernel/kernel"], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Command failed with exit code {e.returncode}")
+    وصف build_xv6(self):
+        حاول:
+            لاڳيتو(["make", "kernel/kernel"], check=سچ)
+        استثناء subprocess.CalledProcessError كـ e:
+            ڇاپيو(f"Command failed with exit code {e.returncode}")
 
-    def save_output(self):
-      try:
-        with open("test-xv6.out", "w") as f:
-            f.write(self.output)
+    وصف save_output(self):
+      حاول:
+        سان open("test-xv6.out", "w") كـ f:
+            f.اكتب(self.output)
             f.close()
-      except OSError as e:
-        print("Provided a bad results path. Error:", e)     
+      استثناء OSError كـ e:
+        ڇاپيو("Provided a bad results path. Error:", e)     
         
-    def cmd(self, c):
-        if isinstance(c, str):
+    وصف cmd(self, c):
+        إذا isinstance(c, str):
             c = c.encode('utf-8')
-        self.proc.stdin.write(c)
+        self.proc.stdin.اكتب(c)
         self.proc.stdin.flush()
         
-    def crash(self):
-        ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
-        if len(kids) == 0:
-            print("no qemu")
+    وصف crash(self):
+        ps = لاڳيتو(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
+        kids = [صحيح(سٽ) لكل سٽ في ps.stdout.splitlines()]
+        إذا ڊيگهه(kids) == 0:
+            ڇاپيو("no qemu")
             sys.exit(1)
-        print("kill", kids[0])
+        ڇاپيو("kill", kids[0])
         os.kill(kids[0], signal.SIGKILL)
 
-    def stop(self):
+    وصف stop(self):
         self.proc.terminate()
 
-    def read(self):
-        while True:
-            try:
-                buf = os.read(self.proc.stdout.fileno(), 4096)
-            except BlockingIOError:
-                break
-            if len(buf) == 0:  # qemu exited
-                break
+    وصف اقرأ(self):
+        طالما سچ:
+            حاول:
+                buf = os.اقرأ(self.proc.stdout.fileno(), 4096)
+            استثناء BlockingIOError:
+                اكسر
+            إذا ڊيگهه(buf) == 0:  # qemu exited
+                اكسر
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
-    def lines(self):
-        return self.output.splitlines()
+    وصف سٽون(self):
+        أرجع self.output.splitlines()
 
-    def error(self, *regexps):
-        print("FAIL: match failed", regexps)
+    وصف error(self, *regexps):
+        ڇاپيو("FAIL: match failed", regexps)
         self.save_output()
         self.stop()
         sys.exit(1)
 
-    def match(self, *regexps, exit=True):
-        found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
-                print(line)
-                found = True
-        if not found and exit:
+    وصف ميلاپ(self, *regexps, exit=سچ):
+        مليو = خطأ
+        لكل سٽ في self.سٽون():
+            إذا any(re.ميلاپ(r, سٽ) لكل r في regexps):
+                ڇاپيو(سٽ)
+                مليو = سچ
+        إذا ليس مليو و exit:
             self.error(*regexps)
-        return found
+        أرجع مليو
 
     # Print the lines matching regexp that have arrived since the last
     # call.  A trailing partial line is left for the next call, so that
     # each line is printed once, after all of it has been read.
-    def progress(self, regexp):
-        end = self.output.rfind("\n") + 1
-        if end <= self.reported:
-            return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
-                print(line)
-        self.reported = end
+    وصف ترقي(self, regexp):
+        پڇاڙي = self.output.rfind("\n") + 1
+        إذا پڇاڙي <= self.reported:
+            أرجع
+        لكل سٽ في self.output[self.reported:پڇاڙي].splitlines():
+            إذا re.ميلاپ(regexp, سٽ):
+                ڇاپيو(سٽ)
+        self.reported = پڇاڙي
 
-    def monitor(self, *regexps, progress="", timeout):
-        deadline = time.time() + timeout
-        while True:
-            time.sleep(1)
-            timeleft = deadline - time.time()
-            if timeleft < 0:
+    وصف monitor(self, *regexps, ترقي="", timeout):
+        deadline = وقت.وقت() + timeout
+        طالما سچ:
+            وقت.نوم(1)
+            timeleft = deadline - وقت.وقت()
+            إذا timeleft < 0:
                 self.error(*regexps)
-            self.read()
-            if progress:
-                self.progress(progress)
-            if self.match(*regexps, exit=False):
-                return
+            self.اقرأ()
+            إذا ترقي:
+                self.ترقي(ترقي)
+            إذا self.ميلاپ(*regexps, exit=خطأ):
+                أرجع
 
-def crash_log():
-    q = QEMU(True)
+وصف crash_log():
+    q = QEMU(سچ)
     q.cmd("logstress f0 f1 f2 f3 f4 f5\n")
-    time.sleep(2)
+    وقت.نوم(2)
     q.crash()
     q.stop()
 
-def recover_log():
+وصف recover_log():
     q = QEMU()
-    time.sleep(2)
-    q.read()
-    ok = q.match('^recovering', exit=False)
-    if ok:
+    وقت.نوم(2)
+    q.اقرأ()
+    ok = q.ميلاپ('^recovering', exit=خطأ)
+    إذا ok:
         q.cmd("ls\n")
         q.monitor('f5', timeout=30)
     q.stop()
-    return ok
+    أرجع ok
 
-def forphan():
-    q = QEMU(True)
+وصف forphan():
+    q = QEMU(سچ)
     q.cmd("forphan\n")
     q.monitor('wait', timeout=30)
     q.crash()
     q.stop()
 
-def dorphan():
-    q = QEMU(True)
+وصف dorphan():
+    q = QEMU(سچ)
     q.cmd("dorphan\n")
     q.monitor('wait', timeout=30)
     q.crash()
     q.stop()
 
-def recover_orphan():
+وصف recover_orphan():
     q = QEMU()
     q.monitor('^ireclaim', timeout=30)
     q.stop()
 
-def test_log():
-    print("Test recovery of log")
-    for i in range(20):
+وصف test_log():
+    ڇاپيو("Test recovery of log")
+    لكل i في سلسلو(20):
         crash_log()
         ok = recover_log()
-        if ok:
-            print("OK")
-            return
-        print("log attempt ", i+1)
-    print("FAIL")
+        إذا ok:
+            ڇاپيو("OK")
+            أرجع
+        ڇاپيو("log attempt ", i+1)
+    ڇاپيو("FAIL")
     sys.exit(1)
     
-def test_forphan():
-    print("Test recovery of an orphaned file")
+وصف test_forphan():
+    ڇاپيو("Test recovery of an orphaned file")
     forphan()
     recover_orphan()
-    print("OK")
+    ڇاپيو("OK")
 
-def test_dorphan():
-    print("Test recovery of an orphaned file")
+وصف test_dorphan():
+    ڇاپيو("Test recovery of an orphaned file")
     dorphan()
     recover_orphan()
-    print("OK")
+    ڇاپيو("OK")
 
-def test_crash():
+وصف test_crash():
     test_log()
     test_forphan()
     test_dorphan()
 
-def test_usertests(test=""):
+وصف test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    إذا دليلون.q:
         opt = " -q"
         timeout = 300
-    elif test != "":
+    وإلاإذا test != "":
         opt += " " + test
-    q = QEMU(True)
+    q = QEMU(سچ)
     q.cmd("usertests" + opt + "\n")
-    q.monitor('^ALL TESTS PASSED', progress='test', timeout=timeout)
+    q.monitor('^ALL TESTS PASSED', ترقي='test', timeout=timeout)
     q.stop()
 
-def main():
-    print(args)
-    rex = r'%s' % args.testrex
-    funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
-                     if (inspect.isfunction(obj) and 
+وصف مکيه():
+    ڇاپيو(دليلون)
+    rex = r'%s' % دليلون.testrex
+    funcs = [(obj,name) لكل name,obj في inspect.getmembers(sys.modules[__name__]) 
+                     إذا (inspect.isfunction(obj) و 
                          name.startswith('test'))]
-    none = True
-    for (f,n) in funcs:
-        if re.search(rex, n):
-            none = False
+    none = سچ
+    لكل (f,n) في funcs:
+        إذا re.ڳولا(rex, n):
+            none = خطأ
             f()
-    if none:
-        test_usertests(test=args.testrex)
+    إذا none:
+        test_usertests(test=دليلون.testrex)
 
-main()
+مکيه()

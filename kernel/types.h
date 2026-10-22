@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+تعريفنوع بنانشان صحيح uint;
+تعريفنوع بنانشان ننڍو ushort;
+تعريفنوع بنانشان حرف uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+تعريفنوع بنانشان حرف uint8;
+تعريفنوع بنانشان ننڍو uint16;
+تعريفنوع بنانشان صحيح uint32;
+تعريفنوع بنانشان ڊگهو uint64;
 
-typedef uint64 pde_t;
+تعريفنوع uint64 pde_t;

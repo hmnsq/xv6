@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
+#ضمن "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+تعريفنوع ڊگهو Align;
 
-union header {
-  struct {
-    union header *ptr;
-    uint size;
+اتحاد سرو {
+  بنية {
+    اتحاد سرو *ptr;
+    uint سائيز;
   } s;
   Align x;
 };
 
-typedef union header Header;
+تعريفنوع اتحاد سرو سرو_2;
 
-static Header base;
-static Header *freep;
+ساكن سرو_2 بنياد;
+ساكن سرو_2 *freep;
 
-void
-free(void *ap)
+فراغ
+حرر(فراغ *ap)
 {
-  Header *bp, *p;
+  سرو_2 *bp, *p;
 
-  bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
-    bp->s.size += p->s.ptr->s.size;
+  bp = (سرو_2 *)ap - 1;
+  لكل (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    إذا (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      اكسر;
+  إذا (bp + bp->s.سائيز == p->s.ptr) {
+    bp->s.سائيز += p->s.ptr->s.سائيز;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } وإلا
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
-    p->s.size += bp->s.size;
+  إذا (p + p->s.سائيز == bp) {
+    p->s.سائيز += bp->s.سائيز;
     p->s.ptr = bp->s.ptr;
-  } else
+  } وإلا
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+ساكن سرو_2 *
 morecore(uint nu)
 {
-  char *p;
-  Header *hp;
+  حرف *p;
+  سرو_2 *hp;
 
-  if (nu < 4096)
+  إذا (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
-  hp = (Header *)p;
-  hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  p = sbrk(nu * حجم(سرو_2));
+  إذا (p == SBRK_ERROR)
+    أرجع 0;
+  hp = (سرو_2 *)p;
+  hp->s.سائيز = nu;
+  حرر((فراغ *)(hp + 1));
+  أرجع freep;
 }
 
-void *
-malloc(uint nbytes)
+فراغ *
+يادگيري_ڏيو(uint nbytes)
 {
-  Header *p, *prevp;
+  سرو_2 *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
-    base.s.ptr = freep = prevp = &base;
-    base.s.size = 0;
+  nunits = (nbytes + حجم(سرو_2) - 1) / حجم(سرو_2) + 1;
+  إذا ((prevp = freep) == 0) {
+    بنياد.s.ptr = freep = prevp = &بنياد;
+    بنياد.s.سائيز = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  لكل (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    إذا (p->s.سائيز >= nunits) {
+      إذا (p->s.سائيز == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
-        p->s.size -= nunits;
-        p += p->s.size;
-        p->s.size = nunits;
+      وإلا {
+        p->s.سائيز -= nunits;
+        p += p->s.سائيز;
+        p->s.سائيز = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      أرجع (فراغ *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    إذا (p == freep)
+      إذا ((p = morecore(nunits)) == 0)
+        أرجع 0;
   }
 }

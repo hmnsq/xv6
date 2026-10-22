@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
+#ضمن "kernel/fs.h"
+#ضمن "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+حرف *
+fmtname(حرف *رستو)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  ساكن حرف buf[DIRSIZ + 1];
+  حرف *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  لكل (p = رستو + لڙي_ڊيگهه(رستو); p >= رستو && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
-  memmove(buf, p, strlen(p));
-  memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  إذا (لڙي_ڊيگهه(p) >= DIRSIZ)
+    أرجع p;
+  memmove(buf, p, لڙي_ڊيگهه(p));
+  memset(buf + لڙي_ڊيگهه(p), ' ', DIRSIZ - لڙي_ڊيگهه(p));
+  buf[حجم(buf) - 1] = '\0';
+  أرجع buf;
 }
 
-void
-ls(char *path)
+فراغ
+ls(حرف *رستو)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  حرف buf[512], *p;
+  صحيح fd;
+  بنية dirent de;
+  بنية stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
-    fprintf(2, "ls: cannot open %s\n", path);
-    return;
+  إذا ((fd = open(رستو, O_RDONLY)) < 0) {
+    fprintf(2, "ls: cannot open %s\n", رستو);
+    أرجع;
   }
 
-  if (fstat(fd, &st) < 0) {
-    fprintf(2, "ls: cannot stat %s\n", path);
+  إذا (fstat(fd, &st) < 0) {
+    fprintf(2, "ls: cannot stat %s\n", رستو);
     close(fd);
-    return;
+    أرجع;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  بدل (st.type) {
+  حالة T_DEVICE:
+  حالة T_FILE:
+    لکو("%s %d %d %d\n", fmtname(رستو), st.type, st.ino, (صحيح)st.سائيز);
+    اكسر;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
-      printf("ls: path too long\n");
-      break;
+  حالة T_DIR:
+    إذا (لڙي_ڊيگهه(رستو) + 1 + DIRSIZ + 1 > حجم buf) {
+      لکو("ls: path too long\n");
+      اكسر;
     }
-    strcpy(buf, path);
-    p = buf + strlen(buf);
+    strcpy(buf, رستو);
+    p = buf + لڙي_ڊيگهه(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    طالما (اقرأ(fd, &de, حجم(de)) == حجم(de)) {
+      إذا (de.inum == 0)
+        استمر;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
-        printf("ls: cannot stat %s\n", buf);
-        continue;
+      إذا (stat(buf, &st) < 0) {
+        لکو("ls: cannot stat %s\n", buf);
+        استمر;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      لکو("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (صحيح)st.سائيز);
     }
-    break;
+    اكسر;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+صحيح
+مکيه(صحيح argc, حرف *argv[])
 {
-  int i;
+  صحيح i;
 
-  if (argc < 2) {
+  إذا (argc < 2) {
     ls(".");
-    exit(0);
+    ٻاهر_نڪرو(0);
   }
-  for (i = 1; i < argc; i++)
+  لكل (i = 1; i < argc; i++)
     ls(argv[i]);
-  exit(0);
+  ٻاهر_نڪرو(0);
 }

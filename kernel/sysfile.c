@@ -4,238 +4,238 @@
 // user code, and calls into file.c and fs.c.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "stat.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "fcntl.h"
+#ضمن "types.h"
+#ضمن "riscv.h"
+#ضمن "defs.h"
+#ضمن "param.h"
+#ضمن "stat.h"
+#ضمن "spinlock.h"
+#ضمن "proc.h"
+#ضمن "fs.h"
+#ضمن "sleeplock.h"
+#ضمن "file.h"
+#ضمن "fcntl.h"
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
-static int
-argfd(int n, int *pfd, struct file **pf)
+ساكن صحيح
+argfd(صحيح n, صحيح *pfd, بنية file **pf)
 {
-  int fd;
-  struct file *f;
+  صحيح fd;
+  بنية file *f;
 
   argint(n, &fd);
-  if (fd < 0 || fd >= NOFILE || (f = myproc()->ofile[fd]) == 0)
-    return -1;
-  if (pfd)
+  إذا (fd < 0 || fd >= NOFILE || (f = myproc()->ofile[fd]) == 0)
+    أرجع -1;
+  إذا (pfd)
     *pfd = fd;
-  if (pf)
+  إذا (pf)
     *pf = f;
-  return 0;
+  أرجع 0;
 }
 
 // Allocate a file descriptor for the given file.
 // Takes over file reference from caller on success.
-static int
-fdalloc(struct file *f)
+ساكن صحيح
+fdalloc(بنية file *f)
 {
-  int fd;
-  struct proc *p = myproc();
+  صحيح fd;
+  بنية proc *p = myproc();
 
-  for (fd = 0; fd < NOFILE; fd++) {
-    if (p->ofile[fd] == 0) {
+  لكل (fd = 0; fd < NOFILE; fd++) {
+    إذا (p->ofile[fd] == 0) {
       p->ofile[fd] = f;
-      return fd;
+      أرجع fd;
     }
   }
-  return -1;
+  أرجع -1;
 }
 
 uint64
-sys_dup(void)
+sys_dup(فراغ)
 {
-  struct file *f;
-  int fd;
+  بنية file *f;
+  صحيح fd;
 
-  if (argfd(0, 0, &f) < 0)
-    return -1;
-  if ((fd = fdalloc(f)) < 0)
-    return -1;
+  إذا (argfd(0, 0, &f) < 0)
+    أرجع -1;
+  إذا ((fd = fdalloc(f)) < 0)
+    أرجع -1;
   filedup(f);
-  return fd;
+  أرجع fd;
 }
 
 uint64
-sys_read(void)
+sys_read(فراغ)
 {
-  struct file *f;
-  int n;
+  بنية file *f;
+  صحيح n;
   uint64 p;
 
   argaddr(1, &p);
   argint(2, &n);
-  if (argfd(0, 0, &f) < 0)
-    return -1;
-  return fileread(f, p, n);
+  إذا (argfd(0, 0, &f) < 0)
+    أرجع -1;
+  أرجع fileread(f, p, n);
 }
 
 uint64
-sys_write(void)
+sys_write(فراغ)
 {
-  struct file *f;
-  int n;
+  بنية file *f;
+  صحيح n;
   uint64 p;
 
   argaddr(1, &p);
   argint(2, &n);
-  if (argfd(0, 0, &f) < 0)
-    return -1;
+  إذا (argfd(0, 0, &f) < 0)
+    أرجع -1;
 
-  return filewrite(f, p, n);
+  أرجع filewrite(f, p, n);
 }
 
 uint64
-sys_close(void)
+sys_close(فراغ)
 {
-  int fd;
-  struct file *f;
+  صحيح fd;
+  بنية file *f;
 
-  if (argfd(0, &fd, &f) < 0)
-    return -1;
+  إذا (argfd(0, &fd, &f) < 0)
+    أرجع -1;
   myproc()->ofile[fd] = 0;
   fileclose(f);
-  return 0;
+  أرجع 0;
 }
 
 uint64
-sys_fstat(void)
+sys_fstat(فراغ)
 {
-  struct file *f;
+  بنية file *f;
   uint64 st; // user pointer to struct stat
 
   argaddr(1, &st);
-  if (argfd(0, 0, &f) < 0)
-    return -1;
-  return filestat(f, st);
+  إذا (argfd(0, 0, &f) < 0)
+    أرجع -1;
+  أرجع filestat(f, st);
 }
 
 // Create the path new as a link to the same inode as old.
 uint64
-sys_link(void)
+sys_link(فراغ)
 {
-  char name[DIRSIZ], new[MAXPATH], old[MAXPATH];
-  struct inode *dp, *ip;
+  حرف name[DIRSIZ], new[MAXPATH], old[MAXPATH];
+  بنية inode *dp, *ip;
 
-  if (argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
-    return -1;
+  إذا (argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
+    أرجع -1;
 
   begin_op();
-  if ((ip = namei(old)) == 0) {
-    end_op();
-    return -1;
+  إذا ((ip = namei(old)) == 0) {
+    پڇاڙي_op();
+    أرجع -1;
   }
 
   ilock(ip);
-  if (ip->type == T_DIR) {
+  إذا (ip->type == T_DIR) {
     iunlockput(ip);
-    end_op();
-    return -1;
+    پڇاڙي_op();
+    أرجع -1;
   }
 
-  if (ip->nlink >= NLINK_MAX) {
+  إذا (ip->nlink >= NLINK_MAX) {
     iunlockput(ip);
-    end_op();
-    return -1;
+    پڇاڙي_op();
+    أرجع -1;
   }
 
   ip->nlink++;
   iupdate(ip);
   iunlock(ip);
 
-  if ((dp = nameiparent(new, name)) == 0)
-    goto bad;
+  إذا ((dp = nameiparent(new, name)) == 0)
+    اذهب bad;
   ilock(dp);
   // dp may have been unlinked while we resolved it; linking into an
   // orphaned directory leaks ip (itrunc discards the record without
   // dropping ip->nlink).  create() has the same guard.
-  if (dp->nlink == 0) {
+  إذا (dp->nlink == 0) {
     iunlockput(dp);
-    goto bad;
+    اذهب bad;
   }
-  if (dp->dev != ip->dev || dirlink(dp, name, ip->inum) < 0) {
+  إذا (dp->dev != ip->dev || dirlink(dp, name, ip->inum) < 0) {
     iunlockput(dp);
-    goto bad;
+    اذهب bad;
   }
   iunlockput(dp);
   iput(ip);
 
-  end_op();
+  پڇاڙي_op();
 
-  return 0;
+  أرجع 0;
 
 bad:
   ilock(ip);
   ip->nlink--;
   iupdate(ip);
   iunlockput(ip);
-  end_op();
-  return -1;
+  پڇاڙي_op();
+  أرجع -1;
 }
 
 // Is the directory dp empty except for "." and ".." ?
-static int
-isdirempty(struct inode *dp)
+ساكن صحيح
+isdirempty(بنية inode *dp)
 {
-  int off;
-  struct dirent de;
+  صحيح off;
+  بنية dirent de;
 
-  for (off = 2 * sizeof(de); off < dp->size; off += sizeof(de)) {
-    if (readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  لكل (off = 2 * حجم(de); off < dp->سائيز; off += حجم(de)) {
+    إذا (readi(dp, 0, (uint64)&de, off, حجم(de)) != حجم(de))
       panic("isdirempty: readi");
-    if (de.inum != 0)
-      return 0;
+    إذا (de.inum != 0)
+      أرجع 0;
   }
-  return 1;
+  أرجع 1;
 }
 
 uint64
-sys_unlink(void)
+sys_unlink(فراغ)
 {
-  struct inode *ip, *dp;
-  struct dirent de;
-  char name[DIRSIZ], path[MAXPATH];
+  بنية inode *ip, *dp;
+  بنية dirent de;
+  حرف name[DIRSIZ], رستو[MAXPATH];
   uint off;
 
-  if (argstr(0, path, MAXPATH) < 0)
-    return -1;
+  إذا (argstr(0, رستو, MAXPATH) < 0)
+    أرجع -1;
 
   begin_op();
-  if ((dp = nameiparent(path, name)) == 0) {
-    end_op();
-    return -1;
+  إذا ((dp = nameiparent(رستو, name)) == 0) {
+    پڇاڙي_op();
+    أرجع -1;
   }
 
   ilock(dp);
 
   // Cannot unlink "." or "..".
-  if (namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
-    goto bad;
+  إذا (namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
+    اذهب bad;
 
-  if ((ip = dirlookup(dp, name, &off)) == 0)
-    goto bad;
+  إذا ((ip = dirlookup(dp, name, &off)) == 0)
+    اذهب bad;
   ilock(ip);
 
-  if (ip->nlink < 1)
+  إذا (ip->nlink < 1)
     panic("unlink: nlink < 1");
-  if (ip->type == T_DIR && !isdirempty(ip)) {
+  إذا (ip->type == T_DIR && !isdirempty(ip)) {
     iunlockput(ip);
-    goto bad;
+    اذهب bad;
   }
 
-  memset(&de, 0, sizeof(de));
-  if (writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  memset(&de, 0, حجم(de));
+  إذا (writei(dp, 0, (uint64)&de, off, حجم(de)) != حجم(de))
     panic("unlink: writei");
-  if (ip->type == T_DIR) {
+  إذا (ip->type == T_DIR) {
     dp->nlink--;
     iupdate(dp);
   }
@@ -245,50 +245,50 @@ sys_unlink(void)
   iupdate(ip);
   iunlockput(ip);
 
-  end_op();
+  پڇاڙي_op();
 
-  return 0;
+  أرجع 0;
 
 bad:
   iunlockput(dp);
-  end_op();
-  return -1;
+  پڇاڙي_op();
+  أرجع -1;
 }
 
-static struct inode *
-create(char *path, short type, short major, short minor)
+ساكن بنية inode *
+create(حرف *رستو, ننڍو type, ننڍو major, ننڍو minor)
 {
-  struct inode *ip, *dp;
-  char name[DIRSIZ];
+  بنية inode *ip, *dp;
+  حرف name[DIRSIZ];
 
-  if ((dp = nameiparent(path, name)) == 0)
-    return 0;
+  إذا ((dp = nameiparent(رستو, name)) == 0)
+    أرجع 0;
 
   ilock(dp);
 
-  if (dp->nlink == 0) {
+  إذا (dp->nlink == 0) {
     iunlockput(dp);
-    return 0;
+    أرجع 0;
   }
 
   // a new directory's ".." would push dp->nlink past its maximum
-  if (type == T_DIR && dp->nlink >= NLINK_MAX) {
+  إذا (type == T_DIR && dp->nlink >= NLINK_MAX) {
     iunlockput(dp);
-    return 0;
+    أرجع 0;
   }
 
-  if ((ip = dirlookup(dp, name, 0)) != 0) {
+  إذا ((ip = dirlookup(dp, name, 0)) != 0) {
     iunlockput(dp);
     ilock(ip);
-    if (type == T_FILE && (ip->type == T_FILE || ip->type == T_DEVICE))
-      return ip;
+    إذا (type == T_FILE && (ip->type == T_FILE || ip->type == T_DEVICE))
+      أرجع ip;
     iunlockput(ip);
-    return 0;
+    أرجع 0;
   }
 
-  if ((ip = ialloc(dp->dev, type)) == 0) {
+  إذا ((ip = ialloc(dp->dev, type)) == 0) {
     iunlockput(dp);
-    return 0;
+    أرجع 0;
   }
 
   ilock(ip);
@@ -297,16 +297,16 @@ create(char *path, short type, short major, short minor)
   ip->nlink = 1;
   iupdate(ip);
 
-  if (type == T_DIR) { // Create . and .. entries.
+  إذا (type == T_DIR) { // Create . and .. entries.
     // No ip->nlink++ for ".": avoid cyclic ref count.
-    if (dirlink(ip, ".", ip->inum) < 0 || dirlink(ip, "..", dp->inum) < 0)
-      goto fail;
+    إذا (dirlink(ip, ".", ip->inum) < 0 || dirlink(ip, "..", dp->inum) < 0)
+      اذهب fail;
   }
 
-  if (dirlink(dp, name, ip->inum) < 0)
-    goto fail;
+  إذا (dirlink(dp, name, ip->inum) < 0)
+    اذهب fail;
 
-  if (type == T_DIR) {
+  إذا (type == T_DIR) {
     // now that success is guaranteed:
     dp->nlink++; // for ".."
     iupdate(dp);
@@ -314,7 +314,7 @@ create(char *path, short type, short major, short minor)
 
   iunlockput(dp);
 
-  return ip;
+  أرجع ip;
 
 fail:
   // something went wrong. de-allocate ip.
@@ -322,61 +322,61 @@ fail:
   iupdate(ip);
   iunlockput(ip);
   iunlockput(dp);
-  return 0;
+  أرجع 0;
 }
 
 uint64
-sys_open(void)
+sys_open(فراغ)
 {
-  char path[MAXPATH];
-  int fd, omode;
-  struct file *f;
-  struct inode *ip;
-  int n;
+  حرف رستو[MAXPATH];
+  صحيح fd, omode;
+  بنية file *f;
+  بنية inode *ip;
+  صحيح n;
 
   argint(1, &omode);
-  if ((n = argstr(0, path, MAXPATH)) < 0)
-    return -1;
+  إذا ((n = argstr(0, رستو, MAXPATH)) < 0)
+    أرجع -1;
 
   begin_op();
 
-  if (omode & O_CREATE) {
-    ip = create(path, T_FILE, 0, 0);
-    if (ip == 0) {
-      end_op();
-      return -1;
+  إذا (omode & O_CREATE) {
+    ip = create(رستو, T_FILE, 0, 0);
+    إذا (ip == 0) {
+      پڇاڙي_op();
+      أرجع -1;
     }
-  } else {
-    if ((ip = namei(path)) == 0) {
-      end_op();
-      return -1;
+  } وإلا {
+    إذا ((ip = namei(رستو)) == 0) {
+      پڇاڙي_op();
+      أرجع -1;
     }
     ilock(ip);
-    if (ip->type == T_DIR && omode != O_RDONLY) {
+    إذا (ip->type == T_DIR && omode != O_RDONLY) {
       iunlockput(ip);
-      end_op();
-      return -1;
+      پڇاڙي_op();
+      أرجع -1;
     }
   }
 
-  if (ip->type == T_DEVICE && (ip->major < 0 || ip->major >= NDEV)) {
+  إذا (ip->type == T_DEVICE && (ip->major < 0 || ip->major >= NDEV)) {
     iunlockput(ip);
-    end_op();
-    return -1;
+    پڇاڙي_op();
+    أرجع -1;
   }
 
-  if ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0) {
-    if (f)
+  إذا ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0) {
+    إذا (f)
       fileclose(f);
     iunlockput(ip);
-    end_op();
-    return -1;
+    پڇاڙي_op();
+    أرجع -1;
   }
 
-  if (ip->type == T_DEVICE) {
+  إذا (ip->type == T_DEVICE) {
     f->type = FD_DEVICE;
     f->major = ip->major;
-  } else {
+  } وإلا {
     f->type = FD_INODE;
     f->off = 0;
   }
@@ -384,147 +384,147 @@ sys_open(void)
   f->readable = !(omode & O_WRONLY);
   f->writable = (omode & O_WRONLY) || (omode & O_RDWR);
 
-  if ((omode & O_TRUNC) && ip->type == T_FILE) {
+  إذا ((omode & O_TRUNC) && ip->type == T_FILE) {
     itrunc(ip);
   }
 
   iunlock(ip);
-  end_op();
+  پڇاڙي_op();
 
-  return fd;
+  أرجع fd;
 }
 
 uint64
-sys_mkdir(void)
+sys_mkdir(فراغ)
 {
-  char path[MAXPATH];
-  struct inode *ip;
+  حرف رستو[MAXPATH];
+  بنية inode *ip;
 
   begin_op();
-  if (argstr(0, path, MAXPATH) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0) {
-    end_op();
-    return -1;
+  إذا (argstr(0, رستو, MAXPATH) < 0 || (ip = create(رستو, T_DIR, 0, 0)) == 0) {
+    پڇاڙي_op();
+    أرجع -1;
   }
   iunlockput(ip);
-  end_op();
-  return 0;
+  پڇاڙي_op();
+  أرجع 0;
 }
 
 uint64
-sys_mknod(void)
+sys_mknod(فراغ)
 {
-  struct inode *ip;
-  char path[MAXPATH];
-  int major, minor;
+  بنية inode *ip;
+  حرف رستو[MAXPATH];
+  صحيح major, minor;
 
   begin_op();
   argint(1, &major);
   argint(2, &minor);
-  if ((argstr(0, path, MAXPATH)) < 0 ||
-      (ip = create(path, T_DEVICE, major, minor)) == 0) {
-    end_op();
-    return -1;
+  إذا ((argstr(0, رستو, MAXPATH)) < 0 ||
+      (ip = create(رستو, T_DEVICE, major, minor)) == 0) {
+    پڇاڙي_op();
+    أرجع -1;
   }
   iunlockput(ip);
-  end_op();
-  return 0;
+  پڇاڙي_op();
+  أرجع 0;
 }
 
 uint64
-sys_chdir(void)
+sys_chdir(فراغ)
 {
-  char path[MAXPATH];
-  struct inode *ip;
-  struct proc *p = myproc();
+  حرف رستو[MAXPATH];
+  بنية inode *ip;
+  بنية proc *p = myproc();
 
   begin_op();
-  if (argstr(0, path, MAXPATH) < 0 || (ip = namei(path)) == 0) {
-    end_op();
-    return -1;
+  إذا (argstr(0, رستو, MAXPATH) < 0 || (ip = namei(رستو)) == 0) {
+    پڇاڙي_op();
+    أرجع -1;
   }
   ilock(ip);
-  if (ip->type != T_DIR) {
+  إذا (ip->type != T_DIR) {
     iunlockput(ip);
-    end_op();
-    return -1;
+    پڇاڙي_op();
+    أرجع -1;
   }
   iunlock(ip);
   iput(p->cwd);
-  end_op();
+  پڇاڙي_op();
   p->cwd = ip;
-  return 0;
+  أرجع 0;
 }
 
 uint64
-sys_exec(void)
+sys_exec(فراغ)
 {
-  char path[MAXPATH], *argv[MAXARG];
-  int i;
+  حرف رستو[MAXPATH], *argv[MAXARG];
+  صحيح i;
   uint64 uargv, uarg;
 
   argaddr(1, &uargv);
-  if (argstr(0, path, MAXPATH) < 0) {
-    return -1;
+  إذا (argstr(0, رستو, MAXPATH) < 0) {
+    أرجع -1;
   }
-  memset(argv, 0, sizeof(argv));
-  for (i = 0;; i++) {
-    if (i >= NELEM(argv)) {
-      goto bad;
+  memset(argv, 0, حجم(argv));
+  لكل (i = 0;; i++) {
+    إذا (i >= NELEM(argv)) {
+      اذهب bad;
     }
-    if (fetchaddr(uargv + sizeof(uint64) * i, (uint64 *)&uarg) < 0) {
-      goto bad;
+    إذا (fetchaddr(uargv + حجم(uint64) * i, (uint64 *)&uarg) < 0) {
+      اذهب bad;
     }
-    if (uarg == 0) {
+    إذا (uarg == 0) {
       argv[i] = 0;
-      break;
+      اكسر;
     }
     argv[i] = kalloc();
-    if (argv[i] == 0)
-      goto bad;
-    if (fetchstr(uarg, argv[i], PGSIZE) < 0)
-      goto bad;
+    إذا (argv[i] == 0)
+      اذهب bad;
+    إذا (fetchstr(uarg, argv[i], PGSIZE) < 0)
+      اذهب bad;
   }
 
-  int ret = kexec(path, argv);
+  صحيح ret = kexec(رستو, argv);
 
-  for (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
+  لكل (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
     kfree(argv[i]);
 
-  return ret;
+  أرجع ret;
 
 bad:
-  for (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
+  لكل (i = 0; i < NELEM(argv) && argv[i] != 0; i++)
     kfree(argv[i]);
-  return -1;
+  أرجع -1;
 }
 
 uint64
-sys_pipe(void)
+sys_pipe(فراغ)
 {
   uint64 fdarray; // user pointer to array of two integers
-  struct file *rf, *wf;
-  int fd0, fd1;
-  struct proc *p = myproc();
+  بنية file *rf, *wf;
+  صحيح fd0, fd1;
+  بنية proc *p = myproc();
 
   argaddr(0, &fdarray);
-  if (pipealloc(&rf, &wf) < 0)
-    return -1;
+  إذا (pipealloc(&rf, &wf) < 0)
+    أرجع -1;
   fd0 = -1;
-  if ((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0) {
-    if (fd0 >= 0)
+  إذا ((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0) {
+    إذا (fd0 >= 0)
       p->ofile[fd0] = 0;
     fileclose(rf);
     fileclose(wf);
-    return -1;
+    أرجع -1;
   }
-  if (copyout(p->pagetable, p->sz, fdarray, (char *)&fd0, sizeof(fd0)) < 0 ||
-      copyout(p->pagetable, p->sz, fdarray + sizeof(fd0), (char *)&fd1,
-              sizeof(fd1)) < 0) {
+  إذا (copyout(p->pagetable, p->sz, fdarray, (حرف *)&fd0, حجم(fd0)) < 0 ||
+      copyout(p->pagetable, p->sz, fdarray + حجم(fd0), (حرف *)&fd1,
+              حجم(fd1)) < 0) {
     p->ofile[fd0] = 0;
     p->ofile[fd1] = 0;
     fileclose(rf);
     fileclose(wf);
-    return -1;
+    أرجع -1;
   }
-  return 0;
+  أرجع 0;
 }

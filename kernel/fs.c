@@ -9,53 +9,53 @@
 // routines.  The (higher-level) system call implementations
 // are in sysfile.c.
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "stat.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
-#include "file.h"
+#ضمن "types.h"
+#ضمن "riscv.h"
+#ضمن "defs.h"
+#ضمن "param.h"
+#ضمن "stat.h"
+#ضمن "spinlock.h"
+#ضمن "proc.h"
+#ضمن "sleeplock.h"
+#ضمن "fs.h"
+#ضمن "buf.h"
+#ضمن "file.h"
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
+#وصف_ڪريو min(a, b) ((a) < (b) ? (a) : (b))
 // there should be one superblock per disk device, but we run with
 // only one device
-struct superblock sb;
+بنية superblock sb;
 
 // Read the super block.
-static void
-readsb(int dev, struct superblock *sb)
+ساكن فراغ
+readsb(صحيح dev, بنية superblock *sb)
 {
-  struct buf *bp;
+  بنية buf *bp;
 
   bp = bread(dev, 1);
-  memmove(sb, bp->data, sizeof(*sb));
+  memmove(sb, bp->معلومات, حجم(*sb));
   brelse(bp);
 }
 
 // Init fs
-void
-fsinit(int dev)
+فراغ
+fsinit(صحيح dev)
 {
   readsb(dev, &sb);
-  if (sb.magic != FSMAGIC)
+  إذا (sb.magic != FSMAGIC)
     panic("invalid file system");
   initlog(dev, &sb);
   ireclaim(dev);
 }
 
 // Zero a block.
-static void
-bzero(int dev, int bno)
+ساكن فراغ
+bzero(صحيح dev, صحيح bno)
 {
-  struct buf *bp;
+  بنية buf *bp;
 
   bp = bread(dev, bno);
-  memset(bp->data, 0, BSIZE);
+  memset(bp->معلومات, 0, BSIZE);
   log_write(bp);
   brelse(bp);
 }
@@ -64,44 +64,44 @@ bzero(int dev, int bno)
 
 // Allocate a zeroed disk block.
 // returns 0 if out of disk space.
-static uint
+ساكن uint
 balloc(uint dev)
 {
-  int b, bi, m;
-  struct buf *bp;
+  صحيح b, bi, m;
+  بنية buf *bp;
 
   bp = 0;
-  for (b = 0; b < sb.size; b += BPB) {
+  لكل (b = 0; b < sb.سائيز; b += BPB) {
     bp = bread(dev, BBLOCK(b, sb));
-    for (bi = 0; bi < BPB && b + bi < sb.size; bi++) {
+    لكل (bi = 0; bi < BPB && b + bi < sb.سائيز; bi++) {
       m = 1 << (bi % 8);
-      if ((bp->data[bi / 8] & m) == 0) { // Is block free?
-        bp->data[bi / 8] |= m;           // Mark block in use.
+      إذا ((bp->معلومات[bi / 8] & m) == 0) { // Is block free?
+        bp->معلومات[bi / 8] |= m;           // Mark block in use.
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
-        return b + bi;
+        أرجع b + bi;
       }
     }
     brelse(bp);
   }
   printk("balloc: out of blocks\n");
-  return 0;
+  أرجع 0;
 }
 
 // Free a disk block.
-static void
-bfree(int dev, uint b)
+ساكن فراغ
+bfree(صحيح dev, uint b)
 {
-  struct buf *bp;
-  int bi, m;
+  بنية buf *bp;
+  صحيح bi, m;
 
   bp = bread(dev, BBLOCK(b, sb));
   bi = b % BPB;
   m = 1 << (bi % 8);
-  if ((bp->data[bi / 8] & m) == 0)
+  إذا ((bp->معلومات[bi / 8] & m) == 0)
     panic("freeing free block");
-  bp->data[bi / 8] &= ~m;
+  bp->معلومات[bi / 8] &= ~m;
   log_write(bp);
   brelse(bp);
 }
@@ -175,69 +175,69 @@ bfree(int dev, uint b)
 // dev, and inum.  One must hold ip->lock in order to
 // read or write that inode's ip->valid, ip->size, ip->type, &c.
 
-struct {
-  struct spinlock lock;
-  struct inode inode[NINODE];
+بنية {
+  بنية spinlock تالو;
+  بنية inode inode[NINODE];
 } itable;
 
-void
+فراغ
 iinit()
 {
-  int i = 0;
+  صحيح i = 0;
 
-  initlock(&itable.lock, "itable");
-  for (i = 0; i < NINODE; i++) {
-    initsleeplock(&itable.inode[i].lock, "inode");
+  initlock(&itable.تالو, "itable");
+  لكل (i = 0; i < NINODE; i++) {
+    initsleeplock(&itable.inode[i].تالو, "inode");
   }
 }
 
-static struct inode *iget(uint dev, uint inum);
+ساكن بنية inode *iget(uint dev, uint inum);
 
 // Allocate an inode on device dev.
 // Mark it as allocated by  giving it type type.
 // Returns an unlocked but allocated and referenced inode,
 // or NULL if there is no free inode.
-struct inode *
-ialloc(uint dev, short type)
+بنية inode *
+ialloc(uint dev, ننڍو type)
 {
-  int inum;
-  struct buf *bp;
-  struct dinode *dip;
+  صحيح inum;
+  بنية buf *bp;
+  بنية dinode *dip;
 
-  for (inum = 1; inum < sb.ninodes; inum++) {
+  لكل (inum = 1; inum < sb.ninodes; inum++) {
     bp = bread(dev, IBLOCK(inum, sb));
-    dip = (struct dinode *)bp->data + inum % IPB;
-    if (dip->type == 0) { // a free inode
-      memset(dip, 0, sizeof(*dip));
+    dip = (بنية dinode *)bp->معلومات + inum % IPB;
+    إذا (dip->type == 0) { // a free inode
+      memset(dip, 0, حجم(*dip));
       dip->type = type;
       log_write(bp); // mark it allocated on the disk
       brelse(bp);
-      return iget(dev, inum);
+      أرجع iget(dev, inum);
     }
     brelse(bp);
   }
   printk("ialloc: no inodes\n");
-  return 0;
+  أرجع 0;
 }
 
 // Copy a modified in-memory inode to disk.
 // Must be called after every change to an ip->xxx field
 // that lives on disk.
 // Caller must hold ip->lock.
-void
-iupdate(struct inode *ip)
+فراغ
+iupdate(بنية inode *ip)
 {
-  struct buf *bp;
-  struct dinode *dip;
+  بنية buf *bp;
+  بنية dinode *dip;
 
   bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-  dip = (struct dinode *)bp->data + ip->inum % IPB;
+  dip = (بنية dinode *)bp->معلومات + ip->inum % IPB;
   dip->type = ip->type;
   dip->major = ip->major;
   dip->minor = ip->minor;
   dip->nlink = ip->nlink;
-  dip->size = ip->size;
-  memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
+  dip->سائيز = ip->سائيز;
+  memmove(dip->addrs, ip->addrs, حجم(ip->addrs));
   log_write(bp);
   brelse(bp);
 }
@@ -245,95 +245,95 @@ iupdate(struct inode *ip)
 // Find the inode with number inum on device dev
 // and return the in-memory copy. Does not lock
 // the inode and does not read it from disk.
-static struct inode *
+ساكن بنية inode *
 iget(uint dev, uint inum)
 {
-  struct inode *ip, *empty;
+  بنية inode *ip, *خالي_جايون;
 
-  acquire(&itable.lock);
+  acquire(&itable.تالو);
 
   // Is the inode already in the table?
-  empty = 0;
-  for (ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++) {
-    if (ip->ref > 0 && ip->dev == dev && ip->inum == inum) {
+  خالي_جايون = 0;
+  لكل (ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++) {
+    إذا (ip->ref > 0 && ip->dev == dev && ip->inum == inum) {
       ip->ref++;
-      release(&itable.lock);
-      return ip;
+      release(&itable.تالو);
+      أرجع ip;
     }
-    if (empty == 0 && ip->ref == 0) // Remember empty slot.
-      empty = ip;
+    إذا (خالي_جايون == 0 && ip->ref == 0) // Remember empty slot.
+      خالي_جايون = ip;
   }
 
   // Recycle an inode entry.
-  if (empty == 0)
+  إذا (خالي_جايون == 0)
     panic("iget: no inodes");
 
-  ip = empty;
+  ip = خالي_جايون;
   ip->dev = dev;
   ip->inum = inum;
   ip->ref = 1;
   ip->valid = 0;
-  release(&itable.lock);
+  release(&itable.تالو);
 
-  return ip;
+  أرجع ip;
 }
 
 // Increment reference count for ip.
 // Returns ip to enable ip = idup(ip1) idiom.
-struct inode *
-idup(struct inode *ip)
+بنية inode *
+idup(بنية inode *ip)
 {
-  acquire(&itable.lock);
+  acquire(&itable.تالو);
   ip->ref++;
-  release(&itable.lock);
-  return ip;
+  release(&itable.تالو);
+  أرجع ip;
 }
 
 // Lock the given inode.
 // Reads the inode from disk if necessary.
-void
-ilock(struct inode *ip)
+فراغ
+ilock(بنية inode *ip)
 {
-  struct buf *bp;
-  struct dinode *dip;
+  بنية buf *bp;
+  بنية dinode *dip;
 
-  if (ip == 0 || ip->ref < 1)
+  إذا (ip == 0 || ip->ref < 1)
     panic("ilock");
 
-  acquiresleep(&ip->lock);
+  acquiresleep(&ip->تالو);
 
-  if (ip->valid == 0) {
+  إذا (ip->valid == 0) {
     bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-    dip = (struct dinode *)bp->data + ip->inum % IPB;
+    dip = (بنية dinode *)bp->معلومات + ip->inum % IPB;
     ip->type = dip->type;
     ip->major = dip->major;
     ip->minor = dip->minor;
     ip->nlink = dip->nlink;
-    ip->size = dip->size;
-    memmove(ip->addrs, dip->addrs, sizeof(ip->addrs));
+    ip->سائيز = dip->سائيز;
+    memmove(ip->addrs, dip->addrs, حجم(ip->addrs));
     brelse(bp);
     ip->valid = 1;
-    if (ip->type == 0)
+    إذا (ip->type == 0)
       panic("ilock: no type");
   }
 }
 
 // Unlock the given inode.
-void
-iunlock(struct inode *ip)
+فراغ
+iunlock(بنية inode *ip)
 {
-  if (ip == 0 || !holdingsleep(&ip->lock) || ip->ref < 1)
+  إذا (ip == 0 || !holdingsleep(&ip->تالو) || ip->ref < 1)
     panic("iunlock");
 
-  releasesleep(&ip->lock);
+  releasesleep(&ip->تالو);
 }
 
 // Mark the on-disk inode free.
-static void
+ساكن فراغ
 ifree(uint dev, uint inum)
 {
-  struct buf *bp = bread(dev, IBLOCK(inum, sb));
-  struct dinode *dip = (struct dinode *)bp->data + inum % IPB;
+  بنية buf *bp = bread(dev, IBLOCK(inum, sb));
+  بنية dinode *dip = (بنية dinode *)bp->معلومات + inum % IPB;
   dip->type = 0;
   log_write(bp);
   brelse(bp);
@@ -346,63 +346,63 @@ ifree(uint dev, uint inum)
 // to it, free the inode (and its content) on disk.
 // All calls to iput() must be inside a transaction in
 // case it has to free the inode.
-void
-iput(struct inode *ip)
+فراغ
+iput(بنية inode *ip)
 {
-  acquire(&itable.lock);
+  acquire(&itable.تالو);
 
   // Last reference of an unlinked inode?  Capture dev/inum before ref--,
   // since once ref hits 0, ip may be recycled by a concurrent iget()
   // for a different inum.
-  int last = (ip->ref == 1 && ip->valid && ip->nlink == 0);
+  صحيح آخري = (ip->ref == 1 && ip->valid && ip->nlink == 0);
   uint dev = ip->dev, inum = ip->inum;
 
-  if (last) {
+  إذا (آخري) {
     // ip->ref == 1 means no other process can have ip locked.
-    acquiresleep(&ip->lock);
-    release(&itable.lock);
+    acquiresleep(&ip->تالو);
+    release(&itable.تالو);
 
     itrunc(ip); // free the data blocks (type stays nonzero on disk)
     ip->valid = 0;
 
-    releasesleep(&ip->lock);
+    releasesleep(&ip->تالو);
 
-    acquire(&itable.lock);
+    acquire(&itable.تالو);
   }
 
   ip->ref--;
-  release(&itable.lock);
+  release(&itable.تالو);
 
-  if (last)
+  إذا (آخري)
     ifree(dev, inum); // now clear type on disk: inum becomes allocatable
 }
 
 // Common idiom: unlock, then put.
-void
-iunlockput(struct inode *ip)
+فراغ
+iunlockput(بنية inode *ip)
 {
   iunlock(ip);
   iput(ip);
 }
 
-void
-ireclaim(int dev)
+فراغ
+ireclaim(صحيح dev)
 {
-  for (int inum = 1; inum < sb.ninodes; inum++) {
-    struct inode *ip = 0;
-    struct buf *bp = bread(dev, IBLOCK(inum, sb));
-    struct dinode *dip = (struct dinode *)bp->data + inum % IPB;
-    if (dip->type != 0 && dip->nlink == 0) { // is an orphaned inode
+  لكل (صحيح inum = 1; inum < sb.ninodes; inum++) {
+    بنية inode *ip = 0;
+    بنية buf *bp = bread(dev, IBLOCK(inum, sb));
+    بنية dinode *dip = (بنية dinode *)bp->معلومات + inum % IPB;
+    إذا (dip->type != 0 && dip->nlink == 0) { // is an orphaned inode
       printk("ireclaim: orphaned inode %d\n", inum);
       ip = iget(dev, inum);
     }
     brelse(bp);
-    if (ip) {
+    إذا (ip) {
       begin_op();
       ilock(ip);
       iunlock(ip);
       iput(ip);
-      end_op();
+      پڇاڙي_op();
     }
   }
 }
@@ -417,42 +417,42 @@ ireclaim(int dev)
 // Return the disk block address of the nth block in inode ip.
 // If there is no such block, bmap allocates one.
 // returns 0 if out of disk space.
-static uint
-bmap(struct inode *ip, uint bn)
+ساكن uint
+bmap(بنية inode *ip, uint bn)
 {
   uint addr, *a;
-  struct buf *bp;
+  بنية buf *bp;
 
-  if (bn < NDIRECT) {
-    if ((addr = ip->addrs[bn]) == 0) {
+  إذا (bn < NDIRECT) {
+    إذا ((addr = ip->addrs[bn]) == 0) {
       addr = balloc(ip->dev);
-      if (addr == 0)
-        return 0;
+      إذا (addr == 0)
+        أرجع 0;
       ip->addrs[bn] = addr;
     }
-    return addr;
+    أرجع addr;
   }
   bn -= NDIRECT;
 
-  if (bn < NINDIRECT) {
+  إذا (bn < NINDIRECT) {
     // Load indirect block, allocating if necessary.
-    if ((addr = ip->addrs[NDIRECT]) == 0) {
+    إذا ((addr = ip->addrs[NDIRECT]) == 0) {
       addr = balloc(ip->dev);
-      if (addr == 0)
-        return 0;
+      إذا (addr == 0)
+        أرجع 0;
       ip->addrs[NDIRECT] = addr;
     }
     bp = bread(ip->dev, addr);
-    a = (uint *)bp->data;
-    if ((addr = a[bn]) == 0) {
+    a = (uint *)bp->معلومات;
+    إذا ((addr = a[bn]) == 0) {
       addr = balloc(ip->dev);
-      if (addr) {
+      إذا (addr) {
         a[bn] = addr;
         log_write(bp);
       }
     }
     brelse(bp);
-    return addr;
+    أرجع addr;
   }
 
   panic("bmap: out of range");
@@ -460,25 +460,25 @@ bmap(struct inode *ip, uint bn)
 
 // Truncate inode (discard contents).
 // Caller must hold ip->lock.
-void
-itrunc(struct inode *ip)
+فراغ
+itrunc(بنية inode *ip)
 {
-  int i, j;
-  struct buf *bp;
+  صحيح i, j;
+  بنية buf *bp;
   uint *a;
 
-  for (i = 0; i < NDIRECT; i++) {
-    if (ip->addrs[i]) {
+  لكل (i = 0; i < NDIRECT; i++) {
+    إذا (ip->addrs[i]) {
       bfree(ip->dev, ip->addrs[i]);
       ip->addrs[i] = 0;
     }
   }
 
-  if (ip->addrs[NDIRECT]) {
+  إذا (ip->addrs[NDIRECT]) {
     bp = bread(ip->dev, ip->addrs[NDIRECT]);
-    a = (uint *)bp->data;
-    for (j = 0; j < NINDIRECT; j++) {
-      if (a[j])
+    a = (uint *)bp->معلومات;
+    لكل (j = 0; j < NINDIRECT; j++) {
+      إذا (a[j])
         bfree(ip->dev, a[j]);
     }
     brelse(bp);
@@ -486,51 +486,51 @@ itrunc(struct inode *ip)
     ip->addrs[NDIRECT] = 0;
   }
 
-  ip->size = 0;
+  ip->سائيز = 0;
   iupdate(ip);
 }
 
 // Copy stat information from inode.
 // Caller must hold ip->lock.
-void
-stati(struct inode *ip, struct stat *st)
+فراغ
+stati(بنية inode *ip, بنية stat *st)
 {
   st->dev = ip->dev;
   st->ino = ip->inum;
   st->type = ip->type;
   st->nlink = ip->nlink;
-  st->size = ip->size;
+  st->سائيز = ip->سائيز;
 }
 
 // Read data from inode.
 // Caller must hold ip->lock.
 // If user_dst==1, then dst is a user virtual address;
 // otherwise, dst is a kernel address.
-int
-readi(struct inode *ip, int user_dst, uint64 dst, uint off, uint n)
+صحيح
+readi(بنية inode *ip, صحيح user_dst, uint64 dst, uint off, uint n)
 {
   uint tot, m;
-  struct buf *bp;
+  بنية buf *bp;
 
-  if (off > ip->size || off + n < off)
-    return 0;
-  if (off + n > ip->size)
-    n = ip->size - off;
+  إذا (off > ip->سائيز || off + n < off)
+    أرجع 0;
+  إذا (off + n > ip->سائيز)
+    n = ip->سائيز - off;
 
-  for (tot = 0; tot < n; tot += m, off += m, dst += m) {
+  لكل (tot = 0; tot < n; tot += m, off += m, dst += m) {
     uint addr = bmap(ip, off / BSIZE);
-    if (addr == 0)
-      break;
+    إذا (addr == 0)
+      اكسر;
     bp = bread(ip->dev, addr);
     m = min(n - tot, BSIZE - off % BSIZE);
-    if (either_copyout(user_dst, dst, bp->data + (off % BSIZE), m) == -1) {
+    إذا (either_copyout(user_dst, dst, bp->معلومات + (off % BSIZE), m) == -1) {
       brelse(bp);
       tot = -1;
-      break;
+      اكسر;
     }
     brelse(bp);
   }
-  return tot;
+  أرجع tot;
 }
 
 // Write data to inode.
@@ -540,109 +540,109 @@ readi(struct inode *ip, int user_dst, uint64 dst, uint off, uint n)
 // Returns the number of bytes successfully written.
 // If the return value is less than the requested n,
 // there was an error of some kind.
-int
-writei(struct inode *ip, int user_src, uint64 src, uint off, uint n)
+صحيح
+writei(بنية inode *ip, صحيح user_src, uint64 src, uint off, uint n)
 {
   uint tot, m;
-  struct buf *bp;
+  بنية buf *bp;
 
-  if (off > ip->size || off + n < off)
-    return -1;
-  if (off + n > MAXFILE * BSIZE)
-    return -1;
+  إذا (off > ip->سائيز || off + n < off)
+    أرجع -1;
+  إذا (off + n > MAXFILE * BSIZE)
+    أرجع -1;
 
-  for (tot = 0; tot < n; tot += m, off += m, src += m) {
+  لكل (tot = 0; tot < n; tot += m, off += m, src += m) {
     uint addr = bmap(ip, off / BSIZE);
-    if (addr == 0)
-      break;
+    إذا (addr == 0)
+      اكسر;
     bp = bread(ip->dev, addr);
     m = min(n - tot, BSIZE - off % BSIZE);
-    if (either_copyin(bp->data + (off % BSIZE), user_src, src, m) == -1) {
+    إذا (either_copyin(bp->معلومات + (off % BSIZE), user_src, src, m) == -1) {
       // Might have partially updated the block, so we need to log it.
       log_write(bp);
       brelse(bp);
-      break;
+      اكسر;
     }
     log_write(bp);
     brelse(bp);
   }
 
-  if (off > ip->size)
-    ip->size = off;
+  إذا (off > ip->سائيز)
+    ip->سائيز = off;
 
   // write the i-node back to disk even if the size didn't change
   // because the loop above might have called bmap() and added a new
   // block to ip->addrs[].
   iupdate(ip);
 
-  return tot;
+  أرجع tot;
 }
 
 // Directories
 
-int
-namecmp(const char *s, const char *t)
+صحيح
+namecmp(ثابت حرف *s, ثابت حرف *t)
 {
-  return strncmp(s, t, DIRSIZ);
+  أرجع لڙي_ڀيٽ(s, t, DIRSIZ);
 }
 
 // Look for a directory entry in a directory.
 // If found, set *poff to byte offset of entry.
-struct inode *
-dirlookup(struct inode *dp, char *name, uint *poff)
+بنية inode *
+dirlookup(بنية inode *dp, حرف *name, uint *poff)
 {
   uint off, inum;
-  struct dirent de;
+  بنية dirent de;
 
-  if (dp->type != T_DIR)
+  إذا (dp->type != T_DIR)
     panic("dirlookup not DIR");
 
-  for (off = 0; off < dp->size; off += sizeof(de)) {
-    if (readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  لكل (off = 0; off < dp->سائيز; off += حجم(de)) {
+    إذا (readi(dp, 0, (uint64)&de, off, حجم(de)) != حجم(de))
       panic("dirlookup read");
-    if (de.inum == 0)
-      continue;
-    if (namecmp(name, de.name) == 0) {
+    إذا (de.inum == 0)
+      استمر;
+    إذا (namecmp(name, de.name) == 0) {
       // entry matches path element
-      if (poff)
+      إذا (poff)
         *poff = off;
       inum = de.inum;
-      return iget(dp->dev, inum);
+      أرجع iget(dp->dev, inum);
     }
   }
 
-  return 0;
+  أرجع 0;
 }
 
 // Write a new directory entry (name, inum) into the directory dp.
 // Returns 0 on success, -1 on failure (e.g. out of disk blocks).
-int
-dirlink(struct inode *dp, char *name, uint inum)
+صحيح
+dirlink(بنية inode *dp, حرف *name, uint inum)
 {
-  int off;
-  struct dirent de;
-  struct inode *ip;
+  صحيح off;
+  بنية dirent de;
+  بنية inode *ip;
 
   // Check that name is not present.
-  if ((ip = dirlookup(dp, name, 0)) != 0) {
+  إذا ((ip = dirlookup(dp, name, 0)) != 0) {
     iput(ip);
-    return -1;
+    أرجع -1;
   }
 
   // Look for an empty dirent.
-  for (off = 0; off < dp->size; off += sizeof(de)) {
-    if (readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
+  لكل (off = 0; off < dp->سائيز; off += حجم(de)) {
+    إذا (readi(dp, 0, (uint64)&de, off, حجم(de)) != حجم(de))
       panic("dirlink read");
-    if (de.inum == 0)
-      break;
+    إذا (de.inum == 0)
+      اكسر;
   }
 
   strncpy(de.name, name, DIRSIZ);
   de.inum = inum;
-  if (writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    return -1;
+  إذا (writei(dp, 0, (uint64)&de, off, حجم(de)) != حجم(de))
+    أرجع -1;
 
-  return 0;
+  أرجع 0;
 }
 
 // Paths
@@ -659,83 +659,83 @@ dirlink(struct inode *dp, char *name, uint inum)
 //   skipelem("a", name) = "", setting name = "a"
 //   skipelem("", name) = skipelem("////", name) = 0
 //
-static char *
-skipelem(char *path, char *name)
+ساكن حرف *
+skipelem(حرف *رستو, حرف *name)
 {
-  char *s;
-  int len;
+  حرف *s;
+  صحيح len;
 
-  while (*path == '/')
-    path++;
-  if (*path == 0)
-    return 0;
-  s = path;
-  while (*path != '/' && *path != 0)
-    path++;
-  len = path - s;
-  if (len >= DIRSIZ)
+  طالما (*رستو == '/')
+    رستو++;
+  إذا (*رستو == 0)
+    أرجع 0;
+  s = رستو;
+  طالما (*رستو != '/' && *رستو != 0)
+    رستو++;
+  len = رستو - s;
+  إذا (len >= DIRSIZ)
     memmove(name, s, DIRSIZ);
-  else {
+  وإلا {
     memmove(name, s, len);
     name[len] = 0;
   }
-  while (*path == '/')
-    path++;
-  return path;
+  طالما (*رستو == '/')
+    رستو++;
+  أرجع رستو;
 }
 
 // Look up and return the inode for a path name.
 // If parent != 0, return the inode for the parent and copy the final
 // path element into name, which must have room for DIRSIZ bytes.
 // Must be called inside a transaction since it calls iput().
-static struct inode *
-namex(char *path, int nameiparent, char *name)
+ساكن بنية inode *
+namex(حرف *رستو, صحيح nameiparent, حرف *name)
 {
-  struct inode *ip, *next;
+  بنية inode *ip, *ايندڙ;
 
-  if (*path == '/')
+  إذا (*رستو == '/')
     ip = iget(ROOTDEV, ROOTINO);
-  else
+  وإلا
     ip = idup(myproc()->cwd);
 
-  while ((path = skipelem(path, name)) != 0) {
+  طالما ((رستو = skipelem(رستو, name)) != 0) {
     ilock(ip);
-    if (ip->type != T_DIR) {
+    إذا (ip->type != T_DIR) {
       iunlockput(ip);
-      return 0;
+      أرجع 0;
     }
-    if (ip->nlink == 0) {
+    إذا (ip->nlink == 0) {
       iunlockput(ip);
-      return 0;
+      أرجع 0;
     }
-    if (nameiparent && *path == '\0') {
+    إذا (nameiparent && *رستو == '\0') {
       // Stop one level early.
       iunlock(ip);
-      return ip;
+      أرجع ip;
     }
-    if ((next = dirlookup(ip, name, 0)) == 0) {
+    إذا ((ايندڙ = dirlookup(ip, name, 0)) == 0) {
       iunlockput(ip);
-      return 0;
+      أرجع 0;
     }
     iunlockput(ip);
-    ip = next;
+    ip = ايندڙ;
   }
-  if (nameiparent) {
+  إذا (nameiparent) {
     iput(ip);
-    return 0;
+    أرجع 0;
   }
-  return ip;
+  أرجع ip;
 }
 
-struct inode *
-namei(char *path)
+بنية inode *
+namei(حرف *رستو)
 {
-  char name[DIRSIZ];
-  return namex(path, 0, name);
+  حرف name[DIRSIZ];
+  أرجع namex(رستو, 0, name);
 }
 
-struct inode *
-nameiparent(char *path, char *name)
+بنية inode *
+nameiparent(حرف *رستو, حرف *name)
 {
-  return namex(path, 1, name);
+  أرجع namex(رستو, 1, name);
 }
