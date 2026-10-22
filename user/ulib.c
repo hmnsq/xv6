@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#অন্তর্ভাৱ "kernel/types.h"
+#অন্তর্ভাৱ "kernel/stat.h"
+#অন্তর্ভাৱ "kernel/fcntl.h"
+#অন্তর্ভাৱ "kernel/riscv.h"
+#অন্তর্ভাৱ "kernel/vm.h"
+#অন্তর্ভাৱ "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+শূন্য
+start(পূর্ণাঙ্ক argc, ৱর্ণ **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
+  পূর্ণাঙ্ক r;
+  বাহ্য পূর্ণাঙ্ক main(পূর্ণাঙ্ক argc, ৱর্ণ **argv);
   r = main(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+ৱর্ণ *
+strcpy(ৱর্ণ *s, ধ্রুৱ ৱর্ণ *t)
 {
-  char *os;
+  ৱর্ণ *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  যেতিয়ালৈ ((*s++ = *t++) != 0)
     ;
-  return os;
+  ঘূৰাই os;
 }
 
-int
-strcmp(const char *p, const char *q)
+পূর্ণাঙ্ক
+strcmp(ধ্রুৱ ৱর্ণ *p, ধ্রুৱ ৱর্ণ *q)
 {
-  while (*p && *p == *q)
+  যেতিয়ালৈ (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  ঘূৰাই (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(ধ্রুৱ ৱর্ণ *s)
 {
-  int n;
+  পূর্ণাঙ্ক n;
 
-  for (n = 0; s[n]; n++)
+  বাবে (n = 0; s[n]; n++)
     ;
-  return n;
+  ঘূৰাই n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+শূন্য *
+memset(শূন্য *dst, পূর্ণাঙ্ক c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  ৱর্ণ *cdst = (ৱর্ণ *)dst;
+  পূর্ণাঙ্ক i;
+  বাবে (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ঘূৰাই dst;
 }
 
-char *
-strchr(const char *s, char c)
+ৱর্ণ *
+strchr(ধ্রুৱ ৱর্ণ *s, ৱর্ণ c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  বাবে (; *s; s++)
+    যদি (*s == c)
+      ঘূৰাই (ৱর্ণ *)s;
+  ঘূৰাই 0;
 }
 
-char *
-gets(char *buf, int max)
+ৱর্ণ *
+gets(ৱর্ণ *buf, পূর্ণাঙ্ক max)
 {
-  int i, cc;
-  char c;
+  পূর্ণাঙ্ক i, cc;
+  ৱর্ণ c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  বাবে (i = 0; i + 1 < max;) {
+    cc = পঠ(0, &c, 1);
+    যদি (cc < 1)
+      ভঙ্গ;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    যদি (c == '\n' || c == '\r')
+      ভঙ্গ;
   }
   buf[i] = '\0';
-  return buf;
+  ঘূৰাই buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+পূর্ণাঙ্ক
+stat(ধ্রুৱ ৱর্ণ *n, সংরচনা stat *st)
 {
-  int fd;
-  int r;
+  পূর্ণাঙ্ক fd;
+  পূর্ণাঙ্ক r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  যদি (fd < 0)
+    ঘূৰাই -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  ঘূৰাই r;
 }
 
-int
-atoi(const char *s)
+পূর্ণাঙ্ক
+atoi(ধ্রুৱ ৱর্ণ *s)
 {
-  int n;
+  পূর্ণাঙ্ক n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  যেতিয়ালৈ ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  ঘূৰাই n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+শূন্য *
+memmove(শূন্য *vdst, ধ্রুৱ শূন্য *vsrc, পূর্ণাঙ্ক n)
 {
-  char *dst;
-  const char *src;
+  ৱর্ণ *dst;
+  ধ্রুৱ ৱর্ণ *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  যদি (src > dst) {
+    যেতিয়ালৈ (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } অন্যথা {
     dst += n;
     src += n;
-    while (n-- > 0)
+    যেতিয়ালৈ (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  ঘূৰাই vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+পূর্ণাঙ্ক
+memcmp(ধ্রুৱ শূন্য *s1, ধ্রুৱ শূন্য *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  ধ্রুৱ ৱর্ণ *p1 = s1, *p2 = s2;
+  যেতিয়ালৈ (n-- > 0) {
+    যদি (*p1 != *p2) {
+      ঘূৰাই *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  ঘূৰাই 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+শূন্য *
+memcpy(শূন্য *dst, ধ্রুৱ শূন্য *src, uint n)
 {
-  return memmove(dst, src, n);
+  ঘূৰাই memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+ৱর্ণ *
+sbrk(পূর্ণাঙ্ক n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  ঘূৰাই sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+ৱর্ণ *
+sbrklazy(পূর্ণাঙ্ক n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  ঘূৰাই sys_sbrk(n, SBRK_LAZY);
 }
