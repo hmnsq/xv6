@@ -1,40 +1,40 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "kernel/fcntl.h"
+#अन्तर्भाव "user/user.h"
 
 // Create an orphaned file and check if test-xv6.py recovers it.
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+वर्ण buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+पूर्णाङ्क
+main(पूर्णाङ्क argc, वर्ण **argv)
 {
-  int fd = 0;
-  char *s = argv[0];
-  struct stat st;
-  char *ff = "file0";
+  पूर्णाङ्क fd = 0;
+  वर्ण *s = argv[0];
+  संरचना stat st;
+  वर्ण *ff = "file0";
 
-  if ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  यदि ((fd = खोलो(ff, O_CREATE | O_WRONLY)) < 0) {
+    म_लिखो("%s: open failed\n", s);
+    निकास(1);
   }
-  if (fstat(fd, &st) < 0) {
-    fprintf(2, "%s: cannot stat %s\n", s, "ff");
-    exit(1);
+  यदि (ख_स्थिति(fd, &st) < 0) {
+    ख_लिखो(2, "%s: cannot stat %s\n", s, "ff");
+    निकास(1);
   }
-  if (unlink(ff) < 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  यदि (unlink(ff) < 0) {
+    म_लिखो("%s: unlink failed\n", s);
+    निकास(1);
   }
-  if (open(ff, O_RDONLY) != -1) {
-    printf("%s: open successed\n", s);
-    exit(1);
+  यदि (खोलो(ff, O_RDONLY) != -1) {
+    म_लिखो("%s: open successed\n", s);
+    निकास(1);
   }
-  printf("wait for kill and reclaim %d\n", st.ino);
+  म_लिखो("wait for kill and reclaim %d\n", st.ino);
   // sit around until killed
-  for (;;)
-    pause(1000);
+  प्रति (;;)
+    छोड़ो(1000);
 }
