@@ -1,19 +1,19 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "user/user.h"
 
-int
-main(int argc, char *argv[])
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం *argv[])
 {
-  int i;
+  పూర్ణాంకం i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  కొరకు (i = 1; i < argc; i++) {
+    లిఖ(1, argv[i], అక్షరశ్రేణి_పొడవు(argv[i]));
+    ఒకవేళ (i + 1 < argc) {
+      లిఖ(1, " ", 1);
+    } లేకపోతే {
+      లిఖ(1, "\n", 1);
     }
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }

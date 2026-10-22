@@ -1,48 +1,48 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "user/user.h"
 
 // Stress xv6 logging system by having several processes writing
 // concurrently to their own file (e.g., logstress f1 f2 f3 f4)
 
-#define BUFSZ 500
+#నిర్వచించు BUFSZ 500
 
-char buf[BUFSZ];
+అక్షరం buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం **argv)
 {
-  int fd, n;
-  enum { N = 250, SZ = 2000 };
+  పూర్ణాంకం fd, n;
+  గణన { N = 250, SZ = 2000 };
 
-  for (int i = 1; i < argc; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", argv[0]);
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 1; i < argc; i++) {
+    పూర్ణాంకం pid1 = fork();
+    ఒకవేళ (pid1 < 0) {
+      రాయి("%s: fork failed\n", argv[0]);
+      నిష్క్రమించు(1);
     }
-    if (pid1 == 0) {
+    ఒకవేళ (pid1 == 0) {
       fd = open(argv[i], O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("%s: create %s failed\n", argv[0], argv[i]);
-        exit(1);
+      ఒకవేళ (fd < 0) {
+        రాయి("%s: create %s failed\n", argv[0], argv[i]);
+        నిష్క్రమించు(1);
       }
       memset(buf, '0' + i, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
-          printf("write failed %d\n", n);
-          exit(1);
+      కొరకు (i = 0; i < N; i++) {
+        ఒకవేళ ((n = లిఖ(fd, buf, SZ)) != SZ) {
+          రాయి("write failed %d\n", n);
+          నిష్క్రమించు(1);
         }
       }
-      exit(0);
+      నిష్క్రమించు(0);
     }
   }
-  int xstatus;
-  for (int i = 1; i < argc; i++) {
+  పూర్ణాంకం xstatus;
+  కొరకు (పూర్ణాంకం i = 1; i < argc; i++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    ఒకవేళ (xstatus != 0)
+      నిష్క్రమించు(xstatus);
   }
-  return 0;
+  తిరిగి 0;
 }

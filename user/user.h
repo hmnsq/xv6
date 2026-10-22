@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#నిర్వచించు SBRK_ERROR ((అక్షరం *)-1)
 
-struct stat;
+నిర్మాణం stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+పూర్ణాంకం fork(శూన్య);
+పూర్ణాంకం నిష్క్రమించు(పూర్ణాంకం) __attribute__((noreturn));
+పూర్ణాంకం wait(పూర్ణాంకం *);
+పూర్ణాంకం pipe(పూర్ణాంకం *);
+పూర్ణాంకం లిఖ(పూర్ణాంకం, స్థిరరాశి శూన్య *, పూర్ణాంకం);
+పూర్ణాంకం పఠ(పూర్ణాంకం, శూన్య *, పూర్ణాంకం);
+పూర్ణాంకం close(పూర్ణాంకం);
+పూర్ణాంకం kill(పూర్ణాంకం);
+పూర్ణాంకం exec(స్థిరరాశి అక్షరం *, అక్షరం **);
+పూర్ణాంకం open(స్థిరరాశి అక్షరం *, పూర్ణాంకం);
+పూర్ణాంకం mknod(స్థిరరాశి అక్షరం *, పొట్టి, పొట్టి);
+పూర్ణాంకం unlink(స్థిరరాశి అక్షరం *);
+పూర్ణాంకం fstat(పూర్ణాంకం fd, నిర్మాణం stat *);
+పూర్ణాంకం link(స్థిరరాశి అక్షరం *, స్థిరరాశి అక్షరం *);
+పూర్ణాంకం mkdir(స్థిరరాశి అక్షరం *);
+పూర్ణాంకం chdir(స్థిరరాశి అక్షరం *);
+పూర్ణాంకం dup(పూర్ణాంకం);
+పూర్ణాంకం getpid(శూన్య);
+అక్షరం *sys_sbrk(పూర్ణాంకం, పూర్ణాంకం);
+పూర్ణాంకం pause(పూర్ణాంకం);
+పూర్ణాంకం uptime(శూన్య);
+పూర్ణాంకం sync(శూన్య);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+పూర్ణాంకం stat(స్థిరరాశి అక్షరం *, నిర్మాణం stat *);
+అక్షరం *strcpy(అక్షరం *, స్థిరరాశి అక్షరం *);
+శూన్య *memmove(శూన్య *, స్థిరరాశి శూన్య *, పూర్ణాంకం);
+అక్షరం *strchr(స్థిరరాశి అక్షరం *, అక్షరం c);
+పూర్ణాంకం strcmp(స్థిరరాశి అక్షరం *, స్థిరరాశి అక్షరం *);
+అక్షరం *gets(అక్షరం *, పూర్ణాంకం max);
+uint అక్షరశ్రేణి_పొడవు(స్థిరరాశి అక్షరం *);
+శూన్య *memset(శూన్య *, పూర్ణాంకం, uint);
+పూర్ణాంకం atoi(స్థిరరాశి అక్షరం *);
+పూర్ణాంకం memcmp(స్థిరరాశి శూన్య *, స్థిరరాశి శూన్య *, uint);
+శూన్య *జ్ఞాపకం_నకలు(శూన్య *, స్థిరరాశి శూన్య *, uint);
+అక్షరం *sbrk(పూర్ణాంకం);
+అక్షరం *sbrklazy(పూర్ణాంకం);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+శూన్య fprintf(పూర్ణాంకం, స్థిరరాశి అక్షరం *, ...) __attribute__((format(రాయి, 2, 3)));
+శూన్య రాయి(స్థిరరాశి అక్షరం *, ...) __attribute__((format(రాయి, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+శూన్య *జ్ఞాపకం_ఇవ్వు(uint);
+శూన్య విడుదల(శూన్య *);

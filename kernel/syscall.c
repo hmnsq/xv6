@@ -1,61 +1,61 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "syscall.h"
-#include "defs.h"
+#అన్తర్భావ "types.h"
+#అన్తర్భావ "param.h"
+#అన్తర్భావ "memlayout.h"
+#అన్తర్భావ "riscv.h"
+#అన్తర్భావ "spinlock.h"
+#అన్తర్భావ "proc.h"
+#అన్తర్భావ "syscall.h"
+#అన్తర్భావ "defs.h"
 
 // Fetch the uint64 at addr from the current process.
-int
+పూర్ణాంకం
 fetchaddr(uint64 addr, uint64 *ip)
 {
-  struct proc *p = myproc();
-  if (addr >= p->sz ||
-      addr + sizeof(uint64) > p->sz) // both tests needed, in case of overflow
-    return -1;
-  if (copyin(p->pagetable, p->sz, (char *)ip, addr, sizeof(*ip)) != 0)
-    return -1;
-  return 0;
+  నిర్మాణం proc *p = myproc();
+  ఒకవేళ (addr >= p->sz ||
+      addr + పరిమాణం(uint64) > p->sz) // both tests needed, in case of overflow
+    తిరిగి -1;
+  ఒకవేళ (copyin(p->pagetable, p->sz, (అక్షరం *)ip, addr, పరిమాణం(*ip)) != 0)
+    తిరిగి -1;
+  తిరిగి 0;
 }
 
 // Fetch the nul-terminated string at addr from the current process.
 // Returns length of string, not including nul, or -1 for error.
-int
-fetchstr(uint64 addr, char *buf, int max)
+పూర్ణాంకం
+fetchstr(uint64 addr, అక్షరం *buf, పూర్ణాంకం max)
 {
-  struct proc *p = myproc();
-  if (copyinstr(p->pagetable, p->sz, buf, addr, max) < 0)
-    return -1;
-  return strlen(buf);
+  నిర్మాణం proc *p = myproc();
+  ఒకవేళ (copyinstr(p->pagetable, p->sz, buf, addr, max) < 0)
+    తిరిగి -1;
+  తిరిగి అక్షరశ్రేణి_పొడవు(buf);
 }
 
-static uint64
-argraw(int n)
+స్థిర uint64
+argraw(పూర్ణాంకం n)
 {
-  struct proc *p = myproc();
-  switch (n) {
-  case 0:
-    return p->trapframe->a0;
-  case 1:
-    return p->trapframe->a1;
-  case 2:
-    return p->trapframe->a2;
-  case 3:
-    return p->trapframe->a3;
-  case 4:
-    return p->trapframe->a4;
-  case 5:
-    return p->trapframe->a5;
+  నిర్మాణం proc *p = myproc();
+  ఎంపిక (n) {
+  స్థితి 0:
+    తిరిగి p->trapframe->a0;
+  స్థితి 1:
+    తిరిగి p->trapframe->a1;
+  స్థితి 2:
+    తిరిగి p->trapframe->a2;
+  స్థితి 3:
+    తిరిగి p->trapframe->a3;
+  స్థితి 4:
+    తిరిగి p->trapframe->a4;
+  స్థితి 5:
+    తిరిగి p->trapframe->a5;
   }
   panic("argraw");
-  return -1;
+  తిరిగి -1;
 }
 
 // Fetch the nth 32-bit system call argument.
-void
-argint(int n, int *ip)
+శూన్య
+argint(పూర్ణాంకం n, పూర్ణాంకం *ip)
 {
   *ip = argraw(n);
 }
@@ -63,8 +63,8 @@ argint(int n, int *ip)
 // Retrieve an argument as a pointer.
 // Doesn't check for legality, since
 // copyin/copyout will do that.
-void
-argaddr(int n, uint64 *ip)
+శూన్య
+argaddr(పూర్ణాంకం n, uint64 *ip)
 {
   *ip = argraw(n);
 }
@@ -72,41 +72,41 @@ argaddr(int n, uint64 *ip)
 // Fetch the nth word-sized system call argument as a null-terminated string.
 // Copies into buf, at most max.
 // Returns string length if OK (not including nul), -1 if error.
-int
-argstr(int n, char *buf, int max)
+పూర్ణాంకం
+argstr(పూర్ణాంకం n, అక్షరం *buf, పూర్ణాంకం max)
 {
   uint64 addr;
   argaddr(n, &addr);
-  return fetchstr(addr, buf, max);
+  తిరిగి fetchstr(addr, buf, max);
 }
 
 // Prototypes for the functions that handle system calls.
-extern uint64 sys_fork(void);
-extern uint64 sys_exit(void);
-extern uint64 sys_wait(void);
-extern uint64 sys_pipe(void);
-extern uint64 sys_read(void);
-extern uint64 sys_kill(void);
-extern uint64 sys_exec(void);
-extern uint64 sys_fstat(void);
-extern uint64 sys_chdir(void);
-extern uint64 sys_dup(void);
-extern uint64 sys_getpid(void);
-extern uint64 sys_sbrk(void);
-extern uint64 sys_pause(void);
-extern uint64 sys_uptime(void);
-extern uint64 sys_open(void);
-extern uint64 sys_write(void);
-extern uint64 sys_mknod(void);
-extern uint64 sys_unlink(void);
-extern uint64 sys_link(void);
-extern uint64 sys_mkdir(void);
-extern uint64 sys_close(void);
-extern uint64 sys_sync(void);
+బాహ్య uint64 sys_fork(శూన్య);
+బాహ్య uint64 sys_exit(శూన్య);
+బాహ్య uint64 sys_wait(శూన్య);
+బాహ్య uint64 sys_pipe(శూన్య);
+బాహ్య uint64 sys_read(శూన్య);
+బాహ్య uint64 sys_kill(శూన్య);
+బాహ్య uint64 sys_exec(శూన్య);
+బాహ్య uint64 sys_fstat(శూన్య);
+బాహ్య uint64 sys_chdir(శూన్య);
+బాహ్య uint64 sys_dup(శూన్య);
+బాహ్య uint64 sys_getpid(శూన్య);
+బాహ్య uint64 sys_sbrk(శూన్య);
+బాహ్య uint64 sys_pause(శూన్య);
+బాహ్య uint64 sys_uptime(శూన్య);
+బాహ్య uint64 sys_open(శూన్య);
+బాహ్య uint64 sys_write(శూన్య);
+బాహ్య uint64 sys_mknod(శూన్య);
+బాహ్య uint64 sys_unlink(శూన్య);
+బాహ్య uint64 sys_link(శూన్య);
+బాహ్య uint64 sys_mkdir(శూన్య);
+బాహ్య uint64 sys_close(శూన్య);
+బాహ్య uint64 sys_sync(శూన్య);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
-static uint64 (*syscalls[])(void) = {
+స్థిర uint64 (*syscalls[])(శూన్య) = {
   // clang-format off
   [SYS_fork]    = sys_fork,
   [SYS_exit]    = sys_exit,
@@ -133,19 +133,19 @@ static uint64 (*syscalls[])(void) = {
   // clang-format on
 };
 
-void
-syscall(void)
+శూన్య
+syscall(శూన్య)
 {
-  int num;
-  struct proc *p = myproc();
+  పూర్ణాంకం అంకె;
+  నిర్మాణం proc *p = myproc();
 
-  num = p->trapframe->a7;
-  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+  అంకె = p->trapframe->a7;
+  ఒకవేళ (అంకె > 0 && అంకె < NELEM(syscalls) && syscalls[అంకె]) {
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
-    p->trapframe->a0 = syscalls[num]();
-  } else {
-    printk("%d %s: unknown sys call %d\n", p->pid, p->name, num);
+    p->trapframe->a0 = syscalls[అంకె]();
+  } లేకపోతే {
+    printk("%d %s: unknown sys call %d\n", p->pid, p->name, అంకె);
     p->trapframe->a0 = -1;
   }
 }

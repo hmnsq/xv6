@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "user/user.h"
+#అన్తర్భావ "kernel/fs.h"
+#అన్తర్భావ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+అక్షరం *
+fmtname(అక్షరం *మార్గం)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  స్థిర అక్షరం buf[DIRSIZ + 1];
+  అక్షరం *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  కొరకు (p = మార్గం + అక్షరశ్రేణి_పొడవు(మార్గం); p >= మార్గం && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
-  memmove(buf, p, strlen(p));
-  memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  ఒకవేళ (అక్షరశ్రేణి_పొడవు(p) >= DIRSIZ)
+    తిరిగి p;
+  memmove(buf, p, అక్షరశ్రేణి_పొడవు(p));
+  memset(buf + అక్షరశ్రేణి_పొడవు(p), ' ', DIRSIZ - అక్షరశ్రేణి_పొడవు(p));
+  buf[పరిమాణం(buf) - 1] = '\0';
+  తిరిగి buf;
 }
 
-void
-ls(char *path)
+శూన్య
+ls(అక్షరం *మార్గం)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  అక్షరం buf[512], *p;
+  పూర్ణాంకం fd;
+  నిర్మాణం dirent de;
+  నిర్మాణం stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
-    fprintf(2, "ls: cannot open %s\n", path);
-    return;
+  ఒకవేళ ((fd = open(మార్గం, O_RDONLY)) < 0) {
+    fprintf(2, "ls: cannot open %s\n", మార్గం);
+    తిరిగి;
   }
 
-  if (fstat(fd, &st) < 0) {
-    fprintf(2, "ls: cannot stat %s\n", path);
+  ఒకవేళ (fstat(fd, &st) < 0) {
+    fprintf(2, "ls: cannot stat %s\n", మార్గం);
     close(fd);
-    return;
+    తిరిగి;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  ఎంపిక (st.type) {
+  స్థితి T_DEVICE:
+  స్థితి T_FILE:
+    రాయి("%s %d %d %d\n", fmtname(మార్గం), st.type, st.ino, (పూర్ణాంకం)st.కొలత);
+    ఆపు;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
-      printf("ls: path too long\n");
-      break;
+  స్థితి T_DIR:
+    ఒకవేళ (అక్షరశ్రేణి_పొడవు(మార్గం) + 1 + DIRSIZ + 1 > పరిమాణం buf) {
+      రాయి("ls: path too long\n");
+      ఆపు;
     }
-    strcpy(buf, path);
-    p = buf + strlen(buf);
+    strcpy(buf, మార్గం);
+    p = buf + అక్షరశ్రేణి_పొడవు(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    అయితే (పఠ(fd, &de, పరిమాణం(de)) == పరిమాణం(de)) {
+      ఒకవేళ (de.inum == 0)
+        కొనసాగు;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
-        printf("ls: cannot stat %s\n", buf);
-        continue;
+      ఒకవేళ (stat(buf, &st) < 0) {
+        రాయి("ls: cannot stat %s\n", buf);
+        కొనసాగు;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      రాయి("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (పూర్ణాంకం)st.కొలత);
     }
-    break;
+    ఆపు;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం *argv[])
 {
-  int i;
+  పూర్ణాంకం i;
 
-  if (argc < 2) {
+  ఒకవేళ (argc < 2) {
     ls(".");
-    exit(0);
+    నిష్క్రమించు(0);
   }
-  for (i = 1; i < argc; i++)
+  కొరకు (i = 1; i < argc; i++)
     ls(argv[i]);
-  exit(0);
+  నిష్క్రమించు(0);
 }

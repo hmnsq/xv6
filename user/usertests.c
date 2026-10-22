@@ -1,12 +1,12 @@
-#include "kernel/param.h"
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
-#include "kernel/syscall.h"
-#include "kernel/memlayout.h"
-#include "kernel/riscv.h"
+#అన్తర్భావ "kernel/param.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "user/user.h"
+#అన్తర్భావ "kernel/fs.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "kernel/syscall.h"
+#అన్తర్భావ "kernel/memlayout.h"
+#అన్తర్భావ "kernel/riscv.h"
 
 //
 // Tests xv6 system calls.  usertests without arguments runs them all
@@ -17,9 +17,9 @@
 // prints "OK".
 //
 
-#define BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
+#నిర్వచించు BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
 
-char buf[BUFSZ];
+అక్షరం buf[BUFSZ];
 
 //
 // Section with tests that run fairly quickly.  Use -q if you want to
@@ -29,44 +29,44 @@ char buf[BUFSZ];
 
 // what if you pass ridiculous pointers to system calls
 // that read user memory with copyin?
-void
-copyin(char *s)
+శూన్య
+copyin(అక్షరం *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  కొరకు (పూర్ణాంకం ai = 0; ai < పరిమాణం(addrs) / పరిమాణం(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("copyin1", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open(copyin1) failed\n");
-      exit(1);
+    పూర్ణాంకం fd = open("copyin1", O_CREATE | O_WRONLY);
+    ఒకవేళ (fd < 0) {
+      రాయి("open(copyin1) failed\n");
+      నిష్క్రమించు(1);
     }
-    int n = write(fd, (void *)addr, 8192);
-    if (n >= 0) {
-      printf("write(fd, %p, 8192) returned %d, not -1\n", (void *)addr, n);
-      exit(1);
+    పూర్ణాంకం n = లిఖ(fd, (శూన్య *)addr, 8192);
+    ఒకవేళ (n >= 0) {
+      రాయి("write(fd, %p, 8192) returned %d, not -1\n", (శూన్య *)addr, n);
+      నిష్క్రమించు(1);
     }
     close(fd);
     unlink("copyin1");
 
-    n = write(1, (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(1, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    n = లిఖ(1, (అక్షరం *)addr, 8192);
+    ఒకవేళ (n > 0) {
+      రాయి("write(1, %p, 8192) returned %d, not -1 or 0\n", (శూన్య *)addr, n);
+      నిష్క్రమించు(1);
     }
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    పూర్ణాంకం fds[2];
+    ఒకవేళ (pipe(fds) < 0) {
+      రాయి("pipe() failed\n");
+      నిష్క్రమించు(1);
     }
-    n = write(fds[1], (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = లిఖ(fds[1], (అక్షరం *)addr, 8192);
+    ఒకవేళ (n > 0) {
+      రాయి("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (శూన్య *)addr,
              n);
-      exit(1);
+      నిష్క్రమించు(1);
     }
     close(fds[0]);
     close(fds[1]);
@@ -75,42 +75,42 @@ copyin(char *s)
 
 // what if you pass ridiculous pointers to system calls
 // that write user memory with copyout?
-void
-copyout(char *s)
+శూన్య
+copyout(అక్షరం *s)
 {
   uint64 addrs[] = {0LL,          0x80000000LL, 0x3fffffe000,
                     0x3ffffff000, 0x4000000000, 0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  కొరకు (పూర్ణాంకం ai = 0; ai < పరిమాణం(addrs) / పరిమాణం(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("open(README) failed\n");
-      exit(1);
+    పూర్ణాంకం fd = open("README", 0);
+    ఒకవేళ (fd < 0) {
+      రాయి("open(README) failed\n");
+      నిష్క్రమించు(1);
     }
-    int n = read(fd, (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(fd, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    పూర్ణాంకం n = పఠ(fd, (శూన్య *)addr, 8192);
+    ఒకవేళ (n > 0) {
+      రాయి("read(fd, %p, 8192) returned %d, not -1 or 0\n", (శూన్య *)addr, n);
+      నిష్క్రమించు(1);
     }
     close(fd);
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    పూర్ణాంకం fds[2];
+    ఒకవేళ (pipe(fds) < 0) {
+      రాయి("pipe() failed\n");
+      నిష్క్రమించు(1);
     }
-    n = write(fds[1], "x", 1);
-    if (n != 1) {
-      printf("pipe write failed\n");
-      exit(1);
+    n = లిఖ(fds[1], "x", 1);
+    ఒకవేళ (n != 1) {
+      రాయి("pipe write failed\n");
+      నిష్క్రమించు(1);
     }
-    n = read(fds[0], (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = పఠ(fds[0], (శూన్య *)addr, 8192);
+    ఒకవేళ (n > 0) {
+      రాయి("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (శూన్య *)addr,
              n);
-      exit(1);
+      నిష్క్రమించు(1);
     }
     close(fds[0]);
     close(fds[1]);
@@ -118,19 +118,19 @@ copyout(char *s)
 }
 
 // what if you pass ridiculous string pointers to system calls?
-void
-copyinstr1(char *s)
+శూన్య
+copyinstr1(అక్షరం *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  కొరకు (పూర్ణాంకం ai = 0; ai < పరిమాణం(addrs) / పరిమాణం(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open((char *)addr, O_CREATE | O_WRONLY);
-    if (fd >= 0) {
-      printf("open(%p) returned %d, not -1\n", (void *)addr, fd);
-      exit(1);
+    పూర్ణాంకం fd = open((అక్షరం *)addr, O_CREATE | O_WRONLY);
+    ఒకవేళ (fd >= 0) {
+      రాయి("open(%p) returned %d, not -1\n", (శూన్య *)addr, fd);
+      నిష్క్రమించు(1);
     }
   }
 }
@@ -138,205 +138,205 @@ copyinstr1(char *s)
 // what if a string system call argument is exactly the size
 // of the kernel buffer it is copied into, so that the null
 // would fall just beyond the end of the kernel buffer?
-void
-copyinstr2(char *s)
+శూన్య
+copyinstr2(అక్షరం *s)
 {
-  char b[MAXPATH + 1];
+  అక్షరం b[MAXPATH + 1];
 
-  for (int i = 0; i < MAXPATH; i++)
+  కొరకు (పూర్ణాంకం i = 0; i < MAXPATH; i++)
     b[i] = 'x';
   b[MAXPATH] = '\0';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  పూర్ణాంకం ret = unlink(b);
+  ఒకవేళ (ret != -1) {
+    రాయి("unlink(%s) returned %d, not -1\n", b, ret);
+    నిష్క్రమించు(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  పూర్ణాంకం fd = open(b, O_CREATE | O_WRONLY);
+  ఒకవేళ (fd != -1) {
+    రాయి("open(%s) returned %d, not -1\n", b, fd);
+    నిష్క్రమించు(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  ఒకవేళ (ret != -1) {
+    రాయి("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    నిష్క్రమించు(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  అక్షరం *వాదనలు[] = {"xx", 0};
+  ret = exec(b, వాదనలు);
+  ఒకవేళ (ret != -1) {
+    రాయి("exec(%s) returned %d, not -1\n", b, fd);
+    నిష్క్రమించు(1);
   }
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  పూర్ణాంకం pid = fork();
+  ఒకవేళ (pid < 0) {
+    రాయి("fork failed\n");
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    static char big[PGSIZE + 1];
-    for (int i = 0; i < PGSIZE; i++)
+  ఒకవేళ (pid == 0) {
+    స్థిర అక్షరం big[PGSIZE + 1];
+    కొరకు (పూర్ణాంకం i = 0; i < PGSIZE; i++)
       big[i] = 'x';
     big[PGSIZE] = '\0';
-    char *args2[] = {big, big, big, 0};
+    అక్షరం *args2[] = {big, big, big, 0};
     ret = exec("echo", args2);
-    if (ret != -1) {
-      printf("exec(echo, BIG) returned %d, not -1\n", fd);
-      exit(1);
+    ఒకవేళ (ret != -1) {
+      రాయి("exec(echo, BIG) returned %d, not -1\n", fd);
+      నిష్క్రమించు(1);
     }
-    exit(747); // OK
+    నిష్క్రమించు(747); // OK
   }
 
-  int st = 0;
+  పూర్ణాంకం st = 0;
   wait(&st);
-  if (st != 747) {
-    printf("exec(echo, BIG) succeeded, should have failed\n");
-    exit(1);
+  ఒకవేళ (st != 747) {
+    రాయి("exec(echo, BIG) succeeded, should have failed\n");
+    నిష్క్రమించు(1);
   }
 }
 
 // what if a string argument crosses over the end of last user page?
-void
-copyinstr3(char *s)
+శూన్య
+copyinstr3(అక్షరం *s)
 {
   sbrk(8192);
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0) {
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 శిఖరం = (uint64)sbrk(0);
+  ఒకవేళ ((శిఖరం % PGSIZE) != 0) {
+    sbrk(PGSIZE - (శిఖరం % PGSIZE));
   }
-  top = (uint64)sbrk(0);
-  if (top % PGSIZE) {
-    printf("oops\n");
-    exit(1);
+  శిఖరం = (uint64)sbrk(0);
+  ఒకవేళ (శిఖరం % PGSIZE) {
+    రాయి("oops\n");
+    నిష్క్రమించు(1);
   }
 
-  char *b = (char *)(top - 1);
+  అక్షరం *b = (అక్షరం *)(శిఖరం - 1);
   *b = 'x';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  పూర్ణాంకం ret = unlink(b);
+  ఒకవేళ (ret != -1) {
+    రాయి("unlink(%s) returned %d, not -1\n", b, ret);
+    నిష్క్రమించు(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  పూర్ణాంకం fd = open(b, O_CREATE | O_WRONLY);
+  ఒకవేళ (fd != -1) {
+    రాయి("open(%s) returned %d, not -1\n", b, fd);
+    నిష్క్రమించు(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  ఒకవేళ (ret != -1) {
+    రాయి("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    నిష్క్రమించు(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  అక్షరం *వాదనలు[] = {"xx", 0};
+  ret = exec(b, వాదనలు);
+  ఒకవేళ (ret != -1) {
+    రాయి("exec(%s) returned %d, not -1\n", b, fd);
+    నిష్క్రమించు(1);
   }
 }
 
 // See if the kernel refuses to read/write user memory that the
 // application doesn't have anymore, because it returned it.
-void
-rwsbrk(char *s)
+శూన్య
+rwsbrk(అక్షరం *s)
 {
-  int fd, n;
+  పూర్ణాంకం fd, n;
 
   uint64 a = (uint64)sbrk(8192);
 
-  if (a == (uint64)SBRK_ERROR) {
-    printf("sbrk(rwsbrk) failed\n");
-    exit(1);
+  ఒకవేళ (a == (uint64)SBRK_ERROR) {
+    రాయి("sbrk(rwsbrk) failed\n");
+    నిష్క్రమించు(1);
   }
 
-  if (sbrk(-8192) == SBRK_ERROR) {
-    printf("sbrk(rwsbrk) shrink failed\n");
-    exit(1);
+  ఒకవేళ (sbrk(-8192) == SBRK_ERROR) {
+    రాయి("sbrk(rwsbrk) shrink failed\n");
+    నిష్క్రమించు(1);
   }
 
   fd = open("rwsbrk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open(rwsbrk) failed\n");
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("open(rwsbrk) failed\n");
+    నిష్క్రమించు(1);
   }
-  n = write(fd, (void *)(a + PGSIZE), 1024);
-  if (n >= 0) {
-    printf("write(fd, %p, 1024) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = లిఖ(fd, (శూన్య *)(a + PGSIZE), 1024);
+  ఒకవేళ (n >= 0) {
+    రాయి("write(fd, %p, 1024) returned %d, not -1\n", (శూన్య *)a + PGSIZE, n);
+    నిష్క్రమించు(1);
   }
   close(fd);
   unlink("rwsbrk");
 
   fd = open("README", O_RDONLY);
-  if (fd < 0) {
-    printf("open(README) failed\n");
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("open(README) failed\n");
+    నిష్క్రమించు(1);
   }
-  n = read(fd, (void *)(a + PGSIZE), 10);
-  if (n >= 0) {
-    printf("read(fd, %p, 10) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = పఠ(fd, (శూన్య *)(a + PGSIZE), 10);
+  ఒకవేళ (n >= 0) {
+    రాయి("read(fd, %p, 10) returned %d, not -1\n", (శూన్య *)a + PGSIZE, n);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // test O_TRUNC.
-void
-truncate1(char *s)
+శూన్య
+truncate1(అక్షరం *s)
 {
-  char buf[32];
+  అక్షరం buf[32];
 
   unlink("truncfile");
-  int fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-  write(fd1, "abcd", 4);
+  పూర్ణాంకం fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+  లిఖ(fd1, "abcd", 4);
   close(fd1);
 
-  int fd2 = open("truncfile", O_RDONLY);
-  int n = read(fd2, buf, sizeof(buf));
-  if (n != 4) {
-    printf("%s: read %d bytes, wanted 4\n", s, n);
-    exit(1);
+  పూర్ణాంకం fd2 = open("truncfile", O_RDONLY);
+  పూర్ణాంకం n = పఠ(fd2, buf, పరిమాణం(buf));
+  ఒకవేళ (n != 4) {
+    రాయి("%s: read %d bytes, wanted 4\n", s, n);
+    నిష్క్రమించు(1);
   }
 
   fd1 = open("truncfile", O_WRONLY | O_TRUNC);
 
-  int fd3 = open("truncfile", O_RDONLY);
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 0) {
-    printf("aaa fd3=%d\n", fd3);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  పూర్ణాంకం fd3 = open("truncfile", O_RDONLY);
+  n = పఠ(fd3, buf, పరిమాణం(buf));
+  ఒకవేళ (n != 0) {
+    రాయి("aaa fd3=%d\n", fd3);
+    రాయి("%s: read %d bytes, wanted 0\n", s, n);
+    నిష్క్రమించు(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 0) {
-    printf("bbb fd2=%d\n", fd2);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  n = పఠ(fd2, buf, పరిమాణం(buf));
+  ఒకవేళ (n != 0) {
+    రాయి("bbb fd2=%d\n", fd2);
+    రాయి("%s: read %d bytes, wanted 0\n", s, n);
+    నిష్క్రమించు(1);
   }
 
-  write(fd1, "abcdef", 6);
+  లిఖ(fd1, "abcdef", 6);
 
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 6) {
-    printf("%s: read %d bytes, wanted 6\n", s, n);
-    exit(1);
+  n = పఠ(fd3, buf, పరిమాణం(buf));
+  ఒకవేళ (n != 6) {
+    రాయి("%s: read %d bytes, wanted 6\n", s, n);
+    నిష్క్రమించు(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 2) {
-    printf("%s: read %d bytes, wanted 2\n", s, n);
-    exit(1);
+  n = పఠ(fd2, buf, పరిమాణం(buf));
+  ఒకవేళ (n != 2) {
+    రాయి("%s: read %d bytes, wanted 2\n", s, n);
+    నిష్క్రమించు(1);
   }
 
   unlink("truncfile");
@@ -350,20 +350,20 @@ truncate1(char *s)
 // this causes a write at an offset beyond the end of the file.
 // such writes fail on xv6 (unlike POSIX) but at least
 // they don't crash.
-void
-truncate2(char *s)
+శూన్య
+truncate2(అక్షరం *s)
 {
   unlink("truncfile");
 
-  int fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
-  write(fd1, "abcd", 4);
+  పూర్ణాంకం fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
+  లిఖ(fd1, "abcd", 4);
 
-  int fd2 = open("truncfile", O_TRUNC | O_WRONLY);
+  పూర్ణాంకం fd2 = open("truncfile", O_TRUNC | O_WRONLY);
 
-  int n = write(fd1, "x", 1);
-  if (n != -1) {
-    printf("%s: write returned %d, expected -1\n", s, n);
-    exit(1);
+  పూర్ణాంకం n = లిఖ(fd1, "x", 1);
+  ఒకవేళ (n != -1) {
+    రాయి("%s: write returned %d, expected -1\n", s, n);
+    నిష్క్రమించు(1);
   }
 
   unlink("truncfile");
@@ -371,109 +371,109 @@ truncate2(char *s)
   close(fd2);
 }
 
-void
-truncate3(char *s)
+శూన్య
+truncate3(అక్షరం *s)
 {
-  int pid, xstatus;
+  పూర్ణాంకం pid, xstatus;
 
   close(open("truncfile", O_CREATE | O_TRUNC | O_WRONLY));
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (pid == 0) {
-    for (int i = 0; i < 100; i++) {
-      char buf[32];
-      int fd = open("truncfile", O_WRONLY);
-      if (fd < 0) {
-        printf("%s: open failed\n", s);
-        exit(1);
+  ఒకవేళ (pid == 0) {
+    కొరకు (పూర్ణాంకం i = 0; i < 100; i++) {
+      అక్షరం buf[32];
+      పూర్ణాంకం fd = open("truncfile", O_WRONLY);
+      ఒకవేళ (fd < 0) {
+        రాయి("%s: open failed\n", s);
+        నిష్క్రమించు(1);
       }
-      int n = write(fd, "1234567890", 10);
-      if (n != 10) {
-        printf("%s: write got %d, expected 10\n", s, n);
-        exit(1);
+      పూర్ణాంకం n = లిఖ(fd, "1234567890", 10);
+      ఒకవేళ (n != 10) {
+        రాయి("%s: write got %d, expected 10\n", s, n);
+        నిష్క్రమించు(1);
       }
       close(fd);
       fd = open("truncfile", O_RDONLY);
-      read(fd, buf, sizeof(buf));
+      పఠ(fd, buf, పరిమాణం(buf));
       close(fd);
     }
-    exit(0);
+    నిష్క్రమించు(0);
   }
 
-  for (int i = 0; i < 150; i++) {
-    int fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-    if (fd < 0) {
-      printf("%s: open failed\n", s);
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < 150; i++) {
+    పూర్ణాంకం fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+    ఒకవేళ (fd < 0) {
+      రాయి("%s: open failed\n", s);
+      నిష్క్రమించు(1);
     }
-    int n = write(fd, "xxx", 3);
-    if (n != 3) {
-      printf("%s: write got %d, expected 3\n", s, n);
-      exit(1);
+    పూర్ణాంకం n = లిఖ(fd, "xxx", 3);
+    ఒకవేళ (n != 3) {
+      రాయి("%s: write got %d, expected 3\n", s, n);
+      నిష్క్రమించు(1);
     }
     close(fd);
   }
 
   wait(&xstatus);
   unlink("truncfile");
-  exit(xstatus);
+  నిష్క్రమించు(xstatus);
 }
 
 // does chdir() call iput(p->cwd) in a transaction?
-void
-iputtest(char *s)
+శూన్య
+iputtest(అక్షరం *s)
 {
-  if (mkdir("iputdir") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("iputdir") < 0) {
+    రాయి("%s: mkdir failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("iputdir") < 0) {
-    printf("%s: chdir iputdir failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("iputdir") < 0) {
+    రాయి("%s: chdir iputdir failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("../iputdir") < 0) {
-    printf("%s: unlink ../iputdir failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("../iputdir") < 0) {
+    రాయి("%s: unlink ../iputdir failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("/") < 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("/") < 0) {
+    రాయి("%s: chdir / failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // does exit() call iput(p->cwd) in a transaction?
-void
-exitiputtest(char *s)
+శూన్య
+exitiputtest(అక్షరం *s)
 {
-  int pid, xstatus;
+  పూర్ణాంకం pid, xstatus;
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    if (mkdir("iputdir") < 0) {
-      printf("%s: mkdir failed\n", s);
-      exit(1);
+  ఒకవేళ (pid == 0) {
+    ఒకవేళ (mkdir("iputdir") < 0) {
+      రాయి("%s: mkdir failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (chdir("iputdir") < 0) {
-      printf("%s: child chdir failed\n", s);
-      exit(1);
+    ఒకవేళ (chdir("iputdir") < 0) {
+      రాయి("%s: child chdir failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (unlink("../iputdir") < 0) {
-      printf("%s: unlink ../iputdir failed\n", s);
-      exit(1);
+    ఒకవేళ (unlink("../iputdir") < 0) {
+      రాయి("%s: unlink ../iputdir failed\n", s);
+      నిష్క్రమించు(1);
     }
-    exit(0);
+    నిష్క్రమించు(0);
   }
   wait(&xstatus);
-  exit(xstatus);
+  నిష్క్రమించు(xstatus);
 }
 
 // does the error path in open() for attempt to write a
@@ -487,450 +487,450 @@ exitiputtest(char *s)
 //      for(i = 0; i < 10000; i++)
 //        yield();
 //    }
-void
-openiputtest(char *s)
+శూన్య
+openiputtest(అక్షరం *s)
 {
-  int pid, xstatus;
+  పూర్ణాంకం pid, xstatus;
 
-  if (mkdir("oidir") < 0) {
-    printf("%s: mkdir oidir failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("oidir") < 0) {
+    రాయి("%s: mkdir oidir failed\n", s);
+    నిష్క్రమించు(1);
   }
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    int fd = open("oidir", O_RDWR);
-    if (fd >= 0) {
-      printf("%s: open directory for write succeeded\n", s);
-      exit(1);
+  ఒకవేళ (pid == 0) {
+    పూర్ణాంకం fd = open("oidir", O_RDWR);
+    ఒకవేళ (fd >= 0) {
+      రాయి("%s: open directory for write succeeded\n", s);
+      నిష్క్రమించు(1);
     }
-    exit(0);
+    నిష్క్రమించు(0);
   }
   pause(1);
-  if (unlink("oidir") != 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("oidir") != 0) {
+    రాయి("%s: unlink failed\n", s);
+    నిష్క్రమించు(1);
   }
   wait(&xstatus);
-  exit(xstatus);
+  నిష్క్రమించు(xstatus);
 }
 
 // simple file system tests
 
-void
-opentest(char *s)
+శూన్య
+opentest(అక్షరం *s)
 {
-  int fd;
+  పూర్ణాంకం fd;
 
   fd = open("echo", 0);
-  if (fd < 0) {
-    printf("%s: open echo failed!\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open echo failed!\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
   fd = open("doesnotexist", 0);
-  if (fd >= 0) {
-    printf("%s: open doesnotexist succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (fd >= 0) {
+    రాయి("%s: open doesnotexist succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
-void
-writetest(char *s)
+శూన్య
+writetest(అక్షరం *s)
 {
-  int fd;
-  int i;
-  enum { N = 100, SZ = 10 };
+  పూర్ణాంకం fd;
+  పూర్ణాంకం i;
+  గణన { N = 100, SZ = 10 };
 
   fd = open("small", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat small failed!\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: error: creat small failed!\n", s);
+    నిష్క్రమించు(1);
   }
-  for (i = 0; i < N; i++) {
-    if (write(fd, "aaaaaaaaaa", SZ) != SZ) {
-      printf("%s: error: write aa %d new file failed\n", s, i);
-      exit(1);
+  కొరకు (i = 0; i < N; i++) {
+    ఒకవేళ (లిఖ(fd, "aaaaaaaaaa", SZ) != SZ) {
+      రాయి("%s: error: write aa %d new file failed\n", s, i);
+      నిష్క్రమించు(1);
     }
-    if (write(fd, "bbbbbbbbbb", SZ) != SZ) {
-      printf("%s: error: write bb %d new file failed\n", s, i);
-      exit(1);
+    ఒకవేళ (లిఖ(fd, "bbbbbbbbbb", SZ) != SZ) {
+      రాయి("%s: error: write bb %d new file failed\n", s, i);
+      నిష్క్రమించు(1);
     }
   }
   close(fd);
   fd = open("small", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open small failed!\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: error: open small failed!\n", s);
+    నిష్క్రమించు(1);
   }
-  i = read(fd, buf, N * SZ * 2);
-  if (i != N * SZ * 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  i = పఠ(fd, buf, N * SZ * 2);
+  ఒకవేళ (i != N * SZ * 2) {
+    రాయి("%s: read failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  if (unlink("small") < 0) {
-    printf("%s: unlink small failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("small") < 0) {
+    రాయి("%s: unlink small failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
-void
-writebig(char *s)
+శూన్య
+writebig(అక్షరం *s)
 {
-  int i, fd, n;
+  పూర్ణాంకం i, fd, n;
 
   fd = open("big", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat big failed!\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: error: creat big failed!\n", s);
+    నిష్క్రమించు(1);
   }
 
-  for (i = 0; i < MAXFILE; i++) {
-    ((int *)buf)[0] = i;
-    if (write(fd, buf, BSIZE) != BSIZE) {
-      printf("%s: error: write big file failed i=%d\n", s, i);
-      exit(1);
+  కొరకు (i = 0; i < MAXFILE; i++) {
+    ((పూర్ణాంకం *)buf)[0] = i;
+    ఒకవేళ (లిఖ(fd, buf, BSIZE) != BSIZE) {
+      రాయి("%s: error: write big file failed i=%d\n", s, i);
+      నిష్క్రమించు(1);
     }
   }
 
   close(fd);
 
   fd = open("big", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open big failed!\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: error: open big failed!\n", s);
+    నిష్క్రమించు(1);
   }
 
   n = 0;
-  for (;;) {
-    i = read(fd, buf, BSIZE);
-    if (i == 0) {
-      if (n != MAXFILE) {
-        printf("%s: read only %d blocks from big", s, n);
-        exit(1);
+  కొరకు (;;) {
+    i = పఠ(fd, buf, BSIZE);
+    ఒకవేళ (i == 0) {
+      ఒకవేళ (n != MAXFILE) {
+        రాయి("%s: read only %d blocks from big", s, n);
+        నిష్క్రమించు(1);
       }
-      break;
-    } else if (i != BSIZE) {
-      printf("%s: read failed %d\n", s, i);
-      exit(1);
+      ఆపు;
+    } లేకపోతే ఒకవేళ (i != BSIZE) {
+      రాయి("%s: read failed %d\n", s, i);
+      నిష్క్రమించు(1);
     }
-    if (((int *)buf)[0] != n) {
-      printf("%s: read content of block %d is %d\n", s, n, ((int *)buf)[0]);
-      exit(1);
+    ఒకవేళ (((పూర్ణాంకం *)buf)[0] != n) {
+      రాయి("%s: read content of block %d is %d\n", s, n, ((పూర్ణాంకం *)buf)[0]);
+      నిష్క్రమించు(1);
     }
     n++;
   }
   close(fd);
-  if (unlink("big") < 0) {
-    printf("%s: unlink big failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("big") < 0) {
+    రాయి("%s: unlink big failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // many creates, followed by unlink test
-void
-createtest(char *s)
+శూన్య
+createtest(అక్షరం *s)
 {
-  int i, fd;
-  enum { N = 52 };
+  పూర్ణాంకం i, fd;
+  గణన { N = 52 };
 
-  char name[3];
+  అక్షరం name[3];
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     name[1] = '0' + i;
     fd = open(name, O_CREATE | O_RDWR);
     close(fd);
   }
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     name[1] = '0' + i;
     unlink(name);
   }
 }
 
-void
-dirtest(char *s)
+శూన్య
+dirtest(అక్షరం *s)
 {
-  if (mkdir("dir0") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dir0") < 0) {
+    రాయి("%s: mkdir failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (chdir("dir0") < 0) {
-    printf("%s: chdir dir0 failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dir0") < 0) {
+    రాయి("%s: chdir dir0 failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (chdir("..") < 0) {
-    printf("%s: chdir .. failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("..") < 0) {
+    రాయి("%s: chdir .. failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (unlink("dir0") < 0) {
-    printf("%s: unlink dir0 failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dir0") < 0) {
+    రాయి("%s: unlink dir0 failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
-void
-exectest(char *s)
+శూన్య
+exectest(అక్షరం *s)
 {
-  int fd, xstatus, pid;
-  char *echoargv[] = {"echo", "OK", 0};
-  char buf[3];
+  పూర్ణాంకం fd, xstatus, pid;
+  అక్షరం *echoargv[] = {"echo", "OK", 0};
+  అక్షరం buf[3];
 
   unlink("echo-ok");
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    int errfd = dup(1);
-    if (errfd < 0) {
-      printf("%s: dup failed\n", s);
-      exit(1);
+  ఒకవేళ (pid == 0) {
+    పూర్ణాంకం errfd = dup(1);
+    ఒకవేళ (errfd < 0) {
+      రాయి("%s: dup failed\n", s);
+      నిష్క్రమించు(1);
     }
     close(1);
     fd = open("echo-ok", O_CREATE | O_WRONLY);
-    if (fd < 0) {
+    ఒకవేళ (fd < 0) {
       fprintf(errfd, "%s: create failed\n", s);
-      exit(1);
+      నిష్క్రమించు(1);
     }
-    if (fd != 1) {
+    ఒకవేళ (fd != 1) {
       fprintf(errfd, "%s: wrong fd\n", s);
-      exit(1);
+      నిష్క్రమించు(1);
     }
-    if (exec("echo", echoargv) < 0) {
+    ఒకవేళ (exec("echo", echoargv) < 0) {
       fprintf(errfd, "%s: exec echo failed\n", s);
-      exit(1);
+      నిష్క్రమించు(1);
     }
     // won't get to here
   }
-  if (wait(&xstatus) != pid) {
-    printf("%s: wait failed!\n", s);
+  ఒకవేళ (wait(&xstatus) != pid) {
+    రాయి("%s: wait failed!\n", s);
   }
-  if (xstatus != 0) {
-    printf("%s: nonzero wait status %d\n", s, xstatus);
-    exit(1);
+  ఒకవేళ (xstatus != 0) {
+    రాయి("%s: nonzero wait status %d\n", s, xstatus);
+    నిష్క్రమించు(1);
   }
 
   fd = open("echo-ok", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (read(fd, buf, 2) != 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  ఒకవేళ (పఠ(fd, buf, 2) != 2) {
+    రాయి("%s: read failed\n", s);
+    నిష్క్రమించు(1);
   }
   unlink("echo-ok");
-  if (buf[0] == 'O' && buf[1] == 'K')
-    exit(0);
-  else {
-    printf("%s: wrong output\n", s);
-    exit(1);
+  ఒకవేళ (buf[0] == 'O' && buf[1] == 'K')
+    నిష్క్రమించు(0);
+  లేకపోతే {
+    రాయి("%s: wrong output\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // simple fork and pipe read/write
 
-void
-pipe1(char *s)
+శూన్య
+pipe1(అక్షరం *s)
 {
-  int fds[2], pid, xstatus;
-  int seq, i, n, cc, total;
-  enum { N = 5, SZ = 1033 };
+  పూర్ణాంకం fds[2], pid, xstatus;
+  పూర్ణాంకం seq, i, n, cc, మొత్తం;
+  గణన { N = 5, SZ = 1033 };
 
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  ఒకవేళ (pipe(fds) != 0) {
+    రాయి("%s: pipe() failed\n", s);
+    నిష్క్రమించు(1);
   }
   pid = fork();
   seq = 0;
-  if (pid == 0) {
+  ఒకవేళ (pid == 0) {
     close(fds[0]);
-    for (n = 0; n < N; n++) {
-      for (i = 0; i < SZ; i++)
+    కొరకు (n = 0; n < N; n++) {
+      కొరకు (i = 0; i < SZ; i++)
         buf[i] = seq++;
-      if (write(fds[1], buf, SZ) != SZ) {
-        printf("%s: pipe1 oops 1\n", s);
-        exit(1);
+      ఒకవేళ (లిఖ(fds[1], buf, SZ) != SZ) {
+        రాయి("%s: pipe1 oops 1\n", s);
+        నిష్క్రమించు(1);
       }
     }
-    exit(0);
-  } else if (pid > 0) {
+    నిష్క్రమించు(0);
+  } లేకపోతే ఒకవేళ (pid > 0) {
     close(fds[1]);
-    total = 0;
+    మొత్తం = 0;
     cc = 1;
-    while ((n = read(fds[0], buf, cc)) > 0) {
-      for (i = 0; i < n; i++) {
-        if ((buf[i] & 0xff) != (seq++ & 0xff)) {
-          printf("%s: pipe1 oops 2\n", s);
-          return;
+    అయితే ((n = పఠ(fds[0], buf, cc)) > 0) {
+      కొరకు (i = 0; i < n; i++) {
+        ఒకవేళ ((buf[i] & 0xff) != (seq++ & 0xff)) {
+          రాయి("%s: pipe1 oops 2\n", s);
+          తిరిగి;
         }
       }
-      total += n;
+      మొత్తం += n;
       cc = cc * 2;
-      if (cc > sizeof(buf))
-        cc = sizeof(buf);
+      ఒకవేళ (cc > పరిమాణం(buf))
+        cc = పరిమాణం(buf);
     }
-    if (total != N * SZ) {
-      printf("%s: pipe1 oops 3 total %d\n", s, total);
-      exit(1);
+    ఒకవేళ (మొత్తం != N * SZ) {
+      రాయి("%s: pipe1 oops 3 total %d\n", s, మొత్తం);
+      నిష్క్రమించు(1);
     }
     close(fds[0]);
     wait(&xstatus);
-    exit(xstatus);
-  } else {
-    printf("%s: fork() failed\n", s);
-    exit(1);
+    నిష్క్రమించు(xstatus);
+  } లేకపోతే {
+    రాయి("%s: fork() failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // test if child is killed (status = -1)
-void
-killstatus(char *s)
+శూన్య
+killstatus(అక్షరం *s)
 {
-  int xst;
+  పూర్ణాంకం xst;
 
-  for (int i = 0; i < 100; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < 100; i++) {
+    పూర్ణాంకం pid1 = fork();
+    ఒకవేళ (pid1 < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (pid1 == 0) {
-      while (1) {
+    ఒకవేళ (pid1 == 0) {
+      అయితే (1) {
         getpid();
       }
-      exit(0);
+      నిష్క్రమించు(0);
     }
     pause(1);
     kill(pid1);
     wait(&xst);
-    if (xst != -1) {
-      printf("%s: status should be -1\n", s);
-      exit(1);
+    ఒకవేళ (xst != -1) {
+      రాయి("%s: status should be -1\n", s);
+      నిష్క్రమించు(1);
     }
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // test that kill on unused process 0 doesn't set the killed flag
-void
-killzero(char *s)
+శూన్య
+killzero(అక్షరం *s)
 {
-  int pid, xst;
+  పూర్ణాంకం pid, xst;
 
   kill(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    exit(7);
+  ఒకవేళ (pid == 0) {
+    నిష్క్రమించు(7);
   }
-  if (wait(&xst) != pid) {
-    printf("%s: wait wrong pid\n", s);
-    exit(1);
+  ఒకవేళ (wait(&xst) != pid) {
+    రాయి("%s: wait wrong pid\n", s);
+    నిష్క్రమించు(1);
   }
-  if (xst != 7) {
-    printf("%s: child exited with status %d, expected 7\n", s, xst);
-    exit(1);
+  ఒకవేళ (xst != 7) {
+    రాయి("%s: child exited with status %d, expected 7\n", s, xst);
+    నిష్క్రమించు(1);
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // meant to be run w/ at most two CPUs
-void
-preempt(char *s)
+శూన్య
+preempt(అక్షరం *s)
 {
-  int pid1, pid2, pid3;
-  int pfds[2];
+  పూర్ణాంకం pid1, pid2, pid3;
+  పూర్ణాంకం pfds[2];
 
   pid1 = fork();
-  if (pid1 < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  ఒకవేళ (pid1 < 0) {
+    రాయి("%s: fork failed", s);
+    నిష్క్రమించు(1);
   }
-  if (pid1 == 0)
-    for (;;)
+  ఒకవేళ (pid1 == 0)
+    కొరకు (;;)
       ;
 
   pid2 = fork();
-  if (pid2 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid2 < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid2 == 0)
-    for (;;)
+  ఒకవేళ (pid2 == 0)
+    కొరకు (;;)
       ;
 
   pipe(pfds);
   pid3 = fork();
-  if (pid3 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid3 < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid3 == 0) {
+  ఒకవేళ (pid3 == 0) {
     close(pfds[0]);
-    if (write(pfds[1], "x", 1) != 1)
-      printf("%s: preempt write error", s);
+    ఒకవేళ (లిఖ(pfds[1], "x", 1) != 1)
+      రాయి("%s: preempt write error", s);
     close(pfds[1]);
-    for (;;)
+    కొరకు (;;)
       ;
   }
 
   close(pfds[1]);
-  if (read(pfds[0], buf, sizeof(buf)) != 1) {
-    printf("%s: preempt read error", s);
-    return;
+  ఒకవేళ (పఠ(pfds[0], buf, పరిమాణం(buf)) != 1) {
+    రాయి("%s: preempt read error", s);
+    తిరిగి;
   }
   close(pfds[0]);
-  printf("kill... ");
+  రాయి("kill... ");
   kill(pid1);
   kill(pid2);
   kill(pid3);
-  printf("wait... ");
+  రాయి("wait... ");
   wait(0);
   wait(0);
   wait(0);
 }
 
 // try to find any races between exit and wait
-void
-exitwait(char *s)
+శూన్య
+exitwait(అక్షరం *s)
 {
-  int i, pid;
+  పూర్ణాంకం i, pid;
 
-  for (i = 0; i < 100; i++) {
+  కొరకు (i = 0; i < 100; i++) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (pid) {
-      int xstate;
-      if (wait(&xstate) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    ఒకవేళ (pid) {
+      పూర్ణాంకం xstate;
+      ఒకవేళ (wait(&xstate) != pid) {
+        రాయి("%s: wait wrong pid\n", s);
+        నిష్క్రమించు(1);
       }
-      if (i != xstate) {
-        printf("%s: wait wrong exit status\n", s);
-        exit(1);
+      ఒకవేళ (i != xstate) {
+        రాయి("%s: wait wrong exit status\n", s);
+        నిష్క్రమించు(1);
       }
-    } else {
-      exit(i);
+    } లేకపోతే {
+      నిష్క్రమించు(i);
     }
   }
 }
@@ -938,54 +938,54 @@ exitwait(char *s)
 // try to find races in the reparenting
 // code that handles a parent exiting
 // when it still has live children.
-void
-reparent(char *s)
+శూన్య
+reparent(అక్షరం *s)
 {
-  int master_pid = getpid();
-  for (int i = 0; i < 200; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  పూర్ణాంకం master_pid = getpid();
+  కొరకు (పూర్ణాంకం i = 0; i < 200; i++) {
+    పూర్ణాంకం pid = fork();
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (pid) {
-      if (wait(0) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    ఒకవేళ (pid) {
+      ఒకవేళ (wait(0) != pid) {
+        రాయి("%s: wait wrong pid\n", s);
+        నిష్క్రమించు(1);
       }
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
+    } లేకపోతే {
+      పూర్ణాంకం pid2 = fork();
+      ఒకవేళ (pid2 < 0) {
         kill(master_pid);
-        exit(1);
+        నిష్క్రమించు(1);
       }
-      exit(0);
+      నిష్క్రమించు(0);
     }
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // what if two children exit() at the same time?
-void
-twochildren(char *s)
+శూన్య
+twochildren(అక్షరం *s)
 {
-  for (int i = 0; i < 1000; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < 1000; i++) {
+    పూర్ణాంకం pid1 = fork();
+    ఒకవేళ (pid1 < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (pid1 == 0) {
-      exit(0);
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
-        printf("%s: fork failed\n", s);
-        exit(1);
+    ఒకవేళ (pid1 == 0) {
+      నిష్క్రమించు(0);
+    } లేకపోతే {
+      పూర్ణాంకం pid2 = fork();
+      ఒకవేళ (pid2 < 0) {
+        రాయి("%s: fork failed\n", s);
+        నిష్క్రమించు(1);
       }
-      if (pid2 == 0) {
-        exit(0);
-      } else {
+      ఒకవేళ (pid2 == 0) {
+        నిష్క్రమించు(0);
+      } లేకపోతే {
         wait(0);
         wait(0);
       }
@@ -994,64 +994,64 @@ twochildren(char *s)
 }
 
 // concurrent forks to try to expose locking bugs.
-void
-forkfork(char *s)
+శూన్య
+forkfork(అక్షరం *s)
 {
-  enum { N = 2 };
+  గణన { N = 2 };
 
-  for (int i = 0; i < N; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed", s);
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < N; i++) {
+    పూర్ణాంకం pid = fork();
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed", s);
+      నిష్క్రమించు(1);
     }
-    if (pid == 0) {
-      for (int j = 0; j < 200; j++) {
-        int pid1 = fork();
-        if (pid1 < 0) {
-          exit(1);
+    ఒకవేళ (pid == 0) {
+      కొరకు (పూర్ణాంకం j = 0; j < 200; j++) {
+        పూర్ణాంకం pid1 = fork();
+        ఒకవేళ (pid1 < 0) {
+          నిష్క్రమించు(1);
         }
-        if (pid1 == 0) {
-          exit(0);
+        ఒకవేళ (pid1 == 0) {
+          నిష్క్రమించు(0);
         }
         wait(0);
       }
-      exit(0);
+      నిష్క్రమించు(0);
     }
   }
 
-  int xstatus;
-  for (int i = 0; i < N; i++) {
+  పూర్ణాంకం xstatus;
+  కొరకు (పూర్ణాంకం i = 0; i < N; i++) {
     wait(&xstatus);
-    if (xstatus != 0) {
-      printf("%s: fork in child failed", s);
-      exit(1);
+    ఒకవేళ (xstatus != 0) {
+      రాయి("%s: fork in child failed", s);
+      నిష్క్రమించు(1);
     }
   }
 }
 
-void
-forkforkfork(char *s)
+శూన్య
+forkforkfork(అక్షరం *s)
 {
   unlink("stopforking");
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  పూర్ణాంకం pid = fork();
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    while (1) {
-      int fd = open("stopforking", 0);
-      if (fd >= 0) {
-        exit(0);
+  ఒకవేళ (pid == 0) {
+    అయితే (1) {
+      పూర్ణాంకం fd = open("stopforking", 0);
+      ఒకవేళ (fd >= 0) {
+        నిష్క్రమించు(0);
       }
-      if (fork() < 0) {
+      ఒకవేళ (fork() < 0) {
         close(open("stopforking", O_CREATE | O_RDWR));
       }
     }
 
-    exit(0);
+    నిష్క్రమించు(0);
   }
 
   pause(20); // two seconds
@@ -1065,60 +1065,60 @@ forkforkfork(char *s)
 // deadlocks against init's wait()? also used to trigger a "panic:
 // release" due to exit() releasing a different p->parent->lock than
 // it acquired.
-void
-reparent2(char *s)
+శూన్య
+reparent2(అక్షరం *s)
 {
-  for (int i = 0; i < 800; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("fork failed\n");
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < 800; i++) {
+    పూర్ణాంకం pid1 = fork();
+    ఒకవేళ (pid1 < 0) {
+      రాయి("fork failed\n");
+      నిష్క్రమించు(1);
     }
-    if (pid1 == 0) {
+    ఒకవేళ (pid1 == 0) {
       fork();
       fork();
-      exit(0);
+      నిష్క్రమించు(0);
     }
     wait(0);
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // allocate all mem, free it, and allocate again
-void
-mem(char *s)
+శూన్య
+mem(అక్షరం *s)
 {
-  void *m1, *m2;
-  int pid;
+  శూన్య *m1, *m2;
+  పూర్ణాంకం pid;
 
-  if ((pid = fork()) == 0) {
+  ఒకవేళ ((pid = fork()) == 0) {
     m1 = 0;
-    while ((m2 = malloc(10001)) != 0) {
-      *(char **)m2 = m1;
+    అయితే ((m2 = జ్ఞాపకం_ఇవ్వు(10001)) != 0) {
+      *(అక్షరం **)m2 = m1;
       m1 = m2;
     }
-    while (m1) {
-      m2 = *(char **)m1;
-      free(m1);
+    అయితే (m1) {
+      m2 = *(అక్షరం **)m1;
+      విడుదల(m1);
       m1 = m2;
     }
-    m1 = malloc(1024 * 20);
-    if (m1 == 0) {
-      printf("%s: couldn't allocate mem?!!\n", s);
-      exit(1);
+    m1 = జ్ఞాపకం_ఇవ్వు(1024 * 20);
+    ఒకవేళ (m1 == 0) {
+      రాయి("%s: couldn't allocate mem?!!\n", s);
+      నిష్క్రమించు(1);
     }
-    free(m1);
-    exit(0);
-  } else {
-    int xstatus;
+    విడుదల(m1);
+    నిష్క్రమించు(0);
+  } లేకపోతే {
+    పూర్ణాంకం xstatus;
     wait(&xstatus);
-    if (xstatus == -1) {
+    ఒకవేళ (xstatus == -1) {
       // probably page fault, so might be lazy lab,
       // so OK.
-      exit(0);
+      నిష్క్రమించు(0);
     }
-    exit(xstatus);
+    నిష్క్రమించు(xstatus);
   }
 }
 
@@ -1126,193 +1126,193 @@ mem(char *s)
 
 // two processes write to the same file descriptor
 // is the offset shared? does inode locking work?
-void
-sharedfd(char *s)
+శూన్య
+sharedfd(అక్షరం *s)
 {
-  int fd, pid, i, n, nc, np;
-  enum { N = 1000, SZ = 10 };
-  char buf[SZ];
+  పూర్ణాంకం fd, pid, i, n, nc, np;
+  గణన { N = 1000, SZ = 10 };
+  అక్షరం buf[SZ];
 
   unlink("sharedfd");
   fd = open("sharedfd", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for writing", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot open sharedfd for writing", s);
+    నిష్క్రమించు(1);
   }
   pid = fork();
-  memset(buf, pid == 0 ? 'c' : 'p', sizeof(buf));
-  for (i = 0; i < N; i++) {
-    if (write(fd, buf, sizeof(buf)) != sizeof(buf)) {
-      printf("%s: write sharedfd failed\n", s);
-      exit(1);
+  memset(buf, pid == 0 ? 'c' : 'p', పరిమాణం(buf));
+  కొరకు (i = 0; i < N; i++) {
+    ఒకవేళ (లిఖ(fd, buf, పరిమాణం(buf)) != పరిమాణం(buf)) {
+      రాయి("%s: write sharedfd failed\n", s);
+      నిష్క్రమించు(1);
     }
   }
-  if (pid == 0) {
-    exit(0);
-  } else {
-    int xstatus;
+  ఒకవేళ (pid == 0) {
+    నిష్క్రమించు(0);
+  } లేకపోతే {
+    పూర్ణాంకం xstatus;
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    ఒకవేళ (xstatus != 0)
+      నిష్క్రమించు(xstatus);
   }
 
   close(fd);
   fd = open("sharedfd", 0);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for reading\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot open sharedfd for reading\n", s);
+    నిష్క్రమించు(1);
   }
   nc = np = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < sizeof(buf); i++) {
-      if (buf[i] == 'c')
+  అయితే ((n = పఠ(fd, buf, పరిమాణం(buf))) > 0) {
+    కొరకు (i = 0; i < పరిమాణం(buf); i++) {
+      ఒకవేళ (buf[i] == 'c')
         nc++;
-      if (buf[i] == 'p')
+      ఒకవేళ (buf[i] == 'p')
         np++;
     }
   }
   close(fd);
   unlink("sharedfd");
-  if (nc == N * SZ && np == N * SZ) {
-    exit(0);
-  } else {
-    printf("%s: nc/np test fails\n", s);
-    exit(1);
+  ఒకవేళ (nc == N * SZ && np == N * SZ) {
+    నిష్క్రమించు(0);
+  } లేకపోతే {
+    రాయి("%s: nc/np test fails\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // four processes write different files at the same
 // time, to test block allocation.
-void
-fourfiles(char *s)
+శూన్య
+fourfiles(అక్షరం *s)
 {
-  int fd, pid, i, j, n, total, pi;
-  char *names[] = {"f0", "f1", "f2", "f3"};
-  char *fname;
-  enum { N = 12, NCHILD = 4, SZ = 500 };
+  పూర్ణాంకం fd, pid, i, j, n, మొత్తం, pi;
+  అక్షరం *పేర్లు[] = {"f0", "f1", "f2", "f3"};
+  అక్షరం *fname;
+  గణన { N = 12, NCHILD = 4, SZ = 500 };
 
-  for (pi = 0; pi < NCHILD; pi++) {
-    fname = names[pi];
+  కొరకు (pi = 0; pi < NCHILD; pi++) {
+    fname = పేర్లు[pi];
     unlink(fname);
 
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
 
-    if (pid == 0) {
+    ఒకవేళ (pid == 0) {
       fd = open(fname, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("%s: create failed\n", s);
-        exit(1);
+      ఒకవేళ (fd < 0) {
+        రాయి("%s: create failed\n", s);
+        నిష్క్రమించు(1);
       }
 
       memset(buf, '0' + pi, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
-          printf("write failed %d\n", n);
-          exit(1);
+      కొరకు (i = 0; i < N; i++) {
+        ఒకవేళ ((n = లిఖ(fd, buf, SZ)) != SZ) {
+          రాయి("write failed %d\n", n);
+          నిష్క్రమించు(1);
         }
       }
-      exit(0);
+      నిష్క్రమించు(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
+  పూర్ణాంకం xstatus;
+  కొరకు (pi = 0; pi < NCHILD; pi++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    ఒకవేళ (xstatus != 0)
+      నిష్క్రమించు(xstatus);
   }
 
-  for (i = 0; i < NCHILD; i++) {
-    fname = names[i];
+  కొరకు (i = 0; i < NCHILD; i++) {
+    fname = పేర్లు[i];
     fd = open(fname, 0);
-    total = 0;
-    while ((n = read(fd, buf, sizeof(buf))) > 0) {
-      for (j = 0; j < n; j++) {
-        if (buf[j] != '0' + i) {
-          printf("%s: wrong char\n", s);
-          exit(1);
+    మొత్తం = 0;
+    అయితే ((n = పఠ(fd, buf, పరిమాణం(buf))) > 0) {
+      కొరకు (j = 0; j < n; j++) {
+        ఒకవేళ (buf[j] != '0' + i) {
+          రాయి("%s: wrong char\n", s);
+          నిష్క్రమించు(1);
         }
       }
-      total += n;
+      మొత్తం += n;
     }
     close(fd);
-    if (total != N * SZ) {
-      printf("wrong length %d\n", total);
-      exit(1);
+    ఒకవేళ (మొత్తం != N * SZ) {
+      రాయి("wrong length %d\n", మొత్తం);
+      నిష్క్రమించు(1);
     }
     unlink(fname);
   }
 }
 
 // four processes create and delete different files in same directory
-void
-createdelete(char *s)
+శూన్య
+createdelete(అక్షరం *s)
 {
-  enum { N = 20, NCHILD = 4 };
-  int pid, i, fd, pi;
-  char name[32];
+  గణన { N = 20, NCHILD = 4 };
+  పూర్ణాంకం pid, i, fd, pi;
+  అక్షరం name[32];
 
-  for (pi = 0; pi < NCHILD; pi++) {
+  కొరకు (pi = 0; pi < NCHILD; pi++) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
 
-    if (pid == 0) {
+    ఒకవేళ (pid == 0) {
       name[0] = 'p' + pi;
       name[2] = '\0';
-      for (i = 0; i < N; i++) {
+      కొరకు (i = 0; i < N; i++) {
         name[1] = '0' + i;
         fd = open(name, O_CREATE | O_RDWR);
-        if (fd < 0) {
-          printf("%s: create failed\n", s);
-          exit(1);
+        ఒకవేళ (fd < 0) {
+          రాయి("%s: create failed\n", s);
+          నిష్క్రమించు(1);
         }
         close(fd);
-        if (i > 0 && (i % 2) == 0) {
+        ఒకవేళ (i > 0 && (i % 2) == 0) {
           name[1] = '0' + (i / 2);
-          if (unlink(name) < 0) {
-            printf("%s: unlink failed\n", s);
-            exit(1);
+          ఒకవేళ (unlink(name) < 0) {
+            రాయి("%s: unlink failed\n", s);
+            నిష్క్రమించు(1);
           }
         }
       }
-      exit(0);
+      నిష్క్రమించు(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
+  పూర్ణాంకం xstatus;
+  కొరకు (pi = 0; pi < NCHILD; pi++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(1);
+    ఒకవేళ (xstatus != 0)
+      నిష్క్రమించు(1);
   }
 
   name[0] = name[1] = name[2] = 0;
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  కొరకు (i = 0; i < N; i++) {
+    కొరకు (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       fd = open(name, 0);
-      if ((i == 0 || i >= N / 2) && fd < 0) {
-        printf("%s: oops createdelete %s didn't exist\n", s, name);
-        exit(1);
-      } else if ((i >= 1 && i < N / 2) && fd >= 0) {
-        printf("%s: oops createdelete %s did exist\n", s, name);
-        exit(1);
+      ఒకవేళ ((i == 0 || i >= N / 2) && fd < 0) {
+        రాయి("%s: oops createdelete %s didn't exist\n", s, name);
+        నిష్క్రమించు(1);
+      } లేకపోతే ఒకవేళ ((i >= 1 && i < N / 2) && fd >= 0) {
+        రాయి("%s: oops createdelete %s did exist\n", s, name);
+        నిష్క్రమించు(1);
       }
-      if (fd >= 0)
+      ఒకవేళ (fd >= 0)
         close(fd);
     }
   }
 
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  కొరకు (i = 0; i < N; i++) {
+    కొరకు (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       unlink(name);
@@ -1321,165 +1321,165 @@ createdelete(char *s)
 }
 
 // can I unlink a file and still read it?
-void
-unlinkread(char *s)
+శూన్య
+unlinkread(అక్షరం *s)
 {
-  enum { SZ = 5 };
-  int fd, fd1;
+  గణన { SZ = 5 };
+  పూర్ణాంకం fd, fd1;
 
   fd = open("unlinkread", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create unlinkread failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: create unlinkread failed\n", s);
+    నిష్క్రమించు(1);
   }
-  write(fd, "hello", SZ);
+  లిఖ(fd, "hello", SZ);
   close(fd);
 
   fd = open("unlinkread", O_RDWR);
-  if (fd < 0) {
-    printf("%s: open unlinkread failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open unlinkread failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("unlinkread") != 0) {
-    printf("%s: unlink unlinkread failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("unlinkread") != 0) {
+    రాయి("%s: unlink unlinkread failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   fd1 = open("unlinkread", O_CREATE | O_RDWR);
-  write(fd1, "yyy", 3);
+  లిఖ(fd1, "yyy", 3);
   close(fd1);
 
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: unlinkread read failed", s);
-    exit(1);
+  ఒకవేళ (పఠ(fd, buf, పరిమాణం(buf)) != SZ) {
+    రాయి("%s: unlinkread read failed", s);
+    నిష్క్రమించు(1);
   }
-  if (buf[0] != 'h') {
-    printf("%s: unlinkread wrong data\n", s);
-    exit(1);
+  ఒకవేళ (buf[0] != 'h') {
+    రాయి("%s: unlinkread wrong data\n", s);
+    నిష్క్రమించు(1);
   }
-  if (write(fd, buf, 10) != 10) {
-    printf("%s: unlinkread write failed\n", s);
-    exit(1);
+  ఒకవేళ (లిఖ(fd, buf, 10) != 10) {
+    రాయి("%s: unlinkread write failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
   unlink("unlinkread");
 }
 
-void
-linktest(char *s)
+శూన్య
+linktest(అక్షరం *s)
 {
-  enum { SZ = 5 };
-  int fd;
+  గణన { SZ = 5 };
+  పూర్ణాంకం fd;
 
   unlink("lf1");
   unlink("lf2");
 
   fd = open("lf1", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create lf1 failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: create lf1 failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (write(fd, "hello", SZ) != SZ) {
-    printf("%s: write lf1 failed\n", s);
-    exit(1);
+  ఒకవేళ (లిఖ(fd, "hello", SZ) != SZ) {
+    రాయి("%s: write lf1 failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  if (link("lf1", "lf2") < 0) {
-    printf("%s: link lf1 lf2 failed\n", s);
-    exit(1);
+  ఒకవేళ (link("lf1", "lf2") < 0) {
+    రాయి("%s: link lf1 lf2 failed\n", s);
+    నిష్క్రమించు(1);
   }
   unlink("lf1");
 
-  if (open("lf1", 0) >= 0) {
-    printf("%s: unlinked lf1 but it is still there!\n", s);
-    exit(1);
+  ఒకవేళ (open("lf1", 0) >= 0) {
+    రాయి("%s: unlinked lf1 but it is still there!\n", s);
+    నిష్క్రమించు(1);
   }
 
   fd = open("lf2", 0);
-  if (fd < 0) {
-    printf("%s: open lf2 failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open lf2 failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: read lf2 failed\n", s);
-    exit(1);
+  ఒకవేళ (పఠ(fd, buf, పరిమాణం(buf)) != SZ) {
+    రాయి("%s: read lf2 failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  if (link("lf2", "lf2") >= 0) {
-    printf("%s: link lf2 lf2 succeeded! oops\n", s);
-    exit(1);
+  ఒకవేళ (link("lf2", "lf2") >= 0) {
+    రాయి("%s: link lf2 lf2 succeeded! oops\n", s);
+    నిష్క్రమించు(1);
   }
 
   unlink("lf2");
-  if (link("lf2", "lf1") >= 0) {
-    printf("%s: link non-existent succeeded! oops\n", s);
-    exit(1);
+  ఒకవేళ (link("lf2", "lf1") >= 0) {
+    రాయి("%s: link non-existent succeeded! oops\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (link(".", "lf1") >= 0) {
-    printf("%s: link . lf1 succeeded! oops\n", s);
-    exit(1);
+  ఒకవేళ (link(".", "lf1") >= 0) {
+    రాయి("%s: link . lf1 succeeded! oops\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // test concurrent create/link/unlink of the same file
-void
-concreate(char *s)
+శూన్య
+concreate(అక్షరం *s)
 {
-  enum { N = 40 };
-  char file[3];
-  int i, pid, n, fd;
-  char fa[N];
-  struct {
+  గణన { N = 40 };
+  అక్షరం file[3];
+  పూర్ణాంకం i, pid, n, fd;
+  అక్షరం fa[N];
+  నిర్మాణం {
     ushort inum;
-    char name[DIRSIZ];
+    అక్షరం name[DIRSIZ];
   } de;
 
   file[0] = 'C';
   file[2] = '\0';
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     file[1] = '0' + i;
     unlink(file);
     pid = fork();
-    if (pid && (i % 3) == 1) {
+    ఒకవేళ (pid && (i % 3) == 1) {
       link("C0", file);
-    } else if (pid == 0 && (i % 5) == 1) {
+    } లేకపోతే ఒకవేళ (pid == 0 && (i % 5) == 1) {
       link("C0", file);
-    } else {
+    } లేకపోతే {
       fd = open(file, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("concreate create %s failed\n", file);
-        exit(1);
+      ఒకవేళ (fd < 0) {
+        రాయి("concreate create %s failed\n", file);
+        నిష్క్రమించు(1);
       }
       close(fd);
     }
-    if (pid == 0) {
-      exit(0);
-    } else {
-      int xstatus;
+    ఒకవేళ (pid == 0) {
+      నిష్క్రమించు(0);
+    } లేకపోతే {
+      పూర్ణాంకం xstatus;
       wait(&xstatus);
-      if (xstatus != 0)
-        exit(1);
+      ఒకవేళ (xstatus != 0)
+        నిష్క్రమించు(1);
     }
   }
 
-  memset(fa, 0, sizeof(fa));
+  memset(fa, 0, పరిమాణం(fa));
   fd = open(".", 0);
   n = 0;
-  while (read(fd, &de, sizeof(de)) > 0) {
-    if (de.inum == 0)
-      continue;
-    if (de.name[0] == 'C' && de.name[2] == '\0') {
+  అయితే (పఠ(fd, &de, పరిమాణం(de)) > 0) {
+    ఒకవేళ (de.inum == 0)
+      కొనసాగు;
+    ఒకవేళ (de.name[0] == 'C' && de.name[2] == '\0') {
       i = de.name[1] - '0';
-      if (i < 0 || i >= sizeof(fa)) {
-        printf("%s: concreate weird file %s\n", s, de.name);
-        exit(1);
+      ఒకవేళ (i < 0 || i >= పరిమాణం(fa)) {
+        రాయి("%s: concreate weird file %s\n", s, de.name);
+        నిష్క్రమించు(1);
       }
-      if (fa[i]) {
-        printf("%s: concreate duplicate file %s\n", s, de.name);
-        exit(1);
+      ఒకవేళ (fa[i]) {
+        రాయి("%s: concreate duplicate file %s\n", s, de.name);
+        నిష్క్రమించు(1);
       }
       fa[i] = 1;
       n++;
@@ -1487,26 +1487,26 @@ concreate(char *s)
   }
   close(fd);
 
-  if (n != N) {
-    printf("%s: concreate not enough files in directory listing\n", s);
-    exit(1);
+  ఒకవేళ (n != N) {
+    రాయి("%s: concreate not enough files in directory listing\n", s);
+    నిష్క్రమించు(1);
   }
 
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     file[1] = '0' + i;
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
+    ఒకవేళ (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
-    } else {
+    } లేకపోతే {
       unlink(file);
       unlink(file);
       unlink(file);
@@ -1514,243 +1514,243 @@ concreate(char *s)
       unlink(file);
       unlink(file);
     }
-    if (pid == 0)
-      exit(0);
-    else
+    ఒకవేళ (pid == 0)
+      నిష్క్రమించు(0);
+    లేకపోతే
       wait(0);
   }
 }
 
 // another concurrent link/unlink/create test,
 // to look for deadlocks.
-void
-linkunlink(char *s)
+శూన్య
+linkunlink(అక్షరం *s)
 {
-  int pid, i;
+  పూర్ణాంకం pid, i;
 
   unlink("x");
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  unsigned int x = (pid ? 1 : 97);
-  for (i = 0; i < 100; i++) {
+  గుర్తులేని పూర్ణాంకం x = (pid ? 1 : 97);
+  కొరకు (i = 0; i < 100; i++) {
     x = x * 1103515245 + 12345;
-    if ((x % 3) == 0) {
+    ఒకవేళ ((x % 3) == 0) {
       close(open("x", O_RDWR | O_CREATE));
-    } else if ((x % 3) == 1) {
+    } లేకపోతే ఒకవేళ ((x % 3) == 1) {
       link("cat", "x");
-    } else {
+    } లేకపోతే {
       unlink("x");
     }
   }
 
-  if (pid)
+  ఒకవేళ (pid)
     wait(0);
-  else
-    exit(0);
+  లేకపోతే
+    నిష్క్రమించు(0);
 }
 
-void
-subdir(char *s)
+శూన్య
+subdir(అక్షరం *s)
 {
-  int fd, cc;
+  పూర్ణాంకం fd, cc;
 
   unlink("ff");
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dd") != 0) {
+    రాయి("%s: mkdir dd failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   fd = open("dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/ff failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: create dd/ff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  write(fd, "ff", 2);
+  లిఖ(fd, "ff", 2);
   close(fd);
 
-  if (unlink("dd") >= 0) {
-    printf("%s: unlink dd (non-empty dir) succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd") >= 0) {
+    రాయి("%s: unlink dd (non-empty dir) succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (mkdir("/dd/dd") != 0) {
-    printf("%s: subdir mkdir dd/dd failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("/dd/dd") != 0) {
+    రాయి("%s: subdir mkdir dd/dd failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   fd = open("dd/dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/dd/ff failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: create dd/dd/ff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  write(fd, "FF", 2);
+  లిఖ(fd, "FF", 2);
   close(fd);
 
   fd = open("dd/dd/../ff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/../ff failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open dd/dd/../ff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  cc = read(fd, buf, sizeof(buf));
-  if (cc != 2 || buf[0] != 'f') {
-    printf("%s: dd/dd/../ff wrong content\n", s);
-    exit(1);
+  cc = పఠ(fd, buf, పరిమాణం(buf));
+  ఒకవేళ (cc != 2 || buf[0] != 'f') {
+    రాయి("%s: dd/dd/../ff wrong content\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  if (link("dd/dd/ff", "dd/dd/ffff") != 0) {
-    printf("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
-    exit(1);
+  ఒకవేళ (link("dd/dd/ff", "dd/dd/ffff") != 0) {
+    రాయి("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (unlink("dd/dd/ff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd/dd/ff") != 0) {
+    రాయి("%s: unlink dd/dd/ff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded\n", s);
-    exit(1);
+  ఒకవేళ (open("dd/dd/ff", O_RDONLY) >= 0) {
+    రాయి("%s: open (unlinked) dd/dd/ff succeeded\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dd") != 0) {
+    రాయి("%s: chdir dd failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("dd/../../dd") != 0) {
-    printf("%s: chdir dd/../../dd failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dd/../../dd") != 0) {
+    రాయి("%s: chdir dd/../../dd failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("dd/../../../dd") != 0) {
-    printf("%s: chdir dd/../../../dd failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dd/../../../dd") != 0) {
+    రాయి("%s: chdir dd/../../../dd failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("./..") != 0) {
-    printf("%s: chdir ./.. failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("./..") != 0) {
+    రాయి("%s: chdir ./.. failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   fd = open("dd/dd/ffff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/ffff failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open dd/dd/ffff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (read(fd, buf, sizeof(buf)) != 2) {
-    printf("%s: read dd/dd/ffff wrong len\n", s);
-    exit(1);
+  ఒకవేళ (పఠ(fd, buf, పరిమాణం(buf)) != 2) {
+    రాయి("%s: read dd/dd/ffff wrong len\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (open("dd/dd/ff", O_RDONLY) >= 0) {
+    రాయి("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/ff/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
+    రాయి("%s: create dd/ff/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/xx/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
+    రాయి("%s: create dd/xx/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open("dd", O_CREATE) >= 0) {
-    printf("%s: create dd succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (open("dd", O_CREATE) >= 0) {
+    రాయి("%s: create dd succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open("dd", O_RDWR) >= 0) {
-    printf("%s: open dd rdwr succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (open("dd", O_RDWR) >= 0) {
+    రాయి("%s: open dd rdwr succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open("dd", O_WRONLY) >= 0) {
-    printf("%s: open dd wronly succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (open("dd", O_WRONLY) >= 0) {
+    రాయి("%s: open dd wronly succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (link("dd/ff/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (link("dd/ff/ff", "dd/dd/xx") == 0) {
+    రాయి("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (link("dd/xx/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (link("dd/xx/ff", "dd/dd/xx") == 0) {
+    రాయి("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (link("dd/ff", "dd/dd/ffff") == 0) {
-    printf("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (link("dd/ff", "dd/dd/ffff") == 0) {
+    రాయి("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("dd/ff/ff") == 0) {
-    printf("%s: mkdir dd/ff/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dd/ff/ff") == 0) {
+    రాయి("%s: mkdir dd/ff/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("dd/xx/ff") == 0) {
-    printf("%s: mkdir dd/xx/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dd/xx/ff") == 0) {
+    రాయి("%s: mkdir dd/xx/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("dd/dd/ffff") == 0) {
-    printf("%s: mkdir dd/dd/ffff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dd/dd/ffff") == 0) {
+    రాయి("%s: mkdir dd/dd/ffff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dd/xx/ff") == 0) {
-    printf("%s: unlink dd/xx/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd/xx/ff") == 0) {
+    రాయి("%s: unlink dd/xx/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dd/ff/ff") == 0) {
-    printf("%s: unlink dd/ff/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd/ff/ff") == 0) {
+    రాయి("%s: unlink dd/ff/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("dd/ff") == 0) {
-    printf("%s: chdir dd/ff succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dd/ff") == 0) {
+    రాయి("%s: chdir dd/ff succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("dd/xx") == 0) {
-    printf("%s: chdir dd/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dd/xx") == 0) {
+    రాయి("%s: chdir dd/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (unlink("dd/dd/ffff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd/dd/ffff") != 0) {
+    రాయి("%s: unlink dd/dd/ff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dd/ff") != 0) {
-    printf("%s: unlink dd/ff failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd/ff") != 0) {
+    రాయి("%s: unlink dd/ff failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dd") == 0) {
-    printf("%s: unlink non-empty dd succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd") == 0) {
+    రాయి("%s: unlink non-empty dd succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dd/dd") < 0) {
-    printf("%s: unlink dd/dd failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd/dd") < 0) {
+    రాయి("%s: unlink dd/dd failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dd") < 0) {
-    printf("%s: unlink dd failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dd") < 0) {
+    రాయి("%s: unlink dd failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
 // test writes that are larger than the log.
-void
-bigwrite(char *s)
+శూన్య
+bigwrite(అక్షరం *s)
 {
-  int fd, sz;
+  పూర్ణాంకం fd, sz;
 
   unlink("bigwrite");
-  for (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
+  కొరకు (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
     fd = open("bigwrite", O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("%s: cannot create bigwrite\n", s);
-      exit(1);
+    ఒకవేళ (fd < 0) {
+      రాయి("%s: cannot create bigwrite\n", s);
+      నిష్క్రమించు(1);
     }
-    int i;
-    for (i = 0; i < 2; i++) {
-      int cc = write(fd, buf, sz);
-      if (cc != sz) {
-        printf("%s: write(%d) ret %d\n", s, sz, cc);
-        exit(1);
+    పూర్ణాంకం i;
+    కొరకు (i = 0; i < 2; i++) {
+      పూర్ణాంకం cc = లిఖ(fd, buf, sz);
+      ఒకవేళ (cc != sz) {
+        రాయి("%s: write(%d) ret %d\n", s, sz, cc);
+        నిష్క్రమించు(1);
       }
     }
     close(fd);
@@ -1758,95 +1758,95 @@ bigwrite(char *s)
   }
 }
 
-void
-bigfile(char *s)
+శూన్య
+bigfile(అక్షరం *s)
 {
-  enum { N = 20, SZ = 600 };
-  int fd, i, total, cc;
+  గణన { N = 20, SZ = 600 };
+  పూర్ణాంకం fd, i, మొత్తం, cc;
 
   unlink("bigfile.dat");
   fd = open("bigfile.dat", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create bigfile", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot create bigfile", s);
+    నిష్క్రమించు(1);
   }
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     memset(buf, i, SZ);
-    if (write(fd, buf, SZ) != SZ) {
-      printf("%s: write bigfile failed\n", s);
-      exit(1);
+    ఒకవేళ (లిఖ(fd, buf, SZ) != SZ) {
+      రాయి("%s: write bigfile failed\n", s);
+      నిష్క్రమించు(1);
     }
   }
   close(fd);
 
   fd = open("bigfile.dat", 0);
-  if (fd < 0) {
-    printf("%s: cannot open bigfile\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot open bigfile\n", s);
+    నిష్క్రమించు(1);
   }
-  total = 0;
-  for (i = 0;; i++) {
-    cc = read(fd, buf, SZ / 2);
-    if (cc < 0) {
-      printf("%s: read bigfile failed\n", s);
-      exit(1);
+  మొత్తం = 0;
+  కొరకు (i = 0;; i++) {
+    cc = పఠ(fd, buf, SZ / 2);
+    ఒకవేళ (cc < 0) {
+      రాయి("%s: read bigfile failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (cc == 0)
-      break;
-    if (cc != SZ / 2) {
-      printf("%s: short read bigfile\n", s);
-      exit(1);
+    ఒకవేళ (cc == 0)
+      ఆపు;
+    ఒకవేళ (cc != SZ / 2) {
+      రాయి("%s: short read bigfile\n", s);
+      నిష్క్రమించు(1);
     }
-    if (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
-      printf("%s: read bigfile wrong data\n", s);
-      exit(1);
+    ఒకవేళ (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
+      రాయి("%s: read bigfile wrong data\n", s);
+      నిష్క్రమించు(1);
     }
-    total += cc;
+    మొత్తం += cc;
   }
   close(fd);
-  if (total != N * SZ) {
-    printf("%s: read bigfile wrong total\n", s);
-    exit(1);
+  ఒకవేళ (మొత్తం != N * SZ) {
+    రాయి("%s: read bigfile wrong total\n", s);
+    నిష్క్రమించు(1);
   }
   unlink("bigfile.dat");
 }
 
-void
-fourteen(char *s)
+శూన్య
+fourteen(అక్షరం *s)
 {
-  int fd;
+  పూర్ణాంకం fd;
 
   // DIRSIZ is 14.
 
-  if (mkdir("12345678901234") != 0) {
-    printf("%s: mkdir 12345678901234 failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("12345678901234") != 0) {
+    రాయి("%s: mkdir 12345678901234 failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("12345678901234/123456789012345") != 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("12345678901234/123456789012345") != 0) {
+    రాయి("%s: mkdir 12345678901234/123456789012345 failed\n", s);
+    నిష్క్రమించు(1);
   }
   fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
-  if (fd < 0) {
-    printf(
+  ఒకవేళ (fd < 0) {
+    రాయి(
       "%s: create 123456789012345/123456789012345/123456789012345 failed\n", s);
-    exit(1);
+    నిష్క్రమించు(1);
   }
   close(fd);
   fd = open("12345678901234/12345678901234/12345678901234", 0);
-  if (fd < 0) {
-    printf("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  if (mkdir("12345678901234/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("12345678901234/12345678901234") == 0) {
+    రాయి("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("123456789012345/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("123456789012345/12345678901234") == 0) {
+    రాయి("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
 
   // clean up
@@ -1858,128 +1858,128 @@ fourteen(char *s)
   unlink("12345678901234");
 }
 
-void
-rmdot(char *s)
+శూన్య
+rmdot(అక్షరం *s)
 {
-  if (mkdir("dots") != 0) {
-    printf("%s: mkdir dots failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dots") != 0) {
+    రాయి("%s: mkdir dots failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("dots") != 0) {
-    printf("%s: chdir dots failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dots") != 0) {
+    రాయి("%s: chdir dots failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink(".") == 0) {
-    printf("%s: rm . worked!\n", s);
-    exit(1);
+  ఒకవేళ (unlink(".") == 0) {
+    రాయి("%s: rm . worked!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("..") == 0) {
-    printf("%s: rm .. worked!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("..") == 0) {
+    రాయి("%s: rm .. worked!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("/") != 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("/") != 0) {
+    రాయి("%s: chdir / failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dots/.") == 0) {
-    printf("%s: unlink dots/. worked!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dots/.") == 0) {
+    రాయి("%s: unlink dots/. worked!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dots/..") == 0) {
-    printf("%s: unlink dots/.. worked!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dots/..") == 0) {
+    రాయి("%s: unlink dots/.. worked!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dots") != 0) {
-    printf("%s: unlink dots failed!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dots") != 0) {
+    రాయి("%s: unlink dots failed!\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
-void
-dirfile(char *s)
+శూన్య
+dirfile(అక్షరం *s)
 {
-  int fd;
+  పూర్ణాంకం fd;
 
   fd = open("dirfile", O_CREATE);
-  if (fd < 0) {
-    printf("%s: create dirfile failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: create dirfile failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
-  if (chdir("dirfile") == 0) {
-    printf("%s: chdir dirfile succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dirfile") == 0) {
+    రాయి("%s: chdir dirfile succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
   fd = open("dirfile/xx", 0);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (fd >= 0) {
+    రాయి("%s: create dirfile/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
   fd = open("dirfile/xx", O_CREATE);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (fd >= 0) {
+    రాయి("%s: create dirfile/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("dirfile/xx") == 0) {
-    printf("%s: mkdir dirfile/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dirfile/xx") == 0) {
+    రాయి("%s: mkdir dirfile/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dirfile/xx") == 0) {
-    printf("%s: unlink dirfile/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dirfile/xx") == 0) {
+    రాయి("%s: unlink dirfile/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (link("README", "dirfile/xx") == 0) {
-    printf("%s: link to dirfile/xx succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (link("README", "dirfile/xx") == 0) {
+    రాయి("%s: link to dirfile/xx succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("dirfile") != 0) {
-    printf("%s: unlink dirfile failed!\n", s);
-    exit(1);
+  ఒకవేళ (unlink("dirfile") != 0) {
+    రాయి("%s: unlink dirfile failed!\n", s);
+    నిష్క్రమించు(1);
   }
 
   fd = open(".", O_RDWR);
-  if (fd >= 0) {
-    printf("%s: open . for writing succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (fd >= 0) {
+    రాయి("%s: open . for writing succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
   fd = open(".", 0);
-  if (write(fd, "x", 1) > 0) {
-    printf("%s: write . succeeded!\n", s);
-    exit(1);
+  ఒకవేళ (లిఖ(fd, "x", 1) > 0) {
+    రాయి("%s: write . succeeded!\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 }
 
 // test that iput() is called at the end of _namei().
 // also tests empty file names.
-void
-iref(char *s)
+శూన్య
+iref(అక్షరం *s)
 {
-  int i, fd;
+  పూర్ణాంకం i, fd;
 
-  for (i = 0; i < NINODE + 1; i++) {
-    if (mkdir("irefd") != 0) {
-      printf("%s: mkdir irefd failed\n", s);
-      exit(1);
+  కొరకు (i = 0; i < NINODE + 1; i++) {
+    ఒకవేళ (mkdir("irefd") != 0) {
+      రాయి("%s: mkdir irefd failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (chdir("irefd") != 0) {
-      printf("%s: chdir irefd failed\n", s);
-      exit(1);
+    ఒకవేళ (chdir("irefd") != 0) {
+      రాయి("%s: chdir irefd failed\n", s);
+      నిష్క్రమించు(1);
     }
 
     mkdir("");
     link("README", "");
     fd = open("", O_CREATE);
-    if (fd >= 0)
+    ఒకవేళ (fd >= 0)
       close(fd);
     fd = open("xx", O_CREATE);
-    if (fd >= 0)
+    ఒకవేళ (fd >= 0)
       close(fd);
     unlink("xx");
   }
 
   // clean up
-  for (i = 0; i < NINODE + 1; i++) {
+  కొరకు (i = 0; i < NINODE + 1; i++) {
     chdir("..");
     unlink("irefd");
   }
@@ -1990,112 +1990,112 @@ iref(char *s)
 // test that fork fails gracefully
 // the forktest binary also does this, but it runs out of proc entries first.
 // inside the bigger usertests binary, we run out of memory first.
-void
-forktest(char *s)
+శూన్య
+forktest(అక్షరం *s)
 {
-  enum { N = 1000 };
-  int n, pid;
+  గణన { N = 1000 };
+  పూర్ణాంకం n, pid;
 
-  for (n = 0; n < N; n++) {
+  కొరకు (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    ఒకవేళ (pid < 0)
+      ఆపు;
+    ఒకవేళ (pid == 0)
+      నిష్క్రమించు(0);
   }
 
-  if (n == 0) {
-    printf("%s: no fork at all!\n", s);
-    exit(1);
+  ఒకవేళ (n == 0) {
+    రాయి("%s: no fork at all!\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (n == N) {
-    printf("%s: fork claimed to work 1000 times!\n", s);
-    exit(1);
+  ఒకవేళ (n == N) {
+    రాయి("%s: fork claimed to work 1000 times!\n", s);
+    నిష్క్రమించు(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
-      printf("%s: wait stopped early\n", s);
-      exit(1);
+  కొరకు (; n > 0; n--) {
+    ఒకవేళ (wait(0) < 0) {
+      రాయి("%s: wait stopped early\n", s);
+      నిష్క్రమించు(1);
     }
   }
 
-  if (wait(0) != -1) {
-    printf("%s: wait got too many\n", s);
-    exit(1);
+  ఒకవేళ (wait(0) != -1) {
+    రాయి("%s: wait got too many\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
-void
-sbrkbasic(char *s)
+శూన్య
+sbrkbasic(అక్షరం *s)
 {
-  enum { TOOMUCH = 1024 * 1024 * 1024 };
-  int i, pid, xstatus;
-  char *c, *a, *b;
+  గణన { TOOMUCH = 1024 * 1024 * 1024 };
+  పూర్ణాంకం i, pid, xstatus;
+  అక్షరం *c, *a, *b;
 
   // does sbrk() return the expected failure value?
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed in sbrkbasic\n");
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("fork failed in sbrkbasic\n");
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
+  ఒకవేళ (pid == 0) {
     a = sbrk(TOOMUCH);
-    if (a == (char *)SBRK_ERROR) {
+    ఒకవేళ (a == (అక్షరం *)SBRK_ERROR) {
       // it's OK if this fails.
-      exit(0);
+      నిష్క్రమించు(0);
     }
 
-    for (b = a; b < a + TOOMUCH; b += PGSIZE) {
+    కొరకు (b = a; b < a + TOOMUCH; b += PGSIZE) {
       *b = 99;
     }
 
     // we should not get here! either sbrk(TOOMUCH)
     // should have failed, or (with lazy allocation)
     // a pagefault should have killed this process.
-    exit(1);
+    నిష్క్రమించు(1);
   }
 
   wait(&xstatus);
-  if (xstatus == 1) {
-    printf("%s: too much memory allocated!\n", s);
-    exit(1);
+  ఒకవేళ (xstatus == 1) {
+    రాయి("%s: too much memory allocated!\n", s);
+    నిష్క్రమించు(1);
   }
 
   // can one sbrk() less than a page?
   a = sbrk(0);
-  for (i = 0; i < 5000; i++) {
+  కొరకు (i = 0; i < 5000; i++) {
     b = sbrk(1);
-    if (b != a) {
-      printf("%s: sbrk test failed %d %p %p\n", s, i, a, b);
-      exit(1);
+    ఒకవేళ (b != a) {
+      రాయి("%s: sbrk test failed %d %p %p\n", s, i, a, b);
+      నిష్క్రమించు(1);
     }
     *b = 1;
     a = b + 1;
   }
   pid = fork();
-  if (pid < 0) {
-    printf("%s: sbrk test fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: sbrk test fork failed\n", s);
+    నిష్క్రమించు(1);
   }
   c = sbrk(1);
   c = sbrk(1);
-  if (c != a + 1) {
-    printf("%s: sbrk test failed post-fork\n", s);
-    exit(1);
+  ఒకవేళ (c != a + 1) {
+    రాయి("%s: sbrk test failed post-fork\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0)
-    exit(0);
+  ఒకవేళ (pid == 0)
+    నిష్క్రమించు(0);
   wait(&xstatus);
-  exit(xstatus);
+  నిష్క్రమించు(xstatus);
 }
 
-void
-sbrkmuch(char *s)
+శూన్య
+sbrkmuch(అక్షరం *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  char *c, *oldbrk, *a, *lastaddr, *p;
+  గణన { BIG = 100 * 1024 * 1024 };
+  అక్షరం *c, *oldbrk, *a, *lastaddr, *p;
   uint64 amt;
 
   oldbrk = sbrk(0);
@@ -2104,227 +2104,227 @@ sbrkmuch(char *s)
   a = sbrk(0);
   amt = BIG - (uint64)a;
   p = sbrk(amt);
-  if (p != a) {
-    printf("%s: sbrk test failed to grow big address space; enough phys mem?\n",
+  ఒకవేళ (p != a) {
+    రాయి("%s: sbrk test failed to grow big address space; enough phys mem?\n",
            s);
-    exit(1);
+    నిష్క్రమించు(1);
   }
 
-  lastaddr = (char *)(BIG - 1);
+  lastaddr = (అక్షరం *)(BIG - 1);
   *lastaddr = 99;
 
   // can one de-allocate?
   a = sbrk(0);
   c = sbrk(-PGSIZE);
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: sbrk could not deallocate\n", s);
-    exit(1);
+  ఒకవేళ (c == (అక్షరం *)SBRK_ERROR) {
+    రాయి("%s: sbrk could not deallocate\n", s);
+    నిష్క్రమించు(1);
   }
   c = sbrk(0);
-  if (c != a - PGSIZE) {
-    printf("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
+  ఒకవేళ (c != a - PGSIZE) {
+    రాయి("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
            c);
-    exit(1);
+    నిష్క్రమించు(1);
   }
 
   // can one re-allocate that page?
   a = sbrk(0);
   c = sbrk(PGSIZE);
-  if (c != a || sbrk(0) != a + PGSIZE) {
-    printf("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
-    exit(1);
+  ఒకవేళ (c != a || sbrk(0) != a + PGSIZE) {
+    రాయి("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
+    నిష్క్రమించు(1);
   }
-  if (*lastaddr == 99) {
+  ఒకవేళ (*lastaddr == 99) {
     // should be zero
-    printf("%s: sbrk de-allocation didn't really deallocate\n", s);
-    exit(1);
+    రాయి("%s: sbrk de-allocation didn't really deallocate\n", s);
+    నిష్క్రమించు(1);
   }
 
   a = sbrk(0);
   c = sbrk(-(sbrk(0) - oldbrk));
-  if (c != a) {
-    printf("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
-    exit(1);
+  ఒకవేళ (c != a) {
+    రాయి("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
+    నిష్క్రమించు(1);
   }
 }
 
 // can we read the kernel's memory?
-void
-kernmem(char *s)
+శూన్య
+kernmem(అక్షరం *s)
 {
-  char *a;
-  int pid;
+  అక్షరం *a;
+  పూర్ణాంకం pid;
 
-  for (a = (char *)(KERNBASE); a < (char *)(KERNBASE + 2000000); a += 50000) {
+  కొరకు (a = (అక్షరం *)(KERNBASE); a < (అక్షరం *)(KERNBASE + 2000000); a += 50000) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (pid == 0) {
-      printf("%s: oops could read %p = %x\n", s, a, *a);
-      exit(1);
+    ఒకవేళ (pid == 0) {
+      రాయి("%s: oops could read %p = %x\n", s, a, *a);
+      నిష్క్రమించు(1);
     }
-    int xstatus;
+    పూర్ణాంకం xstatus;
     wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    ఒకవేళ (xstatus != -1) // did kernel kill child?
+      నిష్క్రమించు(1);
   }
 }
 
 // user code should not be able to write to addresses above MAXVA.
-void
-MAXVAplus(char *s)
+శూన్య
+MAXVAplus(అక్షరం *s)
 {
-  volatile uint64 a = MAXVA;
-  for (; a != 0; a <<= 1) {
-    int pid;
+  అస్థిర uint64 a = MAXVA;
+  కొరకు (; a != 0; a <<= 1) {
+    పూర్ణాంకం pid;
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
-    if (pid == 0) {
-      *(char *)a = 99;
-      printf("%s: oops wrote %p\n", s, (void *)a);
-      exit(1);
+    ఒకవేళ (pid == 0) {
+      *(అక్షరం *)a = 99;
+      రాయి("%s: oops wrote %p\n", s, (శూన్య *)a);
+      నిష్క్రమించు(1);
     }
-    int xstatus;
+    పూర్ణాంకం xstatus;
     wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    ఒకవేళ (xstatus != -1) // did kernel kill child?
+      నిష్క్రమించు(1);
   }
 }
 
 // if we run the system out of memory, does it clean up the last
 // failed allocation?
-void
-sbrkfail(char *s)
+శూన్య
+sbrkfail(అక్షరం *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  int i, xstatus;
-  int fds[2];
-  char scratch;
-  char *c, *a;
-  int pids[10];
-  int pid;
-  int failed;
+  గణన { BIG = 100 * 1024 * 1024 };
+  పూర్ణాంకం i, xstatus;
+  పూర్ణాంకం fds[2];
+  అక్షరం scratch;
+  అక్షరం *c, *a;
+  పూర్ణాంకం pids[10];
+  పూర్ణాంకం pid;
+  పూర్ణాంకం failed;
 
   failed = 0;
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  ఒకవేళ (pipe(fds) != 0) {
+    రాయి("%s: pipe() failed\n", s);
+    నిష్క్రమించు(1);
   }
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if ((pids[i] = fork()) == 0) {
+  కొరకు (i = 0; i < పరిమాణం(pids) / పరిమాణం(pids[0]); i++) {
+    ఒకవేళ ((pids[i] = fork()) == 0) {
       // allocate a lot of memory
-      if (sbrk(BIG - (uint64)sbrk(0)) == (char *)SBRK_ERROR)
-        write(fds[1], "0", 1);
-      else
-        write(fds[1], "1", 1);
+      ఒకవేళ (sbrk(BIG - (uint64)sbrk(0)) == (అక్షరం *)SBRK_ERROR)
+        లిఖ(fds[1], "0", 1);
+      లేకపోతే
+        లిఖ(fds[1], "1", 1);
       // sit around until killed
-      for (;;)
+      కొరకు (;;)
         pause(1000);
     }
-    if (pids[i] != -1) {
-      read(fds[0], &scratch, 1);
-      if (scratch == '0')
+    ఒకవేళ (pids[i] != -1) {
+      పఠ(fds[0], &scratch, 1);
+      ఒకవేళ (scratch == '0')
         failed = 1;
     }
   }
-  if (!failed) {
-    printf("%s: no allocation failed; allocate more?\n", s);
+  ఒకవేళ (!failed) {
+    రాయి("%s: no allocation failed; allocate more?\n", s);
   }
 
   // if those failed allocations freed up the pages they did allocate,
   // we'll be able to allocate here
   c = sbrk(PGSIZE);
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if (pids[i] == -1)
-      continue;
+  కొరకు (i = 0; i < పరిమాణం(pids) / పరిమాణం(pids[0]); i++) {
+    ఒకవేళ (pids[i] == -1)
+      కొనసాగు;
     kill(pids[i]);
     wait(0);
   }
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: failed sbrk leaked memory\n", s);
-    exit(1);
+  ఒకవేళ (c == (అక్షరం *)SBRK_ERROR) {
+    రాయి("%s: failed sbrk leaked memory\n", s);
+    నిష్క్రమించు(1);
   }
 
   // test running fork with the above allocated page
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
+  ఒకవేళ (pid == 0) {
     // allocate a lot of memory. this should produce an error
     a = sbrk(10 * BIG);
-    if (a == (char *)SBRK_ERROR) {
-      exit(0);
+    ఒకవేళ (a == (అక్షరం *)SBRK_ERROR) {
+      నిష్క్రమించు(0);
     }
-    printf("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
-    exit(1);
+    రాయి("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
+    నిష్క్రమించు(1);
   }
   wait(&xstatus);
-  if (xstatus != 0)
-    exit(1);
+  ఒకవేళ (xstatus != 0)
+    నిష్క్రమించు(1);
 }
 
 // test reads/writes from/to allocated memory
-void
-sbrkarg(char *s)
+శూన్య
+sbrkarg(అక్షరం *s)
 {
-  char *a;
-  int fd, n;
+  అక్షరం *a;
+  పూర్ణాంకం fd, n;
 
   a = sbrk(PGSIZE);
   fd = open("sbrk", O_CREATE | O_WRONLY);
   unlink("sbrk");
-  if (fd < 0) {
-    printf("%s: open sbrk failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open sbrk failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if ((n = write(fd, a, PGSIZE)) < 0) {
-    printf("%s: write sbrk failed\n", s);
-    exit(1);
+  ఒకవేళ ((n = లిఖ(fd, a, PGSIZE)) < 0) {
+    రాయి("%s: write sbrk failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
   // test writes to allocated memory
   a = sbrk(PGSIZE);
-  if (pipe((int *)a) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  ఒకవేళ (pipe((పూర్ణాంకం *)a) != 0) {
+    రాయి("%s: pipe() failed\n", s);
+    నిష్క్రమించు(1);
   }
 }
 
-void
-validatetest(char *s)
+శూన్య
+validatetest(అక్షరం *s)
 {
-  int hi;
+  పూర్ణాంకం hi;
   uint64 p;
 
   hi = 1100 * 1024;
-  for (p = 0; p <= (uint)hi; p += PGSIZE) {
+  కొరకు (p = 0; p <= (uint)hi; p += PGSIZE) {
     // try to crash the kernel by passing in a bad string pointer
-    if (link("nosuchfile", (char *)p) != -1) {
-      printf("%s: link should not succeed\n", s);
-      exit(1);
+    ఒకవేళ (link("nosuchfile", (అక్షరం *)p) != -1) {
+      రాయి("%s: link should not succeed\n", s);
+      నిష్క్రమించు(1);
     }
   }
 }
 
 // does uninitialized data start out zero?
-char uninit[10000];
-void
-bsstest(char *s)
+అక్షరం uninit[10000];
+శూన్య
+bsstest(అక్షరం *s)
 {
-  int i;
+  పూర్ణాంకం i;
 
-  for (i = 0; i < sizeof(uninit); i++) {
-    if (uninit[i] != '\0') {
-      printf("%s: bss test failed\n", s);
-      exit(1);
+  కొరకు (i = 0; i < పరిమాణం(uninit); i++) {
+    ఒకవేళ (uninit[i] != '\0') {
+      రాయి("%s: bss test failed\n", s);
+      నిష్క్రమించు(1);
     }
   }
 }
@@ -2332,84 +2332,84 @@ bsstest(char *s)
 // does exec return an error if the arguments
 // are larger than a page? or does it write
 // below the stack and wreck the instructions/data?
-void
-bigargtest(char *s)
+శూన్య
+bigargtest(అక్షరం *s)
 {
-  int pid, fd, xstatus;
+  పూర్ణాంకం pid, fd, xstatus;
 
   unlink("bigarg-ok");
   pid = fork();
-  if (pid == 0) {
-    static char *args[MAXARG];
-    int i;
-    char big[400];
-    memset(big, ' ', sizeof(big));
-    big[sizeof(big) - 1] = '\0';
-    for (i = 0; i < MAXARG - 1; i++)
-      args[i] = big;
-    args[MAXARG - 1] = 0;
+  ఒకవేళ (pid == 0) {
+    స్థిర అక్షరం *వాదనలు[MAXARG];
+    పూర్ణాంకం i;
+    అక్షరం big[400];
+    memset(big, ' ', పరిమాణం(big));
+    big[పరిమాణం(big) - 1] = '\0';
+    కొరకు (i = 0; i < MAXARG - 1; i++)
+      వాదనలు[i] = big;
+    వాదనలు[MAXARG - 1] = 0;
     // this exec() should fail (and return) because the
     // arguments are too large.
-    exec("echo", args);
+    exec("echo", వాదనలు);
     fd = open("bigarg-ok", O_CREATE);
     close(fd);
-    exit(0);
-  } else if (pid < 0) {
-    printf("%s: bigargtest: fork failed\n", s);
-    exit(1);
+    నిష్క్రమించు(0);
+  } లేకపోతే ఒకవేళ (pid < 0) {
+    రాయి("%s: bigargtest: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   wait(&xstatus);
-  if (xstatus != 0)
-    exit(xstatus);
+  ఒకవేళ (xstatus != 0)
+    నిష్క్రమించు(xstatus);
   fd = open("bigarg-ok", 0);
-  if (fd < 0) {
-    printf("%s: bigarg test failed!\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: bigarg test failed!\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 }
 
 // what happens when the file system runs out of blocks?
 // answer: balloc panics, so this test is not useful.
-void
+శూన్య
 fsfull()
 {
-  int nfiles;
-  int fsblocks = 0;
+  పూర్ణాంకం nfiles;
+  పూర్ణాంకం fsblocks = 0;
 
-  printf("fsfull test\n");
+  రాయి("fsfull test\n");
 
-  for (nfiles = 0;; nfiles++) {
-    char name[64];
+  కొరకు (nfiles = 0;; nfiles++) {
+    అక్షరం name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
     name[3] = '0' + (nfiles % 100) / 10;
     name[4] = '0' + (nfiles % 10);
     name[5] = '\0';
-    printf("writing %s\n", name);
-    int fd = open(name, O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("open %s failed\n", name);
-      break;
+    రాయి("writing %s\n", name);
+    పూర్ణాంకం fd = open(name, O_CREATE | O_RDWR);
+    ఒకవేళ (fd < 0) {
+      రాయి("open %s failed\n", name);
+      ఆపు;
     }
-    int total = 0;
-    while (1) {
-      int cc = write(fd, buf, BSIZE);
-      if (cc < BSIZE)
-        break;
-      total += cc;
+    పూర్ణాంకం మొత్తం = 0;
+    అయితే (1) {
+      పూర్ణాంకం cc = లిఖ(fd, buf, BSIZE);
+      ఒకవేళ (cc < BSIZE)
+        ఆపు;
+      మొత్తం += cc;
       fsblocks++;
     }
-    printf("wrote %d bytes\n", total);
+    రాయి("wrote %d bytes\n", మొత్తం);
     close(fd);
-    if (total == 0)
-      break;
+    ఒకవేళ (మొత్తం == 0)
+      ఆపు;
   }
 
-  while (nfiles >= 0) {
-    char name[64];
+  అయితే (nfiles >= 0) {
+    అక్షరం name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
@@ -2420,55 +2420,55 @@ fsfull()
     nfiles--;
   }
 
-  printf("fsfull test finished, %d blocks\n", fsblocks);
+  రాయి("fsfull test finished, %d blocks\n", fsblocks);
 }
 
-void
-argptest(char *s)
+శూన్య
+argptest(అక్షరం *s)
 {
-  int fd;
+  పూర్ణాంకం fd;
   fd = open("init", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: open failed\n", s);
+    నిష్క్రమించు(1);
   }
-  read(fd, sbrk(0) - 1, -1);
+  పఠ(fd, sbrk(0) - 1, -1);
   close(fd);
 }
 
 // check that there's an invalid page beneath
 // the user stack, to catch stack overflow.
-void
-stacktest(char *s)
+శూన్య
+stacktest(అక్షరం *s)
 {
-  int pid;
-  int xstatus;
+  పూర్ణాంకం pid;
+  పూర్ణాంకం xstatus;
 
   pid = fork();
-  if (pid == 0) {
-    char *sp = (char *)r_sp();
+  ఒకవేళ (pid == 0) {
+    అక్షరం *sp = (అక్షరం *)r_sp();
     sp -= USERSTACK * PGSIZE;
     // the *sp should cause a trap.
-    printf("%s: stacktest: read below stack %d\n", s, *sp);
-    exit(1);
-  } else if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+    రాయి("%s: stacktest: read below stack %d\n", s, *sp);
+    నిష్క్రమించు(1);
+  } లేకపోతే ఒకవేళ (pid < 0) {
+    రాయి("%s: fork failed\n", s);
+    నిష్క్రమించు(1);
   }
   wait(&xstatus);
-  if (xstatus == -1) // kernel killed child?
-    exit(0);
-  else
-    exit(xstatus);
+  ఒకవేళ (xstatus == -1) // kernel killed child?
+    నిష్క్రమించు(0);
+  లేకపోతే
+    నిష్క్రమించు(xstatus);
 }
 
 // check that writes to a few forbidden addresses
 // cause a fault, e.g. process's text and TRAMPOLINE.
-void
-nowrite(char *s)
+శూన్య
+nowrite(అక్షరం *s)
 {
-  int pid;
-  int xstatus;
+  పూర్ణాంకం pid;
+  పూర్ణాంకం xstatus;
   uint64 addrs[] = {0,
                     0x80000000LL,
                     0x3fffffe000,
@@ -2476,84 +2476,84 @@ nowrite(char *s)
                     0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  కొరకు (పూర్ణాంకం ai = 0; ai < పరిమాణం(addrs) / పరిమాణం(addrs[0]); ai++) {
     pid = fork();
-    if (pid == 0) {
-      volatile int *addr = (int *)addrs[ai];
+    ఒకవేళ (pid == 0) {
+      అస్థిర పూర్ణాంకం *addr = (పూర్ణాంకం *)addrs[ai];
       *addr = 10;
-      printf("%s: write to %p did not fail!\n", s, addr);
-      exit(0);
-    } else if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+      రాయి("%s: write to %p did not fail!\n", s, addr);
+      నిష్క్రమించు(0);
+    } లేకపోతే ఒకవేళ (pid < 0) {
+      రాయి("%s: fork failed\n", s);
+      నిష్క్రమించు(1);
     }
     wait(&xstatus);
-    if (xstatus == 0) {
+    ఒకవేళ (xstatus == 0) {
       // kernel did not kill child!
-      exit(1);
+      నిష్క్రమించు(1);
     }
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // regression test. copyin(), copyout(), and copyinstr() used to cast
 // the virtual page address to uint, which (with certain wild system
 // call arguments) resulted in a kernel page faults.
-void *big = (void *)0xeaeb0b5b00002f5e;
-void
-pgbug(char *s)
+శూన్య *big = (శూన్య *)0xeaeb0b5b00002f5e;
+శూన్య
+pgbug(అక్షరం *s)
 {
-  char *argv[1];
+  అక్షరం *argv[1];
   argv[0] = 0;
   exec(big, argv);
   pipe(big);
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // regression test. does the kernel panic if a process sbrk()s its
 // size to be less than a page, or zero, or reduces the break by an
 // amount too small to cause a page to be freed?
-void
-sbrkbugs(char *s)
+శూన్య
+sbrkbugs(అక్షరం *s)
 {
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  పూర్ణాంకం pid = fork();
+  ఒకవేళ (pid < 0) {
+    రాయి("fork failed\n");
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  ఒకవేళ (pid == 0) {
+    పూర్ణాంకం sz = (uint64)sbrk(0);
     // free all user memory; there used to be a bug that
     // would not adjust p->sz correctly in this case,
     // causing exit() to panic.
     sbrk(-sz);
     // user page fault here.
-    exit(0);
+    నిష్క్రమించు(0);
   }
   wait(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("fork failed\n");
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  ఒకవేళ (pid == 0) {
+    పూర్ణాంకం sz = (uint64)sbrk(0);
     // set the break to somewhere in the very first
     // page; there used to be a bug that would incorrectly
     // free the first page.
     sbrk(-(sz - 3500));
-    exit(0);
+    నిష్క్రమించు(0);
   }
   wait(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  ఒకవేళ (pid < 0) {
+    రాయి("fork failed\n");
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
+  ఒకవేళ (pid == 0) {
     // set the break in the middle of a page.
     sbrk((10 * PGSIZE + 2048) - (uint64)sbrk(0));
 
@@ -2562,271 +2562,271 @@ sbrkbugs(char *s)
     // a panic.
     sbrk(-10);
 
-    exit(0);
+    నిష్క్రమించు(0);
   }
   wait(0);
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // if process size was somewhat more than a page boundary, and then
 // shrunk to be somewhat less than that page boundary, can the kernel
 // still copyin() from addresses in the last page?
-void
-sbrklast(char *s)
+శూన్య
+sbrklast(అక్షరం *s)
 {
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0)
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 శిఖరం = (uint64)sbrk(0);
+  ఒకవేళ ((శిఖరం % PGSIZE) != 0)
+    sbrk(PGSIZE - (శిఖరం % PGSIZE));
   sbrk(PGSIZE);
   sbrk(10);
   sbrk(-20);
-  top = (uint64)sbrk(0);
-  char *p = (char *)(top - 64);
+  శిఖరం = (uint64)sbrk(0);
+  అక్షరం *p = (అక్షరం *)(శిఖరం - 64);
   p[0] = 'x';
   p[1] = '\0';
-  int fd = open(p, O_RDWR | O_CREATE);
-  write(fd, p, 1);
+  పూర్ణాంకం fd = open(p, O_RDWR | O_CREATE);
+  లిఖ(fd, p, 1);
   close(fd);
   fd = open(p, O_RDWR);
   p[0] = '\0';
-  read(fd, p, 1);
-  if (p[0] != 'x')
-    exit(1);
+  పఠ(fd, p, 1);
+  ఒకవేళ (p[0] != 'x')
+    నిష్క్రమించు(1);
 }
 
 // does sbrk handle signed int32 wrap-around with
 // negative arguments?
-void
-sbrk8000(char *s)
+శూన్య
+sbrk8000(అక్షరం *s)
 {
   sbrk(0x80000004);
-  volatile char *top = sbrk(0);
-  *(top - 1) = *(top - 1) + 1;
+  అస్థిర అక్షరం *శిఖరం = sbrk(0);
+  *(శిఖరం - 1) = *(శిఖరం - 1) + 1;
 }
 
 // regression test. test whether exec() leaks memory if one of the
 // arguments is invalid. the test passes if the kernel doesn't panic.
-void
-badarg(char *s)
+శూన్య
+badarg(అక్షరం *s)
 {
-  for (int i = 0; i < 50000; i++) {
-    char *argv[2];
-    argv[0] = (char *)0xffffffff;
+  కొరకు (పూర్ణాంకం i = 0; i < 50000; i++) {
+    అక్షరం *argv[2];
+    argv[0] = (అక్షరం *)0xffffffff;
     argv[1] = 0;
     exec("echo", argv);
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
-#define REGION_SZ (1024 * 1024 * 1024)
+#నిర్వచించు REGION_SZ (1024 * 1024 * 1024)
 
 // Touch a page every 64 pages, which with lazy allocation
 // causes one page to be allocated.
-void
-lazy_alloc(char *s)
+శూన్య
+lazy_alloc(అక్షరం *s)
 {
-  char *i, *prev_end, *new_end;
+  అక్షరం *i, *prev_చివర, *new_చివర;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  prev_చివర = sbrklazy(REGION_SZ);
+  ఒకవేళ (prev_చివర == (అక్షరం *)SBRK_ERROR) {
+    రాయి("sbrklazy() failed\n");
+    నిష్క్రమించు(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_చివర = prev_చివర + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE)
-    *(char **)i = i;
+  కొరకు (i = prev_చివర + PGSIZE; i < new_చివర; i += 64 * PGSIZE)
+    *(అక్షరం **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE) {
-    if (*(char **)i != i) {
-      printf("failed to read value from memory\n");
-      exit(1);
+  కొరకు (i = prev_చివర + PGSIZE; i < new_చివర; i += 64 * PGSIZE) {
+    ఒకవేళ (*(అక్షరం **)i != i) {
+      రాయి("failed to read value from memory\n");
+      నిష్క్రమించు(1);
     }
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // Touch a page every 64 pages in region, which with lazy allocation
 // causes one page to be allocated. Check that freeing the region
 // frees the allocated pages.
-void
-lazy_unmap(char *s)
+శూన్య
+lazy_unmap(అక్షరం *s)
 {
-  int pid;
-  char *i, *prev_end, *new_end;
+  పూర్ణాంకం pid;
+  అక్షరం *i, *prev_చివర, *new_చివర;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  prev_చివర = sbrklazy(REGION_SZ);
+  ఒకవేళ (prev_చివర == (అక్షరం *)SBRK_ERROR) {
+    రాయి("sbrklazy() failed\n");
+    నిష్క్రమించు(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_చివర = prev_చివర + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE)
-    *(char **)i = i;
+  కొరకు (i = prev_చివర + PGSIZE; i < new_చివర; i += PGSIZE * PGSIZE)
+    *(అక్షరం **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE) {
+  కొరకు (i = prev_చివర + PGSIZE; i < new_చివర; i += PGSIZE * PGSIZE) {
     pid = fork();
-    if (pid < 0) {
-      printf("error forking\n");
-      exit(1);
-    } else if (pid == 0) {
+    ఒకవేళ (pid < 0) {
+      రాయి("error forking\n");
+      నిష్క్రమించు(1);
+    } లేకపోతే ఒకవేళ (pid == 0) {
       sbrklazy(-1L * REGION_SZ);
-      *(char **)i = i;
-      exit(0);
-    } else {
-      int status;
-      wait(&status);
-      if (status == 0) {
-        printf("memory not unmapped\n");
-        exit(1);
+      *(అక్షరం **)i = i;
+      నిష్క్రమించు(0);
+    } లేకపోతే {
+      పూర్ణాంకం స్థితి_2;
+      wait(&స్థితి_2);
+      ఒకవేళ (స్థితి_2 == 0) {
+        రాయి("memory not unmapped\n");
+        నిష్క్రమించు(1);
       }
     }
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
-void
-lazy_copy(char *s)
+శూన్య
+lazy_copy(అక్షరం *s)
 {
   // copyinstr on lazy page
   {
-    char *p = sbrk(0);
+    అక్షరం *p = sbrk(0);
     sbrklazy(4 * PGSIZE);
     open(p + 8192, 0);
   }
 
   {
-    void *xx = sbrk(0);
-    void *ret = sbrk(-(((uint64)xx) + 1));
-    if (ret != xx) {
-      printf("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
-      exit(1);
+    శూన్య *xx = sbrk(0);
+    శూన్య *ret = sbrk(-(((uint64)xx) + 1));
+    ఒకవేళ (ret != xx) {
+      రాయి("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
+      నిష్క్రమించు(1);
     }
   }
 
   // read() and write() to these addresses should fail.
-  unsigned long bad[] = {
+  గుర్తులేని దీర్ఘ bad[] = {
     0x3fffffc000, 0x3fffffd000, 0x3fffffe000,
     0x3ffffff000, 0x4000000000, 0x8000000000,
   };
-  for (int i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("cannot open README\n");
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < పరిమాణం(bad) / పరిమాణం(bad[0]); i++) {
+    పూర్ణాంకం fd = open("README", 0);
+    ఒకవేళ (fd < 0) {
+      రాయి("cannot open README\n");
+      నిష్క్రమించు(1);
     }
-    if (read(fd, (char *)bad[i], 512) >= 0) {
-      printf("read succeeded\n");
-      exit(1);
+    ఒకవేళ (పఠ(fd, (అక్షరం *)bad[i], 512) >= 0) {
+      రాయి("read succeeded\n");
+      నిష్క్రమించు(1);
     }
     close(fd);
     fd = open("junk", O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
-      printf("cannot open junk\n");
-      exit(1);
+    ఒకవేళ (fd < 0) {
+      రాయి("cannot open junk\n");
+      నిష్క్రమించు(1);
     }
-    if (write(fd, (char *)bad[i], 512) >= 0) {
-      printf("write succeeded\n");
-      exit(1);
+    ఒకవేళ (లిఖ(fd, (అక్షరం *)bad[i], 512) >= 0) {
+      రాయి("write succeeded\n");
+      నిష్క్రమించు(1);
     }
     close(fd);
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
-void
-lazy_copyinstr(char *s)
+శూన్య
+lazy_copyinstr(అక్షరం *s)
 {
-  char *p = sbrk(0);
+  అక్షరం *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  ఒకవేళ ((uint64)p % PGSIZE != 0) {
+    రాయి("%s: sbrk did not align\n", s);
+    నిష్క్రమించు(1);
   }
 
   sbrklazy(2 * PGSIZE);
   p[4095] = '/';
-  int fd = open(&p[4095], O_RDONLY);
-  if (fd < 0) {
-    printf("could not open /");
-    exit(1);
+  పూర్ణాంకం fd = open(&p[4095], O_RDONLY);
+  ఒకవేళ (fd < 0) {
+    రాయి("could not open /");
+    నిష్క్రమించు(1);
   }
 
-  struct stat st;
-  int r = fstat(fd, &st);
-  if (r < 0) {
-    printf("could not stat /");
-    exit(1);
+  నిర్మాణం stat st;
+  పూర్ణాంకం r = fstat(fd, &st);
+  ఒకవేళ (r < 0) {
+    రాయి("could not stat /");
+    నిష్క్రమించు(1);
   }
 
-  if (st.type != T_DIR) {
-    printf("/ is not T_DIR");
-    exit(1);
+  ఒకవేళ (st.type != T_DIR) {
+    రాయి("/ is not T_DIR");
+    నిష్క్రమించు(1);
   }
 
   close(fd);
 }
 
-void
-lazy_sbrk(char *s)
+శూన్య
+lazy_sbrk(అక్షరం *s)
 {
   // sbrk() takes just int, so take 2^30-sized steps towards MAXVA
-  char *p = sbrk(0);
-  while ((uint64)p < MAXVA - (1 << 30)) {
+  అక్షరం *p = sbrk(0);
+  అయితే ((uint64)p < MAXVA - (1 << 30)) {
     p = sbrklazy(1 << 30);
-    if (p < 0) {
-      printf("sbrklazy(%d) returned %p\n", 1 << 30, p);
-      exit(1);
+    ఒకవేళ (p < 0) {
+      రాయి("sbrklazy(%d) returned %p\n", 1 << 30, p);
+      నిష్క్రమించు(1);
     }
 
     p = sbrklazy(0);
   }
 
-  int n = TRAPFRAME - PGSIZE - (uint64)p;
+  పూర్ణాంకం n = TRAPFRAME - PGSIZE - (uint64)p;
 
-  char *p1 = sbrklazy(n);
-  if (p1 < 0 || p1 != p) {
-    printf("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
-    exit(1);
+  అక్షరం *p1 = sbrklazy(n);
+  ఒకవేళ (p1 < 0 || p1 != p) {
+    రాయి("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
+    నిష్క్రమించు(1);
   }
 
   p = sbrk(PGSIZE);
-  if (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
-    printf("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
-    exit(1);
+  ఒకవేళ (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
+    రాయి("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
+    నిష్క్రమించు(1);
   }
 
   p[0] = 1;
-  if (p[1] != 0) {
-    printf("sbrk() returned non-zero-filled memory\n");
-    exit(1);
+  ఒకవేళ (p[1] != 0) {
+    రాయి("sbrk() returned non-zero-filled memory\n");
+    నిష్క్రమించు(1);
   }
 
   p = sbrk(1);
-  if ((uint64)p != -1) {
-    printf("sbrk(1) returned %p, expected error\n", p);
-    exit(1);
+  ఒకవేళ ((uint64)p != -1) {
+    రాయి("sbrk(1) returned %p, expected error\n", p);
+    నిష్క్రమించు(1);
   }
 
   p = sbrklazy(1);
-  if ((uint64)p != -1) {
-    printf("sbrklazy(1) returned %p, expected error\n", p);
-    exit(1);
+  ఒకవేళ ((uint64)p != -1) {
+    రాయి("sbrklazy(1) returned %p, expected error\n", p);
+    నిష్క్రమించు(1);
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
-void
-partial_write(char *s)
+శూన్య
+partial_write(అక్షరం *s)
 {
   // Create testfile containing "A".
   // write() 2 bytes that span page boundary: first is "X", second is unmapped.
@@ -2836,72 +2836,72 @@ partial_write(char *s)
   // read() from file should still return "X" (but might return "A" due to bug).
 
   unlink("testfile");
-  int fd = open("testfile", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create testfile\n", s);
-    exit(1);
+  పూర్ణాంకం fd = open("testfile", O_CREATE | O_RDWR);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot create testfile\n", s);
+    నిష్క్రమించు(1);
   }
 
-  int cc = write(fd, "A", 1);
-  if (cc != 1) {
-    printf("%s: could not write A\n", s);
-    exit(1);
+  పూర్ణాంకం cc = లిఖ(fd, "A", 1);
+  ఒకవేళ (cc != 1) {
+    రాయి("%s: could not write A\n", s);
+    నిష్క్రమించు(1);
   }
 
   close(fd);
   fd = open("testfile", O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot re-open testfile\n", s);
+    నిష్క్రమించు(1);
   }
 
-  char *p = sbrk(0);
+  అక్షరం *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  ఒకవేళ ((uint64)p % PGSIZE != 0) {
+    రాయి("%s: sbrk did not align\n", s);
+    నిష్క్రమించు(1);
   }
 
   p[-1] = 'X';
 
-  cc = write(fd, p - 1, 2);
-  if (cc != -1) {
-    printf("%s: write succeeded, should have failed\n", s);
-    exit(1);
+  cc = లిఖ(fd, p - 1, 2);
+  ఒకవేళ (cc != -1) {
+    రాయి("%s: write succeeded, should have failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   close(fd);
 
   fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot re-open testfile\n", s);
+    నిష్క్రమించు(1);
   }
 
-  char b;
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  అక్షరం b;
+  cc = పఠ(fd, &b, 1);
+  ఒకవేళ (cc != 1) {
+    రాయి("%s: cannot read testfile\n", s);
+    నిష్క్రమించు(1);
   }
 
   close(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  ఒకవేళ (b != 'X') {
+    రాయి("%s: read returned %c, expected X\n", s, b);
+    నిష్క్రమించు(1);
   }
 
   fd = open("bigfile", O_CREATE | O_RDWR);
-  for (int i = 0; i < 64; i++) {
-    char buf[1024];
-    memset(buf, 0, sizeof(buf));
-    cc = write(fd, buf, sizeof(buf));
-    if (cc != sizeof(buf)) {
-      printf("%s: could not write to bigfile\n", s);
-      exit(-1);
+  కొరకు (పూర్ణాంకం i = 0; i < 64; i++) {
+    అక్షరం buf[1024];
+    memset(buf, 0, పరిమాణం(buf));
+    cc = లిఖ(fd, buf, పరిమాణం(buf));
+    ఒకవేళ (cc != పరిమాణం(buf)) {
+      రాయి("%s: could not write to bigfile\n", s);
+      నిష్క్రమించు(-1);
     }
   }
   close(fd);
@@ -2909,61 +2909,61 @@ partial_write(char *s)
   unlink("bigfile");
 
   fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot re-open testfile\n", s);
+    నిష్క్రమించు(1);
   }
 
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  cc = పఠ(fd, &b, 1);
+  ఒకవేళ (cc != 1) {
+    రాయి("%s: cannot read testfile\n", s);
+    నిష్క్రమించు(1);
   }
 
   close(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  ఒకవేళ (b != 'X') {
+    రాయి("%s: read returned %c, expected X\n", s, b);
+    నిష్క్రమించు(1);
   }
 
   unlink("testfile");
 }
 
-void
-unlinkcwd(char *s)
+శూన్య
+unlinkcwd(అక్షరం *s)
 {
-  if (mkdir("/a") < 0) {
-    printf("%s: mkdir /a failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("/a") < 0) {
+    రాయి("%s: mkdir /a failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (mkdir("/a/b") < 0) {
-    printf("%s: mkdir /a/b failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("/a/b") < 0) {
+    రాయి("%s: mkdir /a/b failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (chdir("/a/b") < 0) {
-    printf("%s: chdir failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("/a/b") < 0) {
+    రాయి("%s: chdir failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("/a/b") < 0) {
-    printf("%s: unlink /a/b failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("/a/b") < 0) {
+    రాయి("%s: unlink /a/b failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (unlink("/a") < 0) {
-    printf("%s: unlink /a failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("/a") < 0) {
+    రాయి("%s: unlink /a failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open("../", O_RDONLY) > 0) {
-    printf("%s: open ../ non-existing directory\n", s);
+  ఒకవేళ (open("../", O_RDONLY) > 0) {
+    రాయి("%s: open ../ non-existing directory\n", s);
   }
-  if (open("../c", O_CREATE) > 0) {
-    printf("%s: create ../c non-existing file\n", s);
+  ఒకవేళ (open("../c", O_CREATE) > 0) {
+    రాయి("%s: create ../c non-existing file\n", s);
   }
 }
 
-struct test {
-  void (*f)(char *);
-  char *s;
+నిర్మాణం test {
+  శూన్య (*f)(అక్షరం *);
+  అక్షరం *s;
 } quicktests[] = {
   {copyin, "copyin"},
   {copyout, "copyout"},
@@ -3041,80 +3041,80 @@ struct test {
 //
 
 // directory that uses indirect blocks
-void
-bigdir(char *s)
+శూన్య
+bigdir(అక్షరం *s)
 {
-  enum { N = 500 };
-  int i, fd;
-  char name[10];
+  గణన { N = 500 };
+  పూర్ణాంకం i, fd;
+  అక్షరం name[10];
 
   unlink("bd");
 
   fd = open("bd", O_CREATE);
-  if (fd < 0) {
-    printf("%s: bigdir create failed\n", s);
-    exit(1);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: bigdir create failed\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (link("bd", name) != 0) {
-      printf("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
-      exit(1);
+    ఒకవేళ (link("bd", name) != 0) {
+      రాయి("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
+      నిష్క్రమించు(1);
     }
   }
 
   unlink("bd");
-  for (i = 0; i < N; i++) {
+  కొరకు (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (unlink(name) != 0) {
-      printf("%s: bigdir unlink failed", s);
-      exit(1);
+    ఒకవేళ (unlink(name) != 0) {
+      రాయి("%s: bigdir unlink failed", s);
+      నిష్క్రమించు(1);
     }
   }
 }
 
 // concurrent writes to try to provoke deadlock in the virtio disk
 // driver.
-void
-manywrites(char *s)
+శూన్య
+manywrites(అక్షరం *s)
 {
-  int nchildren = 4;
-  int howmany = 30; // increase to look for deadlock
+  పూర్ణాంకం nchildren = 4;
+  పూర్ణాంకం howmany = 30; // increase to look for deadlock
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
+  కొరకు (పూర్ణాంకం ci = 0; ci < nchildren; ci++) {
+    పూర్ణాంకం pid = fork();
+    ఒకవేళ (pid < 0) {
+      రాయి("fork failed\n");
+      నిష్క్రమించు(1);
     }
 
-    if (pid == 0) {
-      char name[3];
+    ఒకవేళ (pid == 0) {
+      అక్షరం name[3];
       name[0] = 'b';
       name[1] = 'a' + ci;
       name[2] = '\0';
       unlink(name);
 
-      for (int iters = 0; iters < howmany; iters++) {
-        for (int i = 0; i < ci + 1; i++) {
-          int fd = open(name, O_CREATE | O_RDWR);
-          if (fd < 0) {
-            printf("%s: cannot create %s\n", s, name);
-            exit(1);
+      కొరకు (పూర్ణాంకం iters = 0; iters < howmany; iters++) {
+        కొరకు (పూర్ణాంకం i = 0; i < ci + 1; i++) {
+          పూర్ణాంకం fd = open(name, O_CREATE | O_RDWR);
+          ఒకవేళ (fd < 0) {
+            రాయి("%s: cannot create %s\n", s, name);
+            నిష్క్రమించు(1);
           }
-          int sz = sizeof(buf);
-          int cc = write(fd, buf, sz);
-          if (cc != sz) {
-            printf("%s: write(%d) ret %d\n", s, sz, cc);
-            exit(1);
+          పూర్ణాంకం sz = పరిమాణం(buf);
+          పూర్ణాంకం cc = లిఖ(fd, buf, sz);
+          ఒకవేళ (cc != sz) {
+            రాయి("%s: write(%d) ret %d\n", s, sz, cc);
+            నిష్క్రమించు(1);
           }
           close(fd);
         }
@@ -3122,17 +3122,17 @@ manywrites(char *s)
       }
 
       unlink(name);
-      exit(0);
+      నిష్క్రమించు(0);
     }
   }
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int st = 0;
+  కొరకు (పూర్ణాంకం ci = 0; ci < nchildren; ci++) {
+    పూర్ణాంకం st = 0;
     wait(&st);
-    if (st != 0)
-      exit(st);
+    ఒకవేళ (st != 0)
+      నిష్క్రమించు(st);
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // regression test. does write() with an invalid buffer pointer cause
@@ -3140,105 +3140,105 @@ manywrites(char *s)
 // file is deleted? if the kernel has this bug, it will panic: balloc:
 // out of blocks. assumed_free may need to be raised to be more than
 // the number of free blocks. this test takes a long time.
-void
-badwrite(char *s)
+శూన్య
+badwrite(అక్షరం *s)
 {
-  int assumed_free = 600;
+  పూర్ణాంకం assumed_free = 600;
 
   unlink("junk");
-  for (int i = 0; i < assumed_free; i++) {
-    int fd = open("junk", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open junk failed\n");
-      exit(1);
+  కొరకు (పూర్ణాంకం i = 0; i < assumed_free; i++) {
+    పూర్ణాంకం fd = open("junk", O_CREATE | O_WRONLY);
+    ఒకవేళ (fd < 0) {
+      రాయి("open junk failed\n");
+      నిష్క్రమించు(1);
     }
-    write(fd, (char *)0xffffffffffL, 1);
+    లిఖ(fd, (అక్షరం *)0xffffffffffL, 1);
     close(fd);
     unlink("junk");
   }
 
-  int fd = open("junk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open junk failed\n");
-    exit(1);
+  పూర్ణాంకం fd = open("junk", O_CREATE | O_WRONLY);
+  ఒకవేళ (fd < 0) {
+    రాయి("open junk failed\n");
+    నిష్క్రమించు(1);
   }
-  if (write(fd, "x", 1) != 1) {
-    printf("write failed\n");
-    exit(1);
+  ఒకవేళ (లిఖ(fd, "x", 1) != 1) {
+    రాయి("write failed\n");
+    నిష్క్రమించు(1);
   }
   close(fd);
   unlink("junk");
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // test the exec() code that cleans up if it runs out
 // of memory. it's really a test that such a condition
 // doesn't cause a panic.
-void
-execout(char *s)
+శూన్య
+execout(అక్షరం *s)
 {
-  for (int avail = 0; avail < 15; avail++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
-    } else if (pid == 0) {
+  కొరకు (పూర్ణాంకం avail = 0; avail < 15; avail++) {
+    పూర్ణాంకం pid = fork();
+    ఒకవేళ (pid < 0) {
+      రాయి("fork failed\n");
+      నిష్క్రమించు(1);
+    } లేకపోతే ఒకవేళ (pid == 0) {
       // allocate all of memory.
-      while (1) {
-        char *a = sbrk(PGSIZE);
-        if (a == SBRK_ERROR)
-          break;
+      అయితే (1) {
+        అక్షరం *a = sbrk(PGSIZE);
+        ఒకవేళ (a == SBRK_ERROR)
+          ఆపు;
         *(a + PGSIZE - 1) = 1;
       }
 
       // free a few pages, in order to let exec() make some
       // progress.
-      for (int i = 0; i < avail; i++)
+      కొరకు (పూర్ణాంకం i = 0; i < avail; i++)
         sbrk(-PGSIZE);
 
       close(1);
-      char *args[] = {"echo", "x", 0};
-      exec("echo", args);
-      exit(0);
-    } else {
-      wait((int *)0);
+      అక్షరం *వాదనలు[] = {"echo", "x", 0};
+      exec("echo", వాదనలు);
+      నిష్క్రమించు(0);
+    } లేకపోతే {
+      wait((పూర్ణాంకం *)0);
     }
   }
 
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
 // can the kernel tolerate running out of disk space?
-void
-diskfull(char *s)
+శూన్య
+diskfull(అక్షరం *s)
 {
-  int fi;
-  int done = 0;
+  పూర్ణాంకం fi;
+  పూర్ణాంకం పూర్తి = 0;
 
   unlink("diskfulldir");
 
-  for (fi = 0; done == 0 && '0' + fi < 0177; fi++) {
-    char name[32];
+  కొరకు (fi = 0; పూర్తి == 0 && '0' + fi < 0177; fi++) {
+    అక్షరం name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
     name[3] = '0' + fi;
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    పూర్ణాంకం fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    ఒకవేళ (fd < 0) {
       // oops, ran out of inodes before running out of blocks.
-      printf("%s: could not create file %s\n", s, name);
-      done = 1;
-      break;
+      రాయి("%s: could not create file %s\n", s, name);
+      పూర్తి = 1;
+      ఆపు;
     }
-    for (int i = 0; i < MAXFILE; i++) {
-      char buf[BSIZE];
-      if (write(fd, buf, BSIZE) != BSIZE) {
-        done = 1;
+    కొరకు (పూర్ణాంకం i = 0; i < MAXFILE; i++) {
+      అక్షరం buf[BSIZE];
+      ఒకవేళ (లిఖ(fd, buf, BSIZE) != BSIZE) {
+        పూర్తి = 1;
         close(fd);
-        break;
+        ఆపు;
       }
     }
     close(fd);
@@ -3248,29 +3248,29 @@ diskfull(char *s)
   // merely fails (doesn't panic) if it can't extend
   // directory content. one of these file creations
   // is expected to fail.
-  int nzz = 128;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  పూర్ణాంకం nzz = 128;
+  కొరకు (పూర్ణాంకం i = 0; i < nzz; i++) {
+    అక్షరం name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0)
-      break;
+    పూర్ణాంకం fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    ఒకవేళ (fd < 0)
+      ఆపు;
     close(fd);
   }
 
   // this mkdir() is expected to fail.
-  if (mkdir("diskfulldir") == 0)
-    printf("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
+  ఒకవేళ (mkdir("diskfulldir") == 0)
+    రాయి("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
 
   unlink("diskfulldir");
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  కొరకు (పూర్ణాంకం i = 0; i < nzz; i++) {
+    అక్షరం name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3279,8 +3279,8 @@ diskfull(char *s)
     unlink(name);
   }
 
-  for (int i = 0; '0' + i < 0177; i++) {
-    char name[32];
+  కొరకు (పూర్ణాంకం i = 0; '0' + i < 0177; i++) {
+    అక్షరం name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
@@ -3290,28 +3290,28 @@ diskfull(char *s)
   }
 }
 
-void
-outofinodes(char *s)
+శూన్య
+outofinodes(అక్షరం *s)
 {
-  int nzz = 32 * 32;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  పూర్ణాంకం nzz = 32 * 32;
+  కొరకు (పూర్ణాంకం i = 0; i < nzz; i++) {
+    అక్షరం name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    పూర్ణాంకం fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    ఒకవేళ (fd < 0) {
       // failure is eventually expected.
-      break;
+      ఆపు;
     }
     close(fd);
   }
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  కొరకు (పూర్ణాంకం i = 0; i < nzz; i++) {
+    అక్షరం name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3321,36 +3321,36 @@ outofinodes(char *s)
   }
 }
 
-void
-linkoverflow(char *s)
+శూన్య
+linkoverflow(అక్షరం *s)
 {
-  enum { TARGET = 32768 };
-  enum { DIRS = 64 };
-  struct stat st;
-  int i;
+  గణన { లక్ష్యం_2 = 32768 };
+  గణన { DIRS = 64 };
+  నిర్మాణం stat st;
+  పూర్ణాంకం i;
 
   unlink("/lof");
-  int fd = open("/lof", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create /lof\n", s);
-    exit(1);
+  పూర్ణాంకం fd = open("/lof", O_CREATE | O_RDWR);
+  ఒకవేళ (fd < 0) {
+    రాయి("%s: cannot create /lof\n", s);
+    నిష్క్రమించు(1);
   }
   close(fd);
 
-  for (i = 0; i < TARGET; i++) {
-    int d = i % DIRS;
-    int f = i / DIRS;
+  కొరకు (i = 0; i < లక్ష్యం_2; i++) {
+    పూర్ణాంకం d = i % DIRS;
+    పూర్ణాంకం f = i / DIRS;
 
-    char pn[16];
+    అక్షరం pn[16];
     pn[0] = '/';
     pn[1] = 'd';
     pn[2] = '_';
     pn[3] = 'a' + (d / 16);
     pn[4] = 'a' + (d % 16);
     pn[5] = '\0';
-    if (f == 0 && mkdir(pn) < 0) {
-      printf("%s: mkdir(%s) failed\n", s, pn);
-      exit(1);
+    ఒకవేళ (f == 0 && mkdir(pn) < 0) {
+      రాయి("%s: mkdir(%s) failed\n", s, pn);
+      నిష్క్రమించు(1);
     }
 
     pn[5] = '/';
@@ -3360,38 +3360,38 @@ linkoverflow(char *s)
     pn[9] = 'a' + (f % 16);
     pn[10] = '\0';
 
-    if (link("/lof", pn) < 0) {
-      if (stat("/lof", &st) < 0) {
-        printf("%s: stat(/lof) failed\n", s);
-        exit(1);
+    ఒకవేళ (link("/lof", pn) < 0) {
+      ఒకవేళ (stat("/lof", &st) < 0) {
+        రాయి("%s: stat(/lof) failed\n", s);
+        నిష్క్రమించు(1);
       }
-      if (st.nlink >= 32767) {
+      ఒకవేళ (st.nlink >= 32767) {
         // overflow check succeeded.
-        break;
+        ఆపు;
       }
-      printf("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
-      exit(1);
+      రాయి("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
+      నిష్క్రమించు(1);
     }
 
-    if (i % 100 == 0) {
-      printf("%s: i=%d, pn=%s\n", s, i, pn);
+    ఒకవేళ (i % 100 == 0) {
+      రాయి("%s: i=%d, pn=%s\n", s, i, pn);
     }
   }
 
-  if (stat("/lof", &st) < 0) {
-    printf("%s: stat(/lof) failed\n", s);
-    exit(1);
+  ఒకవేళ (stat("/lof", &st) < 0) {
+    రాయి("%s: stat(/lof) failed\n", s);
+    నిష్క్రమించు(1);
   }
 
   unlink("/lof");
 
-  if (st.nlink < 0) {
-    printf("%s: negative link count: %d\n", s, st.nlink);
-    exit(1);
+  ఒకవేళ (st.nlink < 0) {
+    రాయి("%s: negative link count: %d\n", s, st.nlink);
+    నిష్క్రమించు(1);
   }
 }
 
-struct test slowtests[] = {
+నిర్మాణం test slowtests[] = {
   {bigdir, "bigdir"},
   {manywrites, "manywrites"},
   {badwrite, "badwrite"},
@@ -3409,130 +3409,130 @@ struct test slowtests[] = {
 
 // run each test in its own process. run returns 1 if child's exit()
 // indicates success.
-int
-run(void f(char *), char *s)
+పూర్ణాంకం
+నిరంతరం(శూన్య f(అక్షరం *), అక్షరం *s)
 {
-  int pid;
-  int xstatus;
+  పూర్ణాంకం pid;
+  పూర్ణాంకం xstatus;
 
-  printf("test %s: ", s);
-  if ((pid = fork()) < 0) {
-    printf("runtest: fork error\n");
-    exit(1);
+  రాయి("test %s: ", s);
+  ఒకవేళ ((pid = fork()) < 0) {
+    రాయి("runtest: fork error\n");
+    నిష్క్రమించు(1);
   }
-  if (pid == 0) {
+  ఒకవేళ (pid == 0) {
     f(s);
-    exit(0);
-  } else {
+    నిష్క్రమించు(0);
+  } లేకపోతే {
     wait(&xstatus);
-    if (xstatus != 0)
-      printf("FAILED\n");
-    else
-      printf("OK\n");
-    return xstatus == 0;
+    ఒకవేళ (xstatus != 0)
+      రాయి("FAILED\n");
+    లేకపోతే
+      రాయి("OK\n");
+    తిరిగి xstatus == 0;
   }
 }
 
-int
-runtests(struct test *tests, char *justone, int continuous)
+పూర్ణాంకం
+runtests(నిర్మాణం test *tests, అక్షరం *justone, పూర్ణాంకం continuous)
 {
-  int ntests = 0;
-  for (struct test *t = tests; t->s != 0; t++) {
-    if ((justone == 0) || strcmp(t->s, justone) == 0) {
+  పూర్ణాంకం ntests = 0;
+  కొరకు (నిర్మాణం test *t = tests; t->s != 0; t++) {
+    ఒకవేళ ((justone == 0) || strcmp(t->s, justone) == 0) {
       ntests++;
-      if (!run(t->f, t->s)) {
-        if (continuous != 2) {
-          printf("SOME TESTS FAILED\n");
-          return -1;
+      ఒకవేళ (!నిరంతరం(t->f, t->s)) {
+        ఒకవేళ (continuous != 2) {
+          రాయి("SOME TESTS FAILED\n");
+          తిరిగి -1;
         }
       }
     }
   }
-  return ntests;
+  తిరిగి ntests;
 }
 
 // use sbrk() to count how many free physical memory pages there are.
-int
+పూర్ణాంకం
 countfree()
 {
-  int n = 0;
+  పూర్ణాంకం n = 0;
   uint64 sz0 = (uint64)sbrk(0);
-  while (1) {
-    char *a = sbrk(PGSIZE);
-    if (a == SBRK_ERROR) {
-      break;
+  అయితే (1) {
+    అక్షరం *a = sbrk(PGSIZE);
+    ఒకవేళ (a == SBRK_ERROR) {
+      ఆపు;
     }
     n += 1;
   }
   sbrk(-((uint64)sbrk(0) - sz0));
-  return n;
+  తిరిగి n;
 }
 
-int
-drivetests(int quick, int continuous, char *justone)
+పూర్ణాంకం
+drivetests(పూర్ణాంకం శీఘ్ర, పూర్ణాంకం continuous, అక్షరం *justone)
 {
-  do {
-    printf("usertests starting\n");
-    int free0 = countfree();
-    int free1 = 0;
-    int ntests = 0;
-    int n;
+  చేయి {
+    రాయి("usertests starting\n");
+    పూర్ణాంకం free0 = countfree();
+    పూర్ణాంకం free1 = 0;
+    పూర్ణాంకం ntests = 0;
+    పూర్ణాంకం n;
     n = runtests(quicktests, justone, continuous);
-    if (n < 0) {
-      if (continuous != 2) {
-        return 1;
+    ఒకవేళ (n < 0) {
+      ఒకవేళ (continuous != 2) {
+        తిరిగి 1;
       }
-    } else {
+    } లేకపోతే {
       ntests += n;
     }
-    if (!quick) {
-      if (justone == 0)
-        printf("usertests slow tests starting\n");
+    ఒకవేళ (!శీఘ్ర) {
+      ఒకవేళ (justone == 0)
+        రాయి("usertests slow tests starting\n");
       n = runtests(slowtests, justone, continuous);
-      if (n < 0) {
-        if (continuous != 2) {
-          return 1;
+      ఒకవేళ (n < 0) {
+        ఒకవేళ (continuous != 2) {
+          తిరిగి 1;
         }
-      } else {
+      } లేకపోతే {
         ntests += n;
       }
     }
-    if ((free1 = countfree()) < free0) {
-      printf("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
-      if (continuous != 2) {
-        return 1;
+    ఒకవేళ ((free1 = countfree()) < free0) {
+      రాయి("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
+      ఒకవేళ (continuous != 2) {
+        తిరిగి 1;
       }
     }
-    if (justone != 0 && ntests == 0) {
-      printf("NO TESTS EXECUTED\n");
-      return 1;
+    ఒకవేళ (justone != 0 && ntests == 0) {
+      రాయి("NO TESTS EXECUTED\n");
+      తిరిగి 1;
     }
-  } while (continuous);
-  return 0;
+  } అయితే (continuous);
+  తిరిగి 0;
 }
 
-int
-main(int argc, char *argv[])
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం *argv[])
 {
-  int continuous = 0;
-  int quick = 0;
-  char *justone = 0;
+  పూర్ణాంకం continuous = 0;
+  పూర్ణాంకం శీఘ్ర = 0;
+  అక్షరం *justone = 0;
 
-  if (argc == 2 && strcmp(argv[1], "-q") == 0) {
-    quick = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-c") == 0) {
+  ఒకవేళ (argc == 2 && strcmp(argv[1], "-q") == 0) {
+    శీఘ్ర = 1;
+  } లేకపోతే ఒకవేళ (argc == 2 && strcmp(argv[1], "-c") == 0) {
     continuous = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-C") == 0) {
+  } లేకపోతే ఒకవేళ (argc == 2 && strcmp(argv[1], "-C") == 0) {
     continuous = 2;
-  } else if (argc == 2 && argv[1][0] != '-') {
+  } లేకపోతే ఒకవేళ (argc == 2 && argv[1][0] != '-') {
     justone = argv[1];
-  } else if (argc > 1) {
-    printf("Usage: usertests [-c] [-C] [-q] [testname]\n");
-    exit(1);
+  } లేకపోతే ఒకవేళ (argc > 1) {
+    రాయి("Usage: usertests [-c] [-C] [-q] [testname]\n");
+    నిష్క్రమించు(1);
   }
-  if (drivetests(quick, continuous, justone)) {
-    exit(1);
+  ఒకవేళ (drivetests(శీఘ్ర, continuous, justone)) {
+    నిష్క్రమించు(1);
   }
-  printf("ALL TESTS PASSED\n");
-  exit(0);
+  రాయి("ALL TESTS PASSED\n");
+  నిష్క్రమించు(0);
 }

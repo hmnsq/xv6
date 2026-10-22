@@ -1,35 +1,35 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "user/user.h"
 
 // Create an orphaned directory and check if test-xv6.py recovers it.
 
-#define BUFSZ 500
+#నిర్వచించు BUFSZ 500
 
-char buf[BUFSZ];
+అక్షరం buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం **argv)
 {
-  char *s = argv[0];
+  అక్షరం *s = argv[0];
 
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  ఒకవేళ (mkdir("dd") != 0) {
+    రాయి("%s: mkdir dd failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  ఒకవేళ (chdir("dd") != 0) {
+    రాయి("%s: chdir dd failed\n", s);
+    నిష్క్రమించు(1);
   }
 
-  if (unlink("../dd") < 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink("../dd") < 0) {
+    రాయి("%s: unlink failed\n", s);
+    నిష్క్రమించు(1);
   }
-  printf("wait for kill and reclaim\n");
+  రాయి("wait for kill and reclaim\n");
   // sit around until killed
-  for (;;)
+  కొరకు (;;)
     pause(1000);
 }

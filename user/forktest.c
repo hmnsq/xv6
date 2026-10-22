@@ -1,56 +1,56 @@
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "user/user.h"
 
-#define N 1000
+#నిర్వచించు N 1000
 
-void
-print(const char *s)
+శూన్య
+print(స్థిరరాశి అక్షరం *s)
 {
-  write(1, s, strlen(s));
+  లిఖ(1, s, అక్షరశ్రేణి_పొడవు(s));
 }
 
-void
-forktest(void)
+శూన్య
+forktest(శూన్య)
 {
-  int n, pid;
+  పూర్ణాంకం n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  కొరకు (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    ఒకవేళ (pid < 0)
+      ఆపు;
+    ఒకవేళ (pid == 0)
+      నిష్క్రమించు(0);
   }
 
-  if (n == N) {
+  ఒకవేళ (n == N) {
     print("fork claimed to work N times!\n");
-    exit(1);
+    నిష్క్రమించు(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  కొరకు (; n > 0; n--) {
+    ఒకవేళ (wait(0) < 0) {
       print("wait stopped early\n");
-      exit(1);
+      నిష్క్రమించు(1);
     }
   }
 
-  if (wait(0) != -1) {
+  ఒకవేళ (wait(0) != -1) {
     print("wait got too many\n");
-    exit(1);
+    నిష్క్రమించు(1);
   }
 
   print("fork test OK\n");
 }
 
-int
-main(void)
+పూర్ణాంకం
+ప్రధాన(శూన్య)
 {
   forktest();
-  exit(0);
+  నిష్క్రమించు(0);
 }

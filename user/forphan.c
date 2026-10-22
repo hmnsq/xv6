@@ -1,40 +1,40 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "user/user.h"
 
 // Create an orphaned file and check if test-xv6.py recovers it.
 
-#define BUFSZ 500
+#నిర్వచించు BUFSZ 500
 
-char buf[BUFSZ];
+అక్షరం buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం **argv)
 {
-  int fd = 0;
-  char *s = argv[0];
-  struct stat st;
-  char *ff = "file0";
+  పూర్ణాంకం fd = 0;
+  అక్షరం *s = argv[0];
+  నిర్మాణం stat st;
+  అక్షరం *ff = "file0";
 
-  if ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  ఒకవేళ ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
+    రాయి("%s: open failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (fstat(fd, &st) < 0) {
+  ఒకవేళ (fstat(fd, &st) < 0) {
     fprintf(2, "%s: cannot stat %s\n", s, "ff");
-    exit(1);
+    నిష్క్రమించు(1);
   }
-  if (unlink(ff) < 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  ఒకవేళ (unlink(ff) < 0) {
+    రాయి("%s: unlink failed\n", s);
+    నిష్క్రమించు(1);
   }
-  if (open(ff, O_RDONLY) != -1) {
-    printf("%s: open successed\n", s);
-    exit(1);
+  ఒకవేళ (open(ff, O_RDONLY) != -1) {
+    రాయి("%s: open successed\n", s);
+    నిష్క్రమించు(1);
   }
-  printf("wait for kill and reclaim %d\n", st.ino);
+  రాయి("wait for kill and reclaim %d\n", st.ino);
   // sit around until killed
-  for (;;)
+  కొరకు (;;)
     pause(1000);
 }

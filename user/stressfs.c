@@ -7,44 +7,44 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "user/user.h"
+#అన్తర్భావ "kernel/fs.h"
+#అన్తర్భావ "kernel/fcntl.h"
 
-int
-main(int argc, char *argv[])
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం *argv[])
 {
-  int fd, i;
-  char path[] = "stressfs0";
-  char data[512];
+  పూర్ణాంకం fd, i;
+  అక్షరం మార్గం[] = "stressfs0";
+  అక్షరం దత్తాంశం[512];
 
-  printf("stressfs starting\n");
-  memset(data, 'a', sizeof(data));
+  రాయి("stressfs starting\n");
+  memset(దత్తాంశం, 'a', పరిమాణం(దత్తాంశం));
 
-  for (i = 0; i < 4; i++)
-    if (fork() > 0)
-      break;
+  కొరకు (i = 0; i < 4; i++)
+    ఒకవేళ (fork() > 0)
+      ఆపు;
 
-  printf("write %d\n", i);
+  రాయి("write %d\n", i);
 
-  path[8] += i;
-  fd = open(path, O_CREATE | O_RDWR);
-  for (i = 0; i < 20; i++) {
+  మార్గం[8] += i;
+  fd = open(మార్గం, O_CREATE | O_RDWR);
+  కొరకు (i = 0; i < 20; i++) {
     // printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    లిఖ(fd, దత్తాంశం, పరిమాణం(దత్తాంశం));
   }
   close(fd);
 
-  printf("read\n");
+  రాయి("read\n");
 
-  fd = open(path, O_RDONLY);
-  for (i = 0; i < 20; i++)
-    read(fd, data, sizeof(data));
+  fd = open(మార్గం, O_RDONLY);
+  కొరకు (i = 0; i < 20; i++)
+    పఠ(fd, దత్తాంశం, పరిమాణం(దత్తాంశం));
   close(fd);
 
   wait(0);
 
-  exit(0);
+  నిష్క్రమించు(0);
 }

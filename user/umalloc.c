@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "user/user.h"
+#అన్తర్భావ "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+రకనిర్వచనం దీర్ఘ Align;
 
-union header {
-  struct {
-    union header *ptr;
-    uint size;
+సంఘం శీర్షిక {
+  నిర్మాణం {
+    సంఘం శీర్షిక *ptr;
+    uint కొలత;
   } s;
   Align x;
 };
 
-typedef union header Header;
+రకనిర్వచనం సంఘం శీర్షిక శీర్షిక_2;
 
-static Header base;
-static Header *freep;
+స్థిర శీర్షిక_2 పునాది;
+స్థిర శీర్షిక_2 *freep;
 
-void
-free(void *ap)
+శూన్య
+విడుదల(శూన్య *ap)
 {
-  Header *bp, *p;
+  శీర్షిక_2 *bp, *p;
 
-  bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
-    bp->s.size += p->s.ptr->s.size;
+  bp = (శీర్షిక_2 *)ap - 1;
+  కొరకు (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    ఒకవేళ (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      ఆపు;
+  ఒకవేళ (bp + bp->s.కొలత == p->s.ptr) {
+    bp->s.కొలత += p->s.ptr->s.కొలత;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } లేకపోతే
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
-    p->s.size += bp->s.size;
+  ఒకవేళ (p + p->s.కొలత == bp) {
+    p->s.కొలత += bp->s.కొలత;
     p->s.ptr = bp->s.ptr;
-  } else
+  } లేకపోతే
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+స్థిర శీర్షిక_2 *
 morecore(uint nu)
 {
-  char *p;
-  Header *hp;
+  అక్షరం *p;
+  శీర్షిక_2 *hp;
 
-  if (nu < 4096)
+  ఒకవేళ (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
-  hp = (Header *)p;
-  hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  p = sbrk(nu * పరిమాణం(శీర్షిక_2));
+  ఒకవేళ (p == SBRK_ERROR)
+    తిరిగి 0;
+  hp = (శీర్షిక_2 *)p;
+  hp->s.కొలత = nu;
+  విడుదల((శూన్య *)(hp + 1));
+  తిరిగి freep;
 }
 
-void *
-malloc(uint nbytes)
+శూన్య *
+జ్ఞాపకం_ఇవ్వు(uint nbytes)
 {
-  Header *p, *prevp;
+  శీర్షిక_2 *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
-    base.s.ptr = freep = prevp = &base;
-    base.s.size = 0;
+  nunits = (nbytes + పరిమాణం(శీర్షిక_2) - 1) / పరిమాణం(శీర్షిక_2) + 1;
+  ఒకవేళ ((prevp = freep) == 0) {
+    పునాది.s.ptr = freep = prevp = &పునాది;
+    పునాది.s.కొలత = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  కొరకు (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    ఒకవేళ (p->s.కొలత >= nunits) {
+      ఒకవేళ (p->s.కొలత == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
-        p->s.size -= nunits;
-        p += p->s.size;
-        p->s.size = nunits;
+      లేకపోతే {
+        p->s.కొలత -= nunits;
+        p += p->s.కొలత;
+        p->s.కొలత = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      తిరిగి (శూన్య *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    ఒకవేళ (p == freep)
+      ఒకవేళ ((p = morecore(nunits)) == 0)
+        తిరిగి 0;
   }
 }

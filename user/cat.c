@@ -1,43 +1,43 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "user/user.h"
 
-char buf[512];
+అక్షరం buf[512];
 
-void
-cat(int fd)
+శూన్య
+cat(పూర్ణాంకం fd)
 {
-  int n;
+  పూర్ణాంకం n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  అయితే ((n = పఠ(fd, buf, పరిమాణం(buf))) > 0) {
+    ఒకవేళ (లిఖ(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
-      exit(1);
+      నిష్క్రమించు(1);
     }
   }
-  if (n < 0) {
+  ఒకవేళ (n < 0) {
     fprintf(2, "cat: read error\n");
-    exit(1);
+    నిష్క్రమించు(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం *argv[])
 {
-  int fd, i;
+  పూర్ణాంకం fd, i;
 
-  if (argc <= 1) {
+  ఒకవేళ (argc <= 1) {
     cat(0);
-    exit(0);
+    నిష్క్రమించు(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  కొరకు (i = 1; i < argc; i++) {
+    ఒకవేళ ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
-      exit(1);
+      నిష్క్రమించు(1);
     }
     cat(fd);
     close(fd);
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }

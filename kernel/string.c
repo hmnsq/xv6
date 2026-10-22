@@ -1,106 +1,106 @@
-#include "types.h"
+#అన్తర్భావ "types.h"
 
-void *
-memset(void *dst, int c, uint n)
+శూన్య *
+memset(శూన్య *dst, పూర్ణాంకం c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  అక్షరం *cdst = (అక్షరం *)dst;
+  పూర్ణాంకం i;
+  కొరకు (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  తిరిగి dst;
 }
 
-int
-memcmp(const void *v1, const void *v2, uint n)
+పూర్ణాంకం
+memcmp(స్థిరరాశి శూన్య *v1, స్థిరరాశి శూన్య *v2, uint n)
 {
-  const uchar *s1, *s2;
+  స్థిరరాశి uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  అయితే (n-- > 0) {
+    ఒకవేళ (*s1 != *s2)
+      తిరిగి *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  తిరిగి 0;
 }
 
-void *
-memmove(void *dst, const void *src, uint n)
+శూన్య *
+memmove(శూన్య *dst, స్థిరరాశి శూన్య *src, uint n)
 {
-  const char *s;
-  char *d;
+  స్థిరరాశి అక్షరం *s;
+  అక్షరం *d;
 
-  if (n == 0)
-    return dst;
+  ఒకవేళ (n == 0)
+    తిరిగి dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  ఒకవేళ (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    అయితే (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } లేకపోతే
+    అయితే (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  తిరిగి dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
-void *
-memcpy(void *dst, const void *src, uint n)
+శూన్య *
+జ్ఞాపకం_నకలు(శూన్య *dst, స్థిరరాశి శూన్య *src, uint n)
 {
-  return memmove(dst, src, n);
+  తిరిగి memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+పూర్ణాంకం
+అక్షరశ్రేణి_పోలిక(స్థిరరాశి అక్షరం *p, స్థిరరాశి అక్షరం *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  అయితే (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  ఒకవేళ (n == 0)
+    తిరిగి 0;
+  తిరిగి (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+అక్షరం *
+strncpy(అక్షరం *s, స్థిరరాశి అక్షరం *t, పూర్ణాంకం n)
 {
-  char *os;
+  అక్షరం *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  అయితే (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  అయితే (n-- > 0)
     *s++ = 0;
-  return os;
+  తిరిగి os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+అక్షరం *
+safestrcpy(అక్షరం *s, స్థిరరాశి అక్షరం *t, పూర్ణాంకం n)
 {
-  char *os;
+  అక్షరం *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  ఒకవేళ (n <= 0)
+    తిరిగి os;
+  అయితే (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  తిరిగి os;
 }
 
-int
-strlen(const char *s)
+పూర్ణాంకం
+అక్షరశ్రేణి_పొడవు(స్థిరరాశి అక్షరం *s)
 {
-  int n;
+  పూర్ణాంకం n;
 
-  for (n = 0; s[n]; n++)
+  కొరకు (n = 0; s[n]; n++)
     ;
-  return n;
+  తిరిగి n;
 }

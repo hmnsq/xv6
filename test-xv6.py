@@ -8,217 +8,217 @@
 # ./test-xv6.py crash  (runs the crash tests)
 # ./test-xv6.py log (runs the log crash test)
 
-import argparse, os, inspect, re, signal, subprocess, sys, time
-from subprocess import run
+దిగుమతి argparse, os, inspect, re, signal, subprocess, sys, సమయం
+తః subprocess దిగుమతి నిరంతరం
 
-sys.stdout.reconfigure(line_buffering=True)
+sys.stdout.reconfigure(పంక్తి_buffering=నిజం)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('testrex', help="test name or regular expression")
-parser.add_argument("-q", action='store_true', help="usertests quick")
-args = parser.parse_args()
+parser = argparse.వాదం_Parser()
+parser.కూడు_వాదం('testrex', help="test name or regular expression")
+parser.కూడు_వాదం("-q", action='store_true', help="usertests quick")
+వాదనలు = parser.parse_వాదనలు()
 
-class QEMU(object):
+తరగతి QEMU(object):
 
-    def __init__(self, reset=False):
-        if reset:
+    నిర్వచనం __init__(self, reset=అబద్ధం):
+        ఒకవేళ reset:
             self.build_xv6()
             self.reset_fs()
         q = ["make", "qemu"]
         self.proc = subprocess.Popen(q, stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.STDOUT)
-        os.set_blocking(self.proc.stdout.fileno(), False)
+        os.సమితి_blocking(self.proc.stdout.fileno(), అబద్ధం)
         self.output = ""
         self.outbytes = bytearray()
         self.reported = 0
-        time.sleep(1)
+        సమయం.సుషుప్తి(1)
 
-    def reset_fs(self):
-        try:
-            run(["rm", "-f", "fs.img"], check=True)
-            run(["make", "fs.img"], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Command failed with exit code {e.returncode}")
+    నిర్వచనం reset_fs(self):
+        ప్రయత్నించు:
+            నిరంతరం(["rm", "-f", "fs.img"], check=నిజం)
+            నిరంతరం(["make", "fs.img"], check=నిజం)
+        మినహాయింపు subprocess.CalledProcessError ఇవ e:
+            ముద్రించు(f"Command failed with exit code {e.returncode}")
 
-    def build_xv6(self):
-        try:
-            run(["make", "kernel/kernel"], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Command failed with exit code {e.returncode}")
+    నిర్వచనం build_xv6(self):
+        ప్రయత్నించు:
+            నిరంతరం(["make", "kernel/kernel"], check=నిజం)
+        మినహాయింపు subprocess.CalledProcessError ఇవ e:
+            ముద్రించు(f"Command failed with exit code {e.returncode}")
 
-    def save_output(self):
-      try:
-        with open("test-xv6.out", "w") as f:
-            f.write(self.output)
+    నిర్వచనం save_output(self):
+      ప్రయత్నించు:
+        తోడుగా open("test-xv6.out", "w") ఇవ f:
+            f.లిఖ(self.output)
             f.close()
-      except OSError as e:
-        print("Provided a bad results path. Error:", e)     
+      మినహాయింపు OSError ఇవ e:
+        ముద్రించు("Provided a bad results path. Error:", e)     
         
-    def cmd(self, c):
-        if isinstance(c, str):
+    నిర్వచనం cmd(self, c):
+        ఒకవేళ isinstance(c, str):
             c = c.encode('utf-8')
-        self.proc.stdin.write(c)
+        self.proc.stdin.లిఖ(c)
         self.proc.stdin.flush()
         
-    def crash(self):
-        ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
-        if len(kids) == 0:
-            print("no qemu")
+    నిర్వచనం crash(self):
+        ps = నిరంతరం(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
+        kids = [పూర్ణాంకం(పంక్తి) కొరకు పంక్తి లో ps.stdout.splitlines()]
+        ఒకవేళ పొడవు(kids) == 0:
+            ముద్రించు("no qemu")
             sys.exit(1)
-        print("kill", kids[0])
+        ముద్రించు("kill", kids[0])
         os.kill(kids[0], signal.SIGKILL)
 
-    def stop(self):
+    నిర్వచనం stop(self):
         self.proc.terminate()
 
-    def read(self):
-        while True:
-            try:
-                buf = os.read(self.proc.stdout.fileno(), 4096)
-            except BlockingIOError:
-                break
-            if len(buf) == 0:  # qemu exited
-                break
+    నిర్వచనం పఠ(self):
+        అయితే నిజం:
+            ప్రయత్నించు:
+                buf = os.పఠ(self.proc.stdout.fileno(), 4096)
+            మినహాయింపు BlockingIOError:
+                ఆపు
+            ఒకవేళ పొడవు(buf) == 0:  # qemu exited
+                ఆపు
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
-    def lines(self):
-        return self.output.splitlines()
+    నిర్వచనం పంక్తులు(self):
+        తిరిగి self.output.splitlines()
 
-    def error(self, *regexps):
-        print("FAIL: match failed", regexps)
+    నిర్వచనం error(self, *regexps):
+        ముద్రించు("FAIL: match failed", regexps)
         self.save_output()
         self.stop()
         sys.exit(1)
 
-    def match(self, *regexps, exit=True):
-        found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
-                print(line)
-                found = True
-        if not found and exit:
+    నిర్వచనం సరిపోలిక(self, *regexps, exit=నిజం):
+        దొరికింది = అబద్ధం
+        కొరకు పంక్తి లో self.పంక్తులు():
+            ఒకవేళ any(re.సరిపోలిక(r, పంక్తి) కొరకు r లో regexps):
+                ముద్రించు(పంక్తి)
+                దొరికింది = నిజం
+        ఒకవేళ కాదు దొరికింది మరియు exit:
             self.error(*regexps)
-        return found
+        తిరిగి దొరికింది
 
     # Print the lines matching regexp that have arrived since the last
     # call.  A trailing partial line is left for the next call, so that
     # each line is printed once, after all of it has been read.
-    def progress(self, regexp):
-        end = self.output.rfind("\n") + 1
-        if end <= self.reported:
-            return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
-                print(line)
-        self.reported = end
+    నిర్వచనం పురోగతి(self, regexp):
+        చివర = self.output.rfind("\n") + 1
+        ఒకవేళ చివర <= self.reported:
+            తిరిగి
+        కొరకు పంక్తి లో self.output[self.reported:చివర].splitlines():
+            ఒకవేళ re.సరిపోలిక(regexp, పంక్తి):
+                ముద్రించు(పంక్తి)
+        self.reported = చివర
 
-    def monitor(self, *regexps, progress="", timeout):
-        deadline = time.time() + timeout
-        while True:
-            time.sleep(1)
-            timeleft = deadline - time.time()
-            if timeleft < 0:
+    నిర్వచనం monitor(self, *regexps, పురోగతి="", timeout):
+        deadline = సమయం.సమయం() + timeout
+        అయితే నిజం:
+            సమయం.సుషుప్తి(1)
+            timeleft = deadline - సమయం.సమయం()
+            ఒకవేళ timeleft < 0:
                 self.error(*regexps)
-            self.read()
-            if progress:
-                self.progress(progress)
-            if self.match(*regexps, exit=False):
-                return
+            self.పఠ()
+            ఒకవేళ పురోగతి:
+                self.పురోగతి(పురోగతి)
+            ఒకవేళ self.సరిపోలిక(*regexps, exit=అబద్ధం):
+                తిరిగి
 
-def crash_log():
-    q = QEMU(True)
+నిర్వచనం crash_log():
+    q = QEMU(నిజం)
     q.cmd("logstress f0 f1 f2 f3 f4 f5\n")
-    time.sleep(2)
+    సమయం.సుషుప్తి(2)
     q.crash()
     q.stop()
 
-def recover_log():
+నిర్వచనం recover_log():
     q = QEMU()
-    time.sleep(2)
-    q.read()
-    ok = q.match('^recovering', exit=False)
-    if ok:
+    సమయం.సుషుప్తి(2)
+    q.పఠ()
+    ok = q.సరిపోలిక('^recovering', exit=అబద్ధం)
+    ఒకవేళ ok:
         q.cmd("ls\n")
         q.monitor('f5', timeout=30)
     q.stop()
-    return ok
+    తిరిగి ok
 
-def forphan():
-    q = QEMU(True)
+నిర్వచనం forphan():
+    q = QEMU(నిజం)
     q.cmd("forphan\n")
     q.monitor('wait', timeout=30)
     q.crash()
     q.stop()
 
-def dorphan():
-    q = QEMU(True)
+నిర్వచనం dorphan():
+    q = QEMU(నిజం)
     q.cmd("dorphan\n")
     q.monitor('wait', timeout=30)
     q.crash()
     q.stop()
 
-def recover_orphan():
+నిర్వచనం recover_orphan():
     q = QEMU()
     q.monitor('^ireclaim', timeout=30)
     q.stop()
 
-def test_log():
-    print("Test recovery of log")
-    for i in range(20):
+నిర్వచనం test_log():
+    ముద్రించు("Test recovery of log")
+    కొరకు i లో శ్రేణి(20):
         crash_log()
         ok = recover_log()
-        if ok:
-            print("OK")
-            return
-        print("log attempt ", i+1)
-    print("FAIL")
+        ఒకవేళ ok:
+            ముద్రించు("OK")
+            తిరిగి
+        ముద్రించు("log attempt ", i+1)
+    ముద్రించు("FAIL")
     sys.exit(1)
     
-def test_forphan():
-    print("Test recovery of an orphaned file")
+నిర్వచనం test_forphan():
+    ముద్రించు("Test recovery of an orphaned file")
     forphan()
     recover_orphan()
-    print("OK")
+    ముద్రించు("OK")
 
-def test_dorphan():
-    print("Test recovery of an orphaned file")
+నిర్వచనం test_dorphan():
+    ముద్రించు("Test recovery of an orphaned file")
     dorphan()
     recover_orphan()
-    print("OK")
+    ముద్రించు("OK")
 
-def test_crash():
+నిర్వచనం test_crash():
     test_log()
     test_forphan()
     test_dorphan()
 
-def test_usertests(test=""):
+నిర్వచనం test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    ఒకవేళ వాదనలు.q:
         opt = " -q"
         timeout = 300
-    elif test != "":
+    లేదావేళ test != "":
         opt += " " + test
-    q = QEMU(True)
+    q = QEMU(నిజం)
     q.cmd("usertests" + opt + "\n")
-    q.monitor('^ALL TESTS PASSED', progress='test', timeout=timeout)
+    q.monitor('^ALL TESTS PASSED', పురోగతి='test', timeout=timeout)
     q.stop()
 
-def main():
-    print(args)
-    rex = r'%s' % args.testrex
-    funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
-                     if (inspect.isfunction(obj) and 
+నిర్వచనం ప్రధాన():
+    ముద్రించు(వాదనలు)
+    rex = r'%s' % వాదనలు.testrex
+    funcs = [(obj,name) కొరకు name,obj లో inspect.getmembers(sys.modules[__name__]) 
+                     ఒకవేళ (inspect.isfunction(obj) మరియు 
                          name.startswith('test'))]
-    none = True
-    for (f,n) in funcs:
-        if re.search(rex, n):
-            none = False
+    none = నిజం
+    కొరకు (f,n) లో funcs:
+        ఒకవేళ re.శోధన(rex, n):
+            none = అబద్ధం
             f()
-    if none:
-        test_usertests(test=args.testrex)
+    ఒకవేళ none:
+        test_usertests(test=వాదనలు.testrex)
 
-main()
+ప్రధాన()

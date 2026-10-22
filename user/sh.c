@@ -1,499 +1,499 @@
 // Shell.
 
-#include "kernel/types.h"
-#include "user/user.h"
-#include "kernel/fcntl.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "user/user.h"
+#అన్తర్భావ "kernel/fcntl.h"
 
 // Parsed command representation
-#define EXEC  1
-#define REDIR 2
-#define PIPE  3
-#define LIST  4
-#define BACK  5
+#నిర్వచించు EXEC  1
+#నిర్వచించు REDIR 2
+#నిర్వచించు PIPE  3
+#నిర్వచించు LIST  4
+#నిర్వచించు వెనుక  5
 
-#define MAXARGS 10
+#నిర్వచించు MAXARGS 10
 
-struct cmd {
-  int type;
+నిర్మాణం cmd {
+  పూర్ణాంకం type;
 };
 
-struct execcmd {
-  int type;
-  char *argv[MAXARGS];
-  char *eargv[MAXARGS];
+నిర్మాణం execcmd {
+  పూర్ణాంకం type;
+  అక్షరం *argv[MAXARGS];
+  అక్షరం *eargv[MAXARGS];
 };
 
-struct redircmd {
-  int type;
-  struct cmd *cmd;
-  char *file;
-  char *efile;
-  int mode;
-  int fd;
+నిర్మాణం redircmd {
+  పూర్ణాంకం type;
+  నిర్మాణం cmd *cmd;
+  అక్షరం *file;
+  అక్షరం *efile;
+  పూర్ణాంకం బహుళకం;
+  పూర్ణాంకం fd;
 };
 
-struct pipecmd {
-  int type;
-  struct cmd *left;
-  struct cmd *right;
+నిర్మాణం pipecmd {
+  పూర్ణాంకం type;
+  నిర్మాణం cmd *ఎడమ;
+  నిర్మాణం cmd *కుడి;
 };
 
-struct listcmd {
-  int type;
-  struct cmd *left;
-  struct cmd *right;
+నిర్మాణం listcmd {
+  పూర్ణాంకం type;
+  నిర్మాణం cmd *ఎడమ;
+  నిర్మాణం cmd *కుడి;
 };
 
-struct backcmd {
-  int type;
-  struct cmd *cmd;
+నిర్మాణం backcmd {
+  పూర్ణాంకం type;
+  నిర్మాణం cmd *cmd;
 };
 
-int fork1(void); // Fork but panics on failure.
-void panic(char *);
-struct cmd *parsecmd(char *);
-void runcmd(struct cmd *) __attribute__((noreturn));
+పూర్ణాంకం fork1(శూన్య); // Fork but panics on failure.
+శూన్య panic(అక్షరం *);
+నిర్మాణం cmd *parsecmd(అక్షరం *);
+శూన్య runcmd(నిర్మాణం cmd *) __attribute__((noreturn));
 
 // Execute cmd.  Never returns.
-void
-runcmd(struct cmd *cmd)
+శూన్య
+runcmd(నిర్మాణం cmd *cmd)
 {
-  int p[2];
-  struct backcmd *bcmd;
-  struct execcmd *ecmd;
-  struct listcmd *lcmd;
-  struct pipecmd *pcmd;
-  struct redircmd *rcmd;
+  పూర్ణాంకం p[2];
+  నిర్మాణం backcmd *bcmd;
+  నిర్మాణం execcmd *ecmd;
+  నిర్మాణం listcmd *lcmd;
+  నిర్మాణం pipecmd *pcmd;
+  నిర్మాణం redircmd *rcmd;
 
-  if (cmd == 0)
-    exit(1);
+  ఒకవేళ (cmd == 0)
+    నిష్క్రమించు(1);
 
-  switch (cmd->type) {
-  default:
+  ఎంపిక (cmd->type) {
+  అప్రమేయ:
     panic("runcmd");
 
-  case EXEC:
-    ecmd = (struct execcmd *)cmd;
-    if (ecmd->argv[0] == 0)
-      exit(1);
+  స్థితి EXEC:
+    ecmd = (నిర్మాణం execcmd *)cmd;
+    ఒకవేళ (ecmd->argv[0] == 0)
+      నిష్క్రమించు(1);
     exec(ecmd->argv[0], ecmd->argv);
     fprintf(2, "exec %s failed\n", ecmd->argv[0]);
-    break;
+    ఆపు;
 
-  case REDIR:
-    rcmd = (struct redircmd *)cmd;
+  స్థితి REDIR:
+    rcmd = (నిర్మాణం redircmd *)cmd;
     close(rcmd->fd);
-    if (open(rcmd->file, rcmd->mode) < 0) {
+    ఒకవేళ (open(rcmd->file, rcmd->బహుళకం) < 0) {
       fprintf(2, "open %s failed\n", rcmd->file);
-      exit(1);
+      నిష్క్రమించు(1);
     }
     runcmd(rcmd->cmd);
-    break;
+    ఆపు;
 
-  case LIST:
-    lcmd = (struct listcmd *)cmd;
-    if (fork1() == 0)
-      runcmd(lcmd->left);
+  స్థితి LIST:
+    lcmd = (నిర్మాణం listcmd *)cmd;
+    ఒకవేళ (fork1() == 0)
+      runcmd(lcmd->ఎడమ);
     wait(0);
-    runcmd(lcmd->right);
-    break;
+    runcmd(lcmd->కుడి);
+    ఆపు;
 
-  case PIPE:
-    pcmd = (struct pipecmd *)cmd;
-    if (pipe(p) < 0)
+  స్థితి PIPE:
+    pcmd = (నిర్మాణం pipecmd *)cmd;
+    ఒకవేళ (pipe(p) < 0)
       panic("pipe");
-    if (fork1() == 0) {
+    ఒకవేళ (fork1() == 0) {
       close(1);
       dup(p[1]);
       close(p[0]);
       close(p[1]);
-      runcmd(pcmd->left);
+      runcmd(pcmd->ఎడమ);
     }
-    if (fork1() == 0) {
+    ఒకవేళ (fork1() == 0) {
       close(0);
       dup(p[0]);
       close(p[0]);
       close(p[1]);
-      runcmd(pcmd->right);
+      runcmd(pcmd->కుడి);
     }
     close(p[0]);
     close(p[1]);
     wait(0);
     wait(0);
-    break;
+    ఆపు;
 
-  case BACK:
-    bcmd = (struct backcmd *)cmd;
-    if (fork1() == 0)
+  స్థితి వెనుక:
+    bcmd = (నిర్మాణం backcmd *)cmd;
+    ఒకవేళ (fork1() == 0)
       runcmd(bcmd->cmd);
-    break;
+    ఆపు;
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
-int
-getcmd(char *buf, int nbuf)
+పూర్ణాంకం
+getcmd(అక్షరం *buf, పూర్ణాంకం nbuf)
 {
-  write(2, "$ ", 2);
+  లిఖ(2, "$ ", 2);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
-  if (buf[0] == 0) // EOF
-    return -1;
-  return 0;
+  ఒకవేళ (buf[0] == 0) // EOF
+    తిరిగి -1;
+  తిరిగి 0;
 }
 
-int
-main(void)
+పూర్ణాంకం
+ప్రధాన(శూన్య)
 {
-  static char buf[100];
-  int fd;
+  స్థిర అక్షరం buf[100];
+  పూర్ణాంకం fd;
 
   // Ensure that three file descriptors are open.
-  while ((fd = open("console", O_RDWR)) >= 0) {
-    if (fd >= 3) {
+  అయితే ((fd = open("console", O_RDWR)) >= 0) {
+    ఒకవేళ (fd >= 3) {
       close(fd);
-      break;
+      ఆపు;
     }
   }
 
   // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) >= 0) {
-    char *cmd = buf;
-    while (*cmd == ' ' || *cmd == '\t')
+  అయితే (getcmd(buf, పరిమాణం(buf)) >= 0) {
+    అక్షరం *cmd = buf;
+    అయితే (*cmd == ' ' || *cmd == '\t')
       cmd++;
-    if (*cmd == '\n') // is a blank command
-      continue;
-    if (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
+    ఒకవేళ (*cmd == '\n') // is a blank command
+      కొనసాగు;
+    ఒకవేళ (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
       // Chdir must be called by the parent, not the child.
-      cmd[strlen(cmd) - 1] = 0; // chop \n
-      if (chdir(cmd + 3) < 0)
+      cmd[అక్షరశ్రేణి_పొడవు(cmd) - 1] = 0; // chop \n
+      ఒకవేళ (chdir(cmd + 3) < 0)
         fprintf(2, "cannot cd %s\n", cmd + 3);
-    } else {
-      if (fork1() == 0)
+    } లేకపోతే {
+      ఒకవేళ (fork1() == 0)
         runcmd(parsecmd(cmd));
       wait(0);
     }
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
 
-void
-panic(char *s)
+శూన్య
+panic(అక్షరం *s)
 {
   fprintf(2, "%s\n", s);
-  exit(1);
+  నిష్క్రమించు(1);
 }
 
-int
-fork1(void)
+పూర్ణాంకం
+fork1(శూన్య)
 {
-  int pid;
+  పూర్ణాంకం pid;
 
   pid = fork();
-  if (pid == -1)
+  ఒకవేళ (pid == -1)
     panic("fork");
-  return pid;
+  తిరిగి pid;
 }
 
 //PAGEBREAK!
 // Constructors
 
-struct cmd *
-execcmd(void)
+నిర్మాణం cmd *
+execcmd(శూన్య)
 {
-  struct execcmd *cmd;
+  నిర్మాణం execcmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = జ్ఞాపకం_ఇవ్వు(పరిమాణం(*cmd));
+  memset(cmd, 0, పరిమాణం(*cmd));
   cmd->type = EXEC;
-  return (struct cmd *)cmd;
+  తిరిగి (నిర్మాణం cmd *)cmd;
 }
 
-struct cmd *
-redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
+నిర్మాణం cmd *
+redircmd(నిర్మాణం cmd *subcmd, అక్షరం *file, అక్షరం *efile, పూర్ణాంకం బహుళకం, పూర్ణాంకం fd)
 {
-  struct redircmd *cmd;
+  నిర్మాణం redircmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = జ్ఞాపకం_ఇవ్వు(పరిమాణం(*cmd));
+  memset(cmd, 0, పరిమాణం(*cmd));
   cmd->type = REDIR;
   cmd->cmd = subcmd;
   cmd->file = file;
   cmd->efile = efile;
-  cmd->mode = mode;
+  cmd->బహుళకం = బహుళకం;
   cmd->fd = fd;
-  return (struct cmd *)cmd;
+  తిరిగి (నిర్మాణం cmd *)cmd;
 }
 
-struct cmd *
-pipecmd(struct cmd *left, struct cmd *right)
+నిర్మాణం cmd *
+pipecmd(నిర్మాణం cmd *ఎడమ, నిర్మాణం cmd *కుడి)
 {
-  struct pipecmd *cmd;
+  నిర్మాణం pipecmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = జ్ఞాపకం_ఇవ్వు(పరిమాణం(*cmd));
+  memset(cmd, 0, పరిమాణం(*cmd));
   cmd->type = PIPE;
-  cmd->left = left;
-  cmd->right = right;
-  return (struct cmd *)cmd;
+  cmd->ఎడమ = ఎడమ;
+  cmd->కుడి = కుడి;
+  తిరిగి (నిర్మాణం cmd *)cmd;
 }
 
-struct cmd *
-listcmd(struct cmd *left, struct cmd *right)
+నిర్మాణం cmd *
+listcmd(నిర్మాణం cmd *ఎడమ, నిర్మాణం cmd *కుడి)
 {
-  struct listcmd *cmd;
+  నిర్మాణం listcmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
+  cmd = జ్ఞాపకం_ఇవ్వు(పరిమాణం(*cmd));
+  memset(cmd, 0, పరిమాణం(*cmd));
   cmd->type = LIST;
-  cmd->left = left;
-  cmd->right = right;
-  return (struct cmd *)cmd;
+  cmd->ఎడమ = ఎడమ;
+  cmd->కుడి = కుడి;
+  తిరిగి (నిర్మాణం cmd *)cmd;
 }
 
-struct cmd *
-backcmd(struct cmd *subcmd)
+నిర్మాణం cmd *
+backcmd(నిర్మాణం cmd *subcmd)
 {
-  struct backcmd *cmd;
+  నిర్మాణం backcmd *cmd;
 
-  cmd = malloc(sizeof(*cmd));
-  memset(cmd, 0, sizeof(*cmd));
-  cmd->type = BACK;
+  cmd = జ్ఞాపకం_ఇవ్వు(పరిమాణం(*cmd));
+  memset(cmd, 0, పరిమాణం(*cmd));
+  cmd->type = వెనుక;
   cmd->cmd = subcmd;
-  return (struct cmd *)cmd;
+  తిరిగి (నిర్మాణం cmd *)cmd;
 }
 //PAGEBREAK!
 // Parsing
 
-char whitespace[] = " \t\r\n\v";
-char symbols[] = "<|>&;()";
+అక్షరం whitespace[] = " \t\r\n\v";
+అక్షరం symbols[] = "<|>&;()";
 
-int
-gettoken(char **ps, char *es, char **q, char **eq)
+పూర్ణాంకం
+gettoken(అక్షరం **ps, అక్షరం *es, అక్షరం **q, అక్షరం **eq)
 {
-  char *s;
-  int ret;
+  అక్షరం *s;
+  పూర్ణాంకం ret;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  అయితే (s < es && strchr(whitespace, *s))
     s++;
-  if (q)
+  ఒకవేళ (q)
     *q = s;
   ret = *s;
-  switch (*s) {
-  case 0:
-    break;
-  case '|':
-  case '(':
-  case ')':
-  case ';':
-  case '&':
-  case '<':
+  ఎంపిక (*s) {
+  స్థితి 0:
+    ఆపు;
+  స్థితి '|':
+  స్థితి '(':
+  స్థితి ')':
+  స్థితి ';':
+  స్థితి '&':
+  స్థితి '<':
     s++;
-    break;
-  case '>':
+    ఆపు;
+  స్థితి '>':
     s++;
-    if (*s == '>') {
+    ఒకవేళ (*s == '>') {
       ret = '+';
       s++;
     }
-    break;
-  default:
+    ఆపు;
+  అప్రమేయ:
     ret = 'a';
-    while (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
+    అయితే (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
       s++;
-    break;
+    ఆపు;
   }
-  if (eq)
+  ఒకవేళ (eq)
     *eq = s;
 
-  while (s < es && strchr(whitespace, *s))
+  అయితే (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return ret;
+  తిరిగి ret;
 }
 
-int
-peek(char **ps, char *es, char *toks)
+పూర్ణాంకం
+peek(అక్షరం **ps, అక్షరం *es, అక్షరం *toks)
 {
-  char *s;
+  అక్షరం *s;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  అయితే (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return *s && strchr(toks, *s);
+  తిరిగి *s && strchr(toks, *s);
 }
 
-struct cmd *parseline(char **, char *);
-struct cmd *parsepipe(char **, char *);
-struct cmd *parseexec(char **, char *);
-struct cmd *nulterminate(struct cmd *);
+నిర్మాణం cmd *parseline(అక్షరం **, అక్షరం *);
+నిర్మాణం cmd *parsepipe(అక్షరం **, అక్షరం *);
+నిర్మాణం cmd *parseexec(అక్షరం **, అక్షరం *);
+నిర్మాణం cmd *nulterminate(నిర్మాణం cmd *);
 
-struct cmd *
-parsecmd(char *s)
+నిర్మాణం cmd *
+parsecmd(అక్షరం *s)
 {
-  char *es;
-  struct cmd *cmd;
+  అక్షరం *es;
+  నిర్మాణం cmd *cmd;
 
-  es = s + strlen(s);
+  es = s + అక్షరశ్రేణి_పొడవు(s);
   cmd = parseline(&s, es);
   peek(&s, es, "");
-  if (s != es) {
+  ఒకవేళ (s != es) {
     fprintf(2, "leftovers: %s\n", s);
     panic("syntax");
   }
   nulterminate(cmd);
-  return cmd;
+  తిరిగి cmd;
 }
 
-struct cmd *
-parseline(char **ps, char *es)
+నిర్మాణం cmd *
+parseline(అక్షరం **ps, అక్షరం *es)
 {
-  struct cmd *cmd;
+  నిర్మాణం cmd *cmd;
 
   cmd = parsepipe(ps, es);
-  while (peek(ps, es, "&")) {
+  అయితే (peek(ps, es, "&")) {
     gettoken(ps, es, 0, 0);
     cmd = backcmd(cmd);
   }
-  if (peek(ps, es, ";")) {
+  ఒకవేళ (peek(ps, es, ";")) {
     gettoken(ps, es, 0, 0);
     cmd = listcmd(cmd, parseline(ps, es));
   }
-  return cmd;
+  తిరిగి cmd;
 }
 
-struct cmd *
-parsepipe(char **ps, char *es)
+నిర్మాణం cmd *
+parsepipe(అక్షరం **ps, అక్షరం *es)
 {
-  struct cmd *cmd;
+  నిర్మాణం cmd *cmd;
 
   cmd = parseexec(ps, es);
-  if (peek(ps, es, "|")) {
+  ఒకవేళ (peek(ps, es, "|")) {
     gettoken(ps, es, 0, 0);
     cmd = pipecmd(cmd, parsepipe(ps, es));
   }
-  return cmd;
+  తిరిగి cmd;
 }
 
-struct cmd *
-parseredirs(struct cmd *cmd, char **ps, char *es)
+నిర్మాణం cmd *
+parseredirs(నిర్మాణం cmd *cmd, అక్షరం **ps, అక్షరం *es)
 {
-  int tok;
-  char *q, *eq;
+  పూర్ణాంకం tok;
+  అక్షరం *q, *eq;
 
-  while (peek(ps, es, "<>")) {
+  అయితే (peek(ps, es, "<>")) {
     tok = gettoken(ps, es, 0, 0);
-    if (gettoken(ps, es, &q, &eq) != 'a')
+    ఒకవేళ (gettoken(ps, es, &q, &eq) != 'a')
       panic("missing file for redirection");
-    switch (tok) {
-    case '<':
+    ఎంపిక (tok) {
+    స్థితి '<':
       cmd = redircmd(cmd, q, eq, O_RDONLY, 0);
-      break;
-    case '>':
+      ఆపు;
+    స్థితి '>':
       cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREATE | O_TRUNC, 1);
-      break;
-    case '+': // >>
+      ఆపు;
+    స్థితి '+': // >>
       cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREATE, 1);
-      break;
+      ఆపు;
     }
   }
-  return cmd;
+  తిరిగి cmd;
 }
 
-struct cmd *
-parseblock(char **ps, char *es)
+నిర్మాణం cmd *
+parseblock(అక్షరం **ps, అక్షరం *es)
 {
-  struct cmd *cmd;
+  నిర్మాణం cmd *cmd;
 
-  if (!peek(ps, es, "("))
+  ఒకవేళ (!peek(ps, es, "("))
     panic("parseblock");
   gettoken(ps, es, 0, 0);
   cmd = parseline(ps, es);
-  if (!peek(ps, es, ")"))
+  ఒకవేళ (!peek(ps, es, ")"))
     panic("syntax - missing )");
   gettoken(ps, es, 0, 0);
   cmd = parseredirs(cmd, ps, es);
-  return cmd;
+  తిరిగి cmd;
 }
 
-struct cmd *
-parseexec(char **ps, char *es)
+నిర్మాణం cmd *
+parseexec(అక్షరం **ps, అక్షరం *es)
 {
-  char *q, *eq;
-  int tok, argc;
-  struct execcmd *cmd;
-  struct cmd *ret;
+  అక్షరం *q, *eq;
+  పూర్ణాంకం tok, argc;
+  నిర్మాణం execcmd *cmd;
+  నిర్మాణం cmd *ret;
 
-  if (peek(ps, es, "("))
-    return parseblock(ps, es);
+  ఒకవేళ (peek(ps, es, "("))
+    తిరిగి parseblock(ps, es);
 
   ret = execcmd();
-  cmd = (struct execcmd *)ret;
+  cmd = (నిర్మాణం execcmd *)ret;
 
   argc = 0;
   ret = parseredirs(ret, ps, es);
-  while (!peek(ps, es, "|)&;")) {
-    if ((tok = gettoken(ps, es, &q, &eq)) == 0)
-      break;
-    if (tok != 'a')
+  అయితే (!peek(ps, es, "|)&;")) {
+    ఒకవేళ ((tok = gettoken(ps, es, &q, &eq)) == 0)
+      ఆపు;
+    ఒకవేళ (tok != 'a')
       panic("syntax");
     cmd->argv[argc] = q;
     cmd->eargv[argc] = eq;
     argc++;
-    if (argc >= MAXARGS)
+    ఒకవేళ (argc >= MAXARGS)
       panic("too many args");
     ret = parseredirs(ret, ps, es);
   }
   cmd->argv[argc] = 0;
   cmd->eargv[argc] = 0;
-  return ret;
+  తిరిగి ret;
 }
 
 // NUL-terminate all the counted strings.
-struct cmd *
-nulterminate(struct cmd *cmd)
+నిర్మాణం cmd *
+nulterminate(నిర్మాణం cmd *cmd)
 {
-  int i;
-  struct backcmd *bcmd;
-  struct execcmd *ecmd;
-  struct listcmd *lcmd;
-  struct pipecmd *pcmd;
-  struct redircmd *rcmd;
+  పూర్ణాంకం i;
+  నిర్మాణం backcmd *bcmd;
+  నిర్మాణం execcmd *ecmd;
+  నిర్మాణం listcmd *lcmd;
+  నిర్మాణం pipecmd *pcmd;
+  నిర్మాణం redircmd *rcmd;
 
-  if (cmd == 0)
-    return 0;
+  ఒకవేళ (cmd == 0)
+    తిరిగి 0;
 
-  switch (cmd->type) {
-  case EXEC:
-    ecmd = (struct execcmd *)cmd;
-    for (i = 0; ecmd->argv[i]; i++)
+  ఎంపిక (cmd->type) {
+  స్థితి EXEC:
+    ecmd = (నిర్మాణం execcmd *)cmd;
+    కొరకు (i = 0; ecmd->argv[i]; i++)
       *ecmd->eargv[i] = 0;
-    break;
+    ఆపు;
 
-  case REDIR:
-    rcmd = (struct redircmd *)cmd;
+  స్థితి REDIR:
+    rcmd = (నిర్మాణం redircmd *)cmd;
     nulterminate(rcmd->cmd);
     *rcmd->efile = 0;
-    break;
+    ఆపు;
 
-  case PIPE:
-    pcmd = (struct pipecmd *)cmd;
-    nulterminate(pcmd->left);
-    nulterminate(pcmd->right);
-    break;
+  స్థితి PIPE:
+    pcmd = (నిర్మాణం pipecmd *)cmd;
+    nulterminate(pcmd->ఎడమ);
+    nulterminate(pcmd->కుడి);
+    ఆపు;
 
-  case LIST:
-    lcmd = (struct listcmd *)cmd;
-    nulterminate(lcmd->left);
-    nulterminate(lcmd->right);
-    break;
+  స్థితి LIST:
+    lcmd = (నిర్మాణం listcmd *)cmd;
+    nulterminate(lcmd->ఎడమ);
+    nulterminate(lcmd->కుడి);
+    ఆపు;
 
-  case BACK:
-    bcmd = (struct backcmd *)cmd;
+  స్థితి వెనుక:
+    bcmd = (నిర్మాణం backcmd *)cmd;
     nulterminate(bcmd->cmd);
-    break;
+    ఆపు;
   }
-  return cmd;
+  తిరిగి cmd;
 }

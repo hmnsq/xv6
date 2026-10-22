@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+రకనిర్వచనం గుర్తులేని పూర్ణాంకం uint;
+రకనిర్వచనం గుర్తులేని పొట్టి ushort;
+రకనిర్వచనం గుర్తులేని అక్షరం uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+రకనిర్వచనం గుర్తులేని అక్షరం uint8;
+రకనిర్వచనం గుర్తులేని పొట్టి uint16;
+రకనిర్వచనం గుర్తులేని పూర్ణాంకం uint32;
+రకనిర్వచనం గుర్తులేని దీర్ఘ uint64;
 
-typedef uint64 pde_t;
+రకనిర్వచనం uint64 pde_t;

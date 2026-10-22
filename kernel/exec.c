@@ -1,83 +1,83 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
-#include "elf.h"
+#అన్తర్భావ "types.h"
+#అన్తర్భావ "param.h"
+#అన్తర్భావ "memlayout.h"
+#అన్తర్భావ "riscv.h"
+#అన్తర్భావ "spinlock.h"
+#అన్తర్భావ "proc.h"
+#అన్తర్భావ "defs.h"
+#అన్తర్భావ "elf.h"
 
-static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
+స్థిర పూర్ణాంకం loadseg(pde_t *, uint64, నిర్మాణం inode *, uint, uint);
 
 // map ELF permissions to PTE permission bits.
-int
-flags2perm(int flags)
+పూర్ణాంకం
+flags2perm(పూర్ణాంకం flags)
 {
-  int perm = 0;
-  if (flags & 0x1)
+  పూర్ణాంకం perm = 0;
+  ఒకవేళ (flags & 0x1)
     perm = PTE_X;
-  if (flags & 0x2)
+  ఒకవేళ (flags & 0x2)
     perm |= PTE_W;
-  return perm;
+  తిరిగి perm;
 }
 
 //
 // the implementation of the exec() system call
 //
-int
-kexec(char *path, char **argv)
+పూర్ణాంకం
+kexec(అక్షరం *మార్గం, అక్షరం **argv)
 {
-  char *s, *last;
-  int i, off;
+  అక్షరం *s, *చివరి;
+  పూర్ణాంకం i, off;
   uint64 argc, sz = 0, sp, ustack[MAXARG], stackbase;
-  struct elfhdr elf;
-  struct inode *ip;
-  struct proghdr ph;
+  నిర్మాణం elfhdr elf;
+  నిర్మాణం inode *ip;
+  నిర్మాణం proghdr ph;
   pagetable_t pagetable = 0, oldpagetable;
-  struct proc *p = myproc();
+  నిర్మాణం proc *p = myproc();
 
   begin_op();
 
   // Open the executable file.
-  if ((ip = namei(path)) == 0) {
-    end_op();
-    return -1;
+  ఒకవేళ ((ip = namei(మార్గం)) == 0) {
+    చివర_op();
+    తిరిగి -1;
   }
   ilock(ip);
 
   // Read the ELF header.
-  if (readi(ip, 0, (uint64)&elf, 0, sizeof(elf)) != sizeof(elf))
-    goto bad;
+  ఒకవేళ (readi(ip, 0, (uint64)&elf, 0, పరిమాణం(elf)) != పరిమాణం(elf))
+    వెళ్ళు bad;
 
   // Is this really an ELF file?
-  if (elf.magic != ELF_MAGIC)
-    goto bad;
+  ఒకవేళ (elf.magic != ELF_MAGIC)
+    వెళ్ళు bad;
 
-  if ((pagetable = proc_pagetable(p)) == 0)
-    goto bad;
+  ఒకవేళ ((pagetable = proc_pagetable(p)) == 0)
+    వెళ్ళు bad;
 
   // Load program into memory.
-  for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
-    if (readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
-      goto bad;
-    if (ph.type != ELF_PROG_LOAD)
-      continue;
-    if (ph.memsz < ph.filesz)
-      goto bad;
-    if (ph.vaddr + ph.memsz < ph.vaddr)
-      goto bad;
-    if (ph.vaddr % PGSIZE != 0)
-      goto bad;
+  కొరకు (i = 0, off = elf.phoff; i < elf.phnum; i++, off += పరిమాణం(ph)) {
+    ఒకవేళ (readi(ip, 0, (uint64)&ph, off, పరిమాణం(ph)) != పరిమాణం(ph))
+      వెళ్ళు bad;
+    ఒకవేళ (ph.type != ELF_PROG_ఎక్కించు)
+      కొనసాగు;
+    ఒకవేళ (ph.memsz < ph.filesz)
+      వెళ్ళు bad;
+    ఒకవేళ (ph.vaddr + ph.memsz < ph.vaddr)
+      వెళ్ళు bad;
+    ఒకవేళ (ph.vaddr % PGSIZE != 0)
+      వెళ్ళు bad;
     uint64 sz1;
-    if ((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz,
+    ఒకవేళ ((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz,
                         flags2perm(ph.flags))) == 0)
-      goto bad;
+      వెళ్ళు bad;
     sz = sz1;
-    if (loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
-      goto bad;
+    ఒకవేళ (loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
+      వెళ్ళు bad;
   }
   iunlockput(ip);
-  end_op();
+  చివర_op();
   ip = 0;
 
   p = myproc();
@@ -88,9 +88,9 @@ kexec(char *path, char **argv)
   // Use the rest as the user stack.
   sz = PGROUNDUP(sz);
   uint64 sz1;
-  if ((sz1 = uvmalloc(pagetable, sz, sz + (USERSTACK + 1) * PGSIZE, PTE_W)) ==
+  ఒకవేళ ((sz1 = uvmalloc(pagetable, sz, sz + (USERSTACK + 1) * PGSIZE, PTE_W)) ==
       0)
-    goto bad;
+    వెళ్ళు bad;
   sz = sz1;
   uvmclear(pagetable, sz - (USERSTACK + 1) * PGSIZE);
   sp = sz;
@@ -98,25 +98,25 @@ kexec(char *path, char **argv)
 
   // Copy argument strings into new stack, remember their
   // addresses in ustack[].
-  for (argc = 0; argv[argc]; argc++) {
-    sp -= strlen(argv[argc]) + 1;
+  కొరకు (argc = 0; argv[argc]; argc++) {
+    sp -= అక్షరశ్రేణి_పొడవు(argv[argc]) + 1;
     sp -= sp % 16; // riscv sp must be 16-byte aligned
-    if (sp < stackbase)
-      goto bad;
-    if (copyout(pagetable, sz, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
-      goto bad;
+    ఒకవేళ (sp < stackbase)
+      వెళ్ళు bad;
+    ఒకవేళ (copyout(pagetable, sz, sp, argv[argc], అక్షరశ్రేణి_పొడవు(argv[argc]) + 1) < 0)
+      వెళ్ళు bad;
     ustack[argc] = sp;
   }
   ustack[argc] = 0;
 
   // push a copy of ustack[], the array of argv[] pointers.
-  sp -= (argc + 1) * sizeof(uint64);
+  sp -= (argc + 1) * పరిమాణం(uint64);
   sp -= sp % 16;
-  if (sp < stackbase)
-    goto bad;
-  if (copyout(pagetable, sz, sp, (char *)ustack, (argc + 1) * sizeof(uint64)) <
+  ఒకవేళ (sp < stackbase)
+    వెళ్ళు bad;
+  ఒకవేళ (copyout(pagetable, sz, sp, (అక్షరం *)ustack, (argc + 1) * పరిమాణం(uint64)) <
       0)
-    goto bad;
+    వెళ్ళు bad;
 
   // a0 and a1 contain arguments to user main(argc, argv)
   // argc is returned via the system call return
@@ -124,53 +124,53 @@ kexec(char *path, char **argv)
   p->trapframe->a1 = sp;
 
   // Save program name for debugging.
-  for (last = s = path; *s; s++)
-    if (*s == '/')
-      last = s + 1;
-  safestrcpy(p->name, last, sizeof(p->name));
+  కొరకు (చివరి = s = మార్గం; *s; s++)
+    ఒకవేళ (*s == '/')
+      చివరి = s + 1;
+  safestrcpy(p->name, చివరి, పరిమాణం(p->name));
 
   // Commit to the user image.
   oldpagetable = p->pagetable;
   p->pagetable = pagetable;
   p->sz = sz;
-  p->trapframe->epc = elf.entry; // initial program counter = ulib.c:start()
+  p->trapframe->epc = elf.నమోదు_2; // initial program counter = ulib.c:start()
   p->trapframe->sp = sp;         // initial stack pointer
   proc_freepagetable(oldpagetable, oldsz);
 
-  return argc; // this ends up in a0, the first argument to main(argc, argv)
+  తిరిగి argc; // this ends up in a0, the first argument to main(argc, argv)
 
 bad:
-  if (pagetable)
+  ఒకవేళ (pagetable)
     proc_freepagetable(pagetable, sz);
-  if (ip) {
+  ఒకవేళ (ip) {
     iunlockput(ip);
-    end_op();
+    చివర_op();
   }
-  return -1;
+  తిరిగి -1;
 }
 
 // Load an ELF program segment into pagetable at virtual address va.
 // va must be page-aligned
 // and the pages from va to va+sz must already be mapped.
 // Returns 0 on success, -1 on failure.
-static int
-loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset,
+స్థిర పూర్ణాంకం
+loadseg(pagetable_t pagetable, uint64 va, నిర్మాణం inode *ip, uint స్థానభ్రంశం,
         uint sz)
 {
   uint i, n;
   uint64 pa;
 
-  for (i = 0; i < sz; i += PGSIZE) {
+  కొరకు (i = 0; i < sz; i += PGSIZE) {
     pa = walkaddr(pagetable, va + i);
-    if (pa == 0)
+    ఒకవేళ (pa == 0)
       panic("loadseg: address should exist");
-    if (sz - i < PGSIZE)
+    ఒకవేళ (sz - i < PGSIZE)
       n = sz - i;
-    else
+    లేకపోతే
       n = PGSIZE;
-    if (readi(ip, 0, (uint64)pa, offset + i, n) != n)
-      return -1;
+    ఒకవేళ (readi(ip, 0, (uint64)pa, స్థానభ్రంశం + i, n) != n)
+      తిరిగి -1;
   }
 
-  return 0;
+  తిరిగి 0;
 }

@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "kernel/riscv.h"
+#అన్తర్భావ "kernel/vm.h"
+#అన్తర్భావ "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+శూన్య
+ప్రారంభం(పూర్ణాంకం argc, అక్షరం **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
-  exit(r);
+  పూర్ణాంకం r;
+  బాహ్య పూర్ణాంకం ప్రధాన(పూర్ణాంకం argc, అక్షరం **argv);
+  r = ప్రధాన(argc, argv);
+  నిష్క్రమించు(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+అక్షరం *
+strcpy(అక్షరం *s, స్థిరరాశి అక్షరం *t)
 {
-  char *os;
+  అక్షరం *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  అయితే ((*s++ = *t++) != 0)
     ;
-  return os;
+  తిరిగి os;
 }
 
-int
-strcmp(const char *p, const char *q)
+పూర్ణాంకం
+strcmp(స్థిరరాశి అక్షరం *p, స్థిరరాశి అక్షరం *q)
 {
-  while (*p && *p == *q)
+  అయితే (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  తిరిగి (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+అక్షరశ్రేణి_పొడవు(స్థిరరాశి అక్షరం *s)
 {
-  int n;
+  పూర్ణాంకం n;
 
-  for (n = 0; s[n]; n++)
+  కొరకు (n = 0; s[n]; n++)
     ;
-  return n;
+  తిరిగి n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+శూన్య *
+memset(శూన్య *dst, పూర్ణాంకం c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  అక్షరం *cdst = (అక్షరం *)dst;
+  పూర్ణాంకం i;
+  కొరకు (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  తిరిగి dst;
 }
 
-char *
-strchr(const char *s, char c)
+అక్షరం *
+strchr(స్థిరరాశి అక్షరం *s, అక్షరం c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  కొరకు (; *s; s++)
+    ఒకవేళ (*s == c)
+      తిరిగి (అక్షరం *)s;
+  తిరిగి 0;
 }
 
-char *
-gets(char *buf, int max)
+అక్షరం *
+gets(అక్షరం *buf, పూర్ణాంకం max)
 {
-  int i, cc;
-  char c;
+  పూర్ణాంకం i, cc;
+  అక్షరం c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  కొరకు (i = 0; i + 1 < max;) {
+    cc = పఠ(0, &c, 1);
+    ఒకవేళ (cc < 1)
+      ఆపు;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    ఒకవేళ (c == '\n' || c == '\r')
+      ఆపు;
   }
   buf[i] = '\0';
-  return buf;
+  తిరిగి buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+పూర్ణాంకం
+stat(స్థిరరాశి అక్షరం *n, నిర్మాణం stat *st)
 {
-  int fd;
-  int r;
+  పూర్ణాంకం fd;
+  పూర్ణాంకం r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  ఒకవేళ (fd < 0)
+    తిరిగి -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  తిరిగి r;
 }
 
-int
-atoi(const char *s)
+పూర్ణాంకం
+atoi(స్థిరరాశి అక్షరం *s)
 {
-  int n;
+  పూర్ణాంకం n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  అయితే ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  తిరిగి n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+శూన్య *
+memmove(శూన్య *vdst, స్థిరరాశి శూన్య *vsrc, పూర్ణాంకం n)
 {
-  char *dst;
-  const char *src;
+  అక్షరం *dst;
+  స్థిరరాశి అక్షరం *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  ఒకవేళ (src > dst) {
+    అయితే (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } లేకపోతే {
     dst += n;
     src += n;
-    while (n-- > 0)
+    అయితే (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  తిరిగి vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+పూర్ణాంకం
+memcmp(స్థిరరాశి శూన్య *s1, స్థిరరాశి శూన్య *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  స్థిరరాశి అక్షరం *p1 = s1, *p2 = s2;
+  అయితే (n-- > 0) {
+    ఒకవేళ (*p1 != *p2) {
+      తిరిగి *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  తిరిగి 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+శూన్య *
+జ్ఞాపకం_నకలు(శూన్య *dst, స్థిరరాశి శూన్య *src, uint n)
 {
-  return memmove(dst, src, n);
+  తిరిగి memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+అక్షరం *
+sbrk(పూర్ణాంకం n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  తిరిగి sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+అక్షరం *
+sbrklazy(పూర్ణాంకం n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  తిరిగి sys_sbrk(n, SBRK_LAZY);
 }

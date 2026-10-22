@@ -1,55 +1,55 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#అన్తర్భావ "kernel/types.h"
+#అన్తర్భావ "kernel/stat.h"
+#అన్తర్భావ "kernel/fcntl.h"
+#అన్తర్భావ "user/user.h"
 
-char buf[512];
+అక్షరం buf[512];
 
-void
-wc(int fd, char *name)
+శూన్య
+wc(పూర్ణాంకం fd, అక్షరం *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  పూర్ణాంకం i, n;
+  పూర్ణాంకం l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  అయితే ((n = పఠ(fd, buf, పరిమాణం(buf))) > 0) {
+    కొరకు (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      ఒకవేళ (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      ఒకవేళ (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      లేకపోతే ఒకవేళ (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
-    printf("wc: read error\n");
-    exit(1);
+  ఒకవేళ (n < 0) {
+    రాయి("wc: read error\n");
+    నిష్క్రమించు(1);
   }
-  printf("%d %d %d %s\n", l, w, c, name);
+  రాయి("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+పూర్ణాంకం
+ప్రధాన(పూర్ణాంకం argc, అక్షరం *argv[])
 {
-  int fd, i;
+  పూర్ణాంకం fd, i;
 
-  if (argc <= 1) {
+  ఒకవేళ (argc <= 1) {
     wc(0, "");
-    exit(0);
+    నిష్క్రమించు(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("wc: cannot open %s\n", argv[i]);
-      exit(1);
+  కొరకు (i = 1; i < argc; i++) {
+    ఒకవేళ ((fd = open(argv[i], O_RDONLY)) < 0) {
+      రాయి("wc: cannot open %s\n", argv[i]);
+      నిష్క్రమించు(1);
     }
     wc(fd, argv[i]);
     close(fd);
   }
-  exit(0);
+  నిష్క్రమించు(0);
 }
