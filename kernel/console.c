@@ -9,21 +9,21 @@
 //   control-p -- print process list
 //
 
-#include <stdarg.h>
+#ಅನ್ತರ್ಭಾವ <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "sleeplock.h"
+#ಅನ್ತರ್ಭಾವ "fs.h"
+#ಅನ್ತರ್ಭಾವ "file.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
 
-#define BACKSPACE 0x100       // erase the last output character
-#define C(x)      ((x) - '@') // Control-x
+#ವ್ಯಾಖ್ಯಾನಿಸು BACKSPACE 0x100       // erase the last output character
+#ವ್ಯಾಖ್ಯಾನಿಸು C(x)      ((x) - '@') // Control-x
 
 //
 // send one character to the uart, but don't use
@@ -31,25 +31,25 @@
 // interrupts, e.g. by printk and to echo input
 // characters.
 //
-void
-consputc(int c)
+ಶೂನ್ಯ
+consputc(ಪೂರ್ಣಾಂಕ c)
 {
-  if (c == BACKSPACE) {
+  ಆದರೆ (c == BACKSPACE) {
     // if the user typed backspace, overwrite with a space.
     uartputc_sync('\b');
     uartputc_sync(' ');
     uartputc_sync('\b');
-  } else {
+  } ಇಲ್ಲದಿದ್ದರೆ {
     uartputc_sync(c);
   }
 }
 
-struct {
-  struct spinlock lock;
+ರಚನೆ {
+  ರಚನೆ spinlock ಬೀಗ;
 
   // input circular buffer
-#define INPUT_BUF_SIZE 128
-  char buf[INPUT_BUF_SIZE];
+#ವ್ಯಾಖ್ಯಾನಿಸು ಒಳಹರಿವು_BUF_ಗಾತ್ರ 128
+  ಅಕ್ಷರ buf[ಒಳಹರಿವು_BUF_ಗಾತ್ರ];
   uint r; // Read index
   uint w; // Write index
   uint e; // Edit index
@@ -59,23 +59,23 @@ struct {
 // user write() system calls to the console go here.
 // uses sleep() and UART interrupts.
 //
-int
-consolewrite(int user_src, uint64 src, int n)
+ಪೂರ್ಣಾಂಕ
+consolewrite(ಪೂರ್ಣಾಂಕ user_src, uint64 src, ಪೂರ್ಣಾಂಕ n)
 {
-  char buf[32]; // move batches from user space to uart.
-  int i = 0;
+  ಅಕ್ಷರ buf[32]; // move batches from user space to uart.
+  ಪೂರ್ಣಾಂಕ i = 0;
 
-  while (i < n) {
-    int nn = sizeof(buf);
-    if (nn > n - i)
+  ಆಗ (i < n) {
+    ಪೂರ್ಣಾಂಕ nn = ಗಾತ್ರ(buf);
+    ಆದರೆ (nn > n - i)
       nn = n - i;
-    if (either_copyin(buf, user_src, src + i, nn) == -1)
-      break;
+    ಆದರೆ (either_copyin(buf, user_src, src + i, nn) == -1)
+      ನಿಲ್ಲಿಸು;
     uartwrite(buf, nn);
     i += nn;
   }
 
-  return i;
+  ಹಿಂತಿರುಗಿ i;
 }
 
 //
@@ -84,57 +84,57 @@ consolewrite(int user_src, uint64 src, int n)
 // user_dst indicates whether dst is a user
 // or kernel address.
 //
-int
-consoleread(int user_dst, uint64 dst, int n)
+ಪೂರ್ಣಾಂಕ
+consoleread(ಪೂರ್ಣಾಂಕ user_dst, uint64 dst, ಪೂರ್ಣಾಂಕ n)
 {
-  uint target;
-  int c;
-  char cbuf;
+  uint ಗುರಿ;
+  ಪೂರ್ಣಾಂಕ c;
+  ಅಕ್ಷರ cbuf;
 
-  target = n;
-  acquire(&cons.lock);
-  while (n > 0) {
+  ಗುರಿ = n;
+  acquire(&cons.ಬೀಗ);
+  ಆಗ (n > 0) {
     // wait until interrupt handler has put some
     // input into cons.buffer.
-    while (cons.r == cons.w) {
-      if (killed(myproc())) {
-        release(&cons.lock);
-        return -1;
+    ಆಗ (cons.r == cons.w) {
+      ಆದರೆ (killed(myproc())) {
+        release(&cons.ಬೀಗ);
+        ಹಿಂತಿರುಗಿ -1;
       }
       sleep_prepare(&cons.r);
-      release(&cons.lock);
+      release(&cons.ಬೀಗ);
       sleep();
-      acquire(&cons.lock);
+      acquire(&cons.ಬೀಗ);
     }
 
-    c = cons.buf[cons.r++ % INPUT_BUF_SIZE];
+    c = cons.buf[cons.r++ % ಒಳಹರಿವು_BUF_ಗಾತ್ರ];
 
-    if (c == C('D')) { // end-of-file
-      if (n < target) {
+    ಆದರೆ (c == C('D')) { // end-of-file
+      ಆದರೆ (n < ಗುರಿ) {
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
         cons.r--;
       }
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 
     // copy the input byte to the user-space buffer.
     cbuf = c;
-    if (either_copyout(user_dst, dst, &cbuf, 1) == -1)
-      break;
+    ಆದರೆ (either_copyout(user_dst, dst, &cbuf, 1) == -1)
+      ನಿಲ್ಲಿಸು;
 
     dst++;
     --n;
 
-    if (c == '\n') {
+    ಆದರೆ (c == '\n') {
       // a whole line has arrived, return to
       // the user-level read().
-      break;
+      ನಿಲ್ಲಿಸು;
     }
   }
-  release(&cons.lock);
+  release(&cons.ಬೀಗ);
 
-  return target - n;
+  ಹಿಂತಿರುಗಿ ಗುರಿ - n;
 }
 
 //
@@ -143,61 +143,61 @@ consoleread(int user_dst, uint64 dst, int n)
 // do erase/kill processing, append to cons.buf,
 // wake up consoleread() if a whole line has arrived.
 //
-void
-consoleintr(int c)
+ಶೂನ್ಯ
+consoleintr(ಪೂರ್ಣಾಂಕ c)
 {
-  acquire(&cons.lock);
+  acquire(&cons.ಬೀಗ);
 
-  switch (c) {
-  case C('P'): // Print process list.
+  ಆಯ್ಕೆ (c) {
+  ಸ್ಥಿತಿ C('P'): // Print process list.
     procdump();
-    break;
-  case C('U'): // Kill line.
-    while (cons.e != cons.w &&
-           cons.buf[(cons.e - 1) % INPUT_BUF_SIZE] != '\n') {
+    ನಿಲ್ಲಿಸು;
+  ಸ್ಥಿತಿ C('U'): // Kill line.
+    ಆಗ (cons.e != cons.w &&
+           cons.buf[(cons.e - 1) % ಒಳಹರಿವು_BUF_ಗಾತ್ರ] != '\n') {
       cons.e--;
       consputc(BACKSPACE);
     }
-    break;
-  case C('H'): // Backspace
-  case '\x7f': // Delete key
-    if (cons.e != cons.w) {
+    ನಿಲ್ಲಿಸು;
+  ಸ್ಥಿತಿ C('H'): // Backspace
+  ಸ್ಥಿತಿ '\x7f': // Delete key
+    ಆದರೆ (cons.e != cons.w) {
       cons.e--;
       consputc(BACKSPACE);
     }
-    break;
-  default:
-    if (c != 0 && cons.e - cons.r < INPUT_BUF_SIZE) {
+    ನಿಲ್ಲಿಸು;
+  ಪೂರ್ವನಿಯೋಜಿತ:
+    ಆದರೆ (c != 0 && cons.e - cons.r < ಒಳಹರಿವು_BUF_ಗಾತ್ರ) {
       c = (c == '\r') ? '\n' : c;
 
       // echo back to the user.
       consputc(c);
 
       // store for consumption by consoleread().
-      cons.buf[cons.e++ % INPUT_BUF_SIZE] = c;
+      cons.buf[cons.e++ % ಒಳಹರಿವು_BUF_ಗಾತ್ರ] = c;
 
-      if (c == '\n' || c == C('D') || cons.e - cons.r == INPUT_BUF_SIZE) {
+      ಆದರೆ (c == '\n' || c == C('D') || cons.e - cons.r == ಒಳಹರಿವು_BUF_ಗಾತ್ರ) {
         // wake up consoleread() if a whole line (or end-of-file)
         // has arrived.
         cons.w = cons.e;
         wakeup(&cons.r);
       }
     }
-    break;
+    ನಿಲ್ಲಿಸು;
   }
 
-  release(&cons.lock);
+  release(&cons.ಬೀಗ);
 }
 
-void
-consoleinit(void)
+ಶೂನ್ಯ
+consoleinit(ಶೂನ್ಯ)
 {
-  initlock(&cons.lock, "cons");
+  initlock(&cons.ಬೀಗ, "cons");
 
   uartinit();
 
   // connect read and write system calls
   // to consoleread and consolewrite.
-  devsw[CONSOLE].read = consoleread;
-  devsw[CONSOLE].write = consolewrite;
+  devsw[CONSOLE].ಪಠ = consoleread;
+  devsw[CONSOLE].ಲಿಖ = consolewrite;
 }

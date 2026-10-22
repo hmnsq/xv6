@@ -1,19 +1,19 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಂಕ
+ಮುಖ್ಯ(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[])
 {
-  int i;
+  ಪೂರ್ಣಾಂಕ i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  ಗಾಗಿ (i = 1; i < argc; i++) {
+    ಲಿಖ(1, argv[i], ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(argv[i]));
+    ಆದರೆ (i + 1 < argc) {
+      ಲಿಖ(1, " ", 1);
+    } ಇಲ್ಲದಿದ್ದರೆ {
+      ಲಿಖ(1, "\n", 1);
     }
   }
-  exit(0);
+  ನಿರ್ಗಮಿಸು(0);
 }

@@ -1,8 +1,8 @@
 // On-disk file system format.
 // Both the kernel and user programs use this header file.
 
-#define ROOTINO 1    // root i-number
-#define BSIZE   1024 // block size
+#ವ್ಯಾಖ್ಯಾನಿಸು ROOTINO 1    // root i-number
+#ವ್ಯಾಖ್ಯಾನಿಸು BSIZE   1024 // block size
 
 // Disk layout:
 // [ boot block | super block | log | inode blocks |
@@ -10,9 +10,9 @@
 //
 // mkfs computes the super block and builds an initial file system. The
 // super block describes the disk layout:
-struct superblock {
+ರಚನೆ superblock {
   uint magic;      // Must be FSMAGIC
-  uint size;       // Size of file system image (blocks)
+  uint ಗಾತ್ರ_2;       // Size of file system image (blocks)
   uint nblocks;    // Number of data blocks
   uint ninodes;    // Number of inodes.
   uint nlog;       // Number of log blocks
@@ -21,41 +21,41 @@ struct superblock {
   uint bmapstart;  // Block number of first free map block
 };
 
-#define FSMAGIC 0x10203040
+#ವ್ಯಾಖ್ಯಾನಿಸು FSMAGIC 0x10203040
 
-#define NDIRECT   12
-#define NINDIRECT (BSIZE / sizeof(uint))
-#define MAXFILE   (NDIRECT + NINDIRECT)
-#define NLINK_MAX 32767 // nlink is a short; refuse links past its maximum
+#ವ್ಯಾಖ್ಯಾನಿಸು NDIRECT   12
+#ವ್ಯಾಖ್ಯಾನಿಸು NINDIRECT (BSIZE / ಗಾತ್ರ(uint))
+#ವ್ಯಾಖ್ಯಾನಿಸು MAXFILE   (NDIRECT + NINDIRECT)
+#ವ್ಯಾಖ್ಯಾನಿಸು NLINK_MAX 32767 // nlink is a short; refuse links past its maximum
 
 // On-disk inode structure
-struct dinode {
-  short type;              // File type
-  short major;             // Major device number (T_DEVICE only)
-  short minor;             // Minor device number (T_DEVICE only)
-  short nlink;             // Number of links to inode in file system
-  uint size;               // Size of file (bytes)
+ರಚನೆ dinode {
+  ಗಿಡ್ಡ type;              // File type
+  ಗಿಡ್ಡ major;             // Major device number (T_DEVICE only)
+  ಗಿಡ್ಡ minor;             // Minor device number (T_DEVICE only)
+  ಗಿಡ್ಡ nlink;             // Number of links to inode in file system
+  uint ಗಾತ್ರ_2;               // Size of file (bytes)
   uint addrs[NDIRECT + 1]; // Data block addresses
 };
 
 // Inodes per block.
-#define IPB (BSIZE / sizeof(struct dinode))
+#ವ್ಯಾಖ್ಯಾನಿಸು IPB (BSIZE / ಗಾತ್ರ(ರಚನೆ dinode))
 
 // Block containing inode i
-#define IBLOCK(i, sb) ((i) / IPB + sb.inodestart)
+#ವ್ಯಾಖ್ಯಾನಿಸು IBLOCK(i, sb) ((i) / IPB + sb.inodestart)
 
 // Bitmap bits per block
-#define BPB (BSIZE * 8)
+#ವ್ಯಾಖ್ಯಾನಿಸು BPB (BSIZE * 8)
 
 // Block of free map containing bit for block b
-#define BBLOCK(b, sb) ((b) / BPB + sb.bmapstart)
+#ವ್ಯಾಖ್ಯಾನಿಸು BBLOCK(b, sb) ((b) / BPB + sb.bmapstart)
 
 // Directory is a file containing a sequence of dirent structures.
-#define DIRSIZ 14
+#ವ್ಯಾಖ್ಯಾನಿಸು DIRSIZ 14
 
 // The name field may have DIRSIZ characters and not end in a NUL
 // character.
-struct dirent {
+ರಚನೆ dirent {
   ushort inum;
-  char name[DIRSIZ] __attribute__((nonstring));
+  ಅಕ್ಷರ name[DIRSIZ] __attribute__((nonstring));
 };

@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#ವ್ಯಾಖ್ಯಾನಿಸು SBRK_ERROR ((ಅಕ್ಷರ *)-1)
 
-struct stat;
+ರಚನೆ stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+ಪೂರ್ಣಾಂಕ fork(ಶೂನ್ಯ);
+ಪೂರ್ಣಾಂಕ ನಿರ್ಗಮಿಸು(ಪೂರ್ಣಾಂಕ) __attribute__((noreturn));
+ಪೂರ್ಣಾಂಕ wait(ಪೂರ್ಣಾಂಕ *);
+ಪೂರ್ಣಾಂಕ pipe(ಪೂರ್ಣಾಂಕ *);
+ಪೂರ್ಣಾಂಕ ಲಿಖ(ಪೂರ್ಣಾಂಕ, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *, ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ ಪಠ(ಪೂರ್ಣಾಂಕ, ಶೂನ್ಯ *, ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ close(ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ kill(ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ exec(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ಅಕ್ಷರ **);
+ಪೂರ್ಣಾಂಕ open(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ mknod(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ಗಿಡ್ಡ, ಗಿಡ್ಡ);
+ಪೂರ್ಣಾಂಕ unlink(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಪೂರ್ಣಾಂಕ fstat(ಪೂರ್ಣಾಂಕ fd, ರಚನೆ stat *);
+ಪೂರ್ಣಾಂಕ link(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಪೂರ್ಣಾಂಕ mkdir(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಪೂರ್ಣಾಂಕ chdir(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಪೂರ್ಣಾಂಕ dup(ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ getpid(ಶೂನ್ಯ);
+ಅಕ್ಷರ *sys_sbrk(ಪೂರ್ಣಾಂಕ, ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ pause(ಪೂರ್ಣಾಂಕ);
+ಪೂರ್ಣಾಂಕ uptime(ಶೂನ್ಯ);
+ಪೂರ್ಣಾಂಕ sync(ಶೂನ್ಯ);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+ಪೂರ್ಣಾಂಕ stat(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ರಚನೆ stat *);
+ಅಕ್ಷರ *strcpy(ಅಕ್ಷರ *, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಶೂನ್ಯ *memmove(ಶೂನ್ಯ *, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *, ಪೂರ್ಣಾಂಕ);
+ಅಕ್ಷರ *strchr(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ಅಕ್ಷರ c);
+ಪೂರ್ಣಾಂಕ strcmp(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಅಕ್ಷರ *gets(ಅಕ್ಷರ *, ಪೂರ್ಣಾಂಕ max);
+uint ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಶೂನ್ಯ *memset(ಶೂನ್ಯ *, ಪೂರ್ಣಾಂಕ, uint);
+ಪೂರ್ಣಾಂಕ atoi(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *);
+ಪೂರ್ಣಾಂಕ memcmp(ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *, uint);
+ಶೂನ್ಯ *ಸ್ಮರಣೆ_ನಕಲು(ಶೂನ್ಯ *, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *, uint);
+ಅಕ್ಷರ *sbrk(ಪೂರ್ಣಾಂಕ);
+ಅಕ್ಷರ *sbrklazy(ಪೂರ್ಣಾಂಕ);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+ಶೂನ್ಯ fprintf(ಪೂರ್ಣಾಂಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ...) __attribute__((format(ಬರೆ, 2, 3)));
+ಶೂನ್ಯ ಬರೆ(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *, ...) __attribute__((format(ಬರೆ, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+ಶೂನ್ಯ *ಸ್ಮರಣೆ_ಕೊಡು(uint);
+ಶೂನ್ಯ ಬಿಡುಗಡೆ(ಶೂನ್ಯ *);

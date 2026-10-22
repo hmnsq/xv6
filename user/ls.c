@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/fs.h"
+#ಅನ್ತರ್ಭಾವ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+ಅಕ್ಷರ *
+fmtname(ಅಕ್ಷರ *ಮಾರ್ಗ)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  ಸ್ಥಿರ ಅಕ್ಷರ buf[DIRSIZ + 1];
+  ಅಕ್ಷರ *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  ಗಾಗಿ (p = ಮಾರ್ಗ + ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(ಮಾರ್ಗ); p >= ಮಾರ್ಗ && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
-  memmove(buf, p, strlen(p));
-  memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  ಆದರೆ (ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(p) >= DIRSIZ)
+    ಹಿಂತಿರುಗಿ p;
+  memmove(buf, p, ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(p));
+  memset(buf + ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(p), ' ', DIRSIZ - ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(p));
+  buf[ಗಾತ್ರ(buf) - 1] = '\0';
+  ಹಿಂತಿರುಗಿ buf;
 }
 
-void
-ls(char *path)
+ಶೂನ್ಯ
+ls(ಅಕ್ಷರ *ಮಾರ್ಗ)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  ಅಕ್ಷರ buf[512], *p;
+  ಪೂರ್ಣಾಂಕ fd;
+  ರಚನೆ dirent de;
+  ರಚನೆ stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
-    fprintf(2, "ls: cannot open %s\n", path);
-    return;
+  ಆದರೆ ((fd = open(ಮಾರ್ಗ, O_RDONLY)) < 0) {
+    fprintf(2, "ls: cannot open %s\n", ಮಾರ್ಗ);
+    ಹಿಂತಿರುಗಿ;
   }
 
-  if (fstat(fd, &st) < 0) {
-    fprintf(2, "ls: cannot stat %s\n", path);
+  ಆದರೆ (fstat(fd, &st) < 0) {
+    fprintf(2, "ls: cannot stat %s\n", ಮಾರ್ಗ);
     close(fd);
-    return;
+    ಹಿಂತಿರುಗಿ;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  ಆಯ್ಕೆ (st.type) {
+  ಸ್ಥಿತಿ T_DEVICE:
+  ಸ್ಥಿತಿ T_FILE:
+    ಬರೆ("%s %d %d %d\n", fmtname(ಮಾರ್ಗ), st.type, st.ino, (ಪೂರ್ಣಾಂಕ)st.ಗಾತ್ರ_2);
+    ನಿಲ್ಲಿಸು;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
-      printf("ls: path too long\n");
-      break;
+  ಸ್ಥಿತಿ T_DIR:
+    ಆದರೆ (ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(ಮಾರ್ಗ) + 1 + DIRSIZ + 1 > ಗಾತ್ರ buf) {
+      ಬರೆ("ls: path too long\n");
+      ನಿಲ್ಲಿಸು;
     }
-    strcpy(buf, path);
-    p = buf + strlen(buf);
+    strcpy(buf, ಮಾರ್ಗ);
+    p = buf + ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    ಆಗ (ಪಠ(fd, &de, ಗಾತ್ರ(de)) == ಗಾತ್ರ(de)) {
+      ಆದರೆ (de.inum == 0)
+        ಮುಂದುವರಿ;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
-        printf("ls: cannot stat %s\n", buf);
-        continue;
+      ಆದರೆ (stat(buf, &st) < 0) {
+        ಬರೆ("ls: cannot stat %s\n", buf);
+        ಮುಂದುವರಿ;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      ಬರೆ("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (ಪೂರ್ಣಾಂಕ)st.ಗಾತ್ರ_2);
     }
-    break;
+    ನಿಲ್ಲಿಸು;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಂಕ
+ಮುಖ್ಯ(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[])
 {
-  int i;
+  ಪೂರ್ಣಾಂಕ i;
 
-  if (argc < 2) {
+  ಆದರೆ (argc < 2) {
     ls(".");
-    exit(0);
+    ನಿರ್ಗಮಿಸು(0);
   }
-  for (i = 1; i < argc; i++)
+  ಗಾಗಿ (i = 1; i < argc; i++)
     ls(argv[i]);
-  exit(0);
+  ನಿರ್ಗಮಿಸು(0);
 }

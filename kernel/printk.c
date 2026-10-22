@@ -2,125 +2,125 @@
 // formatted console output -- printk, panic.
 //
 
-#include <stdarg.h>
+#ಅನ್ತರ್ಭಾವ <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "sleeplock.h"
+#ಅನ್ತರ್ಭಾವ "fs.h"
+#ಅನ್ತರ್ಭಾವ "file.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
 
-volatile int panicking = 0; // printing a panic message
-volatile int panicked = 0;  // spinning forever at end of a panic
+ಅಸ್ಥಿರ ಪೂರ್ಣಾಂಕ panicking = 0; // printing a panic message
+ಅಸ್ಥಿರ ಪೂರ್ಣಾಂಕ panicked = 0;  // spinning forever at end of a panic
 
 // lock to avoid interleaving concurrent printk's.
-static struct {
-  struct spinlock lock;
+ಸ್ಥಿರ ರಚನೆ {
+  ರಚನೆ spinlock ಬೀಗ;
 } pr;
 
-static char digits[] = "0123456789abcdef";
+ಸ್ಥಿರ ಅಕ್ಷರ digits[] = "0123456789abcdef";
 
-static void
-printint(long long xx, int base, int sign)
+ಸ್ಥಿರ ಶೂನ್ಯ
+printint(ದೀರ್ಘ ದೀರ್ಘ xx, ಪೂರ್ಣಾಂಕ ತಳ, ಪೂರ್ಣಾಂಕ sign)
 {
-  char buf[20];
-  int i;
-  unsigned long long x;
+  ಅಕ್ಷರ buf[20];
+  ಪೂರ್ಣಾಂಕ i;
+  ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ದೀರ್ಘ x;
 
-  if (sign && (sign = (xx < 0)))
+  ಆದರೆ (sign && (sign = (xx < 0)))
     x = -xx;
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     x = xx;
 
   i = 0;
-  do {
-    buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  ಮಾಡು {
+    buf[i++] = digits[x % ತಳ];
+  } ಆಗ ((x /= ತಳ) != 0);
 
-  if (sign)
+  ಆದರೆ (sign)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  ಆಗ (--i >= 0)
     consputc(buf[i]);
 }
 
-static void
+ಸ್ಥಿರ ಶೂನ್ಯ
 printptr(uint64 x)
 {
-  int i;
+  ಪೂರ್ಣಾಂಕ i;
   consputc('0');
   consputc('x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
+  ಗಾಗಿ (i = 0; i < (ಗಾತ್ರ(uint64) * 2); i++, x <<= 4)
+    consputc(digits[x >> (ಗಾತ್ರ(uint64) * 8 - 4)]);
 }
 
 // Print to the console.
-int
-printk(char *fmt, ...)
+ಪೂರ್ಣಾಂಕ
+printk(ಅಕ್ಷರ *fmt, ...)
 {
   va_list ap;
-  int i, cx, c0, c1, c2;
-  char *s;
+  ಪೂರ್ಣಾಂಕ i, cx, c0, c1, c2;
+  ಅಕ್ಷರ *s;
 
-  if (panicking == 0)
-    acquire(&pr.lock);
+  ಆದರೆ (panicking == 0)
+    acquire(&pr.ಬೀಗ);
 
   va_start(ap, fmt);
-  for (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
-    if (cx != '%') {
+  ಗಾಗಿ (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
+    ಆದರೆ (cx != '%') {
       consputc(cx);
-      continue;
+      ಮುಂದುವರಿ;
     }
     i++;
     c0 = fmt[i + 0] & 0xff;
     c1 = c2 = 0;
-    if (c0)
+    ಆದರೆ (c0)
       c1 = fmt[i + 1] & 0xff;
-    if (c1)
+    ಆದರೆ (c1)
       c2 = fmt[i + 2] & 0xff;
-    if (c0 == 'd') {
-      printint(va_arg(ap, int), 10, 1);
-    } else if (c0 == 'l' && c1 == 'd') {
+    ಆದರೆ (c0 == 'd') {
+      printint(va_arg(ap, ಪೂರ್ಣಾಂಕ), 10, 1);
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'l' && c2 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 2;
-    } else if (c0 == 'u') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'u') {
       printint(va_arg(ap, uint32), 10, 0);
-    } else if (c0 == 'l' && c1 == 'u') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'l' && c2 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 2;
-    } else if (c0 == 'x') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'x') {
       printint(va_arg(ap, uint32), 16, 0);
-    } else if (c0 == 'l' && c1 == 'x') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'l' && c2 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 2;
-    } else if (c0 == 'p') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'p') {
       printptr(va_arg(ap, uint64));
-    } else if (c0 == 'c') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'c') {
       consputc(va_arg(ap, uint));
-    } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 's') {
+      ಆದರೆ ((s = va_arg(ap, ಅಕ್ಷರ *)) == 0)
         s = "(null)";
-      for (; *s; s++)
+      ಗಾಗಿ (; *s; s++)
         consputc(*s);
-    } else if (c0 == '%') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == '%') {
       consputc('%');
-    } else if (c0 == 0) {
-      break;
-    } else {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 0) {
+      ನಿಲ್ಲಿಸು;
+    } ಇಲ್ಲದಿದ್ದರೆ {
       // Print unknown % sequence to draw attention.
       consputc('%');
       consputc(c0);
@@ -128,25 +128,25 @@ printk(char *fmt, ...)
   }
   va_end(ap);
 
-  if (panicking == 0)
-    release(&pr.lock);
+  ಆದರೆ (panicking == 0)
+    release(&pr.ಬೀಗ);
 
-  return 0;
+  ಹಿಂತಿರುಗಿ 0;
 }
 
-void
-panic(char *s)
+ಶೂನ್ಯ
+panic(ಅಕ್ಷರ *s)
 {
   panicking = 1;
   printk("panic: ");
   printk("%s\n", s);
   panicked = 1; // freeze uart output from other CPUs
-  for (;;)
+  ಗಾಗಿ (;;)
     ;
 }
 
-void
-printkinit(void)
+ಶೂನ್ಯ
+printkinit(ಶೂನ್ಯ)
 {
-  initlock(&pr.lock, "pr");
+  initlock(&pr.ಬೀಗ, "pr");
 }

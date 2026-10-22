@@ -1,111 +1,111 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-#include <stdarg.h>
+#ಅನ್ತರ್ಭಾವ <stdarg.h>
 
-static char digits[] = "0123456789ABCDEF";
+ಸ್ಥಿರ ಅಕ್ಷರ digits[] = "0123456789ABCDEF";
 
-static void
-putc(int fd, char c)
+ಸ್ಥಿರ ಶೂನ್ಯ
+putc(ಪೂರ್ಣಾಂಕ fd, ಅಕ್ಷರ c)
 {
-  write(fd, &c, 1);
+  ಲಿಖ(fd, &c, 1);
 }
 
-static void
-printint(int fd, long long xx, int base, int sgn)
+ಸ್ಥಿರ ಶೂನ್ಯ
+printint(ಪೂರ್ಣಾಂಕ fd, ದೀರ್ಘ ದೀರ್ಘ xx, ಪೂರ್ಣಾಂಕ ತಳ, ಪೂರ್ಣಾಂಕ sgn)
 {
-  char buf[20];
-  int i, neg;
-  unsigned long long x;
+  ಅಕ್ಷರ buf[20];
+  ಪೂರ್ಣಾಂಕ i, neg;
+  ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ದೀರ್ಘ x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  ಆದರೆ (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } ಇಲ್ಲದಿದ್ದರೆ {
     x = xx;
   }
 
   i = 0;
-  do {
-    buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  ಮಾಡು {
+    buf[i++] = digits[x % ತಳ];
+  } ಆಗ ((x /= ತಳ) != 0);
+  ಆದರೆ (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  ಆಗ (--i >= 0)
     putc(fd, buf[i]);
 }
 
-static void
-printptr(int fd, uint64 x)
+ಸ್ಥಿರ ಶೂನ್ಯ
+printptr(ಪೂರ್ಣಾಂಕ fd, uint64 x)
 {
-  int i;
+  ಪೂರ್ಣಾಂಕ i;
   putc(fd, '0');
   putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
-    putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
+  ಗಾಗಿ (i = 0; i < (ಗಾತ್ರ(uint64) * 2); i++, x <<= 4)
+    putc(fd, digits[x >> (ಗಾತ್ರ(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
-void
-vprintf(int fd, const char *fmt, va_list ap)
+ಶೂನ್ಯ
+vprintf(ಪೂರ್ಣಾಂಕ fd, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *fmt, va_list ap)
 {
-  char *s;
-  int c0, c1, c2, i, state;
+  ಅಕ್ಷರ *s;
+  ಪೂರ್ಣಾಂಕ c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  ಗಾಗಿ (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    ಆದರೆ (state == 0) {
+      ಆದರೆ (c0 == '%') {
         state = '%';
-      } else {
+      } ಇಲ್ಲದಿದ್ದರೆ {
         putc(fd, c0);
       }
-    } else if (state == '%') {
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      ಆದರೆ (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      ಆದರೆ (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
+      ಆದರೆ (c0 == 'd') {
+        printint(fd, va_arg(ap, ಪೂರ್ಣಾಂಕ), 10, 1);
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'l' && c2 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'u') {
         printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'l' && c2 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'x') {
         printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'l' && c1 == 'l' && c2 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'p') {
         printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 'c') {
         putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == 's') {
+        ಆದರೆ ((s = va_arg(ap, ಅಕ್ಷರ *)) == 0)
           s = "(null)";
-        for (; *s; s++)
+        ಗಾಗಿ (; *s; s++)
           putc(fd, *s);
-      } else if (c0 == '%') {
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (c0 == '%') {
         putc(fd, '%');
-      } else {
+      } ಇಲ್ಲದಿದ್ದರೆ {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
@@ -116,8 +116,8 @@ vprintf(int fd, const char *fmt, va_list ap)
   }
 }
 
-void
-fprintf(int fd, const char *fmt, ...)
+ಶೂನ್ಯ
+fprintf(ಪೂರ್ಣಾಂಕ fd, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *fmt, ...)
 {
   va_list ap;
 
@@ -125,8 +125,8 @@ fprintf(int fd, const char *fmt, ...)
   vprintf(fd, fmt, ap);
 }
 
-void
-printf(const char *fmt, ...)
+ಶೂನ್ಯ
+ಬರೆ(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *fmt, ...)
 {
   va_list ap;
 

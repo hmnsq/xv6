@@ -2,51 +2,51 @@
 // low-level driver for 16550a UART.
 //
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "proc.h"
-#include "defs.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "sleeplock.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#ವ್ಯಾಖ್ಯಾನಿಸು Reg(reg) ((ಅಸ್ಥಿರ ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *)(UART0 + (reg)))
 
-#define ReadReg(reg)     (*(Reg(reg)))
-#define WriteReg(reg, v) (*(Reg(reg)) = (v))
+#ವ್ಯಾಖ್ಯಾನಿಸು ReadReg(reg)     (*(Reg(reg)))
+#ವ್ಯಾಖ್ಯಾನಿಸು WriteReg(reg, v) (*(Reg(reg)) = (v))
 
 // the UART control registers.
 // some have different meanings for read vs write.
 // see http://byterunner.com/16550.html
-#define RHR             0        // receive holding register (for input bytes)
-#define THR             0        // transmit holding register (for output bytes)
-#define IER             1        // interrupt enable register
-#define IER_RX_ENABLE   (1 << 0) // receiver interrupts
-#define IER_TX_ENABLE   (1 << 1) // transmit interrupts
-#define FCR             2        // FIFO control register
-#define FCR_FIFO_ENABLE (1 << 0)
-#define FCR_FIFO_CLEAR  (3 << 1) // clear the content of the two FIFOs
-#define ISR             2        // interrupt status register
-#define LCR             3        // line control register
-#define LCR_EIGHT_BITS  (3 << 0)
-#define LCR_BAUD_LATCH  (1 << 7) // special mode to set baud rate
-#define LSR             5        // line status register
-#define LSR_RX_READY    (1 << 0) // input is waiting to be read from RHR
-#define LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
+#ವ್ಯಾಖ್ಯಾನಿಸು RHR             0        // receive holding register (for input bytes)
+#ವ್ಯಾಖ್ಯಾನಿಸು THR             0        // transmit holding register (for output bytes)
+#ವ್ಯಾಖ್ಯಾನಿಸು IER             1        // interrupt enable register
+#ವ್ಯಾಖ್ಯಾನಿಸು IER_RX_ENABLE   (1 << 0) // receiver interrupts
+#ವ್ಯಾಖ್ಯಾನಿಸು IER_TX_ENABLE   (1 << 1) // transmit interrupts
+#ವ್ಯಾಖ್ಯಾನಿಸು FCR             2        // FIFO control register
+#ವ್ಯಾಖ್ಯಾನಿಸು FCR_FIFO_ENABLE (1 << 0)
+#ವ್ಯಾಖ್ಯಾನಿಸು FCR_FIFO_CLEAR  (3 << 1) // clear the content of the two FIFOs
+#ವ್ಯಾಖ್ಯಾನಿಸು ISR             2        // interrupt status register
+#ವ್ಯಾಖ್ಯಾನಿಸು LCR             3        // line control register
+#ವ್ಯಾಖ್ಯಾನಿಸು LCR_EIGHT_ಬಿಟ್ಟುಗಳು  (3 << 0)
+#ವ್ಯಾಖ್ಯಾನಿಸು LCR_BAUD_LATCH  (1 << 7) // special mode to set baud rate
+#ವ್ಯಾಖ್ಯಾನಿಸು LSR             5        // line status register
+#ವ್ಯಾಖ್ಯಾನಿಸು LSR_RX_READY    (1 << 0) // input is waiting to be read from RHR
+#ವ್ಯಾಖ್ಯಾನಿಸು LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
 
 // for sending threads to serialize their writes
-static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+ಸ್ಥಿರ ರಚನೆ sleeplock tx_ಬೀಗ;
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+ಬಾಹ್ಯ ಅಸ್ಥಿರ ಪೂರ್ಣಾಂಕ panicking; // from printk.c
+ಬಾಹ್ಯ ಅಸ್ಥಿರ ಪೂರ್ಣಾಂಕ panicked;  // from printk.c
 
-void
-uartinit(void)
+ಶೂನ್ಯ
+uartinit(ಶೂನ್ಯ)
 {
   // disable interrupts.
   WriteReg(IER, 0x00);
@@ -62,7 +62,7 @@ uartinit(void)
 
   // leave set-baud mode,
   // and set word length to 8 bits, no parity.
-  WriteReg(LCR, LCR_EIGHT_BITS);
+  WriteReg(LCR, LCR_EIGHT_ಬಿಟ್ಟುಗಳು);
 
   // reset and enable FIFOs.
   WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
@@ -70,86 +70,86 @@ uartinit(void)
   // enable transmit and receive interrupts.
   WriteReg(IER, IER_TX_ENABLE | IER_RX_ENABLE);
 
-  initsleeplock(&tx_lock, "uart");
+  initsleeplock(&tx_ಬೀಗ, "uart");
 }
 
 // transmit buf[] to the uart. it blocks if the
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
-void
-uartwrite(char buf[], int n)
+ಶೂನ್ಯ
+uartwrite(ಅಕ್ಷರ buf[], ಪೂರ್ಣಾಂಕ n)
 {
-  acquiresleep(&tx_lock);
+  acquiresleep(&tx_ಬೀಗ);
 
-  int i = 0;
-  while (i < n) {
+  ಪೂರ್ಣಾಂಕ i = 0;
+  ಆಗ (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    ಆದರೆ (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } ಇಲ್ಲದಿದ್ದರೆ {
       sleep();
     }
   }
 
-  releasesleep(&tx_lock);
+  releasesleep(&tx_ಬೀಗ);
 }
 
 // write a byte to the uart without using
 // interrupts, for use by kernel printk() and
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
-void
-uartputc_sync(int c)
+ಶೂನ್ಯ
+uartputc_sync(ಪೂರ್ಣಾಂಕ c)
 {
-  if (panicking == 0)
-    push_off();
+  ಆದರೆ (panicking == 0)
+    ತಳ್ಳು_off();
 
-  if (panicked) {
-    for (;;)
+  ಆದರೆ (panicked) {
+    ಗಾಗಿ (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  ಆಗ ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
-    pop_off();
+  ಆದರೆ (panicking == 0)
+    ತೆಗೆ_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
-uartgetc(void)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+uartgetc(ಶೂನ್ಯ)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  ಆದರೆ (ReadReg(LSR) & LSR_RX_READY) {
+    ಹಿಂತಿರುಗಿ ReadReg(RHR);
+  } ಇಲ್ಲದಿದ್ದರೆ {
+    ಹಿಂತಿರುಗಿ -1;
   }
 }
 
 // handle a uart interrupt, raised because input has
 // arrived, or the uart is ready for more output, or
 // both. called from devintr().
-void
-uartintr(void)
+ಶೂನ್ಯ
+uartintr(ಶೂನ್ಯ)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  ಆದರೆ (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
-      break;
+  ಆಗ (1) {
+    ಪೂರ್ಣಾಂಕ c = uartgetc();
+    ಆದರೆ (c == -1)
+      ನಿಲ್ಲಿಸು;
     consoleintr(c);
   }
 }

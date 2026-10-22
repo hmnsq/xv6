@@ -1,108 +1,108 @@
 // Simple grep.  Only supports ^ . * $ operators.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "kernel/fcntl.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+ಅಕ್ಷರ buf[1024];
+ಪೂರ್ಣಾಂಕ ಹೊಂದಿಕೆ(ಅಕ್ಷರ *, ಅಕ್ಷರ *);
 
-void
-grep(char *pattern, int fd)
+ಶೂನ್ಯ
+grep(ಅಕ್ಷರ *ನಮೂನೆ, ಪೂರ್ಣಾಂಕ fd)
 {
-  int n, m;
-  char *p, *q;
+  ಪೂರ್ಣಾಂಕ n, m;
+  ಅಕ್ಷರ *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  ಆಗ ((n = ಪಠ(fd, buf + m, ಗಾತ್ರ(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    ಆಗ ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      ಆದರೆ (ಹೊಂದಿಕೆ(ನಮೂನೆ, p)) {
         *q = '\n';
-        write(1, p, q + 1 - p);
+        ಲಿಖ(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    ಆದರೆ (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಂಕ
+ಮುಖ್ಯ(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[])
 {
-  int fd, i;
-  char *pattern;
+  ಪೂರ್ಣಾಂಕ fd, i;
+  ಅಕ್ಷರ *ನಮೂನೆ;
 
-  if (argc <= 1) {
+  ಆದರೆ (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
-    exit(1);
+    ನಿರ್ಗಮಿಸು(1);
   }
-  pattern = argv[1];
+  ನಮೂನೆ = argv[1];
 
-  if (argc <= 2) {
-    grep(pattern, 0);
-    exit(0);
+  ಆದರೆ (argc <= 2) {
+    grep(ನಮೂನೆ, 0);
+    ನಿರ್ಗಮಿಸು(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("grep: cannot open %s\n", argv[i]);
-      exit(1);
+  ಗಾಗಿ (i = 2; i < argc; i++) {
+    ಆದರೆ ((fd = open(argv[i], O_RDONLY)) < 0) {
+      ಬರೆ("grep: cannot open %s\n", argv[i]);
+      ನಿರ್ಗಮಿಸು(1);
     }
-    grep(pattern, fd);
+    grep(ನಮೂನೆ, fd);
     close(fd);
   }
-  exit(0);
+  ನಿರ್ಗಮಿಸು(0);
 }
 
 // Regexp matcher from Kernighan & Pike,
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+ಪೂರ್ಣಾಂಕ matchhere(ಅಕ್ಷರ *, ಅಕ್ಷರ *);
+ಪೂರ್ಣಾಂಕ matchstar(ಪೂರ್ಣಾಂಕ, ಅಕ್ಷರ *, ಅಕ್ಷರ *);
 
-int
-match(char *re, char *text)
+ಪೂರ್ಣಾಂಕ
+ಹೊಂದಿಕೆ(ಅಕ್ಷರ *re, ಅಕ್ಷರ *ಪಠ್ಯ)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
-  do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+  ಆದರೆ (re[0] == '^')
+    ಹಿಂತಿರುಗಿ matchhere(re + 1, ಪಠ್ಯ);
+  ಮಾಡು { // must look at empty string
+    ಆದರೆ (matchhere(re, ಪಠ್ಯ))
+      ಹಿಂತಿರುಗಿ 1;
+  } ಆಗ (*ಪಠ್ಯ++ != '\0');
+  ಹಿಂತಿರುಗಿ 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+ಪೂರ್ಣಾಂಕ
+matchhere(ಅಕ್ಷರ *re, ಅಕ್ಷರ *ಪಠ್ಯ)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  ಆದರೆ (re[0] == '\0')
+    ಹಿಂತಿರುಗಿ 1;
+  ಆದರೆ (re[1] == '*')
+    ಹಿಂತಿರುಗಿ matchstar(re[0], re + 2, ಪಠ್ಯ);
+  ಆದರೆ (re[0] == '$' && re[1] == '\0')
+    ಹಿಂತಿರುಗಿ *ಪಠ್ಯ == '\0';
+  ಆದರೆ (*ಪಠ್ಯ != '\0' && (re[0] == '.' || re[0] == *ಪಠ್ಯ))
+    ಹಿಂತಿರುಗಿ matchhere(re + 1, ಪಠ್ಯ + 1);
+  ಹಿಂತಿರುಗಿ 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+ಪೂರ್ಣಾಂಕ
+matchstar(ಪೂರ್ಣಾಂಕ c, ಅಕ್ಷರ *re, ಅಕ್ಷರ *ಪಠ್ಯ)
 {
-  do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+  ಮಾಡು { // a * matches zero or more instances
+    ಆದರೆ (matchhere(re, ಪಠ್ಯ))
+      ಹಿಂತಿರುಗಿ 1;
+  } ಆಗ (*ಪಠ್ಯ != '\0' && (*ಪಠ್ಯ++ == c || c == '.'));
+  ಹಿಂತಿರುಗಿ 0;
 }

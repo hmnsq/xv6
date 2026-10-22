@@ -2,40 +2,40 @@
 // kernel stacks, page-table pages,
 // and pipe buffers. Allocates whole 4096-byte pages.
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "defs.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
 
-void freerange(void *pa_start, void *pa_end);
+ಶೂನ್ಯ freerange(ಶೂನ್ಯ *pa_ಆರಂಭ, ಶೂನ್ಯ *pa_ಕೊನೆ);
 
-extern char end[]; // first address after kernel.
+ಬಾಹ್ಯ ಅಕ್ಷರ ಕೊನೆ[]; // first address after kernel.
                    // defined by kernel.ld.
 
-struct run {
-  struct run *next;
+ರಚನೆ ಸತತ {
+  ರಚನೆ ಸತತ *ಮುಂದಿನ;
 };
 
-struct {
-  struct spinlock lock;
-  struct run *freelist;
+ರಚನೆ {
+  ರಚನೆ spinlock ಬೀಗ;
+  ರಚನೆ ಸತತ *freelist;
 } kmem;
 
-void
+ಶೂನ್ಯ
 kinit()
 {
-  initlock(&kmem.lock, "kmem");
-  freerange(end, (void *)PHYSTOP);
+  initlock(&kmem.ಬೀಗ, "kmem");
+  freerange(ಕೊನೆ, (ಶೂನ್ಯ *)PHYSTOP);
 }
 
-void
-freerange(void *pa_start, void *pa_end)
+ಶೂನ್ಯ
+freerange(ಶೂನ್ಯ *pa_ಆರಂಭ, ಶೂನ್ಯ *pa_ಕೊನೆ)
 {
-  char *p;
-  p = (char *)PGROUNDUP((uint64)pa_start);
-  for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE)
+  ಅಕ್ಷರ *p;
+  p = (ಅಕ್ಷರ *)PGROUNDUP((uint64)pa_ಆರಂಭ);
+  ಗಾಗಿ (; p + PGSIZE <= (ಅಕ್ಷರ *)pa_ಕೊನೆ; p += PGSIZE)
     kfree(p);
 }
 
@@ -43,40 +43,40 @@ freerange(void *pa_start, void *pa_end)
 // which normally should have been returned by a
 // call to kalloc().  (The exception is when
 // initializing the allocator; see kinit above.)
-void
-kfree(void *pa)
+ಶೂನ್ಯ
+kfree(ಶೂನ್ಯ *pa)
 {
-  struct run *r;
+  ರಚನೆ ಸತತ *r;
 
-  if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
+  ಆದರೆ (((uint64)pa % PGSIZE) != 0 || (ಅಕ್ಷರ *)pa < ಕೊನೆ || (uint64)pa >= PHYSTOP)
     panic("kfree");
 
   // Fill with junk to catch dangling refs.
   memset(pa, 1, PGSIZE);
 
-  r = (struct run *)pa;
+  r = (ರಚನೆ ಸತತ *)pa;
 
-  acquire(&kmem.lock);
-  r->next = kmem.freelist;
+  acquire(&kmem.ಬೀಗ);
+  r->ಮುಂದಿನ = kmem.freelist;
   kmem.freelist = r;
-  release(&kmem.lock);
+  release(&kmem.ಬೀಗ);
 }
 
 // Allocate one 4096-byte page of physical memory.
 // Returns a pointer that the kernel can use.
 // Returns 0 if the memory cannot be allocated.
-void *
-kalloc(void)
+ಶೂನ್ಯ *
+kalloc(ಶೂನ್ಯ)
 {
-  struct run *r;
+  ರಚನೆ ಸತತ *r;
 
-  acquire(&kmem.lock);
+  acquire(&kmem.ಬೀಗ);
   r = kmem.freelist;
-  if (r)
-    kmem.freelist = r->next;
-  release(&kmem.lock);
+  ಆದರೆ (r)
+    kmem.freelist = r->ಮುಂದಿನ;
+  release(&kmem.ಬೀಗ);
 
-  if (r)
-    memset((char *)r, 5, PGSIZE); // fill with junk
-  return (void *)r;
+  ಆದರೆ (r)
+    memset((ಅಕ್ಷರ *)r, 5, PGSIZE); // fill with junk
+  ಹಿಂತಿರುಗಿ (ಶೂನ್ಯ *)r;
 }

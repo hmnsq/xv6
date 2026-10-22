@@ -1,43 +1,43 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/fcntl.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-char buf[512];
+ಅಕ್ಷರ buf[512];
 
-void
-cat(int fd)
+ಶೂನ್ಯ
+cat(ಪೂರ್ಣಾಂಕ fd)
 {
-  int n;
+  ಪೂರ್ಣಾಂಕ n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  ಆಗ ((n = ಪಠ(fd, buf, ಗಾತ್ರ(buf))) > 0) {
+    ಆದರೆ (ಲಿಖ(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
-      exit(1);
+      ನಿರ್ಗಮಿಸು(1);
     }
   }
-  if (n < 0) {
+  ಆದರೆ (n < 0) {
     fprintf(2, "cat: read error\n");
-    exit(1);
+    ನಿರ್ಗಮಿಸು(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಂಕ
+ಮುಖ್ಯ(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[])
 {
-  int fd, i;
+  ಪೂರ್ಣಾಂಕ fd, i;
 
-  if (argc <= 1) {
+  ಆದರೆ (argc <= 1) {
     cat(0);
-    exit(0);
+    ನಿರ್ಗಮಿಸು(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  ಗಾಗಿ (i = 1; i < argc; i++) {
+    ಆದರೆ ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
-      exit(1);
+      ನಿರ್ಗಮಿಸು(1);
     }
     cat(fd);
     close(fd);
   }
-  exit(0);
+  ನಿರ್ಗಮಿಸು(0);
 }

@@ -1,417 +1,417 @@
-#ifndef __ASSEMBLER__
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __ASSEMBLER__
 
 // which hart (core) is this?
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_mhartid()
 {
   uint64 x;
-  asm volatile("csrr %0, mhartid" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, mhartid" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Machine Status Register, mstatus
 
-#define MSTATUS_MPP_MASK (3L << 11) // previous mode.
-#define MSTATUS_MPP_M    (3L << 11)
-#define MSTATUS_MPP_S    (1L << 11)
-#define MSTATUS_MPP_U    (0L << 11)
+#ವ್ಯಾಖ್ಯಾನಿಸು MSTATUS_MPP_ಮುಖವಾಡ (3L << 11) // previous mode.
+#ವ್ಯಾಖ್ಯಾನಿಸು MSTATUS_MPP_M    (3L << 11)
+#ವ್ಯಾಖ್ಯಾನಿಸು MSTATUS_MPP_S    (1L << 11)
+#ವ್ಯಾಖ್ಯಾನಿಸು MSTATUS_MPP_U    (0L << 11)
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_mstatus()
 {
   uint64 x;
-  asm volatile("csrr %0, mstatus" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, mstatus" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_mstatus(uint64 x)
 {
-  asm volatile("csrw mstatus, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw mstatus, %0" : : "r"(x));
 }
 
 // machine exception program counter, holds the
 // instruction address to which a return from
 // exception will go.
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_mepc(uint64 x)
 {
-  asm volatile("csrw mepc, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw mepc, %0" : : "r"(x));
 }
 
 // Supervisor Status Register, sstatus
 
-#define SSTATUS_SPP  (1L << 8) // Previous mode, 1=Supervisor, 0=User
-#define SSTATUS_SPIE (1L << 5) // Supervisor Previous Interrupt Enable
-#define SSTATUS_UPIE (1L << 4) // User Previous Interrupt Enable
-#define SSTATUS_SIE  (1L << 1) // Supervisor Interrupt Enable
-#define SSTATUS_UIE  (1L << 0) // User Interrupt Enable
+#ವ್ಯಾಖ್ಯಾನಿಸು SSTATUS_SPP  (1L << 8) // Previous mode, 1=Supervisor, 0=User
+#ವ್ಯಾಖ್ಯಾನಿಸು SSTATUS_SPIE (1L << 5) // Supervisor Previous Interrupt Enable
+#ವ್ಯಾಖ್ಯಾನಿಸು SSTATUS_UPIE (1L << 4) // User Previous Interrupt Enable
+#ವ್ಯಾಖ್ಯಾನಿಸು SSTATUS_SIE  (1L << 1) // Supervisor Interrupt Enable
+#ವ್ಯಾಖ್ಯಾನಿಸು SSTATUS_UIE  (1L << 0) // User Interrupt Enable
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_sstatus()
 {
   uint64 x;
-  asm volatile("csrr %0, sstatus" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, sstatus" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_sstatus(uint64 x)
 {
-  asm volatile("csrw sstatus, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw sstatus, %0" : : "r"(x));
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 s_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrs sstatus, %0" ::"rK"(x) : "memory");
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 c_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrc sstatus, %0" ::"rK"(x) : "memory");
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 rc_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrrc %0, sstatus, %1" : "=r"(x) : "rK"(x) : "memory");
-  return x;
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Supervisor Interrupt Pending
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_sip()
 {
   uint64 x;
-  asm volatile("csrr %0, sip" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, sip" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_sip(uint64 x)
 {
-  asm volatile("csrw sip, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw sip, %0" : : "r"(x));
 }
 
 // Supervisor Interrupt Enable
-#define SIE_SEIE (1L << 9) // external
-#define SIE_STIE (1L << 5) // timer
-static inline uint64
+#ವ್ಯಾಖ್ಯಾನಿಸು SIE_SEIE (1L << 9) // external
+#ವ್ಯಾಖ್ಯಾನಿಸು SIE_STIE (1L << 5) // timer
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_sie()
 {
   uint64 x;
-  asm volatile("csrr %0, sie" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, sie" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_sie(uint64 x)
 {
-  asm volatile("csrw sie, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw sie, %0" : : "r"(x));
 }
 
 // Machine-mode Interrupt Enable
-#define MIE_STIE (1L << 5) // supervisor timer
-static inline uint64
+#ವ್ಯಾಖ್ಯಾನಿಸು MIE_STIE (1L << 5) // supervisor timer
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_mie()
 {
   uint64 x;
-  asm volatile("csrr %0, mie" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, mie" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_mie(uint64 x)
 {
-  asm volatile("csrw mie, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw mie, %0" : : "r"(x));
 }
 
 // supervisor exception program counter, holds the
 // instruction address to which a return from
 // exception will go.
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_sepc(uint64 x)
 {
-  asm volatile("csrw sepc, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw sepc, %0" : : "r"(x));
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_sepc()
 {
   uint64 x;
-  asm volatile("csrr %0, sepc" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, sepc" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Machine Exception Delegation
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_medeleg()
 {
   uint64 x;
-  asm volatile("csrr %0, medeleg" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, medeleg" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_medeleg(uint64 x)
 {
-  asm volatile("csrw medeleg, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw medeleg, %0" : : "r"(x));
 }
 
 // Machine Interrupt Delegation
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_mideleg()
 {
   uint64 x;
-  asm volatile("csrr %0, mideleg" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, mideleg" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_mideleg(uint64 x)
 {
-  asm volatile("csrw mideleg, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw mideleg, %0" : : "r"(x));
 }
 
 // Supervisor Trap-Vector Base Address
 // low two bits are mode.
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_stvec(uint64 x)
 {
-  asm volatile("csrw stvec, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw stvec, %0" : : "r"(x));
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_stvec()
 {
   uint64 x;
-  asm volatile("csrr %0, stvec" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, stvec" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Supervisor Timer Comparison Register
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_stimecmp()
 {
   uint64 x;
   // asm volatile("csrr %0, stimecmp" : "=r" (x) );
-  asm volatile("csrr %0, 0x14d" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, 0x14d" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_stimecmp(uint64 x)
 {
   // asm volatile("csrw stimecmp, %0" : : "r" (x));
-  asm volatile("csrw 0x14d, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw 0x14d, %0" : : "r"(x));
 }
 
 // Machine Environment Configuration Register
 
-#define MENVCFG_STCE (1L << 63)
-#define MENVCFG_ADUE (1L << 61)
+#ವ್ಯಾಖ್ಯಾನಿಸು MENVCFG_STCE (1L << 63)
+#ವ್ಯಾಖ್ಯಾನಿಸು MENVCFG_ADUE (1L << 61)
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_menvcfg()
 {
   uint64 x;
   // asm volatile("csrr %0, menvcfg" : "=r" (x) );
-  asm volatile("csrr %0, 0x30a" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, 0x30a" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_menvcfg(uint64 x)
 {
   // asm volatile("csrw menvcfg, %0" : : "r" (x));
-  asm volatile("csrw 0x30a, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw 0x30a, %0" : : "r"(x));
 }
 
 // Physical Memory Protection
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_pmpcfg0(uint64 x)
 {
-  asm volatile("csrw pmpcfg0, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw pmpcfg0, %0" : : "r"(x));
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_pmpaddr0(uint64 x)
 {
-  asm volatile("csrw pmpaddr0, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw pmpaddr0, %0" : : "r"(x));
 }
 
 // use riscv's sv39 page table scheme.
-#define SATP_SV39 (8L << 60)
+#ವ್ಯಾಖ್ಯಾನಿಸು SATP_SV39 (8L << 60)
 
-#define MAKE_SATP(pagetable) (SATP_SV39 | (((uint64)pagetable) >> 12))
+#ವ್ಯಾಖ್ಯಾನಿಸು MAKE_SATP(pagetable) (SATP_SV39 | (((uint64)pagetable) >> 12))
 
 // supervisor address translation and protection;
 // holds the address of the page table.
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_satp(uint64 x)
 {
-  asm volatile("csrw satp, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw satp, %0" : : "r"(x));
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_satp()
 {
   uint64 x;
-  asm volatile("csrr %0, satp" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, satp" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Supervisor Trap Cause
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_scause()
 {
   uint64 x;
-  asm volatile("csrr %0, scause" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, scause" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Supervisor Trap Value
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_stval()
 {
   uint64 x;
-  asm volatile("csrr %0, stval" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, stval" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // Machine-mode Counter-Enable
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_mcounteren(uint64 x)
 {
-  asm volatile("csrw mcounteren, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("csrw mcounteren, %0" : : "r"(x));
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_mcounteren()
 {
   uint64 x;
-  asm volatile("csrr %0, mcounteren" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, mcounteren" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // machine-mode cycle counter
-static inline uint64
-r_time()
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
+r_ಸಮಯ()
 {
   uint64 x;
-  asm volatile("csrr %0, time" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("csrr %0, time" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // enable device interrupts
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 intr_on()
 {
   s_sstatus(SSTATUS_SIE);
 }
 
 // disable device interrupts
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 intr_off()
 {
   c_sstatus(SSTATUS_SIE);
 }
 
 // are device interrupts enabled?
-static inline int
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಪೂರ್ಣಾಂಕ
 intr_get()
 {
   uint64 x = r_sstatus();
-  return (x & SSTATUS_SIE) != 0;
+  ಹಿಂತಿರುಗಿ (x & SSTATUS_SIE) != 0;
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_sp()
 {
   uint64 x;
-  asm volatile("mv %0, sp" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("mv %0, sp" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // read and write tp, the thread pointer, which xv6 uses to hold
 // this core's hartid (core number), the index into cpus[].
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_tp()
 {
   uint64 x;
-  asm volatile("mv %0, tp" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("mv %0, tp" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 w_tp(uint64 x)
 {
-  asm volatile("mv tp, %0" : : "r"(x));
+  asm ಅಸ್ಥಿರ("mv tp, %0" : : "r"(x));
 }
 
-static inline uint64
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint64
 r_ra()
 {
   uint64 x;
-  asm volatile("mv %0, ra" : "=r"(x));
-  return x;
+  asm ಅಸ್ಥಿರ("mv %0, ra" : "=r"(x));
+  ಹಿಂತಿರುಗಿ x;
 }
 
 // flush the TLB.
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 sfence_vma()
 {
   // the zero, zero means flush all TLB entries.
-  asm volatile("sfence.vma zero, zero" ::: "memory");
+  asm ಅಸ್ಥಿರ("sfence.vma zero, zero" ::: "memory");
 }
 
 // fence for memory-mapped IO
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 io_fence()
 {
-  asm volatile("fence iorw, iorw" ::: "memory");
+  asm ಅಸ್ಥಿರ("fence iorw, iorw" ::: "memory");
 }
 
 // fence for icache
-static inline void
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ
 icache_fence()
 {
-  asm volatile("fence.i" ::: "memory");
+  asm ಅಸ್ಥಿರ("fence.i" ::: "memory");
 }
 
-typedef uint64 pte_t;
-typedef uint64 *pagetable_t; // 512 PTEs
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ uint64 pte_t;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ uint64 *pagetable_t; // 512 PTEs
 
-#endif // __ASSEMBLER__
+#ಆದರೆ_ಅಂತ್ಯ // __ASSEMBLER__
 
-#define PGSIZE  4096 // bytes per page
-#define PGSHIFT 12   // bits of offset within a page
+#ವ್ಯಾಖ್ಯಾನಿಸು PGSIZE  4096 // bytes per page
+#ವ್ಯಾಖ್ಯಾನಿಸು PGSHIFT 12   // bits of offset within a page
 
-#define PGROUNDUP(sz)  (((sz) + PGSIZE - 1) & ~(PGSIZE - 1))
-#define PGROUNDDOWN(a) (((a)) & ~(PGSIZE - 1))
+#ವ್ಯಾಖ್ಯಾನಿಸು PGROUNDUP(sz)  (((sz) + PGSIZE - 1) & ~(PGSIZE - 1))
+#ವ್ಯಾಖ್ಯಾನಿಸು PGROUNDDOWN(a) (((a)) & ~(PGSIZE - 1))
 
-#define PTE_V (1L << 0) // valid
-#define PTE_R (1L << 1)
-#define PTE_W (1L << 2)
-#define PTE_X (1L << 3)
-#define PTE_U (1L << 4) // user can access
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE_V (1L << 0) // valid
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE_R (1L << 1)
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE_W (1L << 2)
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE_X (1L << 3)
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE_U (1L << 4) // user can access
 
 // shift a physical address to the right place for a PTE.
-#define PA2PTE(pa) ((((uint64)pa) >> 12) << 10)
+#ವ್ಯಾಖ್ಯಾನಿಸು PA2PTE(pa) ((((uint64)pa) >> 12) << 10)
 
-#define PTE2PA(pte) (((pte) >> 10) << 12)
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE2PA(pte) (((pte) >> 10) << 12)
 
-#define PTE_FLAGS(pte) ((pte) & 0x3FF)
+#ವ್ಯಾಖ್ಯಾನಿಸು PTE_FLAGS(pte) ((pte) & 0x3FF)
 
 // extract the three 9-bit page table indices from a virtual address.
-#define PXMASK         0x1FF // 9 bits
-#define PXSHIFT(level) (PGSHIFT + (9 * (level)))
-#define PX(level, va)  ((((uint64)(va)) >> PXSHIFT(level)) & PXMASK)
+#ವ್ಯಾಖ್ಯಾನಿಸು PXMASK         0x1FF // 9 bits
+#ವ್ಯಾಖ್ಯಾನಿಸು PXSHIFT(level) (PGSHIFT + (9 * (level)))
+#ವ್ಯಾಖ್ಯಾನಿಸು PX(level, va)  ((((uint64)(va)) >> PXSHIFT(level)) & PXMASK)
 
 // one beyond the highest possible virtual address.
 // MAXVA is actually one bit less than the max allowed by
 // Sv39, to avoid having to sign-extend virtual addresses
 // that have the high bit set.
-#define MAXVA (1L << (9 + 9 + 9 + 12 - 1))
+#ವ್ಯಾಖ್ಯಾನಿಸು MAXVA (1L << (9 + 9 + 9 + 12 - 1))

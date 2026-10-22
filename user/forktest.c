@@ -1,56 +1,56 @@
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-#define N 1000
+#ವ್ಯಾಖ್ಯಾನಿಸು N 1000
 
-void
-print(const char *s)
+ಶೂನ್ಯ
+print(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *s)
 {
-  write(1, s, strlen(s));
+  ಲಿಖ(1, s, ಅಕ್ಷರಸರಣಿ_ಉದ್ದ(s));
 }
 
-void
-forktest(void)
+ಶೂನ್ಯ
+forktest(ಶೂನ್ಯ)
 {
-  int n, pid;
+  ಪೂರ್ಣಾಂಕ n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  ಗಾಗಿ (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    ಆದರೆ (pid < 0)
+      ನಿಲ್ಲಿಸು;
+    ಆದರೆ (pid == 0)
+      ನಿರ್ಗಮಿಸು(0);
   }
 
-  if (n == N) {
+  ಆದರೆ (n == N) {
     print("fork claimed to work N times!\n");
-    exit(1);
+    ನಿರ್ಗಮಿಸು(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  ಗಾಗಿ (; n > 0; n--) {
+    ಆದರೆ (wait(0) < 0) {
       print("wait stopped early\n");
-      exit(1);
+      ನಿರ್ಗಮಿಸು(1);
     }
   }
 
-  if (wait(0) != -1) {
+  ಆದರೆ (wait(0) != -1) {
     print("wait got too many\n");
-    exit(1);
+    ನಿರ್ಗಮಿಸು(1);
   }
 
   print("fork test OK\n");
 }
 
-int
-main(void)
+ಪೂರ್ಣಾಂಕ
+ಮುಖ್ಯ(ಶೂನ್ಯ)
 {
   forktest();
-  exit(0);
+  ನಿರ್ಗಮಿಸು(0);
 }

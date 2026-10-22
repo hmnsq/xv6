@@ -1,11 +1,11 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "sleeplock.h"
+#ಅನ್ತರ್ಭಾವ "fs.h"
+#ಅನ್ತರ್ಭಾವ "buf.h"
 
 // Simple logging that allows concurrent FS system calls.
 //
@@ -32,52 +32,52 @@
 
 // Contents of the header block, used for both the on-disk header block
 // and to keep track in memory of logged block# before commit.
-struct logheader {
-  int n;
-  int block[LOGBLOCKS];
+ರಚನೆ logheader {
+  ಪೂರ್ಣಾಂಕ n;
+  ಪೂರ್ಣಾಂಕ ಖಂಡ[LOGBLOCKS];
 };
 
-struct log {
-  struct spinlock lock;
-  int start;
-  int outstanding; // how many FS sys calls are executing.
-  int committing;  // in commit(), please wait.
-  int dev;
-  int ncommit;
-  struct logheader lh;
+ರಚನೆ ಲಘುಗಣಕ {
+  ರಚನೆ spinlock ಬೀಗ;
+  ಪೂರ್ಣಾಂಕ ಆರಂಭ;
+  ಪೂರ್ಣಾಂಕ outstanding; // how many FS sys calls are executing.
+  ಪೂರ್ಣಾಂಕ committing;  // in commit(), please wait.
+  ಪೂರ್ಣಾಂಕ dev;
+  ಪೂರ್ಣಾಂಕ ncommit;
+  ರಚನೆ logheader lh;
 };
-struct log log;
+ರಚನೆ ಲಘುಗಣಕ ಲಘುಗಣಕ;
 
-static void recover_from_log(void);
-static void commit();
+ಸ್ಥಿರ ಶೂನ್ಯ recover_from_log(ಶೂನ್ಯ);
+ಸ್ಥಿರ ಶೂನ್ಯ commit();
 
-void
-initlog(int dev, struct superblock *sb)
+ಶೂನ್ಯ
+initlog(ಪೂರ್ಣಾಂಕ dev, ರಚನೆ superblock *sb)
 {
-  if (sizeof(struct logheader) >= BSIZE)
+  ಆದರೆ (ಗಾತ್ರ(ರಚನೆ logheader) >= BSIZE)
     panic("initlog: too big logheader");
 
-  initlock(&log.lock, "log");
-  log.start = sb->logstart;
-  log.dev = dev;
+  initlock(&ಲಘುಗಣಕ.ಬೀಗ, "log");
+  ಲಘುಗಣಕ.ಆರಂಭ = sb->logstart;
+  ಲಘುಗಣಕ.dev = dev;
   recover_from_log();
 }
 
 // Copy committed blocks from log to their home location
-static void
-install_trans(int recovering)
+ಸ್ಥಿರ ಶೂನ್ಯ
+install_trans(ಪೂರ್ಣಾಂಕ recovering)
 {
-  int tail;
+  ಪೂರ್ಣಾಂಕ ಬಾಲ;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    if (recovering) {
-      printk("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
+  ಗಾಗಿ (ಬಾಲ = 0; ಬಾಲ < ಲಘುಗಣಕ.lh.n; ಬಾಲ++) {
+    ಆದರೆ (recovering) {
+      printk("recovering tail %d dst %d\n", ಬಾಲ, ಲಘುಗಣಕ.lh.ಖಂಡ[ಬಾಲ]);
     }
-    struct buf *lbuf = bread(log.dev, log.start + tail + 1); // read log block
-    struct buf *dbuf = bread(log.dev, log.lh.block[tail]);   // read dst
-    memmove(dbuf->data, lbuf->data, BSIZE); // copy block to dst
+    ರಚನೆ buf *lbuf = bread(ಲಘುಗಣಕ.dev, ಲಘುಗಣಕ.ಆರಂಭ + ಬಾಲ + 1); // read log block
+    ರಚನೆ buf *dbuf = bread(ಲಘುಗಣಕ.dev, ಲಘುಗಣಕ.lh.ಖಂಡ[ಬಾಲ]);   // read dst
+    memmove(dbuf->ದತ್ತಾಂಶ, lbuf->ದತ್ತಾಂಶ, BSIZE); // copy block to dst
     bwrite(dbuf);                           // write dst to disk
-    if (recovering == 0)
+    ಆದರೆ (recovering == 0)
       bunpin(dbuf);
     brelse(lbuf);
     brelse(dbuf);
@@ -85,15 +85,15 @@ install_trans(int recovering)
 }
 
 // Read the log header from disk into the in-memory log header
-static void
-read_head(void)
+ಸ್ಥಿರ ಶೂನ್ಯ
+read_ತಲೆ(ಶೂನ್ಯ)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *lh = (struct logheader *)(buf->data);
-  int i;
-  log.lh.n = lh->n;
-  for (i = 0; i < log.lh.n; i++) {
-    log.lh.block[i] = lh->block[i];
+  ರಚನೆ buf *buf = bread(ಲಘುಗಣಕ.dev, ಲಘುಗಣಕ.ಆರಂಭ);
+  ರಚನೆ logheader *lh = (ರಚನೆ logheader *)(buf->ದತ್ತಾಂಶ);
+  ಪೂರ್ಣಾಂಕ i;
+  ಲಘುಗಣಕ.lh.n = lh->n;
+  ಗಾಗಿ (i = 0; i < ಲಘುಗಣಕ.lh.n; i++) {
+    ಲಘುಗಣಕ.lh.ಖಂಡ[i] = lh->ಖಂಡ[i];
   }
   brelse(buf);
 }
@@ -101,113 +101,113 @@ read_head(void)
 // Write in-memory log header to disk.
 // This is the true point at which the
 // current transaction commits.
-static void
-write_head(void)
+ಸ್ಥಿರ ಶೂನ್ಯ
+write_ತಲೆ(ಶೂನ್ಯ)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *hb = (struct logheader *)(buf->data);
-  int i;
-  hb->n = log.lh.n;
-  for (i = 0; i < log.lh.n; i++) {
-    hb->block[i] = log.lh.block[i];
+  ರಚನೆ buf *buf = bread(ಲಘುಗಣಕ.dev, ಲಘುಗಣಕ.ಆರಂಭ);
+  ರಚನೆ logheader *hb = (ರಚನೆ logheader *)(buf->ದತ್ತಾಂಶ);
+  ಪೂರ್ಣಾಂಕ i;
+  hb->n = ಲಘುಗಣಕ.lh.n;
+  ಗಾಗಿ (i = 0; i < ಲಘುಗಣಕ.lh.n; i++) {
+    hb->ಖಂಡ[i] = ಲಘುಗಣಕ.lh.ಖಂಡ[i];
   }
   bwrite(buf);
   brelse(buf);
 }
 
-static void
-recover_from_log(void)
+ಸ್ಥಿರ ಶೂನ್ಯ
+recover_from_log(ಶೂನ್ಯ)
 {
-  read_head();
+  read_ತಲೆ();
   install_trans(1); // if committed, copy from log to disk
-  log.lh.n = 0;
-  write_head(); // clear the log
+  ಲಘುಗಣಕ.lh.n = 0;
+  write_ತಲೆ(); // clear the log
 }
 
 // called at the start of each FS system call.
-void
-begin_op(void)
+ಶೂನ್ಯ
+begin_op(ಶೂನ್ಯ)
 {
-  acquire(&log.lock);
-  while (1) {
-    if (log.committing) {
-      sleep_prepare(&log);
-      release(&log.lock);
+  acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+  ಆಗ (1) {
+    ಆದರೆ (ಲಘುಗಣಕ.committing) {
+      sleep_prepare(&ಲಘುಗಣಕ);
+      release(&ಲಘುಗಣಕ.ಬೀಗ);
       sleep();
-      acquire(&log.lock);
-    } else if (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
+      acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+    } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಲಘುಗಣಕ.lh.n + (ಲಘುಗಣಕ.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
       // this op might exhaust log space; wait for commit.
-      sleep_prepare(&log);
-      release(&log.lock);
+      sleep_prepare(&ಲಘುಗಣಕ);
+      release(&ಲಘುಗಣಕ.ಬೀಗ);
       sleep();
-      acquire(&log.lock);
-    } else {
-      log.outstanding += 1;
-      release(&log.lock);
-      break;
+      acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+    } ಇಲ್ಲದಿದ್ದರೆ {
+      ಲಘುಗಣಕ.outstanding += 1;
+      release(&ಲಘುಗಣಕ.ಬೀಗ);
+      ನಿಲ್ಲಿಸು;
     }
   }
 }
 
 // called at the end of each FS system call.
 // commits if this was the last outstanding operation.
-void
-end_op(void)
+ಶೂನ್ಯ
+ಕೊನೆ_op(ಶೂನ್ಯ)
 {
-  int do_commit = 0;
+  ಪೂರ್ಣಾಂಕ do_commit = 0;
 
-  acquire(&log.lock);
-  log.outstanding -= 1;
-  if (log.committing)
+  acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+  ಲಘುಗಣಕ.outstanding -= 1;
+  ಆದರೆ (ಲಘುಗಣಕ.committing)
     panic("log.committing");
-  if (log.outstanding == 0) {
+  ಆದರೆ (ಲಘುಗಣಕ.outstanding == 0) {
     do_commit = 1;
-    log.committing = 1;
-  } else {
+    ಲಘುಗಣಕ.committing = 1;
+  } ಇಲ್ಲದಿದ್ದರೆ {
     // begin_op() may be waiting for log space,
     // and decrementing log.outstanding has decreased
     // the amount of reserved space.
-    wakeup(&log);
+    wakeup(&ಲಘುಗಣಕ);
   }
-  release(&log.lock);
+  release(&ಲಘುಗಣಕ.ಬೀಗ);
 
-  if (do_commit) {
+  ಆದರೆ (do_commit) {
     // call commit w/o holding locks, since not allowed
     // to sleep with locks.
     commit();
-    acquire(&log.lock);
-    log.committing = 0;
-    log.ncommit += 1;
-    wakeup(&log);
-    release(&log.lock);
+    acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+    ಲಘುಗಣಕ.committing = 0;
+    ಲಘುಗಣಕ.ncommit += 1;
+    wakeup(&ಲಘುಗಣಕ);
+    release(&ಲಘುಗಣಕ.ಬೀಗ);
   }
 }
 
 // Copy modified blocks from cache to log.
-static void
-write_log(void)
+ಸ್ಥಿರ ಶೂನ್ಯ
+write_log(ಶೂನ್ಯ)
 {
-  int tail;
+  ಪೂರ್ಣಾಂಕ ಬಾಲ;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    struct buf *to = bread(log.dev, log.start + tail + 1); // log block
-    struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
-    memmove(to->data, from->data, BSIZE);
-    bwrite(to); // write the log
+  ಗಾಗಿ (ಬಾಲ = 0; ಬಾಲ < ಲಘುಗಣಕ.lh.n; ಬಾಲ++) {
+    ರಚನೆ buf *ಗಮ್ಯ = bread(ಲಘುಗಣಕ.dev, ಲಘುಗಣಕ.ಆರಂಭ + ಬಾಲ + 1); // log block
+    ರಚನೆ buf *from = bread(ಲಘುಗಣಕ.dev, ಲಘುಗಣಕ.lh.ಖಂಡ[ಬಾಲ]); // cache block
+    memmove(ಗಮ್ಯ->ದತ್ತಾಂಶ, from->ದತ್ತಾಂಶ, BSIZE);
+    bwrite(ಗಮ್ಯ); // write the log
     brelse(from);
-    brelse(to);
+    brelse(ಗಮ್ಯ);
   }
 }
 
-static void
+ಸ್ಥಿರ ಶೂನ್ಯ
 commit()
 {
-  if (log.lh.n > 0) {
+  ಆದರೆ (ಲಘುಗಣಕ.lh.n > 0) {
     write_log();      // Write modified blocks from cache to log
-    write_head();     // Write header to disk -- the real commit
+    write_ತಲೆ();     // Write header to disk -- the real commit
     install_trans(0); // Now install writes to home locations
-    log.lh.n = 0;
-    write_head(); // Erase the transaction from the log
+    ಲಘುಗಣಕ.lh.n = 0;
+    write_ತಲೆ(); // Erase the transaction from the log
   }
 }
 
@@ -220,42 +220,42 @@ commit()
 //   modify bp->data[]
 //   log_write(bp)
 //   brelse(bp)
-void
-log_write(struct buf *b)
+ಶೂನ್ಯ
+log_write(ರಚನೆ buf *b)
 {
-  int i;
+  ಪೂರ್ಣಾಂಕ i;
 
-  acquire(&log.lock);
-  if (log.lh.n >= LOGBLOCKS)
+  acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+  ಆದರೆ (ಲಘುಗಣಕ.lh.n >= LOGBLOCKS)
     panic("too big a transaction");
-  if (log.outstanding < 1)
+  ಆದರೆ (ಲಘುಗಣಕ.outstanding < 1)
     panic("log_write outside of trans");
 
-  for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno) // log absorption
-      break;
+  ಗಾಗಿ (i = 0; i < ಲಘುಗಣಕ.lh.n; i++) {
+    ಆದರೆ (ಲಘುಗಣಕ.lh.ಖಂಡ[i] == b->blockno) // log absorption
+      ನಿಲ್ಲಿಸು;
   }
-  log.lh.block[i] = b->blockno;
-  if (i == log.lh.n) { // Add new block to log?
+  ಲಘುಗಣಕ.lh.ಖಂಡ[i] = b->blockno;
+  ಆದರೆ (i == ಲಘುಗಣಕ.lh.n) { // Add new block to log?
     bpin(b);
-    log.lh.n++;
+    ಲಘುಗಣಕ.lh.n++;
   }
-  release(&log.lock);
+  release(&ಲಘುಗಣಕ.ಬೀಗ);
 }
 
 uint64
-sys_sync(void)
+sys_sync(ಶೂನ್ಯ)
 {
-  acquire(&log.lock);
-  if (log.committing || log.outstanding > 0) {
-    int n = log.ncommit + 1;
-    while (log.ncommit < n) {
-      sleep_prepare(&log);
-      release(&log.lock);
+  acquire(&ಲಘುಗಣಕ.ಬೀಗ);
+  ಆದರೆ (ಲಘುಗಣಕ.committing || ಲಘುಗಣಕ.outstanding > 0) {
+    ಪೂರ್ಣಾಂಕ n = ಲಘುಗಣಕ.ncommit + 1;
+    ಆಗ (ಲಘುಗಣಕ.ncommit < n) {
+      sleep_prepare(&ಲಘುಗಣಕ);
+      release(&ಲಘುಗಣಕ.ಬೀಗ);
       sleep();
-      acquire(&log.lock);
+      acquire(&ಲಘುಗಣಕ.ಬೀಗ);
     }
   }
-  release(&log.lock);
-  return 0;
+  release(&ಲಘುಗಣಕ.ಬೀಗ);
+  ಹಿಂತಿರುಗಿ 0;
 }

@@ -1,84 +1,84 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "vm.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
+#ಅನ್ತರ್ಭಾವ "vm.h"
 
 uint64
-sys_exit(void)
+sys_exit(ಶೂನ್ಯ)
 {
-  int n;
+  ಪೂರ್ಣಾಂಕ n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  ಹಿಂತಿರುಗಿ 0; // not reached
 }
 
 uint64
-sys_getpid(void)
+sys_getpid(ಶೂನ್ಯ)
 {
-  return myproc()->pid;
+  ಹಿಂತಿರುಗಿ myproc()->pid;
 }
 
 uint64
-sys_fork(void)
+sys_fork(ಶೂನ್ಯ)
 {
-  return kfork();
+  ಹಿಂತಿರುಗಿ kfork();
 }
 
 uint64
-sys_wait(void)
+sys_wait(ಶೂನ್ಯ)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  ಹಿಂತಿರುಗಿ kwait(p);
 }
 
 uint64
-sys_sbrk(void)
+sys_sbrk(ಶೂನ್ಯ)
 {
   uint64 addr;
-  int t;
-  int n;
+  ಪೂರ್ಣಾಂಕ t;
+  ಪೂರ್ಣಾಂಕ n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  ಆದರೆ (t == SBRK_EAGER || n < 0) {
+    ಆದರೆ (growproc(n) < 0) {
+      ಹಿಂತಿರುಗಿ -1;
     }
-  } else {
+  } ಇಲ್ಲದಿದ್ದರೆ {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    ಆದರೆ (addr + n < addr)
+      ಹಿಂತಿರುಗಿ -1;
+    ಆದರೆ (addr + n > TRAPFRAME)
+      ಹಿಂತಿರುಗಿ -1;
     myproc()->sz += n;
   }
-  return addr;
+  ಹಿಂತಿರುಗಿ addr;
 }
 
 uint64
-sys_pause(void)
+sys_pause(ಶೂನ್ಯ)
 {
-  int n;
+  ಪೂರ್ಣಾಂಕ n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  ಆದರೆ (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  ಆಗ (ticks - ticks0 < n) {
+    ಆದರೆ (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      ಹಿಂತಿರುಗಿ -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,27 +86,27 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  ಹಿಂತಿರುಗಿ 0;
 }
 
 uint64
-sys_kill(void)
+sys_kill(ಶೂನ್ಯ)
 {
-  int pid;
+  ಪೂರ್ಣಾಂಕ pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  ಹಿಂತಿರುಗಿ kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
 // since start.
 uint64
-sys_uptime(void)
+sys_uptime(ಶೂನ್ಯ)
 {
   uint xticks;
 
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  ಹಿಂತಿರುಗಿ xticks;
 }

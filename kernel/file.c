@@ -2,178 +2,178 @@
 // Support functions for system calls that involve file descriptors.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "fs.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "stat.h"
-#include "proc.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "fs.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "sleeplock.h"
+#ಅನ್ತರ್ಭಾವ "file.h"
+#ಅನ್ತರ್ಭಾವ "stat.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
 
-struct devsw devsw[NDEV];
-struct {
-  struct spinlock lock;
-  struct file file[NFILE];
+ರಚನೆ devsw devsw[NDEV];
+ರಚನೆ {
+  ರಚನೆ spinlock ಬೀಗ;
+  ರಚನೆ file file[NFILE];
 } ftable;
 
-void
-fileinit(void)
+ಶೂನ್ಯ
+fileinit(ಶೂನ್ಯ)
 {
-  initlock(&ftable.lock, "ftable");
+  initlock(&ftable.ಬೀಗ, "ftable");
 }
 
 // Allocate a file structure.
-struct file *
-filealloc(void)
+ರಚನೆ file *
+filealloc(ಶೂನ್ಯ)
 {
-  struct file *f;
+  ರಚನೆ file *f;
 
-  acquire(&ftable.lock);
-  for (f = ftable.file; f < ftable.file + NFILE; f++) {
-    if (f->ref == 0) {
+  acquire(&ftable.ಬೀಗ);
+  ಗಾಗಿ (f = ftable.file; f < ftable.file + NFILE; f++) {
+    ಆದರೆ (f->ref == 0) {
       f->ref = 1;
-      release(&ftable.lock);
-      return f;
+      release(&ftable.ಬೀಗ);
+      ಹಿಂತಿರುಗಿ f;
     }
   }
-  release(&ftable.lock);
-  return 0;
+  release(&ftable.ಬೀಗ);
+  ಹಿಂತಿರುಗಿ 0;
 }
 
 // Increment ref count for file f.
-struct file *
-filedup(struct file *f)
+ರಚನೆ file *
+filedup(ರಚನೆ file *f)
 {
-  acquire(&ftable.lock);
-  if (f->ref < 1)
+  acquire(&ftable.ಬೀಗ);
+  ಆದರೆ (f->ref < 1)
     panic("filedup");
   f->ref++;
-  release(&ftable.lock);
-  return f;
+  release(&ftable.ಬೀಗ);
+  ಹಿಂತಿರುಗಿ f;
 }
 
 // Close file f.  (Decrement ref count, close when reaches 0.)
-void
-fileclose(struct file *f)
+ಶೂನ್ಯ
+fileclose(ರಚನೆ file *f)
 {
-  struct file ff;
+  ರಚನೆ file ff;
 
-  acquire(&ftable.lock);
-  if (f->ref < 1)
+  acquire(&ftable.ಬೀಗ);
+  ಆದರೆ (f->ref < 1)
     panic("fileclose");
-  if (--f->ref > 0) {
-    release(&ftable.lock);
-    return;
+  ಆದರೆ (--f->ref > 0) {
+    release(&ftable.ಬೀಗ);
+    ಹಿಂತಿರುಗಿ;
   }
   ff = *f;
   f->ref = 0;
   f->type = FD_NONE;
-  release(&ftable.lock);
+  release(&ftable.ಬೀಗ);
 
-  if (ff.type == FD_PIPE) {
+  ಆದರೆ (ff.type == FD_PIPE) {
     pipeclose(ff.pipe, ff.writable);
-  } else if (ff.type == FD_INODE || ff.type == FD_DEVICE) {
+  } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ff.type == FD_INODE || ff.type == FD_DEVICE) {
     begin_op();
     iput(ff.ip);
-    end_op();
+    ಕೊನೆ_op();
   }
 }
 
 // Get metadata about file f.
 // addr is a user virtual address, pointing to a struct stat.
-int
-filestat(struct file *f, uint64 addr)
+ಪೂರ್ಣಾಂಕ
+filestat(ರಚನೆ file *f, uint64 addr)
 {
-  struct proc *p = myproc();
-  struct stat st;
+  ರಚನೆ proc *p = myproc();
+  ರಚನೆ stat st;
 
-  if (f->type == FD_INODE || f->type == FD_DEVICE) {
+  ಆದರೆ (f->type == FD_INODE || f->type == FD_DEVICE) {
     ilock(f->ip);
     stati(f->ip, &st);
     iunlock(f->ip);
-    if (copyout(p->pagetable, p->sz, addr, (char *)&st, sizeof(st)) < 0)
-      return -1;
-    return 0;
+    ಆದರೆ (copyout(p->pagetable, p->sz, addr, (ಅಕ್ಷರ *)&st, ಗಾತ್ರ(st)) < 0)
+      ಹಿಂತಿರುಗಿ -1;
+    ಹಿಂತಿರುಗಿ 0;
   }
-  return -1;
+  ಹಿಂತಿರುಗಿ -1;
 }
 
 // Read from file f.
 // addr is a user virtual address.
-int
-fileread(struct file *f, uint64 addr, int n)
+ಪೂರ್ಣಾಂಕ
+fileread(ರಚನೆ file *f, uint64 addr, ಪೂರ್ಣಾಂಕ n)
 {
-  int r = 0;
+  ಪೂರ್ಣಾಂಕ r = 0;
 
-  if (f->readable == 0 || n < 0)
-    return -1;
+  ಆದರೆ (f->readable == 0 || n < 0)
+    ಹಿಂತಿರುಗಿ -1;
 
-  if (f->type == FD_PIPE) {
+  ಆದರೆ (f->type == FD_PIPE) {
     r = piperead(f->pipe, addr, n);
-  } else if (f->type == FD_DEVICE) {
-    if (f->major < 0 || f->major >= NDEV || !devsw[f->major].read)
-      return -1;
-    r = devsw[f->major].read(1, addr, n);
-  } else if (f->type == FD_INODE) {
+  } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (f->type == FD_DEVICE) {
+    ಆದರೆ (f->major < 0 || f->major >= NDEV || !devsw[f->major].ಪಠ)
+      ಹಿಂತಿರುಗಿ -1;
+    r = devsw[f->major].ಪಠ(1, addr, n);
+  } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (f->type == FD_INODE) {
     ilock(f->ip);
-    if ((r = readi(f->ip, 1, addr, f->off, n)) > 0)
+    ಆದರೆ ((r = readi(f->ip, 1, addr, f->off, n)) > 0)
       f->off += r;
     iunlock(f->ip);
-  } else {
+  } ಇಲ್ಲದಿದ್ದರೆ {
     panic("fileread");
   }
 
-  return r;
+  ಹಿಂತಿರುಗಿ r;
 }
 
 // Write to file f.
 // addr is a user virtual address.
-int
-filewrite(struct file *f, uint64 addr, int n)
+ಪೂರ್ಣಾಂಕ
+filewrite(ರಚನೆ file *f, uint64 addr, ಪೂರ್ಣಾಂಕ n)
 {
-  int r, ret = 0;
+  ಪೂರ್ಣಾಂಕ r, ret = 0;
 
-  if (f->writable == 0 || n < 0)
-    return -1;
+  ಆದರೆ (f->writable == 0 || n < 0)
+    ಹಿಂತಿರುಗಿ -1;
 
-  if (f->type == FD_PIPE) {
+  ಆದರೆ (f->type == FD_PIPE) {
     ret = pipewrite(f->pipe, addr, n);
-  } else if (f->type == FD_DEVICE) {
-    if (f->major < 0 || f->major >= NDEV || !devsw[f->major].write)
-      return -1;
-    ret = devsw[f->major].write(1, addr, n);
-  } else if (f->type == FD_INODE) {
+  } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (f->type == FD_DEVICE) {
+    ಆದರೆ (f->major < 0 || f->major >= NDEV || !devsw[f->major].ಲಿಖ)
+      ಹಿಂತಿರುಗಿ -1;
+    ret = devsw[f->major].ಲಿಖ(1, addr, n);
+  } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (f->type == FD_INODE) {
     // write a few blocks at a time to avoid exceeding
     // the maximum log transaction size, including
     // i-node, indirect block, allocation blocks,
     // and 2 blocks of slop for non-aligned writes.
-    int max = ((MAXOPBLOCKS - 1 - 1 - 2) / 2) * BSIZE;
-    int i = 0;
-    while (i < n) {
-      int n1 = n - i;
-      if (n1 > max)
+    ಪೂರ್ಣಾಂಕ max = ((MAXOPBLOCKS - 1 - 1 - 2) / 2) * BSIZE;
+    ಪೂರ್ಣಾಂಕ i = 0;
+    ಆಗ (i < n) {
+      ಪೂರ್ಣಾಂಕ n1 = n - i;
+      ಆದರೆ (n1 > max)
         n1 = max;
 
       begin_op();
       ilock(f->ip);
-      if ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
+      ಆದರೆ ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
         f->off += r;
       iunlock(f->ip);
-      end_op();
+      ಕೊನೆ_op();
 
-      if (r != n1) {
+      ಆದರೆ (r != n1) {
         // error from writei
-        break;
+        ನಿಲ್ಲಿಸು;
       }
       i += r;
     }
     ret = (i == n ? n : -1);
-  } else {
+  } ಇಲ್ಲದಿದ್ದರೆ {
     panic("filewrite");
   }
 
-  return ret;
+  ಹಿಂತಿರುಗಿ ret;
 }

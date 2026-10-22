@@ -1,55 +1,55 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "kernel/fcntl.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-char buf[512];
+ಅಕ್ಷರ buf[512];
 
-void
-wc(int fd, char *name)
+ಶೂನ್ಯ
+wc(ಪೂರ್ಣಾಂಕ fd, ಅಕ್ಷರ *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  ಪೂರ್ಣಾಂಕ i, n;
+  ಪೂರ್ಣಾಂಕ l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  ಆಗ ((n = ಪಠ(fd, buf, ಗಾತ್ರ(buf))) > 0) {
+    ಗಾಗಿ (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      ಆದರೆ (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      ಆದರೆ (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
-    printf("wc: read error\n");
-    exit(1);
+  ಆದರೆ (n < 0) {
+    ಬರೆ("wc: read error\n");
+    ನಿರ್ಗಮಿಸು(1);
   }
-  printf("%d %d %d %s\n", l, w, c, name);
+  ಬರೆ("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಂಕ
+ಮುಖ್ಯ(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[])
 {
-  int fd, i;
+  ಪೂರ್ಣಾಂಕ fd, i;
 
-  if (argc <= 1) {
+  ಆದರೆ (argc <= 1) {
     wc(0, "");
-    exit(0);
+    ನಿರ್ಗಮಿಸು(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("wc: cannot open %s\n", argv[i]);
-      exit(1);
+  ಗಾಗಿ (i = 1; i < argc; i++) {
+    ಆದರೆ ((fd = open(argv[i], O_RDONLY)) < 0) {
+      ಬರೆ("wc: cannot open %s\n", argv[i]);
+      ನಿರ್ಗಮಿಸು(1);
     }
     wc(fd, argv[i]);
     close(fd);
   }
-  exit(0);
+  ನಿರ್ಗಮಿಸು(0);
 }

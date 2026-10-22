@@ -1,40 +1,40 @@
-struct file {
-  enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
-  int ref; // reference count
-  char readable;
-  char writable;
-  struct pipe *pipe; // FD_PIPE
-  struct inode *ip;  // FD_INODE and FD_DEVICE
+ರಚನೆ file {
+  ಎಣಿಕೆ { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
+  ಪೂರ್ಣಾಂಕ ref; // reference count
+  ಅಕ್ಷರ readable;
+  ಅಕ್ಷರ writable;
+  ರಚನೆ pipe *pipe; // FD_PIPE
+  ರಚನೆ inode *ip;  // FD_INODE and FD_DEVICE
   uint off;          // FD_INODE
-  short major;       // FD_DEVICE
+  ಗಿಡ್ಡ major;       // FD_DEVICE
 };
 
-#define major(dev)  ((dev) >> 16 & 0xFFFF)
-#define minor(dev)  ((dev) & 0xFFFF)
-#define mkdev(m, n) ((uint)((m) << 16 | (n)))
+#ವ್ಯಾಖ್ಯಾನಿಸು major(dev)  ((dev) >> 16 & 0xFFFF)
+#ವ್ಯಾಖ್ಯಾನಿಸು minor(dev)  ((dev) & 0xFFFF)
+#ವ್ಯಾಖ್ಯಾನಿಸು mkdev(m, n) ((uint)((m) << 16 | (n)))
 
 // in-memory copy of an inode
-struct inode {
+ರಚನೆ inode {
   uint dev;              // Device number
   uint inum;             // Inode number
-  int ref;               // Reference count
-  struct sleeplock lock; // protects everything below here
-  int valid;             // inode has been read from disk?
+  ಪೂರ್ಣಾಂಕ ref;               // Reference count
+  ರಚನೆ sleeplock ಬೀಗ; // protects everything below here
+  ಪೂರ್ಣಾಂಕ valid;             // inode has been read from disk?
 
-  short type; // copy of disk inode
-  short major;
-  short minor;
-  short nlink;
-  uint size;
+  ಗಿಡ್ಡ type; // copy of disk inode
+  ಗಿಡ್ಡ major;
+  ಗಿಡ್ಡ minor;
+  ಗಿಡ್ಡ nlink;
+  uint ಗಾತ್ರ_2;
   uint addrs[NDIRECT + 1];
 };
 
 // map major device number to device functions.
-struct devsw {
-  int (*read)(int, uint64, int);
-  int (*write)(int, uint64, int);
+ರಚನೆ devsw {
+  ಪೂರ್ಣಾಂಕ (*ಪಠ)(ಪೂರ್ಣಾಂಕ, uint64, ಪೂರ್ಣಾಂಕ);
+  ಪೂರ್ಣಾಂಕ (*ಲಿಖ)(ಪೂರ್ಣಾಂಕ, uint64, ಪೂರ್ಣಾಂಕ);
 };
 
-extern struct devsw devsw[];
+ಬಾಹ್ಯ ರಚನೆ devsw devsw[];
 
-#define CONSOLE 1
+#ವ್ಯಾಖ್ಯಾನಿಸು CONSOLE 1
