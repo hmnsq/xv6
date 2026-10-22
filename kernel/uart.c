@@ -2,19 +2,19 @@
 // low-level driver for 16550a UART.
 //
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "proc.h"
-#include "defs.h"
+#അന്തര്ഭാവ "types.h"
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ "memlayout.h"
+#അന്തര്ഭാവ "riscv.h"
+#അന്തര്ഭാവ "spinlock.h"
+#അന്തര്ഭാവ "sleeplock.h"
+#അന്തര്ഭാവ "proc.h"
+#അന്തര്ഭാവ "defs.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#define Reg(reg) ((അസ്ഥിര unsigned അക്ഷരം *)(UART0 + (reg)))
 
 #define ReadReg(reg)     (*(Reg(reg)))
 #define WriteReg(reg, v) (*(Reg(reg)) = (v))
@@ -39,14 +39,14 @@
 #define LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
 
 // for sending threads to serialize their writes
-static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+സ്ഥിതം ഘടന sleeplock tx_lock;
+സ്ഥിതം പൂർണ്ണസംഖ്യ tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+ബാഹ്യ അസ്ഥിര പൂർണ്ണസംഖ്യ panicking; // from printk.c
+ബാഹ്യ അസ്ഥിര പൂർണ്ണസംഖ്യ panicked;  // from printk.c
 
-void
-uartinit(void)
+ശൂന്യം
+uartinit(ശൂന്യം)
 {
   // disable interrupts.
   WriteReg(IER, 0x00);
@@ -76,18 +76,18 @@ uartinit(void)
 // transmit buf[] to the uart. it blocks if the
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
-void
-uartwrite(char buf[], int n)
+ശൂന്യം
+uartwrite(അക്ഷരം buf[], പൂർണ്ണസംഖ്യ n)
 {
   acquiresleep(&tx_lock);
 
-  int i = 0;
-  while (i < n) {
+  പൂർണ്ണസംഖ്യ i = 0;
+  ആകുമ്പോൾ (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    എങ്കിൽ (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } അല്ലെങ്കിൽ {
       sleep();
     }
   }
@@ -99,57 +99,57 @@ uartwrite(char buf[], int n)
 // interrupts, for use by kernel printk() and
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
-void
-uartputc_sync(int c)
+ശൂന്യം
+uartputc_sync(പൂർണ്ണസംഖ്യ c)
 {
-  if (panicking == 0)
-    push_off();
+  എങ്കിൽ (panicking == 0)
+    തള്ളുക_off();
 
-  if (panicked) {
-    for (;;)
+  എങ്കിൽ (panicked) {
+    വേണ്ടി (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  ആകുമ്പോൾ ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
-    pop_off();
+  എങ്കിൽ (panicking == 0)
+    എടുക്കുക_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
-uartgetc(void)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+uartgetc(ശൂന്യം)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  എങ്കിൽ (ReadReg(LSR) & LSR_RX_READY) {
+    തിരികെ ReadReg(RHR);
+  } അല്ലെങ്കിൽ {
+    തിരികെ -1;
   }
 }
 
 // handle a uart interrupt, raised because input has
 // arrived, or the uart is ready for more output, or
 // both. called from devintr().
-void
-uartintr(void)
+ശൂന്യം
+uartintr(ശൂന്യം)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  എങ്കിൽ (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
-      break;
+  ആകുമ്പോൾ (1) {
+    പൂർണ്ണസംഖ്യ c = uartgetc();
+    എങ്കിൽ (c == -1)
+      നിർത്തുക;
     consoleintr(c);
   }
 }

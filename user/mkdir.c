@@ -1,21 +1,21 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "user/user.h"
 
-int
-main(int argc, char *argv[])
+പൂർണ്ണസംഖ്യ
+പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
-  if (argc < 2) {
+  എങ്കിൽ (argc < 2) {
     fprintf(2, "Usage: mkdir files...\n");
     exit(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (mkdir(argv[i]) < 0) {
+  വേണ്ടി (i = 1; i < argc; i++) {
+    എങ്കിൽ (mkdir(argv[i]) < 0) {
       fprintf(2, "mkdir: %s failed to create\n", argv[i]);
-      break;
+      നിർത്തുക;
     }
   }
 

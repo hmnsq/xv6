@@ -1,38 +1,38 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/fcntl.h"
+#അന്തര്ഭാവ "user/user.h"
 
-char buf[512];
+അക്ഷരം buf[512];
 
-void
-cat(int fd)
+ശൂന്യം
+cat(പൂർണ്ണസംഖ്യ fd)
 {
-  int n;
+  പൂർണ്ണസംഖ്യ n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  ആകുമ്പോൾ ((n = പഠ(fd, buf, വലുപ്പം(buf))) > 0) {
+    എങ്കിൽ (ലിഖ(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  എങ്കിൽ (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+പൂർണ്ണസംഖ്യ
+പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
-  int fd, i;
+  പൂർണ്ണസംഖ്യ fd, i;
 
-  if (argc <= 1) {
+  എങ്കിൽ (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  വേണ്ടി (i = 1; i < argc; i++) {
+    എങ്കിൽ ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

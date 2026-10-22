@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "kernel/fcntl.h"
+#അന്തര്ഭാവ "kernel/riscv.h"
+#അന്തര്ഭാവ "kernel/vm.h"
+#അന്തര്ഭാവ "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+ശൂന്യം
+start(പൂർണ്ണസംഖ്യ argc, അക്ഷരം **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  പൂർണ്ണസംഖ്യ r;
+  ബാഹ്യ പൂർണ്ണസംഖ്യ പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം **argv);
+  r = പ്രധാന(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+അക്ഷരം *
+strcpy(അക്ഷരം *s, സ്ഥിരം അക്ഷരം *t)
 {
-  char *os;
+  അക്ഷരം *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  ആകുമ്പോൾ ((*s++ = *t++) != 0)
     ;
-  return os;
+  തിരികെ os;
 }
 
-int
-strcmp(const char *p, const char *q)
+പൂർണ്ണസംഖ്യ
+strcmp(സ്ഥിരം അക്ഷരം *p, സ്ഥിരം അക്ഷരം *q)
 {
-  while (*p && *p == *q)
+  ആകുമ്പോൾ (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  തിരികെ (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(സ്ഥിരം അക്ഷരം *s)
 {
-  int n;
+  പൂർണ്ണസംഖ്യ n;
 
-  for (n = 0; s[n]; n++)
+  വേണ്ടി (n = 0; s[n]; n++)
     ;
-  return n;
+  തിരികെ n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+ശൂന്യം *
+memset(ശൂന്യം *dst, പൂർണ്ണസംഖ്യ c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  അക്ഷരം *cdst = (അക്ഷരം *)dst;
+  പൂർണ്ണസംഖ്യ i;
+  വേണ്ടി (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  തിരികെ dst;
 }
 
-char *
-strchr(const char *s, char c)
+അക്ഷരം *
+strchr(സ്ഥിരം അക്ഷരം *s, അക്ഷരം c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  വേണ്ടി (; *s; s++)
+    എങ്കിൽ (*s == c)
+      തിരികെ (അക്ഷരം *)s;
+  തിരികെ 0;
 }
 
-char *
-gets(char *buf, int max)
+അക്ഷരം *
+gets(അക്ഷരം *buf, പൂർണ്ണസംഖ്യ max)
 {
-  int i, cc;
-  char c;
+  പൂർണ്ണസംഖ്യ i, cc;
+  അക്ഷരം c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  വേണ്ടി (i = 0; i + 1 < max;) {
+    cc = പഠ(0, &c, 1);
+    എങ്കിൽ (cc < 1)
+      നിർത്തുക;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    എങ്കിൽ (c == '\n' || c == '\r')
+      നിർത്തുക;
   }
   buf[i] = '\0';
-  return buf;
+  തിരികെ buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+പൂർണ്ണസംഖ്യ
+stat(സ്ഥിരം അക്ഷരം *n, ഘടന stat *st)
 {
-  int fd;
-  int r;
+  പൂർണ്ണസംഖ്യ fd;
+  പൂർണ്ണസംഖ്യ r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  എങ്കിൽ (fd < 0)
+    തിരികെ -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  തിരികെ r;
 }
 
-int
-atoi(const char *s)
+പൂർണ്ണസംഖ്യ
+atoi(സ്ഥിരം അക്ഷരം *s)
 {
-  int n;
+  പൂർണ്ണസംഖ്യ n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  ആകുമ്പോൾ ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  തിരികെ n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+ശൂന്യം *
+memmove(ശൂന്യം *vdst, സ്ഥിരം ശൂന്യം *vsrc, പൂർണ്ണസംഖ്യ n)
 {
-  char *dst;
-  const char *src;
+  അക്ഷരം *dst;
+  സ്ഥിരം അക്ഷരം *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  എങ്കിൽ (src > dst) {
+    ആകുമ്പോൾ (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } അല്ലെങ്കിൽ {
     dst += n;
     src += n;
-    while (n-- > 0)
+    ആകുമ്പോൾ (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  തിരികെ vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+പൂർണ്ണസംഖ്യ
+memcmp(സ്ഥിരം ശൂന്യം *s1, സ്ഥിരം ശൂന്യം *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  സ്ഥിരം അക്ഷരം *p1 = s1, *p2 = s2;
+  ആകുമ്പോൾ (n-- > 0) {
+    എങ്കിൽ (*p1 != *p2) {
+      തിരികെ *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  തിരികെ 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+ശൂന്യം *
+memcpy(ശൂന്യം *dst, സ്ഥിരം ശൂന്യം *src, uint n)
 {
-  return memmove(dst, src, n);
+  തിരികെ memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+അക്ഷരം *
+sbrk(പൂർണ്ണസംഖ്യ n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  തിരികെ sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+അക്ഷരം *
+sbrklazy(പൂർണ്ണസംഖ്യ n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  തിരികെ sys_sbrk(n, SBRK_LAZY);
 }

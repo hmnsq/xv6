@@ -1,58 +1,58 @@
 // Simple grep.  Only supports ^ . * $ operators.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "kernel/fcntl.h"
+#അന്തര്ഭാവ "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+അക്ഷരം buf[1024];
+പൂർണ്ണസംഖ്യ match(അക്ഷരം *, അക്ഷരം *);
 
-void
-grep(char *pattern, int fd)
+ശൂന്യം
+grep(അക്ഷരം *pattern, പൂർണ്ണസംഖ്യ fd)
 {
-  int n, m;
-  char *p, *q;
+  പൂർണ്ണസംഖ്യ n, m;
+  അക്ഷരം *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  ആകുമ്പോൾ ((n = പഠ(fd, buf + m, വലുപ്പം(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    ആകുമ്പോൾ ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      എങ്കിൽ (match(pattern, p)) {
         *q = '\n';
-        write(1, p, q + 1 - p);
+        ലിഖ(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    എങ്കിൽ (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+പൂർണ്ണസംഖ്യ
+പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
-  int fd, i;
-  char *pattern;
+  പൂർണ്ണസംഖ്യ fd, i;
+  അക്ഷരം *pattern;
 
-  if (argc <= 1) {
+  എങ്കിൽ (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
     exit(1);
   }
   pattern = argv[1];
 
-  if (argc <= 2) {
+  എങ്കിൽ (argc <= 2) {
     grep(pattern, 0);
     exit(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  വേണ്ടി (i = 2; i < argc; i++) {
+    എങ്കിൽ ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("grep: cannot open %s\n", argv[i]);
       exit(1);
     }
@@ -66,43 +66,43 @@ main(int argc, char *argv[])
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+പൂർണ്ണസംഖ്യ matchhere(അക്ഷരം *, അക്ഷരം *);
+പൂർണ്ണസംഖ്യ matchstar(പൂർണ്ണസംഖ്യ, അക്ഷരം *, അക്ഷരം *);
 
-int
-match(char *re, char *text)
+പൂർണ്ണസംഖ്യ
+match(അക്ഷരം *re, അക്ഷരം *text)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
-  do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+  എങ്കിൽ (re[0] == '^')
+    തിരികെ matchhere(re + 1, text);
+  ചെയ്യുക { // must look at empty string
+    എങ്കിൽ (matchhere(re, text))
+      തിരികെ 1;
+  } ആകുമ്പോൾ (*text++ != '\0');
+  തിരികെ 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+പൂർണ്ണസംഖ്യ
+matchhere(അക്ഷരം *re, അക്ഷരം *text)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  എങ്കിൽ (re[0] == '\0')
+    തിരികെ 1;
+  എങ്കിൽ (re[1] == '*')
+    തിരികെ matchstar(re[0], re + 2, text);
+  എങ്കിൽ (re[0] == '$' && re[1] == '\0')
+    തിരികെ *text == '\0';
+  എങ്കിൽ (*text != '\0' && (re[0] == '.' || re[0] == *text))
+    തിരികെ matchhere(re + 1, text + 1);
+  തിരികെ 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+പൂർണ്ണസംഖ്യ
+matchstar(പൂർണ്ണസംഖ്യ c, അക്ഷരം *re, അക്ഷരം *text)
 {
-  do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+  ചെയ്യുക { // a * matches zero or more instances
+    എങ്കിൽ (matchhere(re, text))
+      തിരികെ 1;
+  } ആകുമ്പോൾ (*text != '\0' && (*text++ == c || c == '.'));
+  തിരികെ 0;
 }

@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((അക്ഷരം *)-1)
 
-struct stat;
+ഘടന stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+പൂർണ്ണസംഖ്യ fork(ശൂന്യം);
+പൂർണ്ണസംഖ്യ exit(പൂർണ്ണസംഖ്യ) __attribute__((noreturn));
+പൂർണ്ണസംഖ്യ wait(പൂർണ്ണസംഖ്യ *);
+പൂർണ്ണസംഖ്യ pipe(പൂർണ്ണസംഖ്യ *);
+പൂർണ്ണസംഖ്യ ലിഖ(പൂർണ്ണസംഖ്യ, സ്ഥിരം ശൂന്യം *, പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ പഠ(പൂർണ്ണസംഖ്യ, ശൂന്യം *, പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ close(പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ kill(പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ exec(സ്ഥിരം അക്ഷരം *, അക്ഷരം **);
+പൂർണ്ണസംഖ്യ open(സ്ഥിരം അക്ഷരം *, പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ mknod(സ്ഥിരം അക്ഷരം *, short, short);
+പൂർണ്ണസംഖ്യ unlink(സ്ഥിരം അക്ഷരം *);
+പൂർണ്ണസംഖ്യ fstat(പൂർണ്ണസംഖ്യ fd, ഘടന stat *);
+പൂർണ്ണസംഖ്യ link(സ്ഥിരം അക്ഷരം *, സ്ഥിരം അക്ഷരം *);
+പൂർണ്ണസംഖ്യ mkdir(സ്ഥിരം അക്ഷരം *);
+പൂർണ്ണസംഖ്യ chdir(സ്ഥിരം അക്ഷരം *);
+പൂർണ്ണസംഖ്യ dup(പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ getpid(ശൂന്യം);
+അക്ഷരം *sys_sbrk(പൂർണ്ണസംഖ്യ, പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ pause(പൂർണ്ണസംഖ്യ);
+പൂർണ്ണസംഖ്യ uptime(ശൂന്യം);
+പൂർണ്ണസംഖ്യ sync(ശൂന്യം);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+പൂർണ്ണസംഖ്യ stat(സ്ഥിരം അക്ഷരം *, ഘടന stat *);
+അക്ഷരം *strcpy(അക്ഷരം *, സ്ഥിരം അക്ഷരം *);
+ശൂന്യം *memmove(ശൂന്യം *, സ്ഥിരം ശൂന്യം *, പൂർണ്ണസംഖ്യ);
+അക്ഷരം *strchr(സ്ഥിരം അക്ഷരം *, അക്ഷരം c);
+പൂർണ്ണസംഖ്യ strcmp(സ്ഥിരം അക്ഷരം *, സ്ഥിരം അക്ഷരം *);
+അക്ഷരം *gets(അക്ഷരം *, പൂർണ്ണസംഖ്യ max);
+uint strlen(സ്ഥിരം അക്ഷരം *);
+ശൂന്യം *memset(ശൂന്യം *, പൂർണ്ണസംഖ്യ, uint);
+പൂർണ്ണസംഖ്യ atoi(സ്ഥിരം അക്ഷരം *);
+പൂർണ്ണസംഖ്യ memcmp(സ്ഥിരം ശൂന്യം *, സ്ഥിരം ശൂന്യം *, uint);
+ശൂന്യം *memcpy(ശൂന്യം *, സ്ഥിരം ശൂന്യം *, uint);
+അക്ഷരം *sbrk(പൂർണ്ണസംഖ്യ);
+അക്ഷരം *sbrklazy(പൂർണ്ണസംഖ്യ);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+ശൂന്യം fprintf(പൂർണ്ണസംഖ്യ, സ്ഥിരം അക്ഷരം *, ...) __attribute__((format(printf, 2, 3)));
+ശൂന്യം printf(സ്ഥിരം അക്ഷരം *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+ശൂന്യം *malloc(uint);
+ശൂന്യം സ്വതന്ത്രം(ശൂന്യം *);

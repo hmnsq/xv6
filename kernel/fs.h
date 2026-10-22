@@ -10,7 +10,7 @@
 //
 // mkfs computes the super block and builds an initial file system. The
 // super block describes the disk layout:
-struct superblock {
+ഘടന superblock {
   uint magic;      // Must be FSMAGIC
   uint size;       // Size of file system image (blocks)
   uint nblocks;    // Number of data blocks
@@ -24,12 +24,12 @@ struct superblock {
 #define FSMAGIC 0x10203040
 
 #define NDIRECT   12
-#define NINDIRECT (BSIZE / sizeof(uint))
+#define NINDIRECT (BSIZE / വലുപ്പം(uint))
 #define MAXFILE   (NDIRECT + NINDIRECT)
 #define NLINK_MAX 32767 // nlink is a short; refuse links past its maximum
 
 // On-disk inode structure
-struct dinode {
+ഘടന dinode {
   short type;              // File type
   short major;             // Major device number (T_DEVICE only)
   short minor;             // Minor device number (T_DEVICE only)
@@ -39,7 +39,7 @@ struct dinode {
 };
 
 // Inodes per block.
-#define IPB (BSIZE / sizeof(struct dinode))
+#define IPB (BSIZE / വലുപ്പം(ഘടന dinode))
 
 // Block containing inode i
 #define IBLOCK(i, sb) ((i) / IPB + sb.inodestart)
@@ -55,7 +55,7 @@ struct dinode {
 
 // The name field may have DIRSIZ characters and not end in a NUL
 // character.
-struct dirent {
+ഘടന dirent {
   ushort inum;
-  char name[DIRSIZ] __attribute__((nonstring));
+  അക്ഷരം name[DIRSIZ] __attribute__((nonstring));
 };

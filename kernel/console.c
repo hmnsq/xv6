@@ -9,18 +9,18 @@
 //   control-p -- print process list
 //
 
-#include <stdarg.h>
+#അന്തര്ഭാവ <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#അന്തര്ഭാവ "types.h"
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ "spinlock.h"
+#അന്തര്ഭാവ "sleeplock.h"
+#അന്തര്ഭാവ "fs.h"
+#അന്തര്ഭാവ "file.h"
+#അന്തര്ഭാവ "memlayout.h"
+#അന്തര്ഭാവ "riscv.h"
+#അന്തര്ഭാവ "defs.h"
+#അന്തര്ഭാവ "proc.h"
 
 #define BACKSPACE 0x100       // erase the last output character
 #define C(x)      ((x) - '@') // Control-x
@@ -31,25 +31,25 @@
 // interrupts, e.g. by printk and to echo input
 // characters.
 //
-void
-consputc(int c)
+ശൂന്യം
+consputc(പൂർണ്ണസംഖ്യ c)
 {
-  if (c == BACKSPACE) {
+  എങ്കിൽ (c == BACKSPACE) {
     // if the user typed backspace, overwrite with a space.
     uartputc_sync('\b');
     uartputc_sync(' ');
     uartputc_sync('\b');
-  } else {
+  } അല്ലെങ്കിൽ {
     uartputc_sync(c);
   }
 }
 
-struct {
-  struct spinlock lock;
+ഘടന {
+  ഘടന spinlock lock;
 
   // input circular buffer
-#define INPUT_BUF_SIZE 128
-  char buf[INPUT_BUF_SIZE];
+#define നിവേശം_BUF_SIZE 128
+  അക്ഷരം buf[നിവേശം_BUF_SIZE];
   uint r; // Read index
   uint w; // Write index
   uint e; // Edit index
@@ -59,23 +59,23 @@ struct {
 // user write() system calls to the console go here.
 // uses sleep() and UART interrupts.
 //
-int
-consolewrite(int user_src, uint64 src, int n)
+പൂർണ്ണസംഖ്യ
+consolewrite(പൂർണ്ണസംഖ്യ user_src, uint64 src, പൂർണ്ണസംഖ്യ n)
 {
-  char buf[32]; // move batches from user space to uart.
-  int i = 0;
+  അക്ഷരം buf[32]; // move batches from user space to uart.
+  പൂർണ്ണസംഖ്യ i = 0;
 
-  while (i < n) {
-    int nn = sizeof(buf);
-    if (nn > n - i)
+  ആകുമ്പോൾ (i < n) {
+    പൂർണ്ണസംഖ്യ nn = വലുപ്പം(buf);
+    എങ്കിൽ (nn > n - i)
       nn = n - i;
-    if (either_copyin(buf, user_src, src + i, nn) == -1)
-      break;
+    എങ്കിൽ (either_copyin(buf, user_src, src + i, nn) == -1)
+      നിർത്തുക;
     uartwrite(buf, nn);
     i += nn;
   }
 
-  return i;
+  തിരികെ i;
 }
 
 //
@@ -84,22 +84,22 @@ consolewrite(int user_src, uint64 src, int n)
 // user_dst indicates whether dst is a user
 // or kernel address.
 //
-int
-consoleread(int user_dst, uint64 dst, int n)
+പൂർണ്ണസംഖ്യ
+consoleread(പൂർണ്ണസംഖ്യ user_dst, uint64 dst, പൂർണ്ണസംഖ്യ n)
 {
   uint target;
-  int c;
-  char cbuf;
+  പൂർണ്ണസംഖ്യ c;
+  അക്ഷരം cbuf;
 
   target = n;
   acquire(&cons.lock);
-  while (n > 0) {
+  ആകുമ്പോൾ (n > 0) {
     // wait until interrupt handler has put some
     // input into cons.buffer.
-    while (cons.r == cons.w) {
-      if (killed(myproc())) {
+    ആകുമ്പോൾ (cons.r == cons.w) {
+      എങ്കിൽ (killed(myproc())) {
         release(&cons.lock);
-        return -1;
+        തിരികെ -1;
       }
       sleep_prepare(&cons.r);
       release(&cons.lock);
@@ -107,34 +107,34 @@ consoleread(int user_dst, uint64 dst, int n)
       acquire(&cons.lock);
     }
 
-    c = cons.buf[cons.r++ % INPUT_BUF_SIZE];
+    c = cons.buf[cons.r++ % നിവേശം_BUF_SIZE];
 
-    if (c == C('D')) { // end-of-file
-      if (n < target) {
+    എങ്കിൽ (c == C('D')) { // end-of-file
+      എങ്കിൽ (n < target) {
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
         cons.r--;
       }
-      break;
+      നിർത്തുക;
     }
 
     // copy the input byte to the user-space buffer.
     cbuf = c;
-    if (either_copyout(user_dst, dst, &cbuf, 1) == -1)
-      break;
+    എങ്കിൽ (either_copyout(user_dst, dst, &cbuf, 1) == -1)
+      നിർത്തുക;
 
     dst++;
     --n;
 
-    if (c == '\n') {
+    എങ്കിൽ (c == '\n') {
       // a whole line has arrived, return to
       // the user-level read().
-      break;
+      നിർത്തുക;
     }
   }
   release(&cons.lock);
 
-  return target - n;
+  തിരികെ target - n;
 }
 
 //
@@ -143,54 +143,54 @@ consoleread(int user_dst, uint64 dst, int n)
 // do erase/kill processing, append to cons.buf,
 // wake up consoleread() if a whole line has arrived.
 //
-void
-consoleintr(int c)
+ശൂന്യം
+consoleintr(പൂർണ്ണസംഖ്യ c)
 {
   acquire(&cons.lock);
 
-  switch (c) {
-  case C('P'): // Print process list.
+  തിരഞ്ഞെടുപ്പ് (c) {
+  അവസ്ഥ C('P'): // Print process list.
     procdump();
-    break;
-  case C('U'): // Kill line.
-    while (cons.e != cons.w &&
-           cons.buf[(cons.e - 1) % INPUT_BUF_SIZE] != '\n') {
+    നിർത്തുക;
+  അവസ്ഥ C('U'): // Kill line.
+    ആകുമ്പോൾ (cons.e != cons.w &&
+           cons.buf[(cons.e - 1) % നിവേശം_BUF_SIZE] != '\n') {
       cons.e--;
       consputc(BACKSPACE);
     }
-    break;
-  case C('H'): // Backspace
-  case '\x7f': // Delete key
-    if (cons.e != cons.w) {
+    നിർത്തുക;
+  അവസ്ഥ C('H'): // Backspace
+  അവസ്ഥ '\x7f': // Delete key
+    എങ്കിൽ (cons.e != cons.w) {
       cons.e--;
       consputc(BACKSPACE);
     }
-    break;
-  default:
-    if (c != 0 && cons.e - cons.r < INPUT_BUF_SIZE) {
+    നിർത്തുക;
+  സ്ഥിരസ്ഥിതി:
+    എങ്കിൽ (c != 0 && cons.e - cons.r < നിവേശം_BUF_SIZE) {
       c = (c == '\r') ? '\n' : c;
 
       // echo back to the user.
       consputc(c);
 
       // store for consumption by consoleread().
-      cons.buf[cons.e++ % INPUT_BUF_SIZE] = c;
+      cons.buf[cons.e++ % നിവേശം_BUF_SIZE] = c;
 
-      if (c == '\n' || c == C('D') || cons.e - cons.r == INPUT_BUF_SIZE) {
+      എങ്കിൽ (c == '\n' || c == C('D') || cons.e - cons.r == നിവേശം_BUF_SIZE) {
         // wake up consoleread() if a whole line (or end-of-file)
         // has arrived.
         cons.w = cons.e;
         wakeup(&cons.r);
       }
     }
-    break;
+    നിർത്തുക;
   }
 
   release(&cons.lock);
 }
 
-void
-consoleinit(void)
+ശൂന്യം
+consoleinit(ശൂന്യം)
 {
   initlock(&cons.lock, "cons");
 
@@ -198,6 +198,6 @@ consoleinit(void)
 
   // connect read and write system calls
   // to consoleread and consolewrite.
-  devsw[CONSOLE].read = consoleread;
-  devsw[CONSOLE].write = consolewrite;
+  devsw[CONSOLE].പഠ = consoleread;
+  devsw[CONSOLE].ലിഖ = consolewrite;
 }

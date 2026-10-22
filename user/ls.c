@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "user/user.h"
+#അന്തര്ഭാവ "kernel/fs.h"
+#അന്തര്ഭാവ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+അക്ഷരം *
+fmtname(അക്ഷരം *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  സ്ഥിതം അക്ഷരം buf[DIRSIZ + 1];
+  അക്ഷരം *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  വേണ്ടി (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  എങ്കിൽ (strlen(p) >= DIRSIZ)
+    തിരികെ p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[വലുപ്പം(buf) - 1] = '\0';
+  തിരികെ buf;
 }
 
-void
-ls(char *path)
+ശൂന്യം
+ls(അക്ഷരം *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  അക്ഷരം buf[512], *p;
+  പൂർണ്ണസംഖ്യ fd;
+  ഘടന dirent de;
+  ഘടന stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  എങ്കിൽ ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    തിരികെ;
   }
 
-  if (fstat(fd, &st) < 0) {
+  എങ്കിൽ (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    തിരികെ;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  തിരഞ്ഞെടുപ്പ് (st.type) {
+  അവസ്ഥ T_DEVICE:
+  അവസ്ഥ T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (പൂർണ്ണസംഖ്യ)st.size);
+    നിർത്തുക;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  അവസ്ഥ T_DIR:
+    എങ്കിൽ (strlen(path) + 1 + DIRSIZ + 1 > വലുപ്പം buf) {
       printf("ls: path too long\n");
-      break;
+      നിർത്തുക;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    ആകുമ്പോൾ (പഠ(fd, &de, വലുപ്പം(de)) == വലുപ്പം(de)) {
+      എങ്കിൽ (de.inum == 0)
+        തുടരുക;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      എങ്കിൽ (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
-        continue;
+        തുടരുക;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (പൂർണ്ണസംഖ്യ)st.size);
     }
-    break;
+    നിർത്തുക;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+പൂർണ്ണസംഖ്യ
+പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
-  if (argc < 2) {
+  എങ്കിൽ (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  വേണ്ടി (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

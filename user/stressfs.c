@@ -7,41 +7,41 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "user/user.h"
+#അന്തര്ഭാവ "kernel/fs.h"
+#അന്തര്ഭാവ "kernel/fcntl.h"
 
-int
-main(int argc, char *argv[])
+പൂർണ്ണസംഖ്യ
+പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
-  int fd, i;
-  char path[] = "stressfs0";
-  char data[512];
+  പൂർണ്ണസംഖ്യ fd, i;
+  അക്ഷരം path[] = "stressfs0";
+  അക്ഷരം data[512];
 
   printf("stressfs starting\n");
-  memset(data, 'a', sizeof(data));
+  memset(data, 'a', വലുപ്പം(data));
 
-  for (i = 0; i < 4; i++)
-    if (fork() > 0)
-      break;
+  വേണ്ടി (i = 0; i < 4; i++)
+    എങ്കിൽ (fork() > 0)
+      നിർത്തുക;
 
   printf("write %d\n", i);
 
   path[8] += i;
   fd = open(path, O_CREATE | O_RDWR);
-  for (i = 0; i < 20; i++) {
+  വേണ്ടി (i = 0; i < 20; i++) {
     // printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    ലിഖ(fd, data, വലുപ്പം(data));
   }
   close(fd);
 
   printf("read\n");
 
   fd = open(path, O_RDONLY);
-  for (i = 0; i < 20; i++)
-    read(fd, data, sizeof(data));
+  വേണ്ടി (i = 0; i < 20; i++)
+    പഠ(fd, data, വലുപ്പം(data));
   close(fd);
 
   wait(0);

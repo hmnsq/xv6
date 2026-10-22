@@ -2,40 +2,40 @@
 // kernel stacks, page-table pages,
 // and pipe buffers. Allocates whole 4096-byte pages.
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "defs.h"
+#അന്തര്ഭാവ "types.h"
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ "memlayout.h"
+#അന്തര്ഭാവ "spinlock.h"
+#അന്തര്ഭാവ "riscv.h"
+#അന്തര്ഭാവ "defs.h"
 
-void freerange(void *pa_start, void *pa_end);
+ശൂന്യം freerange(ശൂന്യം *pa_start, ശൂന്യം *pa_end);
 
-extern char end[]; // first address after kernel.
+ബാഹ്യ അക്ഷരം end[]; // first address after kernel.
                    // defined by kernel.ld.
 
-struct run {
-  struct run *next;
+ഘടന run {
+  ഘടന run *next;
 };
 
-struct {
-  struct spinlock lock;
-  struct run *freelist;
+ഘടന {
+  ഘടന spinlock lock;
+  ഘടന run *freelist;
 } kmem;
 
-void
+ശൂന്യം
 kinit()
 {
   initlock(&kmem.lock, "kmem");
-  freerange(end, (void *)PHYSTOP);
+  freerange(end, (ശൂന്യം *)PHYSTOP);
 }
 
-void
-freerange(void *pa_start, void *pa_end)
+ശൂന്യം
+freerange(ശൂന്യം *pa_start, ശൂന്യം *pa_end)
 {
-  char *p;
-  p = (char *)PGROUNDUP((uint64)pa_start);
-  for (; p + PGSIZE <= (char *)pa_end; p += PGSIZE)
+  അക്ഷരം *p;
+  p = (അക്ഷരം *)PGROUNDUP((uint64)pa_start);
+  വേണ്ടി (; p + PGSIZE <= (അക്ഷരം *)pa_end; p += PGSIZE)
     kfree(p);
 }
 
@@ -43,18 +43,18 @@ freerange(void *pa_start, void *pa_end)
 // which normally should have been returned by a
 // call to kalloc().  (The exception is when
 // initializing the allocator; see kinit above.)
-void
-kfree(void *pa)
+ശൂന്യം
+kfree(ശൂന്യം *pa)
 {
-  struct run *r;
+  ഘടന run *r;
 
-  if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
+  എങ്കിൽ (((uint64)pa % PGSIZE) != 0 || (അക്ഷരം *)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
 
   // Fill with junk to catch dangling refs.
   memset(pa, 1, PGSIZE);
 
-  r = (struct run *)pa;
+  r = (ഘടന run *)pa;
 
   acquire(&kmem.lock);
   r->next = kmem.freelist;
@@ -65,18 +65,18 @@ kfree(void *pa)
 // Allocate one 4096-byte page of physical memory.
 // Returns a pointer that the kernel can use.
 // Returns 0 if the memory cannot be allocated.
-void *
-kalloc(void)
+ശൂന്യം *
+kalloc(ശൂന്യം)
 {
-  struct run *r;
+  ഘടന run *r;
 
   acquire(&kmem.lock);
   r = kmem.freelist;
-  if (r)
+  എങ്കിൽ (r)
     kmem.freelist = r->next;
   release(&kmem.lock);
 
-  if (r)
-    memset((char *)r, 5, PGSIZE); // fill with junk
-  return (void *)r;
+  എങ്കിൽ (r)
+    memset((അക്ഷരം *)r, 5, PGSIZE); // fill with junk
+  തിരികെ (ശൂന്യം *)r;
 }

@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+തരനിർവചനം unsigned പൂർണ്ണസംഖ്യ uint;
+തരനിർവചനം unsigned short ushort;
+തരനിർവചനം unsigned അക്ഷരം uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+തരനിർവചനം unsigned അക്ഷരം uint8;
+തരനിർവചനം unsigned short uint16;
+തരനിർവചനം unsigned പൂർണ്ണസംഖ്യ uint32;
+തരനിർവചനം unsigned long uint64;
 
-typedef uint64 pde_t;
+തരനിർവചനം uint64 pde_t;

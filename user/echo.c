@@ -1,18 +1,18 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "user/user.h"
 
-int
-main(int argc, char *argv[])
+പൂർണ്ണസംഖ്യ
+പ്രധാന(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  വേണ്ടി (i = 1; i < argc; i++) {
+    ലിഖ(1, argv[i], strlen(argv[i]));
+    എങ്കിൽ (i + 1 < argc) {
+      ലിഖ(1, " ", 1);
+    } അല്ലെങ്കിൽ {
+      ലിഖ(1, "\n", 1);
     }
   }
   exit(0);

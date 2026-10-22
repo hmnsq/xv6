@@ -1,84 +1,84 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "vm.h"
+#അന്തര്ഭാവ "types.h"
+#അന്തര്ഭാവ "riscv.h"
+#അന്തര്ഭാവ "defs.h"
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ "memlayout.h"
+#അന്തര്ഭാവ "spinlock.h"
+#അന്തര്ഭാവ "proc.h"
+#അന്തര്ഭാവ "vm.h"
 
 uint64
-sys_exit(void)
+sys_exit(ശൂന്യം)
 {
-  int n;
+  പൂർണ്ണസംഖ്യ n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  തിരികെ 0; // not reached
 }
 
 uint64
-sys_getpid(void)
+sys_getpid(ശൂന്യം)
 {
-  return myproc()->pid;
+  തിരികെ myproc()->pid;
 }
 
 uint64
-sys_fork(void)
+sys_fork(ശൂന്യം)
 {
-  return kfork();
+  തിരികെ kfork();
 }
 
 uint64
-sys_wait(void)
+sys_wait(ശൂന്യം)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  തിരികെ kwait(p);
 }
 
 uint64
-sys_sbrk(void)
+sys_sbrk(ശൂന്യം)
 {
   uint64 addr;
-  int t;
-  int n;
+  പൂർണ്ണസംഖ്യ t;
+  പൂർണ്ണസംഖ്യ n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  എങ്കിൽ (t == SBRK_EAGER || n < 0) {
+    എങ്കിൽ (growproc(n) < 0) {
+      തിരികെ -1;
     }
-  } else {
+  } അല്ലെങ്കിൽ {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    എങ്കിൽ (addr + n < addr)
+      തിരികെ -1;
+    എങ്കിൽ (addr + n > TRAPFRAME)
+      തിരികെ -1;
     myproc()->sz += n;
   }
-  return addr;
+  തിരികെ addr;
 }
 
 uint64
-sys_pause(void)
+sys_pause(ശൂന്യം)
 {
-  int n;
+  പൂർണ്ണസംഖ്യ n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  എങ്കിൽ (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  ആകുമ്പോൾ (ticks - ticks0 < n) {
+    എങ്കിൽ (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      തിരികെ -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,27 +86,27 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  തിരികെ 0;
 }
 
 uint64
-sys_kill(void)
+sys_kill(ശൂന്യം)
 {
-  int pid;
+  പൂർണ്ണസംഖ്യ pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  തിരികെ kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
 // since start.
 uint64
-sys_uptime(void)
+sys_uptime(ശൂന്യം)
 {
   uint xticks;
 
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  തിരികെ xticks;
 }

@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#അന്തര്ഭാവ "kernel/types.h"
+#അന്തര്ഭാവ "kernel/stat.h"
+#അന്തര്ഭാവ "user/user.h"
+#അന്തര്ഭാവ "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+തരനിർവചനം long Align;
 
-union header {
-  struct {
-    union header *ptr;
+സംഘം header {
+  ഘടന {
+    സംഘം header *ptr;
     uint size;
   } s;
   Align x;
 };
 
-typedef union header Header;
+തരനിർവചനം സംഘം header Header;
 
-static Header base;
-static Header *freep;
+സ്ഥിതം Header base;
+സ്ഥിതം Header *freep;
 
-void
-free(void *ap)
+ശൂന്യം
+സ്വതന്ത്രം(ശൂന്യം *ap)
 {
   Header *bp, *p;
 
   bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
+  വേണ്ടി (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    എങ്കിൽ (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      നിർത്തുക;
+  എങ്കിൽ (bp + bp->s.size == p->s.ptr) {
     bp->s.size += p->s.ptr->s.size;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } അല്ലെങ്കിൽ
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
+  എങ്കിൽ (p + p->s.size == bp) {
     p->s.size += bp->s.size;
     p->s.ptr = bp->s.ptr;
-  } else
+  } അല്ലെങ്കിൽ
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+സ്ഥിതം Header *
 morecore(uint nu)
 {
-  char *p;
+  അക്ഷരം *p;
   Header *hp;
 
-  if (nu < 4096)
+  എങ്കിൽ (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
+  p = sbrk(nu * വലുപ്പം(Header));
+  എങ്കിൽ (p == SBRK_ERROR)
+    തിരികെ 0;
   hp = (Header *)p;
   hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  സ്വതന്ത്രം((ശൂന്യം *)(hp + 1));
+  തിരികെ freep;
 }
 
-void *
+ശൂന്യം *
 malloc(uint nbytes)
 {
   Header *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
+  nunits = (nbytes + വലുപ്പം(Header) - 1) / വലുപ്പം(Header) + 1;
+  എങ്കിൽ ((prevp = freep) == 0) {
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  വേണ്ടി (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    എങ്കിൽ (p->s.size >= nunits) {
+      എങ്കിൽ (p->s.size == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
+      അല്ലെങ്കിൽ {
         p->s.size -= nunits;
         p += p->s.size;
         p->s.size = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      തിരികെ (ശൂന്യം *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    എങ്കിൽ (p == freep)
+      എങ്കിൽ ((p = morecore(nunits)) == 0)
+        തിരികെ 0;
   }
 }
