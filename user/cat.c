@@ -5,34 +5,34 @@
 char buf[512];
 
 void
-cat(int fd)
+cat(整数 fd)
 {
-  int n;
+  整数 n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  ながら ((n = read(fd, buf, sizeof(buf))) > 0) {
+    もし (write(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  もし (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+整数
+メインページ(整数 argc, char *argv[])
 {
-  int fd, i;
+  整数 fd, i;
 
-  if (argc <= 1) {
+  もし (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  ために (i = 1; i < argc; i++) {
+    もし ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

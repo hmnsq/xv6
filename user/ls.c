@@ -11,78 +11,78 @@ fmtname(char *path)
   char *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  ために (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  もし (strlen(p) >= DIRSIZ)
+    戻る p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
   buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  戻る buf;
 }
 
 void
 ls(char *path)
 {
   char buf[512], *p;
-  int fd;
+  整数 fd;
   struct dirent de;
   struct stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  もし ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    戻る;
   }
 
-  if (fstat(fd, &st) < 0) {
+  もし (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    戻る;
   }
 
   switch (st.type) {
   case T_DEVICE:
   case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (整数)st.size);
     break;
 
   case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+    もし (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
       printf("ls: path too long\n");
       break;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
+    ながら (read(fd, &de, sizeof(de)) == sizeof(de)) {
+      もし (de.inum == 0)
         continue;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      もし (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (整数)st.size);
     }
     break;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+整数
+メインページ(整数 argc, char *argv[])
 {
-  int i;
+  整数 i;
 
-  if (argc < 2) {
+  もし (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  ために (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

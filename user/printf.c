@@ -7,105 +7,105 @@
 static char digits[] = "0123456789ABCDEF";
 
 static void
-putc(int fd, char c)
+putc(整数 fd, char c)
 {
   write(fd, &c, 1);
 }
 
 static void
-printint(int fd, long long xx, int base, int sgn)
+printint(整数 fd, long long xx, 整数 base, 整数 sgn)
 {
   char buf[20];
-  int i, neg;
+  整数 i, neg;
   unsigned long long x;
 
   neg = 0;
-  if (sgn && xx < 0) {
+  もし (sgn && xx < 0) {
     neg = 1;
     x = -xx;
-  } else {
+  } 否则 {
     x = xx;
   }
 
   i = 0;
   do {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
-  if (neg)
+  } ながら ((x /= base) != 0);
+  もし (neg)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  ながら (--i >= 0)
     putc(fd, buf[i]);
 }
 
 static void
-printptr(int fd, uint64 x)
+printptr(整数 fd, uint64 x)
 {
-  int i;
+  整数 i;
   putc(fd, '0');
   putc(fd, 'x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
+  ために (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
     putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %c, %s.
 void
-vprintf(int fd, const char *fmt, va_list ap)
+vprintf(整数 fd, const char *fmt, va_list ap)
 {
   char *s;
-  int c0, c1, c2, i, state;
+  整数 c0, c1, c2, i, state;
 
   state = 0;
-  for (i = 0; fmt[i]; i++) {
+  ために (i = 0; fmt[i]; i++) {
     c0 = fmt[i] & 0xff;
-    if (state == 0) {
-      if (c0 == '%') {
+    もし (state == 0) {
+      もし (c0 == '%') {
         state = '%';
-      } else {
+      } 否则 {
         putc(fd, c0);
       }
-    } else if (state == '%') {
+    } 否则 もし (state == '%') {
       c1 = c2 = 0;
-      if (c0)
+      もし (c0)
         c1 = fmt[i + 1] & 0xff;
-      if (c1)
+      もし (c1)
         c2 = fmt[i + 2] & 0xff;
-      if (c0 == 'd') {
-        printint(fd, va_arg(ap, int), 10, 1);
-      } else if (c0 == 'l' && c1 == 'd') {
+      もし (c0 == 'd') {
+        printint(fd, va_arg(ap, 整数), 10, 1);
+      } 否则 もし (c0 == 'l' && c1 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+      } 否则 もし (c0 == 'l' && c1 == 'l' && c2 == 'd') {
         printint(fd, va_arg(ap, uint64), 10, 1);
         i += 2;
-      } else if (c0 == 'u') {
+      } 否则 もし (c0 == 'u') {
         printint(fd, va_arg(ap, uint32), 10, 0);
-      } else if (c0 == 'l' && c1 == 'u') {
+      } 否则 もし (c0 == 'l' && c1 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+      } 否则 もし (c0 == 'l' && c1 == 'l' && c2 == 'u') {
         printint(fd, va_arg(ap, uint64), 10, 0);
         i += 2;
-      } else if (c0 == 'x') {
+      } 否则 もし (c0 == 'x') {
         printint(fd, va_arg(ap, uint32), 16, 0);
-      } else if (c0 == 'l' && c1 == 'x') {
+      } 否则 もし (c0 == 'l' && c1 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 1;
-      } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+      } 否则 もし (c0 == 'l' && c1 == 'l' && c2 == 'x') {
         printint(fd, va_arg(ap, uint64), 16, 0);
         i += 2;
-      } else if (c0 == 'p') {
+      } 否则 もし (c0 == 'p') {
         printptr(fd, va_arg(ap, uint64));
-      } else if (c0 == 'c') {
+      } 否则 もし (c0 == 'c') {
         putc(fd, va_arg(ap, uint32));
-      } else if (c0 == 's') {
-        if ((s = va_arg(ap, char *)) == 0)
+      } 否则 もし (c0 == 's') {
+        もし ((s = va_arg(ap, char *)) == 0)
           s = "(null)";
-        for (; *s; s++)
+        ために (; *s; s++)
           putc(fd, *s);
-      } else if (c0 == '%') {
+      } 否则 もし (c0 == '%') {
         putc(fd, '%');
-      } else {
+      } 否则 {
         // Unknown % sequence.  Print it to draw attention.
         putc(fd, '%');
         putc(fd, c0);
@@ -117,7 +117,7 @@ vprintf(int fd, const char *fmt, va_list ap)
 }
 
 void
-fprintf(int fd, const char *fmt, ...)
+fprintf(整数 fd, const char *fmt, ...)
 {
   va_list ap;
 

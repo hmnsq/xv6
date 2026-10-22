@@ -1,30 +1,30 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, 整数 c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  整数 i;
+  ために (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  戻る dst;
 }
 
-int
+整数
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  ながら (n-- > 0) {
+    もし (*s1 != *s2)
+      戻る *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  戻る 0;
 }
 
 void *
@@ -33,74 +33,74 @@ memmove(void *dst, const void *src, uint n)
   const char *s;
   char *d;
 
-  if (n == 0)
-    return dst;
+  もし (n == 0)
+    戻る dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  もし (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    ながら (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } 否则
+    ながら (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  戻る dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  戻る memmove(dst, src, n);
 }
 
-int
+整数
 strncmp(const char *p, const char *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  ながら (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  もし (n == 0)
+    戻る 0;
+  戻る (uchar)*p - (uchar)*q;
 }
 
 char *
-strncpy(char *s, const char *t, int n)
+strncpy(char *s, const char *t, 整数 n)
 {
   char *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  ながら (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  ながら (n-- > 0)
     *s++ = 0;
-  return os;
+  戻る os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
 char *
-safestrcpy(char *s, const char *t, int n)
+safestrcpy(char *s, const char *t, 整数 n)
 {
   char *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  もし (n <= 0)
+    戻る os;
+  ながら (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  戻る os;
 }
 
-int
+整数
 strlen(const char *s)
 {
-  int n;
+  整数 n;
 
-  for (n = 0; s[n]; n++)
+  ために (n = 0; s[n]; n++)
     ;
-  return n;
+  戻る n;
 }

@@ -2,8 +2,8 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+整数
+メインページ(整数 argc, char *argv[])
 {
   sync();
   exit(0);

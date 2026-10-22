@@ -19,7 +19,7 @@ plicinit(void)
 void
 plicinithart(void)
 {
-  int hart = cpuid();
+  整数 hart = cpuid();
 
   // set enable bits for this hart's S-mode
   // for the uart and virtio disk.
@@ -31,18 +31,18 @@ plicinithart(void)
 }
 
 // ask the PLIC what interrupt we should serve.
-int
+整数
 plic_claim(void)
 {
-  int hart = cpuid();
-  int irq = *(volatile uint32 *)PLIC_SCLAIM(hart);
-  return irq;
+  整数 hart = cpuid();
+  整数 irq = *(volatile uint32 *)PLIC_SCLAIM(hart);
+  戻る irq;
 }
 
 // tell the PLIC we've served this IRQ.
 void
-plic_complete(int irq)
+plic_complete(整数 irq)
 {
-  int hart = cpuid();
+  整数 hart = cpuid();
   *(volatile uint32 *)PLIC_SCLAIM(hart) = irq;
 }

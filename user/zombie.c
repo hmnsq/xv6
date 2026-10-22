@@ -5,10 +5,10 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(void)
+整数
+メインページ(void)
 {
-  if (fork() > 0)
+  もし (fork() > 0)
     pause(5); // Let child exit before parent.
   exit(0);
 }

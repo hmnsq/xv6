@@ -4,7 +4,7 @@
 #include "riscv.h"
 #include "defs.h"
 
-void main();
+void メインページ();
 void timerinit();
 
 // entry.S needs one stack per CPU.
@@ -22,7 +22,7 @@ start()
 
   // set M Exception Program Counter to main, for mret.
   // requires gcc -mcmodel=medany
-  w_mepc((uint64)main);
+  w_mepc((uint64)メインページ);
 
   // disable paging for now.
   w_satp(0);
@@ -44,7 +44,7 @@ start()
   timerinit();
 
   // keep each CPU's hartid in its tp register, for cpuid().
-  int id = r_mhartid();
+  整数 id = r_mhartid();
   w_tp(id);
 
   // switch to supervisor mode and jump to main().
