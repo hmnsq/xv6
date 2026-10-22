@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#அந்தர்பாவ "kernel/types.h"
+#அந்தர்பாவ "kernel/stat.h"
+#அந்தர்பாவ "kernel/fcntl.h"
+#அந்தர்பாவ "kernel/riscv.h"
+#அந்தர்பாவ "kernel/vm.h"
+#அந்தர்பாவ "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+வெறுமை
+start(முழு argc, எழுத்து **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  முழு r;
+  வெளி முழு முதன்மை(முழு argc, எழுத்து **argv);
+  r = முதன்மை(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+எழுத்து *
+strcpy(எழுத்து *s, மாறிலி எழுத்து *t)
 {
-  char *os;
+  எழுத்து *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  போது ((*s++ = *t++) != 0)
     ;
-  return os;
+  திரும்பு os;
 }
 
-int
-strcmp(const char *p, const char *q)
+முழு
+strcmp(மாறிலி எழுத்து *p, மாறிலி எழுத்து *q)
 {
-  while (*p && *p == *q)
+  போது (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  திரும்பு (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(மாறிலி எழுத்து *s)
 {
-  int n;
+  முழு n;
 
-  for (n = 0; s[n]; n++)
+  க்கு (n = 0; s[n]; n++)
     ;
-  return n;
+  திரும்பு n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+வெறுமை *
+memset(வெறுமை *dst, முழு c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  எழுத்து *cdst = (எழுத்து *)dst;
+  முழு i;
+  க்கு (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  திரும்பு dst;
 }
 
-char *
-strchr(const char *s, char c)
+எழுத்து *
+strchr(மாறிலி எழுத்து *s, எழுத்து c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  க்கு (; *s; s++)
+    எனில் (*s == c)
+      திரும்பு (எழுத்து *)s;
+  திரும்பு 0;
 }
 
-char *
-gets(char *buf, int max)
+எழுத்து *
+gets(எழுத்து *buf, முழு max)
 {
-  int i, cc;
-  char c;
+  முழு i, cc;
+  எழுத்து c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  க்கு (i = 0; i + 1 < max;) {
+    cc = பட(0, &c, 1);
+    எனில் (cc < 1)
+      நிறுத்து;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    எனில் (c == '\n' || c == '\r')
+      நிறுத்து;
   }
   buf[i] = '\0';
-  return buf;
+  திரும்பு buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+முழு
+stat(மாறிலி எழுத்து *n, கட்டமைப்பு stat *st)
 {
-  int fd;
-  int r;
+  முழு fd;
+  முழு r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  எனில் (fd < 0)
+    திரும்பு -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  திரும்பு r;
 }
 
-int
-atoi(const char *s)
+முழு
+atoi(மாறிலி எழுத்து *s)
 {
-  int n;
+  முழு n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  போது ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  திரும்பு n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+வெறுமை *
+memmove(வெறுமை *vdst, மாறிலி வெறுமை *vsrc, முழு n)
 {
-  char *dst;
-  const char *src;
+  எழுத்து *dst;
+  மாறிலி எழுத்து *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  எனில் (src > dst) {
+    போது (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } இல்லையெனில் {
     dst += n;
     src += n;
-    while (n-- > 0)
+    போது (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  திரும்பு vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+முழு
+memcmp(மாறிலி வெறுமை *s1, மாறிலி வெறுமை *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  மாறிலி எழுத்து *p1 = s1, *p2 = s2;
+  போது (n-- > 0) {
+    எனில் (*p1 != *p2) {
+      திரும்பு *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  திரும்பு 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+வெறுமை *
+memcpy(வெறுமை *dst, மாறிலி வெறுமை *src, uint n)
 {
-  return memmove(dst, src, n);
+  திரும்பு memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+எழுத்து *
+sbrk(முழு n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  திரும்பு sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+எழுத்து *
+sbrklazy(முழு n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  திரும்பு sys_sbrk(n, SBRK_LAZY);
 }

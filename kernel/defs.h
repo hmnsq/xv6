@@ -1,186 +1,186 @@
 // clang-format off
-struct buf;
-struct context;
-struct file;
-struct inode;
-struct pipe;
-struct proc;
-struct spinlock;
-struct sleeplock;
-struct stat;
-struct superblock;
+கட்டமைப்பு buf;
+கட்டமைப்பு context;
+கட்டமைப்பு file;
+கட்டமைப்பு inode;
+கட்டமைப்பு pipe;
+கட்டமைப்பு proc;
+கட்டமைப்பு spinlock;
+கட்டமைப்பு sleeplock;
+கட்டமைப்பு stat;
+கட்டமைப்பு superblock;
 
 // bio.c
-void            binit(void);
-struct buf*     bread(uint, uint);
-void            brelse(struct buf*);
-void            bwrite(struct buf*);
-void            bpin(struct buf*);
-void            bunpin(struct buf*);
+வெறுமை            binit(வெறுமை);
+கட்டமைப்பு buf*     bread(uint, uint);
+வெறுமை            brelse(கட்டமைப்பு buf*);
+வெறுமை            bwrite(கட்டமைப்பு buf*);
+வெறுமை            bpin(கட்டமைப்பு buf*);
+வெறுமை            bunpin(கட்டமைப்பு buf*);
 
 // console.c
-void            consoleinit(void);
-void            consoleintr(int);
-void            consputc(int);
+வெறுமை            consoleinit(வெறுமை);
+வெறுமை            consoleintr(முழு);
+வெறுமை            consputc(முழு);
 
 // exec.c
-int             kexec(char*, char**);
+முழு             kexec(எழுத்து*, எழுத்து**);
 
 // file.c
-struct file*    filealloc(void);
-void            fileclose(struct file*);
-struct file*    filedup(struct file*);
-void            fileinit(void);
-int             fileread(struct file*, uint64, int n);
-int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, uint64, int n);
+கட்டமைப்பு file*    filealloc(வெறுமை);
+வெறுமை            fileclose(கட்டமைப்பு file*);
+கட்டமைப்பு file*    filedup(கட்டமைப்பு file*);
+வெறுமை            fileinit(வெறுமை);
+முழு             fileread(கட்டமைப்பு file*, uint64, முழு n);
+முழு             filestat(கட்டமைப்பு file*, uint64 addr);
+முழு             filewrite(கட்டமைப்பு file*, uint64, முழு n);
 
 // fs.c
-void            fsinit(int);
-int             dirlink(struct inode*, char*, uint);
-struct inode*   dirlookup(struct inode*, char*, uint*);
-struct inode*   ialloc(uint, short);
-struct inode*   idup(struct inode*);
-void            iinit();
-void            ilock(struct inode*);
-void            iput(struct inode*);
-void            iunlock(struct inode*);
-void            iunlockput(struct inode*);
-void            iupdate(struct inode*);
-int             namecmp(const char*, const char*);
-struct inode*   namei(char*);
-struct inode*   nameiparent(char*, char*);
-int             readi(struct inode*, int, uint64, uint, uint);
-void            stati(struct inode*, struct stat*);
-int             writei(struct inode*, int, uint64, uint, uint);
-void            itrunc(struct inode*);
-void            ireclaim(int);
+வெறுமை            fsinit(முழு);
+முழு             dirlink(கட்டமைப்பு inode*, எழுத்து*, uint);
+கட்டமைப்பு inode*   dirlookup(கட்டமைப்பு inode*, எழுத்து*, uint*);
+கட்டமைப்பு inode*   ialloc(uint, short);
+கட்டமைப்பு inode*   idup(கட்டமைப்பு inode*);
+வெறுமை            iinit();
+வெறுமை            ilock(கட்டமைப்பு inode*);
+வெறுமை            iput(கட்டமைப்பு inode*);
+வெறுமை            iunlock(கட்டமைப்பு inode*);
+வெறுமை            iunlockput(கட்டமைப்பு inode*);
+வெறுமை            iupdate(கட்டமைப்பு inode*);
+முழு             namecmp(மாறிலி எழுத்து*, மாறிலி எழுத்து*);
+கட்டமைப்பு inode*   namei(எழுத்து*);
+கட்டமைப்பு inode*   nameiparent(எழுத்து*, எழுத்து*);
+முழு             readi(கட்டமைப்பு inode*, முழு, uint64, uint, uint);
+வெறுமை            stati(கட்டமைப்பு inode*, கட்டமைப்பு stat*);
+முழு             writei(கட்டமைப்பு inode*, முழு, uint64, uint, uint);
+வெறுமை            itrunc(கட்டமைப்பு inode*);
+வெறுமை            ireclaim(முழு);
 
 // kalloc.c
-void*           kalloc(void);
-void            kfree(void *);
-void            kinit(void);
+வெறுமை*           kalloc(வெறுமை);
+வெறுமை            kfree(வெறுமை *);
+வெறுமை            kinit(வெறுமை);
 
 // log.c
-void            initlog(int, struct superblock*);
-void            log_write(struct buf*);
-void            begin_op(void);
-void            end_op(void);
+வெறுமை            initlog(முழு, கட்டமைப்பு superblock*);
+வெறுமை            log_write(கட்டமைப்பு buf*);
+வெறுமை            begin_op(வெறுமை);
+வெறுமை            end_op(வெறுமை);
 
 // pipe.c
-int             pipealloc(struct file**, struct file**);
-void            pipeclose(struct pipe*, int);
-int             piperead(struct pipe*, uint64, int);
-int             pipewrite(struct pipe*, uint64, int);
+முழு             pipealloc(கட்டமைப்பு file**, கட்டமைப்பு file**);
+வெறுமை            pipeclose(கட்டமைப்பு pipe*, முழு);
+முழு             piperead(கட்டமைப்பு pipe*, uint64, முழு);
+முழு             pipewrite(கட்டமைப்பு pipe*, uint64, முழு);
 
 // printk.c
-int             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
-void            panic(char*) __attribute__((noreturn));
-void            printkinit(void);
+முழு             printk(எழுத்து*, ...) __attribute__ ((format (printf, 1, 2)));
+வெறுமை            panic(எழுத்து*) __attribute__((noreturn));
+வெறுமை            printkinit(வெறுமை);
 
 // proc.c
-int             cpuid(void);
-void            kexit(int);
-int             kfork(void);
-int             growproc(int);
-void            proc_mapstacks(pagetable_t);
-pagetable_t     proc_pagetable(struct proc *);
-void            proc_freepagetable(pagetable_t, uint64);
-int             kkill(int);
-int             killed(struct proc*);
-void            setkilled(struct proc*);
-struct cpu*     mycpu(void);
-struct proc*    myproc();
-void            procinit(void);
-void            scheduler(void) __attribute__((noreturn));
-void            sched(void);
-void            sleep_prepare(void*);
-void            sleep(void);
-void            userinit(void);
-int             kwait(uint64);
-void            wakeup(void*);
-void            yield(void);
-int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
-int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
-void            procdump(void);
+முழு             cpuid(வெறுமை);
+வெறுமை            kexit(முழு);
+முழு             kfork(வெறுமை);
+முழு             growproc(முழு);
+வெறுமை            proc_mapstacks(pagetable_t);
+pagetable_t     proc_pagetable(கட்டமைப்பு proc *);
+வெறுமை            proc_freepagetable(pagetable_t, uint64);
+முழு             kkill(முழு);
+முழு             killed(கட்டமைப்பு proc*);
+வெறுமை            setkilled(கட்டமைப்பு proc*);
+கட்டமைப்பு cpu*     mycpu(வெறுமை);
+கட்டமைப்பு proc*    myproc();
+வெறுமை            procinit(வெறுமை);
+வெறுமை            scheduler(வெறுமை) __attribute__((noreturn));
+வெறுமை            sched(வெறுமை);
+வெறுமை            sleep_prepare(வெறுமை*);
+வெறுமை            sleep(வெறுமை);
+வெறுமை            userinit(வெறுமை);
+முழு             kwait(uint64);
+வெறுமை            wakeup(வெறுமை*);
+வெறுமை            yield(வெறுமை);
+முழு             either_copyout(முழு user_dst, uint64 dst, வெறுமை *src, uint64 len);
+முழு             either_copyin(வெறுமை *dst, முழு user_src, uint64 src, uint64 len);
+வெறுமை            procdump(வெறுமை);
 
 // swtch.S
-void            swtch(struct context*, struct context*);
+வெறுமை            swtch(கட்டமைப்பு context*, கட்டமைப்பு context*);
 
 // spinlock.c
-void            acquire(struct spinlock*);
-int             holding(struct spinlock*);
-void            initlock(struct spinlock*, char*);
-void            release(struct spinlock*);
-void            push_off(void);
-void            pop_off(void);
+வெறுமை            acquire(கட்டமைப்பு spinlock*);
+முழு             holding(கட்டமைப்பு spinlock*);
+வெறுமை            initlock(கட்டமைப்பு spinlock*, எழுத்து*);
+வெறுமை            release(கட்டமைப்பு spinlock*);
+வெறுமை            தள்ளு_off(வெறுமை);
+வெறுமை            எடு_off(வெறுமை);
 
 // sleeplock.c
-void            acquiresleep(struct sleeplock*);
-void            releasesleep(struct sleeplock*);
-int             holdingsleep(struct sleeplock*);
-void            initsleeplock(struct sleeplock*, char*);
+வெறுமை            acquiresleep(கட்டமைப்பு sleeplock*);
+வெறுமை            releasesleep(கட்டமைப்பு sleeplock*);
+முழு             holdingsleep(கட்டமைப்பு sleeplock*);
+வெறுமை            initsleeplock(கட்டமைப்பு sleeplock*, எழுத்து*);
 
 // string.c
-int             memcmp(const void*, const void*, uint);
-void*           memmove(void*, const void*, uint);
-void*           memset(void*, int, uint);
-char*           safestrcpy(char*, const char*, int);
-int             strlen(const char*);
-int             strncmp(const char*, const char*, uint);
-char*           strncpy(char*, const char*, int);
+முழு             memcmp(மாறிலி வெறுமை*, மாறிலி வெறுமை*, uint);
+வெறுமை*           memmove(வெறுமை*, மாறிலி வெறுமை*, uint);
+வெறுமை*           memset(வெறுமை*, முழு, uint);
+எழுத்து*           safestrcpy(எழுத்து*, மாறிலி எழுத்து*, முழு);
+முழு             strlen(மாறிலி எழுத்து*);
+முழு             strncmp(மாறிலி எழுத்து*, மாறிலி எழுத்து*, uint);
+எழுத்து*           strncpy(எழுத்து*, மாறிலி எழுத்து*, முழு);
 
 // syscall.c
-void            argint(int, int*);
-int             argstr(int, char*, int);
-void            argaddr(int, uint64 *);
-int             fetchstr(uint64, char*, int);
-int             fetchaddr(uint64, uint64*);
-void            syscall();
+வெறுமை            argint(முழு, முழு*);
+முழு             argstr(முழு, எழுத்து*, முழு);
+வெறுமை            argaddr(முழு, uint64 *);
+முழு             fetchstr(uint64, எழுத்து*, முழு);
+முழு             fetchaddr(uint64, uint64*);
+வெறுமை            syscall();
 
 // trap.c
-extern uint     ticks;
-void            trapinit(void);
-void            trapinithart(void);
-extern struct spinlock tickslock;
-void            prepare_return(void);
+வெளி uint     ticks;
+வெறுமை            trapinit(வெறுமை);
+வெறுமை            trapinithart(வெறுமை);
+வெளி கட்டமைப்பு spinlock tickslock;
+வெறுமை            prepare_return(வெறுமை);
 
 // uart.c
-void            uartinit(void);
-void            uartintr(void);
-void            uartwrite(char [], int);
-void            uartputc_sync(int);
+வெறுமை            uartinit(வெறுமை);
+வெறுமை            uartintr(வெறுமை);
+வெறுமை            uartwrite(எழுத்து [], முழு);
+வெறுமை            uartputc_sync(முழு);
 
 // vm.c
-void            kvminit(void);
-void            kvminithart(void);
-void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
-int             mappages(pagetable_t, uint64, uint64, uint64, int);
-pagetable_t     uvmcreate(void);
-uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+வெறுமை            kvminit(வெறுமை);
+வெறுமை            kvminithart(வெறுமை);
+வெறுமை            kvmmap(pagetable_t, uint64, uint64, uint64, முழு);
+முழு             mappages(pagetable_t, uint64, uint64, uint64, முழு);
+pagetable_t     uvmcreate(வெறுமை);
+uint64          uvmalloc(pagetable_t, uint64, uint64, முழு);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
-int             uvmcopy(pagetable_t, pagetable_t, uint64);
-void            uvmfree(pagetable_t, uint64);
-void            uvmunmap(pagetable_t, uint64, uint64, int);
-void            uvmclear(pagetable_t, uint64);
-pte_t *         walk(pagetable_t, uint64, int);
+முழு             uvmcopy(pagetable_t, pagetable_t, uint64);
+வெறுமை            uvmfree(pagetable_t, uint64);
+வெறுமை            uvmunmap(pagetable_t, uint64, uint64, முழு);
+வெறுமை            uvmclear(pagetable_t, uint64);
+pte_t *         walk(pagetable_t, uint64, முழு);
 uint64          walkaddr(pagetable_t, uint64);
-int             copyout(pagetable_t, uint64, uint64, char *, uint64);
-int             copyin(pagetable_t, uint64, char *, uint64, uint64);
-int             copyinstr(pagetable_t, uint64, char *, uint64, uint64);
-int             ismapped(pagetable_t, uint64);
-uint64          vmfault(pagetable_t, uint64, uint64, int);
+முழு             copyout(pagetable_t, uint64, uint64, எழுத்து *, uint64);
+முழு             copyin(pagetable_t, uint64, எழுத்து *, uint64, uint64);
+முழு             copyinstr(pagetable_t, uint64, எழுத்து *, uint64, uint64);
+முழு             ismapped(pagetable_t, uint64);
+uint64          vmfault(pagetable_t, uint64, uint64, முழு);
 
 // plic.c
-void            plicinit(void);
-void            plicinithart(void);
-int             plic_claim(void);
-void            plic_complete(int);
+வெறுமை            plicinit(வெறுமை);
+வெறுமை            plicinithart(வெறுமை);
+முழு             plic_claim(வெறுமை);
+வெறுமை            plic_complete(முழு);
 
 // virtio_disk.c
-void            virtio_disk_init(void);
-void            virtio_disk_rw(struct buf *, int);
-void            virtio_disk_intr(void);
+வெறுமை            virtio_disk_init(வெறுமை);
+வெறுமை            virtio_disk_rw(கட்டமைப்பு buf *, முழு);
+வெறுமை            virtio_disk_intr(வெறுமை);
 
 // number of elements in fixed-size array
-#define NELEM(x) (sizeof(x) / sizeof((x)[0]))
+#define NELEM(x) (அளவு(x) / அளவு((x)[0]))

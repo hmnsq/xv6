@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#அந்தர்பாவ "kernel/types.h"
+#அந்தர்பாவ "kernel/stat.h"
+#அந்தர்பாவ "user/user.h"
+#அந்தர்பாவ "kernel/fs.h"
+#அந்தர்பாவ "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+எழுத்து *
+fmtname(எழுத்து *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  நிலையான எழுத்து buf[DIRSIZ + 1];
+  எழுத்து *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  க்கு (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  எனில் (strlen(p) >= DIRSIZ)
+    திரும்பு p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[அளவு(buf) - 1] = '\0';
+  திரும்பு buf;
 }
 
-void
-ls(char *path)
+வெறுமை
+ls(எழுத்து *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  எழுத்து buf[512], *p;
+  முழு fd;
+  கட்டமைப்பு dirent de;
+  கட்டமைப்பு stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  எனில் ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    திரும்பு;
   }
 
-  if (fstat(fd, &st) < 0) {
+  எனில் (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    திரும்பு;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  தேர்வு (st.type) {
+  நிலை T_DEVICE:
+  நிலை T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (முழு)st.size);
+    நிறுத்து;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  நிலை T_DIR:
+    எனில் (strlen(path) + 1 + DIRSIZ + 1 > அளவு buf) {
       printf("ls: path too long\n");
-      break;
+      நிறுத்து;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    போது (பட(fd, &de, அளவு(de)) == அளவு(de)) {
+      எனில் (de.inum == 0)
+        தொடர்;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      எனில் (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
-        continue;
+        தொடர்;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (முழு)st.size);
     }
-    break;
+    நிறுத்து;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+முழு
+முதன்மை(முழு argc, எழுத்து *argv[])
 {
-  int i;
+  முழு i;
 
-  if (argc < 2) {
+  எனில் (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  க்கு (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

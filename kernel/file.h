@@ -1,10 +1,10 @@
-struct file {
-  enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
-  int ref; // reference count
-  char readable;
-  char writable;
-  struct pipe *pipe; // FD_PIPE
-  struct inode *ip;  // FD_INODE and FD_DEVICE
+கட்டமைப்பு file {
+  எண்ணிக்கை { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
+  முழு ref; // reference count
+  எழுத்து readable;
+  எழுத்து writable;
+  கட்டமைப்பு pipe *pipe; // FD_PIPE
+  கட்டமைப்பு inode *ip;  // FD_INODE and FD_DEVICE
   uint off;          // FD_INODE
   short major;       // FD_DEVICE
 };
@@ -14,12 +14,12 @@ struct file {
 #define mkdev(m, n) ((uint)((m) << 16 | (n)))
 
 // in-memory copy of an inode
-struct inode {
+கட்டமைப்பு inode {
   uint dev;              // Device number
   uint inum;             // Inode number
-  int ref;               // Reference count
-  struct sleeplock lock; // protects everything below here
-  int valid;             // inode has been read from disk?
+  முழு ref;               // Reference count
+  கட்டமைப்பு sleeplock lock; // protects everything below here
+  முழு valid;             // inode has been read from disk?
 
   short type; // copy of disk inode
   short major;
@@ -30,11 +30,11 @@ struct inode {
 };
 
 // map major device number to device functions.
-struct devsw {
-  int (*read)(int, uint64, int);
-  int (*write)(int, uint64, int);
+கட்டமைப்பு devsw {
+  முழு (*பட)(முழு, uint64, முழு);
+  முழு (*லிக)(முழு, uint64, முழு);
 };
 
-extern struct devsw devsw[];
+வெளி கட்டமைப்பு devsw devsw[];
 
 #define CONSOLE 1

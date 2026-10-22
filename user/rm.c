@@ -1,21 +1,21 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#அந்தர்பாவ "kernel/types.h"
+#அந்தர்பாவ "kernel/stat.h"
+#அந்தர்பாவ "user/user.h"
 
-int
-main(int argc, char *argv[])
+முழு
+முதன்மை(முழு argc, எழுத்து *argv[])
 {
-  int i;
+  முழு i;
 
-  if (argc < 2) {
+  எனில் (argc < 2) {
     fprintf(2, "Usage: rm files...\n");
     exit(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (unlink(argv[i]) < 0) {
+  க்கு (i = 1; i < argc; i++) {
+    எனில் (unlink(argv[i]) < 0) {
       fprintf(2, "rm: %s failed to delete\n", argv[i]);
-      break;
+      நிறுத்து;
     }
   }
 

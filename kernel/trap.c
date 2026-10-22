@@ -1,30 +1,30 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
+#அந்தர்பாவ "types.h"
+#அந்தர்பாவ "param.h"
+#அந்தர்பாவ "memlayout.h"
+#அந்தர்பாவ "riscv.h"
+#அந்தர்பாவ "spinlock.h"
+#அந்தர்பாவ "proc.h"
+#அந்தர்பாவ "defs.h"
 
-struct spinlock tickslock;
+கட்டமைப்பு spinlock tickslock;
 uint ticks;
 
-extern char trampoline[], uservec[];
+வெளி எழுத்து trampoline[], uservec[];
 
 // in kernelvec.S, calls kerneltrap().
-void kernelvec();
+வெறுமை kernelvec();
 
-extern int devintr();
+வெளி முழு devintr();
 
-void
-trapinit(void)
+வெறுமை
+trapinit(வெறுமை)
 {
   initlock(&tickslock, "time");
 }
 
 // set up to take exceptions and traps while in the kernel.
-void
-trapinithart(void)
+வெறுமை
+trapinithart(வெறுமை)
 {
   w_stvec((uint64)kernelvec);
 }
@@ -35,26 +35,26 @@ trapinithart(void)
 // return value is user satp for trampoline.S to switch to.
 //
 uint64
-usertrap(void)
+usertrap(வெறுமை)
 {
-  int which_dev = 0;
+  முழு which_dev = 0;
 
-  if ((r_sstatus() & SSTATUS_SPP) != 0)
+  எனில் ((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
 
   // send interrupts and exceptions to kerneltrap(),
   // since we're now in the kernel.
   w_stvec((uint64)kernelvec); //DOC: kernelvec
 
-  struct proc *p = myproc();
+  கட்டமைப்பு proc *p = myproc();
 
   // save user program counter.
   p->trapframe->epc = r_sepc();
 
-  if (r_scause() == 8) {
+  எனில் (r_scause() == 8) {
     // system call
 
-    if (killed(p))
+    எனில் (killed(p))
       kexit(-1);
 
     // sepc points to the ecall instruction,
@@ -66,23 +66,23 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if ((which_dev = devintr()) != 0) {
+  } இல்லையெனில் எனில் ((which_dev = devintr()) != 0) {
     // ok
-  } else if ((r_scause() == 15 || r_scause() == 13) &&
+  } இல்லையெனில் எனில் ((r_scause() == 15 || r_scause() == 13) &&
              vmfault(p->pagetable, p->sz, r_stval(),
                      (r_scause() == 13) ? 1 : 0) != 0) {
     // page fault on lazily-allocated page
-  } else {
+  } இல்லையெனில் {
     printk("usertrap(): unexpected scause 0x%lx pid=%d\n", r_scause(), p->pid);
     printk("            sepc=0x%lx stval=0x%lx\n", r_sepc(), r_stval());
     setkilled(p);
   }
 
-  if (killed(p))
+  எனில் (killed(p))
     kexit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2)
+  எனில் (which_dev == 2)
     yield();
 
   prepare_return();
@@ -91,16 +91,16 @@ usertrap(void)
   uint64 satp = MAKE_SATP(p->pagetable);
 
   // return to trampoline.S; satp value in a0.
-  return satp;
+  திரும்பு satp;
 }
 
 //
 // set up trapframe and control registers for a return to user space
 //
-void
-prepare_return(void)
+வெறுமை
+prepare_return(வெறுமை)
 {
-  struct proc *p = myproc();
+  கட்டமைப்பு proc *p = myproc();
 
   // we're about to switch the destination of traps from
   // kerneltrap() to usertrap(). because a trap from kernel
@@ -133,20 +133,20 @@ prepare_return(void)
 
 // interrupts and exceptions from kernel code go here via kernelvec,
 // on whatever the current kernel stack is.
-void
+வெறுமை
 kerneltrap()
 {
-  int which_dev = 0;
+  முழு which_dev = 0;
   uint64 sepc = r_sepc();
   uint64 sstatus = r_sstatus();
   uint64 scause = r_scause();
 
-  if ((sstatus & SSTATUS_SPP) == 0)
+  எனில் ((sstatus & SSTATUS_SPP) == 0)
     panic("kerneltrap: not from supervisor mode");
-  if (intr_get() != 0)
+  எனில் (intr_get() != 0)
     panic("kerneltrap: interrupts enabled");
 
-  if ((which_dev = devintr()) == 0) {
+  எனில் ((which_dev = devintr()) == 0) {
     // interrupt or trap from an unknown source
     printk("scause=0x%lx sepc=0x%lx stval=0x%lx\n", scause, r_sepc(),
            r_stval());
@@ -154,7 +154,7 @@ kerneltrap()
   }
 
   // give up the CPU if this is a timer interrupt.
-  if (which_dev == 2 && myproc() != 0)
+  எனில் (which_dev == 2 && myproc() != 0)
     yield();
 
   // the yield() may have caused some traps to occur,
@@ -163,10 +163,10 @@ kerneltrap()
   w_sstatus(sstatus);
 }
 
-void
+வெறுமை
 clockintr()
 {
-  if (cpuid() == 0) {
+  எனில் (cpuid() == 0) {
     acquire(&tickslock);
     ticks++;
     wakeup(&ticks);
@@ -184,37 +184,37 @@ clockintr()
 // returns 2 if timer interrupt,
 // 1 if other device,
 // 0 if not recognized.
-int
+முழு
 devintr()
 {
   uint64 scause = r_scause();
 
-  if (scause == 0x8000000000000009L) {
+  எனில் (scause == 0x8000000000000009L) {
     // this is a supervisor external interrupt, via PLIC.
 
     // irq indicates which device interrupted.
-    int irq = plic_claim();
+    முழு irq = plic_claim();
 
-    if (irq == UART0_IRQ) {
+    எனில் (irq == UART0_IRQ) {
       uartintr();
-    } else if (irq == VIRTIO0_IRQ) {
+    } இல்லையெனில் எனில் (irq == VIRTIO0_IRQ) {
       virtio_disk_intr();
-    } else if (irq) {
+    } இல்லையெனில் எனில் (irq) {
       printk("unexpected interrupt irq=%d\n", irq);
     }
 
     // the PLIC allows each device to raise at most one
     // interrupt at a time; tell the PLIC the device is
     // now allowed to interrupt again.
-    if (irq)
+    எனில் (irq)
       plic_complete(irq);
 
-    return 1;
-  } else if (scause == 0x8000000000000005L) {
+    திரும்பு 1;
+  } இல்லையெனில் எனில் (scause == 0x8000000000000005L) {
     // timer interrupt.
     clockintr();
-    return 2;
-  } else {
-    return 0;
+    திரும்பு 2;
+  } இல்லையெனில் {
+    திரும்பு 0;
   }
 }

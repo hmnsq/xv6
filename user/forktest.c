@@ -1,46 +1,46 @@
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#அந்தர்பாவ "kernel/types.h"
+#அந்தர்பாவ "kernel/stat.h"
+#அந்தர்பாவ "user/user.h"
 
 #define N 1000
 
-void
-print(const char *s)
+வெறுமை
+print(மாறிலி எழுத்து *s)
 {
-  write(1, s, strlen(s));
+  லிக(1, s, strlen(s));
 }
 
-void
-forktest(void)
+வெறுமை
+forktest(வெறுமை)
 {
-  int n, pid;
+  முழு n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  க்கு (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
+    எனில் (pid < 0)
+      நிறுத்து;
+    எனில் (pid == 0)
       exit(0);
   }
 
-  if (n == N) {
+  எனில் (n == N) {
     print("fork claimed to work N times!\n");
     exit(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  க்கு (; n > 0; n--) {
+    எனில் (wait(0) < 0) {
       print("wait stopped early\n");
       exit(1);
     }
   }
 
-  if (wait(0) != -1) {
+  எனில் (wait(0) != -1) {
     print("wait got too many\n");
     exit(1);
   }
@@ -48,8 +48,8 @@ forktest(void)
   print("fork test OK\n");
 }
 
-int
-main(void)
+முழு
+முதன்மை(வெறுமை)
 {
   forktest();
   exit(0);

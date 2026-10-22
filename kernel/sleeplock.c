@@ -1,16 +1,16 @@
 // Sleeping locks
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "sleeplock.h"
+#அந்தர்பாவ "types.h"
+#அந்தர்பாவ "riscv.h"
+#அந்தர்பாவ "defs.h"
+#அந்தர்பாவ "param.h"
+#அந்தர்பாவ "memlayout.h"
+#அந்தர்பாவ "spinlock.h"
+#அந்தர்பாவ "proc.h"
+#அந்தர்பாவ "sleeplock.h"
 
-void
-initsleeplock(struct sleeplock *lk, char *name)
+வெறுமை
+initsleeplock(கட்டமைப்பு sleeplock *lk, எழுத்து *name)
 {
   initlock(&lk->lk, "sleep lock");
   lk->name = name;
@@ -18,11 +18,11 @@ initsleeplock(struct sleeplock *lk, char *name)
   lk->pid = 0;
 }
 
-void
-acquiresleep(struct sleeplock *lk)
+வெறுமை
+acquiresleep(கட்டமைப்பு sleeplock *lk)
 {
   acquire(&lk->lk);
-  while (lk->locked) {
+  போது (lk->locked) {
     sleep_prepare(lk);
     release(&lk->lk);
     sleep();
@@ -33,8 +33,8 @@ acquiresleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-void
-releasesleep(struct sleeplock *lk)
+வெறுமை
+releasesleep(கட்டமைப்பு sleeplock *lk)
 {
   acquire(&lk->lk);
   lk->locked = 0;
@@ -43,13 +43,13 @@ releasesleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-int
-holdingsleep(struct sleeplock *lk)
+முழு
+holdingsleep(கட்டமைப்பு sleeplock *lk)
 {
-  int r;
+  முழு r;
 
   acquire(&lk->lk);
   r = lk->locked && (lk->pid == myproc()->pid);
   release(&lk->lk);
-  return r;
+  திரும்பு r;
 }

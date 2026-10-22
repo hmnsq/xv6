@@ -1,106 +1,106 @@
-#include "types.h"
+#அந்தர்பாவ "types.h"
 
-void *
-memset(void *dst, int c, uint n)
+வெறுமை *
+memset(வெறுமை *dst, முழு c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  எழுத்து *cdst = (எழுத்து *)dst;
+  முழு i;
+  க்கு (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  திரும்பு dst;
 }
 
-int
-memcmp(const void *v1, const void *v2, uint n)
+முழு
+memcmp(மாறிலி வெறுமை *v1, மாறிலி வெறுமை *v2, uint n)
 {
-  const uchar *s1, *s2;
+  மாறிலி uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  போது (n-- > 0) {
+    எனில் (*s1 != *s2)
+      திரும்பு *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  திரும்பு 0;
 }
 
-void *
-memmove(void *dst, const void *src, uint n)
+வெறுமை *
+memmove(வெறுமை *dst, மாறிலி வெறுமை *src, uint n)
 {
-  const char *s;
-  char *d;
+  மாறிலி எழுத்து *s;
+  எழுத்து *d;
 
-  if (n == 0)
-    return dst;
+  எனில் (n == 0)
+    திரும்பு dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  எனில் (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    போது (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } இல்லையெனில்
+    போது (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  திரும்பு dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
-void *
-memcpy(void *dst, const void *src, uint n)
+வெறுமை *
+memcpy(வெறுமை *dst, மாறிலி வெறுமை *src, uint n)
 {
-  return memmove(dst, src, n);
+  திரும்பு memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+முழு
+strncmp(மாறிலி எழுத்து *p, மாறிலி எழுத்து *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  போது (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  எனில் (n == 0)
+    திரும்பு 0;
+  திரும்பு (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+எழுத்து *
+strncpy(எழுத்து *s, மாறிலி எழுத்து *t, முழு n)
 {
-  char *os;
+  எழுத்து *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  போது (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  போது (n-- > 0)
     *s++ = 0;
-  return os;
+  திரும்பு os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+எழுத்து *
+safestrcpy(எழுத்து *s, மாறிலி எழுத்து *t, முழு n)
 {
-  char *os;
+  எழுத்து *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  எனில் (n <= 0)
+    திரும்பு os;
+  போது (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  திரும்பு os;
 }
 
-int
-strlen(const char *s)
+முழு
+strlen(மாறிலி எழுத்து *s)
 {
-  int n;
+  முழு n;
 
-  for (n = 0; s[n]; n++)
+  க்கு (n = 0; s[n]; n++)
     ;
-  return n;
+  திரும்பு n;
 }

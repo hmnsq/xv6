@@ -2,80 +2,80 @@
 // Support functions for system calls that involve file descriptors.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "fs.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "stat.h"
-#include "proc.h"
+#அந்தர்பாவ "types.h"
+#அந்தர்பாவ "riscv.h"
+#அந்தர்பாவ "defs.h"
+#அந்தர்பாவ "param.h"
+#அந்தர்பாவ "fs.h"
+#அந்தர்பாவ "spinlock.h"
+#அந்தர்பாவ "sleeplock.h"
+#அந்தர்பாவ "file.h"
+#அந்தர்பாவ "stat.h"
+#அந்தர்பாவ "proc.h"
 
-struct devsw devsw[NDEV];
-struct {
-  struct spinlock lock;
-  struct file file[NFILE];
+கட்டமைப்பு devsw devsw[NDEV];
+கட்டமைப்பு {
+  கட்டமைப்பு spinlock lock;
+  கட்டமைப்பு file file[NFILE];
 } ftable;
 
-void
-fileinit(void)
+வெறுமை
+fileinit(வெறுமை)
 {
   initlock(&ftable.lock, "ftable");
 }
 
 // Allocate a file structure.
-struct file *
-filealloc(void)
+கட்டமைப்பு file *
+filealloc(வெறுமை)
 {
-  struct file *f;
+  கட்டமைப்பு file *f;
 
   acquire(&ftable.lock);
-  for (f = ftable.file; f < ftable.file + NFILE; f++) {
-    if (f->ref == 0) {
+  க்கு (f = ftable.file; f < ftable.file + NFILE; f++) {
+    எனில் (f->ref == 0) {
       f->ref = 1;
       release(&ftable.lock);
-      return f;
+      திரும்பு f;
     }
   }
   release(&ftable.lock);
-  return 0;
+  திரும்பு 0;
 }
 
 // Increment ref count for file f.
-struct file *
-filedup(struct file *f)
+கட்டமைப்பு file *
+filedup(கட்டமைப்பு file *f)
 {
   acquire(&ftable.lock);
-  if (f->ref < 1)
+  எனில் (f->ref < 1)
     panic("filedup");
   f->ref++;
   release(&ftable.lock);
-  return f;
+  திரும்பு f;
 }
 
 // Close file f.  (Decrement ref count, close when reaches 0.)
-void
-fileclose(struct file *f)
+வெறுமை
+fileclose(கட்டமைப்பு file *f)
 {
-  struct file ff;
+  கட்டமைப்பு file ff;
 
   acquire(&ftable.lock);
-  if (f->ref < 1)
+  எனில் (f->ref < 1)
     panic("fileclose");
-  if (--f->ref > 0) {
+  எனில் (--f->ref > 0) {
     release(&ftable.lock);
-    return;
+    திரும்பு;
   }
   ff = *f;
   f->ref = 0;
   f->type = FD_NONE;
   release(&ftable.lock);
 
-  if (ff.type == FD_PIPE) {
+  எனில் (ff.type == FD_PIPE) {
     pipeclose(ff.pipe, ff.writable);
-  } else if (ff.type == FD_INODE || ff.type == FD_DEVICE) {
+  } இல்லையெனில் எனில் (ff.type == FD_INODE || ff.type == FD_DEVICE) {
     begin_op();
     iput(ff.ip);
     end_op();
@@ -84,96 +84,96 @@ fileclose(struct file *f)
 
 // Get metadata about file f.
 // addr is a user virtual address, pointing to a struct stat.
-int
-filestat(struct file *f, uint64 addr)
+முழு
+filestat(கட்டமைப்பு file *f, uint64 addr)
 {
-  struct proc *p = myproc();
-  struct stat st;
+  கட்டமைப்பு proc *p = myproc();
+  கட்டமைப்பு stat st;
 
-  if (f->type == FD_INODE || f->type == FD_DEVICE) {
+  எனில் (f->type == FD_INODE || f->type == FD_DEVICE) {
     ilock(f->ip);
     stati(f->ip, &st);
     iunlock(f->ip);
-    if (copyout(p->pagetable, p->sz, addr, (char *)&st, sizeof(st)) < 0)
-      return -1;
-    return 0;
+    எனில் (copyout(p->pagetable, p->sz, addr, (எழுத்து *)&st, அளவு(st)) < 0)
+      திரும்பு -1;
+    திரும்பு 0;
   }
-  return -1;
+  திரும்பு -1;
 }
 
 // Read from file f.
 // addr is a user virtual address.
-int
-fileread(struct file *f, uint64 addr, int n)
+முழு
+fileread(கட்டமைப்பு file *f, uint64 addr, முழு n)
 {
-  int r = 0;
+  முழு r = 0;
 
-  if (f->readable == 0 || n < 0)
-    return -1;
+  எனில் (f->readable == 0 || n < 0)
+    திரும்பு -1;
 
-  if (f->type == FD_PIPE) {
+  எனில் (f->type == FD_PIPE) {
     r = piperead(f->pipe, addr, n);
-  } else if (f->type == FD_DEVICE) {
-    if (f->major < 0 || f->major >= NDEV || !devsw[f->major].read)
-      return -1;
-    r = devsw[f->major].read(1, addr, n);
-  } else if (f->type == FD_INODE) {
+  } இல்லையெனில் எனில் (f->type == FD_DEVICE) {
+    எனில் (f->major < 0 || f->major >= NDEV || !devsw[f->major].பட)
+      திரும்பு -1;
+    r = devsw[f->major].பட(1, addr, n);
+  } இல்லையெனில் எனில் (f->type == FD_INODE) {
     ilock(f->ip);
-    if ((r = readi(f->ip, 1, addr, f->off, n)) > 0)
+    எனில் ((r = readi(f->ip, 1, addr, f->off, n)) > 0)
       f->off += r;
     iunlock(f->ip);
-  } else {
+  } இல்லையெனில் {
     panic("fileread");
   }
 
-  return r;
+  திரும்பு r;
 }
 
 // Write to file f.
 // addr is a user virtual address.
-int
-filewrite(struct file *f, uint64 addr, int n)
+முழு
+filewrite(கட்டமைப்பு file *f, uint64 addr, முழு n)
 {
-  int r, ret = 0;
+  முழு r, ret = 0;
 
-  if (f->writable == 0 || n < 0)
-    return -1;
+  எனில் (f->writable == 0 || n < 0)
+    திரும்பு -1;
 
-  if (f->type == FD_PIPE) {
+  எனில் (f->type == FD_PIPE) {
     ret = pipewrite(f->pipe, addr, n);
-  } else if (f->type == FD_DEVICE) {
-    if (f->major < 0 || f->major >= NDEV || !devsw[f->major].write)
-      return -1;
-    ret = devsw[f->major].write(1, addr, n);
-  } else if (f->type == FD_INODE) {
+  } இல்லையெனில் எனில் (f->type == FD_DEVICE) {
+    எனில் (f->major < 0 || f->major >= NDEV || !devsw[f->major].லிக)
+      திரும்பு -1;
+    ret = devsw[f->major].லிக(1, addr, n);
+  } இல்லையெனில் எனில் (f->type == FD_INODE) {
     // write a few blocks at a time to avoid exceeding
     // the maximum log transaction size, including
     // i-node, indirect block, allocation blocks,
     // and 2 blocks of slop for non-aligned writes.
-    int max = ((MAXOPBLOCKS - 1 - 1 - 2) / 2) * BSIZE;
-    int i = 0;
-    while (i < n) {
-      int n1 = n - i;
-      if (n1 > max)
+    முழு max = ((MAXOPBLOCKS - 1 - 1 - 2) / 2) * BSIZE;
+    முழு i = 0;
+    போது (i < n) {
+      முழு n1 = n - i;
+      எனில் (n1 > max)
         n1 = max;
 
       begin_op();
       ilock(f->ip);
-      if ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
+      எனில் ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
         f->off += r;
       iunlock(f->ip);
       end_op();
 
-      if (r != n1) {
+      எனில் (r != n1) {
         // error from writei
-        break;
+        நிறுத்து;
       }
       i += r;
     }
     ret = (i == n ? n : -1);
-  } else {
+  } இல்லையெனில் {
     panic("filewrite");
   }
 
-  return ret;
+  திரும்பு ret;
 }

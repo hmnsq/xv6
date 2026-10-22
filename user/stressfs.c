@@ -7,41 +7,41 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#அந்தர்பாவ "kernel/types.h"
+#அந்தர்பாவ "kernel/stat.h"
+#அந்தர்பாவ "user/user.h"
+#அந்தர்பாவ "kernel/fs.h"
+#அந்தர்பாவ "kernel/fcntl.h"
 
-int
-main(int argc, char *argv[])
+முழு
+முதன்மை(முழு argc, எழுத்து *argv[])
 {
-  int fd, i;
-  char path[] = "stressfs0";
-  char data[512];
+  முழு fd, i;
+  எழுத்து path[] = "stressfs0";
+  எழுத்து data[512];
 
   printf("stressfs starting\n");
-  memset(data, 'a', sizeof(data));
+  memset(data, 'a', அளவு(data));
 
-  for (i = 0; i < 4; i++)
-    if (fork() > 0)
-      break;
+  க்கு (i = 0; i < 4; i++)
+    எனில் (fork() > 0)
+      நிறுத்து;
 
   printf("write %d\n", i);
 
   path[8] += i;
   fd = open(path, O_CREATE | O_RDWR);
-  for (i = 0; i < 20; i++) {
+  க்கு (i = 0; i < 20; i++) {
     // printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    லிக(fd, data, அளவு(data));
   }
   close(fd);
 
   printf("read\n");
 
   fd = open(path, O_RDONLY);
-  for (i = 0; i < 20; i++)
-    read(fd, data, sizeof(data));
+  க்கு (i = 0; i < 20; i++)
+    பட(fd, data, அளவு(data));
   close(fd);
 
   wait(0);

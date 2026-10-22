@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((எழுத்து *)-1)
 
-struct stat;
+கட்டமைப்பு stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+முழு fork(வெறுமை);
+முழு exit(முழு) __attribute__((noreturn));
+முழு wait(முழு *);
+முழு pipe(முழு *);
+முழு லிக(முழு, மாறிலி வெறுமை *, முழு);
+முழு பட(முழு, வெறுமை *, முழு);
+முழு close(முழு);
+முழு kill(முழு);
+முழு exec(மாறிலி எழுத்து *, எழுத்து **);
+முழு open(மாறிலி எழுத்து *, முழு);
+முழு mknod(மாறிலி எழுத்து *, short, short);
+முழு unlink(மாறிலி எழுத்து *);
+முழு fstat(முழு fd, கட்டமைப்பு stat *);
+முழு link(மாறிலி எழுத்து *, மாறிலி எழுத்து *);
+முழு mkdir(மாறிலி எழுத்து *);
+முழு chdir(மாறிலி எழுத்து *);
+முழு dup(முழு);
+முழு getpid(வெறுமை);
+எழுத்து *sys_sbrk(முழு, முழு);
+முழு pause(முழு);
+முழு uptime(வெறுமை);
+முழு sync(வெறுமை);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+முழு stat(மாறிலி எழுத்து *, கட்டமைப்பு stat *);
+எழுத்து *strcpy(எழுத்து *, மாறிலி எழுத்து *);
+வெறுமை *memmove(வெறுமை *, மாறிலி வெறுமை *, முழு);
+எழுத்து *strchr(மாறிலி எழுத்து *, எழுத்து c);
+முழு strcmp(மாறிலி எழுத்து *, மாறிலி எழுத்து *);
+எழுத்து *gets(எழுத்து *, முழு max);
+uint strlen(மாறிலி எழுத்து *);
+வெறுமை *memset(வெறுமை *, முழு, uint);
+முழு atoi(மாறிலி எழுத்து *);
+முழு memcmp(மாறிலி வெறுமை *, மாறிலி வெறுமை *, uint);
+வெறுமை *memcpy(வெறுமை *, மாறிலி வெறுமை *, uint);
+எழுத்து *sbrk(முழு);
+எழுத்து *sbrklazy(முழு);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+வெறுமை fprintf(முழு, மாறிலி எழுத்து *, ...) __attribute__((format(printf, 2, 3)));
+வெறுமை printf(மாறிலி எழுத்து *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+வெறுமை *malloc(uint);
+வெறுமை விடுவி(வெறுமை *);

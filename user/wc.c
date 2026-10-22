@@ -1,50 +1,50 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#அந்தர்பாவ "kernel/types.h"
+#அந்தர்பாவ "kernel/stat.h"
+#அந்தர்பாவ "kernel/fcntl.h"
+#அந்தர்பாவ "user/user.h"
 
-char buf[512];
+எழுத்து buf[512];
 
-void
-wc(int fd, char *name)
+வெறுமை
+wc(முழு fd, எழுத்து *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  முழு i, n;
+  முழு l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  போது ((n = பட(fd, buf, அளவு(buf))) > 0) {
+    க்கு (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      எனில் (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      எனில் (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      இல்லையெனில் எனில் (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  எனில் (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+முழு
+முதன்மை(முழு argc, எழுத்து *argv[])
 {
-  int fd, i;
+  முழு fd, i;
 
-  if (argc <= 1) {
+  எனில் (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  க்கு (i = 1; i < argc; i++) {
+    எனில் ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

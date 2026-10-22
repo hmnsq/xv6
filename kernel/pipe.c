@@ -1,35 +1,35 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
-#include "sleeplock.h"
-#include "file.h"
+#அந்தர்பாவ "types.h"
+#அந்தர்பாவ "riscv.h"
+#அந்தர்பாவ "defs.h"
+#அந்தர்பாவ "param.h"
+#அந்தர்பாவ "spinlock.h"
+#அந்தர்பாவ "proc.h"
+#அந்தர்பாவ "fs.h"
+#அந்தர்பாவ "sleeplock.h"
+#அந்தர்பாவ "file.h"
 
 #define PIPESIZE 512
 
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
+கட்டமைப்பு pipe {
+  கட்டமைப்பு spinlock lock;
+  எழுத்து data[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  முழு readopen;  // read fd is still open
+  முழு writeopen; // write fd is still open
 };
 
-int
-pipealloc(struct file **f0, struct file **f1)
+முழு
+pipealloc(கட்டமைப்பு file **f0, கட்டமைப்பு file **f1)
 {
-  struct pipe *pi;
+  கட்டமைப்பு pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
-    goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
-    goto bad;
+  எனில் ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+    செல் bad;
+  எனில் ((pi = (கட்டமைப்பு pipe *)kalloc()) == 0)
+    செல் bad;
   pi->readopen = 1;
   pi->writeopen = 1;
   pi->nwrite = 0;
@@ -43,60 +43,60 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  திரும்பு 0;
 
 bad:
-  if (pi)
-    kfree((char *)pi);
-  if (*f0)
+  எனில் (pi)
+    kfree((எழுத்து *)pi);
+  எனில் (*f0)
     fileclose(*f0);
-  if (*f1)
+  எனில் (*f1)
     fileclose(*f1);
-  return -1;
+  திரும்பு -1;
 }
 
-void
-pipeclose(struct pipe *pi, int writable)
+வெறுமை
+pipeclose(கட்டமைப்பு pipe *pi, முழு writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  எனில் (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } இல்லையெனில் {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  எனில் (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
-    kfree((char *)pi);
-  } else
+    kfree((எழுத்து *)pi);
+  } இல்லையெனில்
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+முழு
+pipewrite(கட்டமைப்பு pipe *pi, uint64 addr, முழு n)
 {
-  int i = 0;
-  struct proc *pr = myproc();
+  முழு i = 0;
+  கட்டமைப்பு proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  போது (i < n) {
+    எனில் (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      திரும்பு -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    எனில் (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
-      char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+    } இல்லையெனில் {
+      எழுத்து ch;
+      எனில் (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        எனில் (i == 0)
           i = -1;
-        break;
+        நிறுத்து;
       }
       pi->data[pi->nwrite++ % PIPESIZE] = ch;
       i++;
@@ -105,39 +105,39 @@ pipewrite(struct pipe *pi, uint64 addr, int n)
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  திரும்பு i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+முழு
+piperead(கட்டமைப்பு pipe *pi, uint64 addr, முழு n)
 {
-  int i;
-  struct proc *pr = myproc();
-  char ch;
+  முழு i;
+  கட்டமைப்பு proc *pr = myproc();
+  எழுத்து ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  போது (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    எனில் (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      திரும்பு -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
-      break;
+  க்கு (i = 0; i < n; i++) { //DOC: piperead-copy
+    எனில் (pi->nread == pi->nwrite)
+      நிறுத்து;
     ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+    எனில் (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      எனில் (i == 0)
         i = -1;
-      break;
+      நிறுத்து;
     }
     pi->nread++;
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  திரும்பு i;
 }

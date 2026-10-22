@@ -1,9 +1,9 @@
 // Long-term locks for processes
-struct sleeplock {
+கட்டமைப்பு sleeplock {
   uint locked;        // Is the lock held?
-  struct spinlock lk; // spinlock protecting this sleep lock
+  கட்டமைப்பு spinlock lk; // spinlock protecting this sleep lock
 
   // For debugging:
-  char *name; // Name of lock.
-  int pid;    // Process holding lock
+  எழுத்து *name; // Name of lock.
+  முழு pid;    // Process holding lock
 };

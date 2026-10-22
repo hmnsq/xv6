@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+வகைவரை unsigned முழு uint;
+வகைவரை unsigned short ushort;
+வகைவரை unsigned எழுத்து uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+வகைவரை unsigned எழுத்து uint8;
+வகைவரை unsigned short uint16;
+வகைவரை unsigned முழு uint32;
+வகைவரை unsigned long uint64;
 
-typedef uint64 pde_t;
+வகைவரை uint64 pde_t;
