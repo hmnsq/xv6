@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((বর্ণ *)-1)
 
-struct stat;
+সংরচনা stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+পূর্ণাঙ্ক fork(শূন্য);
+পূর্ণাঙ্ক exit(পূর্ণাঙ্ক) __attribute__((noreturn));
+পূর্ণাঙ্ক wait(পূর্ণাঙ্ক *);
+পূর্ণাঙ্ক pipe(পূর্ণাঙ্ক *);
+পূর্ণাঙ্ক লিখ(পূর্ণাঙ্ক, ধ্রুব শূন্য *, পূর্ণাঙ্ক);
+পূর্ণাঙ্ক পঠ(পূর্ণাঙ্ক, শূন্য *, পূর্ণাঙ্ক);
+পূর্ণাঙ্ক close(পূর্ণাঙ্ক);
+পূর্ণাঙ্ক kill(পূর্ণাঙ্ক);
+পূর্ণাঙ্ক exec(ধ্রুব বর্ণ *, বর্ণ **);
+পূর্ণাঙ্ক open(ধ্রুব বর্ণ *, পূর্ণাঙ্ক);
+পূর্ণাঙ্ক mknod(ধ্রুব বর্ণ *, short, short);
+পূর্ণাঙ্ক unlink(ধ্রুব বর্ণ *);
+পূর্ণাঙ্ক fstat(পূর্ণাঙ্ক fd, সংরচনা stat *);
+পূর্ণাঙ্ক link(ধ্রুব বর্ণ *, ধ্রুব বর্ণ *);
+পূর্ণাঙ্ক mkdir(ধ্রুব বর্ণ *);
+পূর্ণাঙ্ক chdir(ধ্রুব বর্ণ *);
+পূর্ণাঙ্ক dup(পূর্ণাঙ্ক);
+পূর্ণাঙ্ক getpid(শূন্য);
+বর্ণ *sys_sbrk(পূর্ণাঙ্ক, পূর্ণাঙ্ক);
+পূর্ণাঙ্ক pause(পূর্ণাঙ্ক);
+পূর্ণাঙ্ক uptime(শূন্য);
+পূর্ণাঙ্ক sync(শূন্য);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+পূর্ণাঙ্ক stat(ধ্রুব বর্ণ *, সংরচনা stat *);
+বর্ণ *strcpy(বর্ণ *, ধ্রুব বর্ণ *);
+শূন্য *memmove(শূন্য *, ধ্রুব শূন্য *, পূর্ণাঙ্ক);
+বর্ণ *strchr(ধ্রুব বর্ণ *, বর্ণ c);
+পূর্ণাঙ্ক strcmp(ধ্রুব বর্ণ *, ধ্রুব বর্ণ *);
+বর্ণ *gets(বর্ণ *, পূর্ণাঙ্ক max);
+uint strlen(ধ্রুব বর্ণ *);
+শূন্য *memset(শূন্য *, পূর্ণাঙ্ক, uint);
+পূর্ণাঙ্ক atoi(ধ্রুব বর্ণ *);
+পূর্ণাঙ্ক memcmp(ধ্রুব শূন্য *, ধ্রুব শূন্য *, uint);
+শূন্য *memcpy(শূন্য *, ধ্রুব শূন্য *, uint);
+বর্ণ *sbrk(পূর্ণাঙ্ক);
+বর্ণ *sbrklazy(পূর্ণাঙ্ক);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+শূন্য fprintf(পূর্ণাঙ্ক, ধ্রুব বর্ণ *, ...) __attribute__((format(printf, 2, 3)));
+শূন্য printf(ধ্রুব বর্ণ *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+শূন্য *malloc(uint);
+শূন্য মুক্ত(শূন্য *);

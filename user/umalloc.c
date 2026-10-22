@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "user/user.h"
+#অন্তর্ভাব "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+প্রকারনির্দেশ long Align;
 
-union header {
-  struct {
-    union header *ptr;
+সঙ্ঘ header {
+  সংরচনা {
+    সঙ্ঘ header *ptr;
     uint size;
   } s;
   Align x;
 };
 
-typedef union header Header;
+প্রকারনির্দেশ সঙ্ঘ header Header;
 
-static Header base;
-static Header *freep;
+স্থির Header base;
+স্থির Header *freep;
 
-void
-free(void *ap)
+শূন্য
+মুক্ত(শূন্য *ap)
 {
   Header *bp, *p;
 
   bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
+  প্রতি (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    যদি (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      ভঙ্গ;
+  যদি (bp + bp->s.size == p->s.ptr) {
     bp->s.size += p->s.ptr->s.size;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } অন্যথা
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
+  যদি (p + p->s.size == bp) {
     p->s.size += bp->s.size;
     p->s.ptr = bp->s.ptr;
-  } else
+  } অন্যথা
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+স্থির Header *
 morecore(uint nu)
 {
-  char *p;
+  বর্ণ *p;
   Header *hp;
 
-  if (nu < 4096)
+  যদি (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
+  p = sbrk(nu * পরিমাণ(Header));
+  যদি (p == SBRK_ERROR)
+    প্রত্যাগম 0;
   hp = (Header *)p;
   hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  মুক্ত((শূন্য *)(hp + 1));
+  প্রত্যাগম freep;
 }
 
-void *
+শূন্য *
 malloc(uint nbytes)
 {
   Header *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
+  nunits = (nbytes + পরিমাণ(Header) - 1) / পরিমাণ(Header) + 1;
+  যদি ((prevp = freep) == 0) {
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  প্রতি (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    যদি (p->s.size >= nunits) {
+      যদি (p->s.size == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
+      অন্যথা {
         p->s.size -= nunits;
         p += p->s.size;
         p->s.size = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      প্রত্যাগম (শূন্য *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    যদি (p == freep)
+      যদি ((p = morecore(nunits)) == 0)
+        প্রত্যাগম 0;
   }
 }

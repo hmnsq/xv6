@@ -7,41 +7,41 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#অন্তর্ভাব "kernel/types.h"
+#অন্তর্ভাব "kernel/stat.h"
+#অন্তর্ভাব "user/user.h"
+#অন্তর্ভাব "kernel/fs.h"
+#অন্তর্ভাব "kernel/fcntl.h"
 
-int
-main(int argc, char *argv[])
+পূর্ণাঙ্ক
+main(পূর্ণাঙ্ক argc, বর্ণ *argv[])
 {
-  int fd, i;
-  char path[] = "stressfs0";
-  char data[512];
+  পূর্ণাঙ্ক fd, i;
+  বর্ণ path[] = "stressfs0";
+  বর্ণ data[512];
 
   printf("stressfs starting\n");
-  memset(data, 'a', sizeof(data));
+  memset(data, 'a', পরিমাণ(data));
 
-  for (i = 0; i < 4; i++)
-    if (fork() > 0)
-      break;
+  প্রতি (i = 0; i < 4; i++)
+    যদি (fork() > 0)
+      ভঙ্গ;
 
   printf("write %d\n", i);
 
   path[8] += i;
   fd = open(path, O_CREATE | O_RDWR);
-  for (i = 0; i < 20; i++) {
+  প্রতি (i = 0; i < 20; i++) {
     // printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    লিখ(fd, data, পরিমাণ(data));
   }
   close(fd);
 
   printf("read\n");
 
   fd = open(path, O_RDONLY);
-  for (i = 0; i < 20; i++)
-    read(fd, data, sizeof(data));
+  প্রতি (i = 0; i < 20; i++)
+    পঠ(fd, data, পরিমাণ(data));
   close(fd);
 
   wait(0);
