@@ -1,17 +1,17 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#अन्तर्भाव "types.h"
+#अन्तर्भाव "param.h"
+#अन्तर्भाव "memlayout.h"
+#अन्तर्भाव "riscv.h"
+#अन्तर्भाव "defs.h"
 
-void main();
-void timerinit();
+शून्य main();
+शून्य timerinit();
 
 // entry.S needs one stack per CPU.
-__attribute__((aligned(16))) char stack0[4096 * NCPU];
+__attribute__((aligned(16))) वर्ण stack0[4096 * NCPU];
 
 // entry.S jumps here in machine mode on stack0.
-void
+शून्य
 start()
 {
   // set M Previous Privilege mode to Supervisor, for mret.
@@ -44,15 +44,15 @@ start()
   timerinit();
 
   // keep each CPU's hartid in its tp register, for cpuid().
-  int id = r_mhartid();
+  पूर्णाङ्क id = r_mhartid();
   w_tp(id);
 
   // switch to supervisor mode and jump to main().
-  asm volatile("mret");
+  asm चञ्चल("mret");
 }
 
 // ask each hart to generate timer interrupts.
-void
+शून्य
 timerinit()
 {
   // enable the sstc extension (i.e. stimecmp).
