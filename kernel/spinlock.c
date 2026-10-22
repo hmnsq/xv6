@@ -22,7 +22,7 @@ void
 acquire(struct spinlock *lk)
 {
   push_off(); // disable interrupts to avoid deadlock.
-  if (holding(lk))
+  якщо (holding(lk))
     panic("acquire");
 
   // On RISC-V, __atomic_exchange_n turns into an atomic swap:
@@ -34,7 +34,7 @@ acquire(struct spinlock *lk)
   // the C compiler and the processor to not move loads or stores
   // past this point, to ensure that the critical section's memory
   // references happen strictly after the lock is acquired.
-  while (__atomic_exchange_n(&lk->locked, 1, __ATOMIC_ACQUIRE) != 0)
+  поки (__atomic_exchange_n(&lk->locked, 1, __ATOMIC_ACQUIRE) != 0)
     ;
 
   // Record info about lock acquisition for holding() and debugging.
@@ -45,7 +45,7 @@ acquire(struct spinlock *lk)
 void
 release(struct spinlock *lk)
 {
-  if (!holding(lk))
+  якщо (!holding(lk))
     panic("release");
 
   lk->cpu = 0;
@@ -77,12 +77,12 @@ release(struct spinlock *lk)
 
 // Check whether this cpu is holding the lock.
 // Interrupts must be off.
-int
+ціле
 holding(struct spinlock *lk)
 {
-  int r;
+  ціле r;
   r = (lk->locked && lk->cpu == mycpu());
-  return r;
+  повернути r;
 }
 
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
@@ -95,9 +95,9 @@ push_off(void)
   // disable interrupts to prevent an involuntary context
   // switch while using mycpu().
   uint64 flags = rc_sstatus(SSTATUS_SIE);
-  int old = !!(flags & SSTATUS_SIE);
+  ціле old = !!(flags & SSTATUS_SIE);
 
-  if (mycpu()->noff == 0)
+  якщо (mycpu()->noff == 0)
     mycpu()->intena = old;
   mycpu()->noff += 1;
 }
@@ -106,11 +106,11 @@ void
 pop_off(void)
 {
   struct cpu *c = mycpu();
-  if (intr_get())
+  якщо (intr_get())
     panic("pop_off - interruptible");
-  if (c->noff < 1)
+  якщо (c->noff < 1)
     panic("pop_off");
   c->noff -= 1;
-  if (c->noff == 0 && c->intena)
+  якщо (c->noff == 0 && c->intena)
     intr_on();
 }

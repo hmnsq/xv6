@@ -14,42 +14,42 @@
 #define MAXARGS 10
 
 struct cmd {
-  int type;
+  ціле type;
 };
 
 struct execcmd {
-  int type;
+  ціле type;
   char *argv[MAXARGS];
   char *eargv[MAXARGS];
 };
 
 struct redircmd {
-  int type;
+  ціле type;
   struct cmd *cmd;
   char *file;
   char *efile;
-  int mode;
-  int fd;
+  ціле mode;
+  ціле fd;
 };
 
 struct pipecmd {
-  int type;
+  ціле type;
   struct cmd *left;
   struct cmd *right;
 };
 
 struct listcmd {
-  int type;
+  ціле type;
   struct cmd *left;
   struct cmd *right;
 };
 
 struct backcmd {
-  int type;
+  ціле type;
   struct cmd *cmd;
 };
 
-int fork1(void); // Fork but panics on failure.
+ціле fork1(void); // Fork but panics on failure.
 void panic(char *);
 struct cmd *parsecmd(char *);
 void runcmd(struct cmd *) __attribute__((noreturn));
@@ -58,14 +58,14 @@ void runcmd(struct cmd *) __attribute__((noreturn));
 void
 runcmd(struct cmd *cmd)
 {
-  int p[2];
+  ціле p[2];
   struct backcmd *bcmd;
   struct execcmd *ecmd;
   struct listcmd *lcmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
 
-  if (cmd == 0)
+  якщо (cmd == 0)
     exit(1);
 
   switch (cmd->type) {
@@ -74,7 +74,7 @@ runcmd(struct cmd *cmd)
 
   case EXEC:
     ecmd = (struct execcmd *)cmd;
-    if (ecmd->argv[0] == 0)
+    якщо (ecmd->argv[0] == 0)
       exit(1);
     exec(ecmd->argv[0], ecmd->argv);
     fprintf(2, "exec %s failed\n", ecmd->argv[0]);
@@ -83,7 +83,7 @@ runcmd(struct cmd *cmd)
   case REDIR:
     rcmd = (struct redircmd *)cmd;
     close(rcmd->fd);
-    if (open(rcmd->file, rcmd->mode) < 0) {
+    якщо (open(rcmd->file, rcmd->mode) < 0) {
       fprintf(2, "open %s failed\n", rcmd->file);
       exit(1);
     }
@@ -92,7 +92,7 @@ runcmd(struct cmd *cmd)
 
   case LIST:
     lcmd = (struct listcmd *)cmd;
-    if (fork1() == 0)
+    якщо (fork1() == 0)
       runcmd(lcmd->left);
     wait(0);
     runcmd(lcmd->right);
@@ -100,16 +100,16 @@ runcmd(struct cmd *cmd)
 
   case PIPE:
     pcmd = (struct pipecmd *)cmd;
-    if (pipe(p) < 0)
+    якщо (pipe(p) < 0)
       panic("pipe");
-    if (fork1() == 0) {
+    якщо (fork1() == 0) {
       close(1);
       dup(p[1]);
       close(p[0]);
       close(p[1]);
       runcmd(pcmd->left);
     }
-    if (fork1() == 0) {
+    якщо (fork1() == 0) {
       close(0);
       dup(p[0]);
       close(p[0]);
@@ -124,52 +124,52 @@ runcmd(struct cmd *cmd)
 
   case BACK:
     bcmd = (struct backcmd *)cmd;
-    if (fork1() == 0)
+    якщо (fork1() == 0)
       runcmd(bcmd->cmd);
     break;
   }
   exit(0);
 }
 
-int
-getcmd(char *buf, int nbuf)
+ціле
+getcmd(char *buf, ціле nbuf)
 {
   write(2, "$ ", 2);
   memset(buf, 0, nbuf);
   gets(buf, nbuf);
-  if (buf[0] == 0) // EOF
-    return -1;
-  return 0;
+  якщо (buf[0] == 0) // EOF
+    повернути -1;
+  повернути 0;
 }
 
-int
+ціле
 main(void)
 {
   static char buf[100];
-  int fd;
+  ціле fd;
 
   // Ensure that three file descriptors are open.
-  while ((fd = open("console", O_RDWR)) >= 0) {
-    if (fd >= 3) {
+  поки ((fd = open("console", O_RDWR)) >= 0) {
+    якщо (fd >= 3) {
       close(fd);
       break;
     }
   }
 
   // Read and run input commands.
-  while (getcmd(buf, sizeof(buf)) >= 0) {
+  поки (getcmd(buf, sizeof(buf)) >= 0) {
     char *cmd = buf;
-    while (*cmd == ' ' || *cmd == '\t')
+    поки (*cmd == ' ' || *cmd == '\t')
       cmd++;
-    if (*cmd == '\n') // is a blank command
+    якщо (*cmd == '\n') // is a blank command
       continue;
-    if (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
+    якщо (cmd[0] == 'c' && cmd[1] == 'd' && cmd[2] == ' ') {
       // Chdir must be called by the parent, not the child.
       cmd[strlen(cmd) - 1] = 0; // chop \n
-      if (chdir(cmd + 3) < 0)
+      якщо (chdir(cmd + 3) < 0)
         fprintf(2, "cannot cd %s\n", cmd + 3);
-    } else {
-      if (fork1() == 0)
+    } інакше {
+      якщо (fork1() == 0)
         runcmd(parsecmd(cmd));
       wait(0);
     }
@@ -184,15 +184,15 @@ panic(char *s)
   exit(1);
 }
 
-int
+ціле
 fork1(void)
 {
-  int pid;
+  ціле pid;
 
   pid = fork();
-  if (pid == -1)
+  якщо (pid == -1)
     panic("fork");
-  return pid;
+  повернути pid;
 }
 
 //PAGEBREAK!
@@ -206,11 +206,11 @@ execcmd(void)
   cmd = malloc(sizeof(*cmd));
   memset(cmd, 0, sizeof(*cmd));
   cmd->type = EXEC;
-  return (struct cmd *)cmd;
+  повернути (struct cmd *)cmd;
 }
 
 struct cmd *
-redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
+redircmd(struct cmd *subcmd, char *file, char *efile, ціле mode, ціле fd)
 {
   struct redircmd *cmd;
 
@@ -222,7 +222,7 @@ redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
   cmd->efile = efile;
   cmd->mode = mode;
   cmd->fd = fd;
-  return (struct cmd *)cmd;
+  повернути (struct cmd *)cmd;
 }
 
 struct cmd *
@@ -235,7 +235,7 @@ pipecmd(struct cmd *left, struct cmd *right)
   cmd->type = PIPE;
   cmd->left = left;
   cmd->right = right;
-  return (struct cmd *)cmd;
+  повернути (struct cmd *)cmd;
 }
 
 struct cmd *
@@ -248,7 +248,7 @@ listcmd(struct cmd *left, struct cmd *right)
   cmd->type = LIST;
   cmd->left = left;
   cmd->right = right;
-  return (struct cmd *)cmd;
+  повернути (struct cmd *)cmd;
 }
 
 struct cmd *
@@ -260,7 +260,7 @@ backcmd(struct cmd *subcmd)
   memset(cmd, 0, sizeof(*cmd));
   cmd->type = BACK;
   cmd->cmd = subcmd;
-  return (struct cmd *)cmd;
+  повернути (struct cmd *)cmd;
 }
 //PAGEBREAK!
 // Parsing
@@ -268,16 +268,16 @@ backcmd(struct cmd *subcmd)
 char whitespace[] = " \t\r\n\v";
 char symbols[] = "<|>&;()";
 
-int
+ціле
 gettoken(char **ps, char *es, char **q, char **eq)
 {
   char *s;
-  int ret;
+  ціле ret;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  поки (s < es && strchr(whitespace, *s))
     s++;
-  if (q)
+  якщо (q)
     *q = s;
   ret = *s;
   switch (*s) {
@@ -293,36 +293,36 @@ gettoken(char **ps, char *es, char **q, char **eq)
     break;
   case '>':
     s++;
-    if (*s == '>') {
+    якщо (*s == '>') {
       ret = '+';
       s++;
     }
     break;
   default:
     ret = 'a';
-    while (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
+    поки (s < es && !strchr(whitespace, *s) && !strchr(symbols, *s))
       s++;
     break;
   }
-  if (eq)
+  якщо (eq)
     *eq = s;
 
-  while (s < es && strchr(whitespace, *s))
+  поки (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return ret;
+  повернути ret;
 }
 
-int
+ціле
 peek(char **ps, char *es, char *toks)
 {
   char *s;
 
   s = *ps;
-  while (s < es && strchr(whitespace, *s))
+  поки (s < es && strchr(whitespace, *s))
     s++;
   *ps = s;
-  return *s && strchr(toks, *s);
+  повернути *s && strchr(toks, *s);
 }
 
 struct cmd *parseline(char **, char *);
@@ -339,12 +339,12 @@ parsecmd(char *s)
   es = s + strlen(s);
   cmd = parseline(&s, es);
   peek(&s, es, "");
-  if (s != es) {
+  якщо (s != es) {
     fprintf(2, "leftovers: %s\n", s);
     panic("syntax");
   }
   nulterminate(cmd);
-  return cmd;
+  повернути cmd;
 }
 
 struct cmd *
@@ -353,15 +353,15 @@ parseline(char **ps, char *es)
   struct cmd *cmd;
 
   cmd = parsepipe(ps, es);
-  while (peek(ps, es, "&")) {
+  поки (peek(ps, es, "&")) {
     gettoken(ps, es, 0, 0);
     cmd = backcmd(cmd);
   }
-  if (peek(ps, es, ";")) {
+  якщо (peek(ps, es, ";")) {
     gettoken(ps, es, 0, 0);
     cmd = listcmd(cmd, parseline(ps, es));
   }
-  return cmd;
+  повернути cmd;
 }
 
 struct cmd *
@@ -370,22 +370,22 @@ parsepipe(char **ps, char *es)
   struct cmd *cmd;
 
   cmd = parseexec(ps, es);
-  if (peek(ps, es, "|")) {
+  якщо (peek(ps, es, "|")) {
     gettoken(ps, es, 0, 0);
     cmd = pipecmd(cmd, parsepipe(ps, es));
   }
-  return cmd;
+  повернути cmd;
 }
 
 struct cmd *
 parseredirs(struct cmd *cmd, char **ps, char *es)
 {
-  int tok;
+  ціле tok;
   char *q, *eq;
 
-  while (peek(ps, es, "<>")) {
+  поки (peek(ps, es, "<>")) {
     tok = gettoken(ps, es, 0, 0);
-    if (gettoken(ps, es, &q, &eq) != 'a')
+    якщо (gettoken(ps, es, &q, &eq) != 'a')
       panic("missing file for redirection");
     switch (tok) {
     case '<':
@@ -399,7 +399,7 @@ parseredirs(struct cmd *cmd, char **ps, char *es)
       break;
     }
   }
-  return cmd;
+  повернути cmd;
 }
 
 struct cmd *
@@ -407,68 +407,68 @@ parseblock(char **ps, char *es)
 {
   struct cmd *cmd;
 
-  if (!peek(ps, es, "("))
+  якщо (!peek(ps, es, "("))
     panic("parseblock");
   gettoken(ps, es, 0, 0);
   cmd = parseline(ps, es);
-  if (!peek(ps, es, ")"))
+  якщо (!peek(ps, es, ")"))
     panic("syntax - missing )");
   gettoken(ps, es, 0, 0);
   cmd = parseredirs(cmd, ps, es);
-  return cmd;
+  повернути cmd;
 }
 
 struct cmd *
 parseexec(char **ps, char *es)
 {
   char *q, *eq;
-  int tok, argc;
+  ціле tok, argc;
   struct execcmd *cmd;
   struct cmd *ret;
 
-  if (peek(ps, es, "("))
-    return parseblock(ps, es);
+  якщо (peek(ps, es, "("))
+    повернути parseblock(ps, es);
 
   ret = execcmd();
   cmd = (struct execcmd *)ret;
 
   argc = 0;
   ret = parseredirs(ret, ps, es);
-  while (!peek(ps, es, "|)&;")) {
-    if ((tok = gettoken(ps, es, &q, &eq)) == 0)
+  поки (!peek(ps, es, "|)&;")) {
+    якщо ((tok = gettoken(ps, es, &q, &eq)) == 0)
       break;
-    if (tok != 'a')
+    якщо (tok != 'a')
       panic("syntax");
     cmd->argv[argc] = q;
     cmd->eargv[argc] = eq;
     argc++;
-    if (argc >= MAXARGS)
+    якщо (argc >= MAXARGS)
       panic("too many args");
     ret = parseredirs(ret, ps, es);
   }
   cmd->argv[argc] = 0;
   cmd->eargv[argc] = 0;
-  return ret;
+  повернути ret;
 }
 
 // NUL-terminate all the counted strings.
 struct cmd *
 nulterminate(struct cmd *cmd)
 {
-  int i;
+  ціле i;
   struct backcmd *bcmd;
   struct execcmd *ecmd;
   struct listcmd *lcmd;
   struct pipecmd *pcmd;
   struct redircmd *rcmd;
 
-  if (cmd == 0)
-    return 0;
+  якщо (cmd == 0)
+    повернути 0;
 
   switch (cmd->type) {
   case EXEC:
     ecmd = (struct execcmd *)cmd;
-    for (i = 0; ecmd->argv[i]; i++)
+    для (i = 0; ecmd->argv[i]; i++)
       *ecmd->eargv[i] = 0;
     break;
 
@@ -495,5 +495,5 @@ nulterminate(struct cmd *cmd)
     nulterminate(bcmd->cmd);
     break;
   }
-  return cmd;
+  повернути cmd;
 }

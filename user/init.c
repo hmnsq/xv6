@@ -11,42 +11,42 @@
 
 char *argv[] = {"sh", 0};
 
-int
+ціле
 main(void)
 {
-  int pid, wpid;
+  ціле pid, wpid;
 
-  if (open("console", O_RDWR) < 0) {
+  якщо (open("console", O_RDWR) < 0) {
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
   dup(0); // stdout
   dup(0); // stderr
 
-  for (;;) {
+  для (;;) {
     printf("init: starting sh\n");
     pid = fork();
-    if (pid < 0) {
+    якщо (pid < 0) {
       printf("init: fork failed\n");
       exit(1);
     }
-    if (pid == 0) {
+    якщо (pid == 0) {
       exec("sh", argv);
       printf("init: exec sh failed\n");
       exit(1);
     }
 
-    for (;;) {
+    для (;;) {
       // this call to wait() returns if the shell exits,
       // or if a parentless process exits.
-      wpid = wait((int *)0);
-      if (wpid == pid) {
+      wpid = wait((ціле *)0);
+      якщо (wpid == pid) {
         // the shell exited; restart it.
         break;
-      } else if (wpid < 0) {
+      } інакше якщо (wpid < 0) {
         printf("init: wait returned an error\n");
         exit(1);
-      } else {
+      } інакше {
         // it was a parentless process; do nothing.
       }
     }

@@ -6,45 +6,45 @@
 char buf[512];
 
 void
-wc(int fd, char *name)
+wc(ціле fd, char *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  ціле i, n;
+  ціле l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  поки ((n = read(fd, buf, sizeof(buf))) > 0) {
+    для (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      якщо (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      якщо (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      інакше якщо (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  якщо (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+ціле
+main(ціле argc, char *argv[])
 {
-  int fd, i;
+  ціле fd, i;
 
-  if (argc <= 1) {
+  якщо (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  для (i = 1; i < argc; i++) {
+    якщо ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

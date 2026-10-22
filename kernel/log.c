@@ -33,17 +33,17 @@
 // Contents of the header block, used for both the on-disk header block
 // and to keep track in memory of logged block# before commit.
 struct logheader {
-  int n;
-  int block[LOGBLOCKS];
+  ціле n;
+  ціле block[LOGBLOCKS];
 };
 
 struct log {
   struct spinlock lock;
-  int start;
-  int outstanding; // how many FS sys calls are executing.
-  int committing;  // in commit(), please wait.
-  int dev;
-  int ncommit;
+  ціле start;
+  ціле outstanding; // how many FS sys calls are executing.
+  ціле committing;  // in commit(), please wait.
+  ціле dev;
+  ціле ncommit;
   struct logheader lh;
 };
 struct log log;
@@ -52,9 +52,9 @@ static void recover_from_log(void);
 static void commit();
 
 void
-initlog(int dev, struct superblock *sb)
+initlog(ціле dev, struct superblock *sb)
 {
-  if (sizeof(struct logheader) >= BSIZE)
+  якщо (sizeof(struct logheader) >= BSIZE)
     panic("initlog: too big logheader");
 
   initlock(&log.lock, "log");
@@ -65,19 +65,19 @@ initlog(int dev, struct superblock *sb)
 
 // Copy committed blocks from log to their home location
 static void
-install_trans(int recovering)
+install_trans(ціле recovering)
 {
-  int tail;
+  ціле tail;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    if (recovering) {
+  для (tail = 0; tail < log.lh.n; tail++) {
+    якщо (recovering) {
       printk("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
     }
     struct buf *lbuf = bread(log.dev, log.start + tail + 1); // read log block
     struct buf *dbuf = bread(log.dev, log.lh.block[tail]);   // read dst
     memmove(dbuf->data, lbuf->data, BSIZE); // copy block to dst
     bwrite(dbuf);                           // write dst to disk
-    if (recovering == 0)
+    якщо (recovering == 0)
       bunpin(dbuf);
     brelse(lbuf);
     brelse(dbuf);
@@ -90,9 +90,9 @@ read_head(void)
 {
   struct buf *buf = bread(log.dev, log.start);
   struct logheader *lh = (struct logheader *)(buf->data);
-  int i;
+  ціле i;
   log.lh.n = lh->n;
-  for (i = 0; i < log.lh.n; i++) {
+  для (i = 0; i < log.lh.n; i++) {
     log.lh.block[i] = lh->block[i];
   }
   brelse(buf);
@@ -106,9 +106,9 @@ write_head(void)
 {
   struct buf *buf = bread(log.dev, log.start);
   struct logheader *hb = (struct logheader *)(buf->data);
-  int i;
+  ціле i;
   hb->n = log.lh.n;
-  for (i = 0; i < log.lh.n; i++) {
+  для (i = 0; i < log.lh.n; i++) {
     hb->block[i] = log.lh.block[i];
   }
   bwrite(buf);
@@ -129,19 +129,19 @@ void
 begin_op(void)
 {
   acquire(&log.lock);
-  while (1) {
-    if (log.committing) {
+  поки (1) {
+    якщо (log.committing) {
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
       acquire(&log.lock);
-    } else if (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
+    } інакше якщо (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
       // this op might exhaust log space; wait for commit.
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
       acquire(&log.lock);
-    } else {
+    } інакше {
       log.outstanding += 1;
       release(&log.lock);
       break;
@@ -154,16 +154,16 @@ begin_op(void)
 void
 end_op(void)
 {
-  int do_commit = 0;
+  ціле do_commit = 0;
 
   acquire(&log.lock);
   log.outstanding -= 1;
-  if (log.committing)
+  якщо (log.committing)
     panic("log.committing");
-  if (log.outstanding == 0) {
+  якщо (log.outstanding == 0) {
     do_commit = 1;
     log.committing = 1;
-  } else {
+  } інакше {
     // begin_op() may be waiting for log space,
     // and decrementing log.outstanding has decreased
     // the amount of reserved space.
@@ -171,7 +171,7 @@ end_op(void)
   }
   release(&log.lock);
 
-  if (do_commit) {
+  якщо (do_commit) {
     // call commit w/o holding locks, since not allowed
     // to sleep with locks.
     commit();
@@ -187,9 +187,9 @@ end_op(void)
 static void
 write_log(void)
 {
-  int tail;
+  ціле tail;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
+  для (tail = 0; tail < log.lh.n; tail++) {
     struct buf *to = bread(log.dev, log.start + tail + 1); // log block
     struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
     memmove(to->data, from->data, BSIZE);
@@ -202,7 +202,7 @@ write_log(void)
 static void
 commit()
 {
-  if (log.lh.n > 0) {
+  якщо (log.lh.n > 0) {
     write_log();      // Write modified blocks from cache to log
     write_head();     // Write header to disk -- the real commit
     install_trans(0); // Now install writes to home locations
@@ -223,20 +223,20 @@ commit()
 void
 log_write(struct buf *b)
 {
-  int i;
+  ціле i;
 
   acquire(&log.lock);
-  if (log.lh.n >= LOGBLOCKS)
+  якщо (log.lh.n >= LOGBLOCKS)
     panic("too big a transaction");
-  if (log.outstanding < 1)
+  якщо (log.outstanding < 1)
     panic("log_write outside of trans");
 
-  for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno) // log absorption
+  для (i = 0; i < log.lh.n; i++) {
+    якщо (log.lh.block[i] == b->blockno) // log absorption
       break;
   }
   log.lh.block[i] = b->blockno;
-  if (i == log.lh.n) { // Add new block to log?
+  якщо (i == log.lh.n) { // Add new block to log?
     bpin(b);
     log.lh.n++;
   }
@@ -247,9 +247,9 @@ uint64
 sys_sync(void)
 {
   acquire(&log.lock);
-  if (log.committing || log.outstanding > 0) {
-    int n = log.ncommit + 1;
-    while (log.ncommit < n) {
+  якщо (log.committing || log.outstanding > 0) {
+    ціле n = log.ncommit + 1;
+    поки (log.ncommit < n) {
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
@@ -257,5 +257,5 @@ sys_sync(void)
     }
   }
   release(&log.lock);
-  return 0;
+  повернути 0;
 }

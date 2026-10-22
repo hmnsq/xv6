@@ -15,8 +15,8 @@
 #include "defs.h"
 #include "proc.h"
 
-volatile int panicking = 0; // printing a panic message
-volatile int panicked = 0;  // spinning forever at end of a panic
+volatile ціле panicking = 0; // printing a panic message
+volatile ціле panicked = 0;  // spinning forever at end of a panic
 
 // lock to avoid interleaving concurrent printk's.
 static struct {
@@ -26,101 +26,101 @@ static struct {
 static char digits[] = "0123456789abcdef";
 
 static void
-printint(long long xx, int base, int sign)
+printint(long long xx, ціле base, ціле sign)
 {
   char buf[20];
-  int i;
+  ціле i;
   unsigned long long x;
 
-  if (sign && (sign = (xx < 0)))
+  якщо (sign && (sign = (xx < 0)))
     x = -xx;
-  else
+  інакше
     x = xx;
 
   i = 0;
   do {
     buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+  } поки ((x /= base) != 0);
 
-  if (sign)
+  якщо (sign)
     buf[i++] = '-';
 
-  while (--i >= 0)
+  поки (--i >= 0)
     consputc(buf[i]);
 }
 
 static void
 printptr(uint64 x)
 {
-  int i;
+  ціле i;
   consputc('0');
   consputc('x');
-  for (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
+  для (i = 0; i < (sizeof(uint64) * 2); i++, x <<= 4)
     consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
 }
 
 // Print to the console.
-int
+ціле
 printk(char *fmt, ...)
 {
   va_list ap;
-  int i, cx, c0, c1, c2;
+  ціле i, cx, c0, c1, c2;
   char *s;
 
-  if (panicking == 0)
+  якщо (panicking == 0)
     acquire(&pr.lock);
 
   va_start(ap, fmt);
-  for (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
-    if (cx != '%') {
+  для (i = 0; (cx = fmt[i] & 0xff) != 0; i++) {
+    якщо (cx != '%') {
       consputc(cx);
       continue;
     }
     i++;
     c0 = fmt[i + 0] & 0xff;
     c1 = c2 = 0;
-    if (c0)
+    якщо (c0)
       c1 = fmt[i + 1] & 0xff;
-    if (c1)
+    якщо (c1)
       c2 = fmt[i + 2] & 0xff;
-    if (c0 == 'd') {
-      printint(va_arg(ap, int), 10, 1);
-    } else if (c0 == 'l' && c1 == 'd') {
+    якщо (c0 == 'd') {
+      printint(va_arg(ap, ціле), 10, 1);
+    } інакше якщо (c0 == 'l' && c1 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'd') {
+    } інакше якщо (c0 == 'l' && c1 == 'l' && c2 == 'd') {
       printint(va_arg(ap, uint64), 10, 1);
       i += 2;
-    } else if (c0 == 'u') {
+    } інакше якщо (c0 == 'u') {
       printint(va_arg(ap, uint32), 10, 0);
-    } else if (c0 == 'l' && c1 == 'u') {
+    } інакше якщо (c0 == 'l' && c1 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'u') {
+    } інакше якщо (c0 == 'l' && c1 == 'l' && c2 == 'u') {
       printint(va_arg(ap, uint64), 10, 0);
       i += 2;
-    } else if (c0 == 'x') {
+    } інакше якщо (c0 == 'x') {
       printint(va_arg(ap, uint32), 16, 0);
-    } else if (c0 == 'l' && c1 == 'x') {
+    } інакше якщо (c0 == 'l' && c1 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 1;
-    } else if (c0 == 'l' && c1 == 'l' && c2 == 'x') {
+    } інакше якщо (c0 == 'l' && c1 == 'l' && c2 == 'x') {
       printint(va_arg(ap, uint64), 16, 0);
       i += 2;
-    } else if (c0 == 'p') {
+    } інакше якщо (c0 == 'p') {
       printptr(va_arg(ap, uint64));
-    } else if (c0 == 'c') {
+    } інакше якщо (c0 == 'c') {
       consputc(va_arg(ap, uint));
-    } else if (c0 == 's') {
-      if ((s = va_arg(ap, char *)) == 0)
+    } інакше якщо (c0 == 's') {
+      якщо ((s = va_arg(ap, char *)) == 0)
         s = "(null)";
-      for (; *s; s++)
+      для (; *s; s++)
         consputc(*s);
-    } else if (c0 == '%') {
+    } інакше якщо (c0 == '%') {
       consputc('%');
-    } else if (c0 == 0) {
+    } інакше якщо (c0 == 0) {
       break;
-    } else {
+    } інакше {
       // Print unknown % sequence to draw attention.
       consputc('%');
       consputc(c0);
@@ -128,10 +128,10 @@ printk(char *fmt, ...)
   }
   va_end(ap);
 
-  if (panicking == 0)
+  якщо (panicking == 0)
     release(&pr.lock);
 
-  return 0;
+  повернути 0;
 }
 
 void
@@ -141,7 +141,7 @@ panic(char *s)
   printk("panic: ");
   printk("%s\n", s);
   panicked = 1; // freeze uart output from other CPUs
-  for (;;)
+  для (;;)
     ;
 }
 

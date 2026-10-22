@@ -1,30 +1,30 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, ціле c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  ціле i;
+  для (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  повернути dst;
 }
 
-int
+ціле
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  поки (n-- > 0) {
+    якщо (*s1 != *s2)
+      повернути *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  повернути 0;
 }
 
 void *
@@ -33,74 +33,74 @@ memmove(void *dst, const void *src, uint n)
   const char *s;
   char *d;
 
-  if (n == 0)
-    return dst;
+  якщо (n == 0)
+    повернути dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  якщо (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    поки (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } інакше
+    поки (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  повернути dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  повернути memmove(dst, src, n);
 }
 
-int
+ціле
 strncmp(const char *p, const char *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  поки (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  якщо (n == 0)
+    повернути 0;
+  повернути (uchar)*p - (uchar)*q;
 }
 
 char *
-strncpy(char *s, const char *t, int n)
+strncpy(char *s, const char *t, ціле n)
 {
   char *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  поки (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  поки (n-- > 0)
     *s++ = 0;
-  return os;
+  повернути os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
 char *
-safestrcpy(char *s, const char *t, int n)
+safestrcpy(char *s, const char *t, ціле n)
 {
   char *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  якщо (n <= 0)
+    повернути os;
+  поки (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  повернути os;
 }
 
-int
+ціле
 strlen(const char *s)
 {
-  int n;
+  ціле n;
 
-  for (n = 0; s[n]; n++)
+  для (n = 0; s[n]; n++)
     ;
-  return n;
+  повернути n;
 }
