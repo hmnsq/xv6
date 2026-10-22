@@ -20,24 +20,24 @@ void            bunpin(struct buf*);
 
 // console.c
 void            consoleinit(void);
-void            consoleintr(int);
-void            consputc(int);
+void            consoleintr(整数);
+void            consputc(整数);
 
 // exec.c
-int             kexec(char*, char**);
+整数             kexec(char*, char**);
 
 // file.c
 struct file*    filealloc(void);
 void            fileclose(struct file*);
 struct file*    filedup(struct file*);
 void            fileinit(void);
-int             fileread(struct file*, uint64, int n);
-int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, uint64, int n);
+整数             fileread(struct file*, uint64, 整数 n);
+整数             filestat(struct file*, uint64 addr);
+整数             filewrite(struct file*, uint64, 整数 n);
 
 // fs.c
-void            fsinit(int);
-int             dirlink(struct inode*, char*, uint);
+void            fsinit(整数);
+整数             dirlink(struct inode*, char*, uint);
 struct inode*   dirlookup(struct inode*, char*, uint*);
 struct inode*   ialloc(uint, short);
 struct inode*   idup(struct inode*);
@@ -47,14 +47,14 @@ void            iput(struct inode*);
 void            iunlock(struct inode*);
 void            iunlockput(struct inode*);
 void            iupdate(struct inode*);
-int             namecmp(const char*, const char*);
+整数             namecmp(const char*, const char*);
 struct inode*   namei(char*);
 struct inode*   nameiparent(char*, char*);
-int             readi(struct inode*, int, uint64, uint, uint);
+整数             readi(struct inode*, 整数, uint64, uint, uint);
 void            stati(struct inode*, struct stat*);
-int             writei(struct inode*, int, uint64, uint, uint);
+整数             writei(struct inode*, 整数, uint64, uint, uint);
 void            itrunc(struct inode*);
-void            ireclaim(int);
+void            ireclaim(整数);
 
 // kalloc.c
 void*           kalloc(void);
@@ -62,32 +62,32 @@ void            kfree(void *);
 void            kinit(void);
 
 // log.c
-void            initlog(int, struct superblock*);
+void            initlog(整数, struct superblock*);
 void            log_write(struct buf*);
 void            begin_op(void);
 void            end_op(void);
 
 // pipe.c
-int             pipealloc(struct file**, struct file**);
-void            pipeclose(struct pipe*, int);
-int             piperead(struct pipe*, uint64, int);
-int             pipewrite(struct pipe*, uint64, int);
+整数             pipealloc(struct file**, struct file**);
+void            pipeclose(struct pipe*, 整数);
+整数             piperead(struct pipe*, uint64, 整数);
+整数             pipewrite(struct pipe*, uint64, 整数);
 
 // printk.c
-int             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
+整数             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
 void            panic(char*) __attribute__((noreturn));
 void            printkinit(void);
 
 // proc.c
-int             cpuid(void);
-void            kexit(int);
-int             kfork(void);
-int             growproc(int);
+整数             cpuid(void);
+void            kexit(整数);
+整数             kfork(void);
+整数             growproc(整数);
 void            proc_mapstacks(pagetable_t);
 pagetable_t     proc_pagetable(struct proc *);
 void            proc_freepagetable(pagetable_t, uint64);
-int             kkill(int);
-int             killed(struct proc*);
+整数             kkill(整数);
+整数             killed(struct proc*);
 void            setkilled(struct proc*);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
@@ -97,11 +97,11 @@ void            sched(void);
 void            sleep_prepare(void*);
 void            sleep(void);
 void            userinit(void);
-int             kwait(uint64);
+整数             kwait(uint64);
 void            wakeup(void*);
 void            yield(void);
-int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
-int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
+整数             either_copyout(整数 user_dst, uint64 dst, void *src, uint64 len);
+整数             either_copyin(void *dst, 整数 user_src, uint64 src, uint64 len);
 void            procdump(void);
 
 // swtch.S
@@ -109,7 +109,7 @@ void            swtch(struct context*, struct context*);
 
 // spinlock.c
 void            acquire(struct spinlock*);
-int             holding(struct spinlock*);
+整数             holding(struct spinlock*);
 void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
 void            push_off(void);
@@ -118,24 +118,24 @@ void            pop_off(void);
 // sleeplock.c
 void            acquiresleep(struct sleeplock*);
 void            releasesleep(struct sleeplock*);
-int             holdingsleep(struct sleeplock*);
+整数             holdingsleep(struct sleeplock*);
 void            initsleeplock(struct sleeplock*, char*);
 
 // string.c
-int             memcmp(const void*, const void*, uint);
+整数             memcmp(const void*, const void*, uint);
 void*           memmove(void*, const void*, uint);
-void*           memset(void*, int, uint);
-char*           safestrcpy(char*, const char*, int);
-int             strlen(const char*);
-int             strncmp(const char*, const char*, uint);
-char*           strncpy(char*, const char*, int);
+void*           memset(void*, 整数, uint);
+char*           safestrcpy(char*, const char*, 整数);
+整数             strlen(const char*);
+整数             strncmp(const char*, const char*, uint);
+char*           strncpy(char*, const char*, 整数);
 
 // syscall.c
-void            argint(int, int*);
-int             argstr(int, char*, int);
-void            argaddr(int, uint64 *);
-int             fetchstr(uint64, char*, int);
-int             fetchaddr(uint64, uint64*);
+void            argint(整数, 整数*);
+整数             argstr(整数, char*, 整数);
+void            argaddr(整数, uint64 *);
+整数             fetchstr(uint64, char*, 整数);
+整数             fetchaddr(uint64, uint64*);
 void            syscall();
 
 // trap.c
@@ -148,38 +148,38 @@ void            prepare_return(void);
 // uart.c
 void            uartinit(void);
 void            uartintr(void);
-void            uartwrite(char [], int);
-void            uartputc_sync(int);
+void            uartwrite(char [], 整数);
+void            uartputc_sync(整数);
 
 // vm.c
 void            kvminit(void);
 void            kvminithart(void);
-void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
-int             mappages(pagetable_t, uint64, uint64, uint64, int);
+void            kvmmap(pagetable_t, uint64, uint64, uint64, 整数);
+整数             mappages(pagetable_t, uint64, uint64, uint64, 整数);
 pagetable_t     uvmcreate(void);
-uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+uint64          uvmalloc(pagetable_t, uint64, uint64, 整数);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
-int             uvmcopy(pagetable_t, pagetable_t, uint64);
+整数             uvmcopy(pagetable_t, pagetable_t, uint64);
 void            uvmfree(pagetable_t, uint64);
-void            uvmunmap(pagetable_t, uint64, uint64, int);
+void            uvmunmap(pagetable_t, uint64, uint64, 整数);
 void            uvmclear(pagetable_t, uint64);
-pte_t *         walk(pagetable_t, uint64, int);
+pte_t *         walk(pagetable_t, uint64, 整数);
 uint64          walkaddr(pagetable_t, uint64);
-int             copyout(pagetable_t, uint64, uint64, char *, uint64);
-int             copyin(pagetable_t, uint64, char *, uint64, uint64);
-int             copyinstr(pagetable_t, uint64, char *, uint64, uint64);
-int             ismapped(pagetable_t, uint64);
-uint64          vmfault(pagetable_t, uint64, uint64, int);
+整数             copyout(pagetable_t, uint64, uint64, char *, uint64);
+整数             copyin(pagetable_t, uint64, char *, uint64, uint64);
+整数             copyinstr(pagetable_t, uint64, char *, uint64, uint64);
+整数             ismapped(pagetable_t, uint64);
+uint64          vmfault(pagetable_t, uint64, uint64, 整数);
 
 // plic.c
 void            plicinit(void);
 void            plicinithart(void);
-int             plic_claim(void);
-void            plic_complete(int);
+整数             plic_claim(void);
+void            plic_complete(整数);
 
 // virtio_disk.c
 void            virtio_disk_init(void);
-void            virtio_disk_rw(struct buf *, int);
+void            virtio_disk_rw(struct buf *, 整数);
 void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array

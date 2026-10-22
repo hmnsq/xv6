@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+整数
+主要(整数 argc, char *argv[])
 {
-  int i;
+  整数 i;
 
-  for (i = 1; i < argc; i++) {
+  为 (i = 1; i < argc; i++) {
     write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
+    如果 (i + 1 < argc) {
       write(1, " ", 1);
-    } else {
+    } 否则 {
       write(1, "\n", 1);
     }
   }

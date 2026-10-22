@@ -10,22 +10,22 @@
 uint64
 sys_exit(void)
 {
-  int n;
+  整数 n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  返回 0; // not reached
 }
 
 uint64
 sys_getpid(void)
 {
-  return myproc()->pid;
+  返回 myproc()->pid;
 }
 
 uint64
 sys_fork(void)
 {
-  return kfork();
+  返回 kfork();
 }
 
 uint64
@@ -33,52 +33,52 @@ sys_wait(void)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  返回 kwait(p);
 }
 
 uint64
 sys_sbrk(void)
 {
   uint64 addr;
-  int t;
-  int n;
+  整数 t;
+  整数 n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  如果 (t == SBRK_EAGER || n < 0) {
+    如果 (growproc(n) < 0) {
+      返回 -1;
     }
-  } else {
+  } 否则 {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    如果 (addr + n < addr)
+      返回 -1;
+    如果 (addr + n > TRAPFRAME)
+      返回 -1;
     myproc()->sz += n;
   }
-  return addr;
+  返回 addr;
 }
 
 uint64
 sys_pause(void)
 {
-  int n;
+  整数 n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  如果 (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  当 (ticks - ticks0 < n) {
+    如果 (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      返回 -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,16 +86,16 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  返回 0;
 }
 
 uint64
 sys_kill(void)
 {
-  int pid;
+  整数 pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  返回 kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
@@ -108,5 +108,5 @@ sys_uptime(void)
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  返回 xticks;
 }

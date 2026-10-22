@@ -10,27 +10,27 @@
 
 char buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+整数
+主要(整数 argc, char **argv)
 {
-  int fd, n;
+  整数 fd, n;
   enum { N = 250, SZ = 2000 };
 
-  for (int i = 1; i < argc; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
+  为 (整数 i = 1; i < argc; i++) {
+    整数 pid1 = fork();
+    如果 (pid1 < 0) {
       printf("%s: fork failed\n", argv[0]);
       exit(1);
     }
-    if (pid1 == 0) {
+    如果 (pid1 == 0) {
       fd = open(argv[i], O_CREATE | O_RDWR);
-      if (fd < 0) {
+      如果 (fd < 0) {
         printf("%s: create %s failed\n", argv[0], argv[i]);
         exit(1);
       }
       memset(buf, '0' + i, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
+      为 (i = 0; i < N; i++) {
+        如果 ((n = write(fd, buf, SZ)) != SZ) {
           printf("write failed %d\n", n);
           exit(1);
         }
@@ -38,11 +38,11 @@ main(int argc, char **argv)
       exit(0);
     }
   }
-  int xstatus;
-  for (int i = 1; i < argc; i++) {
+  整数 xstatus;
+  为 (整数 i = 1; i < argc; i++) {
     wait(&xstatus);
-    if (xstatus != 0)
+    如果 (xstatus != 0)
       exit(xstatus);
   }
-  return 0;
+  返回 0;
 }

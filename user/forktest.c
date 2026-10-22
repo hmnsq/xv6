@@ -16,31 +16,31 @@ print(const char *s)
 void
 forktest(void)
 {
-  int n, pid;
+  整数 n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  为 (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
+    如果 (pid < 0)
       break;
-    if (pid == 0)
+    如果 (pid == 0)
       exit(0);
   }
 
-  if (n == N) {
+  如果 (n == N) {
     print("fork claimed to work N times!\n");
     exit(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  为 (; n > 0; n--) {
+    如果 (wait(0) < 0) {
       print("wait stopped early\n");
       exit(1);
     }
   }
 
-  if (wait(0) != -1) {
+  如果 (wait(0) != -1) {
     print("wait got too many\n");
     exit(1);
   }
@@ -48,8 +48,8 @@ forktest(void)
   print("fork test OK\n");
 }
 
-int
-main(void)
+整数
+主要(void)
 {
   forktest();
   exit(0);
