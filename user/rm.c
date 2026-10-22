@@ -1,23 +1,23 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "user/user.h"
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+main(पूर्णांक argc, अक्षर *argv[])
 {
-  int i;
+  पूर्णांक i;
 
-  if (argc < 2) {
-    fprintf(2, "Usage: rm files...\n");
-    exit(1);
+  जर (argc < 2) {
+    ख_लिखो(2, "Usage: rm files...\n");
+    निकास(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (unlink(argv[i]) < 0) {
-      fprintf(2, "rm: %s failed to delete\n", argv[i]);
-      break;
+  साठी (i = 1; i < argc; i++) {
+    जर (unlink(argv[i]) < 0) {
+      ख_लिखो(2, "rm: %s failed to delete\n", argv[i]);
+      थांबा;
     }
   }
 
-  exit(0);
+  निकास(0);
 }

@@ -1,162 +1,162 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "kernel/riscv.h"
-#include "kernel/vm.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "kernel/fcntl.h"
+#अन्तर्भाव "kernel/riscv.h"
+#अन्तर्भाव "kernel/vm.h"
+#अन्तर्भाव "user/user.h"
 
 //
 // wrapper so that it's OK if main() does not call exit().
 //
-void
-start(int argc, char **argv)
+शून्य
+start(पूर्णांक argc, अक्षर **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
+  पूर्णांक r;
+  बाह्य पूर्णांक main(पूर्णांक argc, अक्षर **argv);
   r = main(argc, argv);
-  exit(r);
+  निकास(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+अक्षर *
+म_नकल(अक्षर *s, स्थिरांक अक्षर *t)
 {
-  char *os;
+  अक्षर *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  पर्यंत ((*s++ = *t++) != 0)
     ;
-  return os;
+  परत os;
 }
 
-int
-strcmp(const char *p, const char *q)
+पूर्णांक
+म_भेद(स्थिरांक अक्षर *p, स्थिरांक अक्षर *q)
 {
-  while (*p && *p == *q)
+  पर्यंत (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  परत (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+म_माप(स्थिरांक अक्षर *s)
 {
-  int n;
+  पूर्णांक n;
 
-  for (n = 0; s[n]; n++)
+  साठी (n = 0; s[n]; n++)
     ;
-  return n;
+  परत n;
 }
 
-void *
-memset(void *dst, int c, uint n)
+शून्य *
+स_रखो(शून्य *dst, पूर्णांक c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  अक्षर *cdst = (अक्षर *)dst;
+  पूर्णांक i;
+  साठी (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  परत dst;
 }
 
-char *
-strchr(const char *s, char c)
+अक्षर *
+म_अक्षर(स्थिरांक अक्षर *s, अक्षर c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  साठी (; *s; s++)
+    जर (*s == c)
+      परत (अक्षर *)s;
+  परत 0;
 }
 
-char *
-gets(char *buf, int max)
+अक्षर *
+माला_लो(अक्षर *buf, पूर्णांक max)
 {
-  int i, cc;
-  char c;
+  पूर्णांक i, cc;
+  अक्षर c;
 
-  for (i = 0; i + 1 < max;) {
-    cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+  साठी (i = 0; i + 1 < max;) {
+    cc = पठ(0, &c, 1);
+    जर (cc < 1)
+      थांबा;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    जर (c == '\n' || c == '\r')
+      थांबा;
   }
   buf[i] = '\0';
-  return buf;
+  परत buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+पूर्णांक
+stat(स्थिरांक अक्षर *n, संरचना stat *st)
 {
-  int fd;
-  int r;
+  पूर्णांक fd;
+  पूर्णांक r;
 
-  fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
-  r = fstat(fd, st);
-  close(fd);
-  return r;
+  fd = खोलो(n, O_RDONLY);
+  जर (fd < 0)
+    परत -1;
+  r = ख_स्थिति(fd, st);
+  बंद(fd);
+  परत r;
 }
 
-int
-atoi(const char *s)
+पूर्णांक
+म_से_प(स्थिरांक अक्षर *s)
 {
-  int n;
+  पूर्णांक n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  पर्यंत ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  परत n;
 }
 
-void *
-memmove(void *vdst, const void *vsrc, int n)
+शून्य *
+स_हटाओ(शून्य *vdst, स्थिरांक शून्य *vsrc, पूर्णांक n)
 {
-  char *dst;
-  const char *src;
+  अक्षर *dst;
+  स्थिरांक अक्षर *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  जर (src > dst) {
+    पर्यंत (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } अन्यथा {
     dst += n;
     src += n;
-    while (n-- > 0)
+    पर्यंत (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  परत vdst;
 }
 
-int
-memcmp(const void *s1, const void *s2, uint n)
+पूर्णांक
+स_भेद(स्थिरांक शून्य *s1, स्थिरांक शून्य *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  स्थिरांक अक्षर *p1 = s1, *p2 = s2;
+  पर्यंत (n-- > 0) {
+    जर (*p1 != *p2) {
+      परत *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  परत 0;
 }
 
-void *
-memcpy(void *dst, const void *src, uint n)
+शून्य *
+स_नकल(शून्य *dst, स्थिरांक शून्य *src, uint n)
 {
-  return memmove(dst, src, n);
+  परत स_हटाओ(dst, src, n);
 }
 
-char *
-sbrk(int n)
+अक्षर *
+sbrk(पूर्णांक n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  परत sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+अक्षर *
+sbrklazy(पूर्णांक n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  परत sys_sbrk(n, SBRK_LAZY);
 }

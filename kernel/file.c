@@ -2,80 +2,80 @@
 // Support functions for system calls that involve file descriptors.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "fs.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "stat.h"
-#include "proc.h"
+#अन्तर्भाव "types.h"
+#अन्तर्भाव "riscv.h"
+#अन्तर्भाव "defs.h"
+#अन्तर्भाव "param.h"
+#अन्तर्भाव "fs.h"
+#अन्तर्भाव "spinlock.h"
+#अन्तर्भाव "sleeplock.h"
+#अन्तर्भाव "file.h"
+#अन्तर्भाव "stat.h"
+#अन्तर्भाव "proc.h"
 
-struct devsw devsw[NDEV];
-struct {
-  struct spinlock lock;
-  struct file file[NFILE];
+संरचना devsw devsw[NDEV];
+संरचना {
+  संरचना spinlock lock;
+  संरचना file file[NFILE];
 } ftable;
 
-void
-fileinit(void)
+शून्य
+fileinit(शून्य)
 {
   initlock(&ftable.lock, "ftable");
 }
 
 // Allocate a file structure.
-struct file *
-filealloc(void)
+संरचना file *
+filealloc(शून्य)
 {
-  struct file *f;
+  संरचना file *f;
 
   acquire(&ftable.lock);
-  for (f = ftable.file; f < ftable.file + NFILE; f++) {
-    if (f->ref == 0) {
+  साठी (f = ftable.file; f < ftable.file + NFILE; f++) {
+    जर (f->ref == 0) {
       f->ref = 1;
       release(&ftable.lock);
-      return f;
+      परत f;
     }
   }
   release(&ftable.lock);
-  return 0;
+  परत 0;
 }
 
 // Increment ref count for file f.
-struct file *
-filedup(struct file *f)
+संरचना file *
+filedup(संरचना file *f)
 {
   acquire(&ftable.lock);
-  if (f->ref < 1)
+  जर (f->ref < 1)
     panic("filedup");
   f->ref++;
   release(&ftable.lock);
-  return f;
+  परत f;
 }
 
 // Close file f.  (Decrement ref count, close when reaches 0.)
-void
-fileclose(struct file *f)
+शून्य
+fileclose(संरचना file *f)
 {
-  struct file ff;
+  संरचना file ff;
 
   acquire(&ftable.lock);
-  if (f->ref < 1)
+  जर (f->ref < 1)
     panic("fileclose");
-  if (--f->ref > 0) {
+  जर (--f->ref > 0) {
     release(&ftable.lock);
-    return;
+    परत;
   }
   ff = *f;
   f->ref = 0;
   f->type = FD_NONE;
   release(&ftable.lock);
 
-  if (ff.type == FD_PIPE) {
+  जर (ff.type == FD_PIPE) {
     pipeclose(ff.pipe, ff.writable);
-  } else if (ff.type == FD_INODE || ff.type == FD_DEVICE) {
+  } अन्यथा जर (ff.type == FD_INODE || ff.type == FD_DEVICE) {
     begin_op();
     iput(ff.ip);
     end_op();
@@ -84,96 +84,96 @@ fileclose(struct file *f)
 
 // Get metadata about file f.
 // addr is a user virtual address, pointing to a struct stat.
-int
-filestat(struct file *f, uint64 addr)
+पूर्णांक
+filestat(संरचना file *f, uint64 addr)
 {
-  struct proc *p = myproc();
-  struct stat st;
+  संरचना proc *p = myproc();
+  संरचना stat st;
 
-  if (f->type == FD_INODE || f->type == FD_DEVICE) {
+  जर (f->type == FD_INODE || f->type == FD_DEVICE) {
     ilock(f->ip);
     stati(f->ip, &st);
     iunlock(f->ip);
-    if (copyout(p->pagetable, p->sz, addr, (char *)&st, sizeof(st)) < 0)
-      return -1;
-    return 0;
+    जर (copyout(p->pagetable, p->sz, addr, (अक्षर *)&st, आकार(st)) < 0)
+      परत -1;
+    परत 0;
   }
-  return -1;
+  परत -1;
 }
 
 // Read from file f.
 // addr is a user virtual address.
-int
-fileread(struct file *f, uint64 addr, int n)
+पूर्णांक
+fileread(संरचना file *f, uint64 addr, पूर्णांक n)
 {
-  int r = 0;
+  पूर्णांक r = 0;
 
-  if (f->readable == 0 || n < 0)
-    return -1;
+  जर (f->readable == 0 || n < 0)
+    परत -1;
 
-  if (f->type == FD_PIPE) {
+  जर (f->type == FD_PIPE) {
     r = piperead(f->pipe, addr, n);
-  } else if (f->type == FD_DEVICE) {
-    if (f->major < 0 || f->major >= NDEV || !devsw[f->major].read)
-      return -1;
-    r = devsw[f->major].read(1, addr, n);
-  } else if (f->type == FD_INODE) {
+  } अन्यथा जर (f->type == FD_DEVICE) {
+    जर (f->major < 0 || f->major >= NDEV || !devsw[f->major].पठ)
+      परत -1;
+    r = devsw[f->major].पठ(1, addr, n);
+  } अन्यथा जर (f->type == FD_INODE) {
     ilock(f->ip);
-    if ((r = readi(f->ip, 1, addr, f->off, n)) > 0)
+    जर ((r = readi(f->ip, 1, addr, f->off, n)) > 0)
       f->off += r;
     iunlock(f->ip);
-  } else {
+  } अन्यथा {
     panic("fileread");
   }
 
-  return r;
+  परत r;
 }
 
 // Write to file f.
 // addr is a user virtual address.
-int
-filewrite(struct file *f, uint64 addr, int n)
+पूर्णांक
+filewrite(संरचना file *f, uint64 addr, पूर्णांक n)
 {
-  int r, ret = 0;
+  पूर्णांक r, ret = 0;
 
-  if (f->writable == 0 || n < 0)
-    return -1;
+  जर (f->writable == 0 || n < 0)
+    परत -1;
 
-  if (f->type == FD_PIPE) {
+  जर (f->type == FD_PIPE) {
     ret = pipewrite(f->pipe, addr, n);
-  } else if (f->type == FD_DEVICE) {
-    if (f->major < 0 || f->major >= NDEV || !devsw[f->major].write)
-      return -1;
-    ret = devsw[f->major].write(1, addr, n);
-  } else if (f->type == FD_INODE) {
+  } अन्यथा जर (f->type == FD_DEVICE) {
+    जर (f->major < 0 || f->major >= NDEV || !devsw[f->major].लिख)
+      परत -1;
+    ret = devsw[f->major].लिख(1, addr, n);
+  } अन्यथा जर (f->type == FD_INODE) {
     // write a few blocks at a time to avoid exceeding
     // the maximum log transaction size, including
     // i-node, indirect block, allocation blocks,
     // and 2 blocks of slop for non-aligned writes.
-    int max = ((MAXOPBLOCKS - 1 - 1 - 2) / 2) * BSIZE;
-    int i = 0;
-    while (i < n) {
-      int n1 = n - i;
-      if (n1 > max)
+    पूर्णांक max = ((MAXOPBLOCKS - 1 - 1 - 2) / 2) * BSIZE;
+    पूर्णांक i = 0;
+    पर्यंत (i < n) {
+      पूर्णांक n1 = n - i;
+      जर (n1 > max)
         n1 = max;
 
       begin_op();
       ilock(f->ip);
-      if ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
+      जर ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
         f->off += r;
       iunlock(f->ip);
       end_op();
 
-      if (r != n1) {
+      जर (r != n1) {
         // error from writei
-        break;
+        थांबा;
       }
       i += r;
     }
     ret = (i == n ? n : -1);
-  } else {
+  } अन्यथा {
     panic("filewrite");
   }
 
-  return ret;
+  परत ret;
 }

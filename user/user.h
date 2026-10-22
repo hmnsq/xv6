@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((अक्षर *)-1)
 
-struct stat;
+संरचना stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+पूर्णांक विभाजन(शून्य);
+पूर्णांक निकास(पूर्णांक) __attribute__((noreturn));
+पूर्णांक रुको(पूर्णांक *);
+पूर्णांक pipe(पूर्णांक *);
+पूर्णांक लिख(पूर्णांक, स्थिरांक शून्य *, पूर्णांक);
+पूर्णांक पठ(पूर्णांक, शून्य *, पूर्णांक);
+पूर्णांक बंद(पूर्णांक);
+पूर्णांक समाप्त(पूर्णांक);
+पूर्णांक exec(स्थिरांक अक्षर *, अक्षर **);
+पूर्णांक खोलो(स्थिरांक अक्षर *, पूर्णांक);
+पूर्णांक mknod(स्थिरांक अक्षर *, लघु, लघु);
+पूर्णांक unlink(स्थिरांक अक्षर *);
+पूर्णांक ख_स्थिति(पूर्णांक fd, संरचना stat *);
+पूर्णांक link(स्थिरांक अक्षर *, स्थिरांक अक्षर *);
+पूर्णांक सूची_गढ़ो(स्थिरांक अक्षर *);
+पूर्णांक स_बदलो(स्थिरांक अक्षर *);
+पूर्णांक dup(पूर्णांक);
+पूर्णांक getpid(शून्य);
+अक्षर *sys_sbrk(पूर्णांक, पूर्णांक);
+पूर्णांक छोड़ो(पूर्णांक);
+पूर्णांक uptime(शून्य);
+पूर्णांक sync(शून्य);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+पूर्णांक stat(स्थिरांक अक्षर *, संरचना stat *);
+अक्षर *म_नकल(अक्षर *, स्थिरांक अक्षर *);
+शून्य *स_हटाओ(शून्य *, स्थिरांक शून्य *, पूर्णांक);
+अक्षर *म_अक्षर(स्थिरांक अक्षर *, अक्षर c);
+पूर्णांक म_भेद(स्थिरांक अक्षर *, स्थिरांक अक्षर *);
+अक्षर *माला_लो(अक्षर *, पूर्णांक max);
+uint म_माप(स्थिरांक अक्षर *);
+शून्य *स_रखो(शून्य *, पूर्णांक, uint);
+पूर्णांक म_से_प(स्थिरांक अक्षर *);
+पूर्णांक स_भेद(स्थिरांक शून्य *, स्थिरांक शून्य *, uint);
+शून्य *स_नकल(शून्य *, स्थिरांक शून्य *, uint);
+अक्षर *sbrk(पूर्णांक);
+अक्षर *sbrklazy(पूर्णांक);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+शून्य ख_लिखो(पूर्णांक, स्थिरांक अक्षर *, ...) __attribute__((format(म_लिखो, 2, 3)));
+शून्य म_लिखो(स्थिरांक अक्षर *, ...) __attribute__((format(म_लिखो, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+शून्य *दो_स्मृति(uint);
+शून्य मुक्त(शून्य *);

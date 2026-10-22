@@ -1,19 +1,19 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "user/user.h"
 
-int
-main(int argc, char *argv[])
+पूर्णांक
+main(पूर्णांक argc, अक्षर *argv[])
 {
-  int i;
+  पूर्णांक i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  साठी (i = 1; i < argc; i++) {
+    लिख(1, argv[i], म_माप(argv[i]));
+    जर (i + 1 < argc) {
+      लिख(1, " ", 1);
+    } अन्यथा {
+      लिख(1, "\n", 1);
     }
   }
-  exit(0);
+  निकास(0);
 }
