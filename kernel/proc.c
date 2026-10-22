@@ -12,7 +12,7 @@ struct proc proc[NPROC];
 
 struct proc *initproc;
 
-int nextpid = 1;
+цяло nextpid = 1;
 struct spinlock pid_lock;
 
 extern void forkret(void);
@@ -34,11 +34,11 @@ proc_mapstacks(pagetable_t kpgtbl)
 {
   struct proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  за (p = proc; p < &proc[NPROC]; p++) {
     char *pa = kalloc();
-    if (pa == 0)
+    ако (pa == 0)
       panic("kalloc");
-    uint64 va = KSTACK((int)(p - proc));
+    uint64 va = KSTACK((цяло)(p - proc));
     kvmmap(kpgtbl, va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
   }
 }
@@ -51,21 +51,21 @@ procinit(void)
 
   initlock(&pid_lock, "nextpid");
   initlock(&wait_lock, "wait_lock");
-  for (p = proc; p < &proc[NPROC]; p++) {
+  за (p = proc; p < &proc[NPROC]; p++) {
     initlock(&p->lock, "proc");
     p->state = UNUSED;
-    p->kstack = KSTACK((int)(p - proc));
+    p->kstack = KSTACK((цяло)(p - proc));
   }
 }
 
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
-int
+цяло
 cpuid()
 {
-  int id = r_tp();
-  return id;
+  цяло id = r_tp();
+  върни id;
 }
 
 // Return this CPU's cpu struct.
@@ -73,9 +73,9 @@ cpuid()
 struct cpu *
 mycpu(void)
 {
-  int id = cpuid();
+  цяло id = cpuid();
   struct cpu *c = &cpus[id];
-  return c;
+  върни c;
 }
 
 // Return the current struct proc *, or zero if none.
@@ -86,20 +86,20 @@ myproc(void)
   struct cpu *c = mycpu();
   struct proc *p = c->proc;
   pop_off();
-  return p;
+  върни p;
 }
 
-int
+цяло
 allocpid()
 {
-  int pid;
+  цяло pid;
 
   acquire(&pid_lock);
   pid = nextpid;
   nextpid = nextpid + 1;
   release(&pid_lock);
 
-  return pid;
+  върни pid;
 }
 
 // Look in the process table for an UNUSED proc.
@@ -111,33 +111,33 @@ allocproc(void)
 {
   struct proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  за (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->state == UNUSED) {
+    ако (p->state == UNUSED) {
       goto found;
-    } else {
+    } иначе {
       release(&p->lock);
     }
   }
-  return 0;
+  върни 0;
 
 found:
   p->pid = allocpid();
   p->state = USED;
 
   // Allocate a trapframe page.
-  if ((p->trapframe = (struct trapframe *)kalloc()) == 0) {
+  ако ((p->trapframe = (struct trapframe *)kalloc()) == 0) {
     freeproc(p);
     release(&p->lock);
-    return 0;
+    върни 0;
   }
 
   // An empty user page table.
   p->pagetable = proc_pagetable(p);
-  if (p->pagetable == 0) {
+  ако (p->pagetable == 0) {
     freeproc(p);
     release(&p->lock);
-    return 0;
+    върни 0;
   }
 
   // Set up new context to start executing at forkret,
@@ -146,7 +146,7 @@ found:
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
-  return p;
+  върни p;
 }
 
 // free a proc structure and the data hanging from it,
@@ -155,10 +155,10 @@ found:
 static void
 freeproc(struct proc *p)
 {
-  if (p->trapframe)
+  ако (p->trapframe)
     kfree((void *)p->trapframe);
   p->trapframe = 0;
-  if (p->pagetable)
+  ако (p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
   p->sz = 0;
@@ -179,29 +179,29 @@ proc_pagetable(struct proc *p)
 
   // An empty page table.
   pagetable = uvmcreate();
-  if (pagetable == 0)
-    return 0;
+  ако (pagetable == 0)
+    върни 0;
 
   // map the trampoline code (for system call return)
   // at the highest user virtual address.
   // only the supervisor uses it, on the way
   // to/from user space, so not PTE_U.
-  if (mappages(pagetable, TRAMPOLINE, PGSIZE, (uint64)trampoline,
+  ако (mappages(pagetable, TRAMPOLINE, PGSIZE, (uint64)trampoline,
                PTE_R | PTE_X) < 0) {
     uvmfree(pagetable, 0);
-    return 0;
+    върни 0;
   }
 
   // map the trapframe page just below the trampoline page, for
   // trampoline.S.
-  if (mappages(pagetable, TRAPFRAME, PGSIZE, (uint64)(p->trapframe),
+  ако (mappages(pagetable, TRAPFRAME, PGSIZE, (uint64)(p->trapframe),
                PTE_R | PTE_W) < 0) {
     uvmunmap(pagetable, TRAMPOLINE, 1, 0);
     uvmfree(pagetable, 0);
-    return 0;
+    върни 0;
   }
 
-  return pagetable;
+  върни pagetable;
 }
 
 // Free a process's page table, and free the
@@ -232,46 +232,46 @@ userinit(void)
 
 // Grow or shrink user memory by n bytes.
 // Return 0 on success, -1 on failure.
-int
-growproc(int n)
+цяло
+growproc(цяло n)
 {
   uint64 sz;
   struct proc *p = myproc();
 
   sz = p->sz;
-  if (n > 0) {
-    if (sz + n > TRAPFRAME) {
-      return -1;
+  ако (n > 0) {
+    ако (sz + n > TRAPFRAME) {
+      върни -1;
     }
-    if ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
-      return -1;
+    ако ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
+      върни -1;
     }
-  } else if (n < 0) {
+  } иначе ако (n < 0) {
     sz = uvmdealloc(p->pagetable, sz, sz + n);
   }
   p->sz = sz;
-  return 0;
+  върни 0;
 }
 
 // Create a new process, copying the parent.
 // Sets up child kernel stack to return as if from fork() system call.
-int
+цяло
 kfork(void)
 {
-  int i, pid;
+  цяло i, pid;
   struct proc *np;
   struct proc *p = myproc();
 
   // Allocate process.
-  if ((np = allocproc()) == 0) {
-    return -1;
+  ако ((np = allocproc()) == 0) {
+    върни -1;
   }
 
   // Copy user memory from parent to child.
-  if (uvmcopy(p->pagetable, np->pagetable, p->sz) < 0) {
+  ако (uvmcopy(p->pagetable, np->pagetable, p->sz) < 0) {
     freeproc(np);
     release(&np->lock);
-    return -1;
+    върни -1;
   }
   np->sz = p->sz;
 
@@ -282,8 +282,8 @@ kfork(void)
   np->trapframe->a0 = 0;
 
   // increment reference counts on open file descriptors.
-  for (i = 0; i < NOFILE; i++)
-    if (p->ofile[i])
+  за (i = 0; i < NOFILE; i++)
+    ако (p->ofile[i])
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
@@ -301,7 +301,7 @@ kfork(void)
   np->state = RUNNABLE;
   release(&np->lock);
 
-  return pid;
+  върни pid;
 }
 
 // Pass p's abandoned children to init.
@@ -311,8 +311,8 @@ reparent(struct proc *p)
 {
   struct proc *pp;
 
-  for (pp = proc; pp < &proc[NPROC]; pp++) {
-    if (pp->parent == p) {
+  за (pp = proc; pp < &proc[NPROC]; pp++) {
+    ако (pp->parent == p) {
       pp->parent = initproc;
       wakeup(initproc);
     }
@@ -323,16 +323,16 @@ reparent(struct proc *p)
 // An exited process remains in the zombie state
 // until its parent calls wait().
 void
-kexit(int status)
+kexit(цяло status)
 {
   struct proc *p = myproc();
 
-  if (p == initproc)
+  ако (p == initproc)
     panic("init exiting");
 
   // Close all open files.
-  for (int fd = 0; fd < NOFILE; fd++) {
-    if (p->ofile[fd]) {
+  за (цяло fd = 0; fd < NOFILE; fd++) {
+    ако (p->ofile[fd]) {
       struct file *f = p->ofile[fd];
       fileclose(f);
       p->ofile[fd] = 0;
@@ -366,48 +366,48 @@ kexit(int status)
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
-int
+цяло
 kwait(uint64 addr)
 {
   struct proc *pp;
-  int havekids, pid;
+  цяло havekids, pid;
   struct proc *p = myproc();
 
   acquire(&wait_lock);
 
-  for (;;) {
+  за (;;) {
     // Scan through table looking for exited children.
     havekids = 0;
-    for (pp = proc; pp < &proc[NPROC]; pp++) {
-      if (pp->parent == p) {
+    за (pp = proc; pp < &proc[NPROC]; pp++) {
+      ако (pp->parent == p) {
         // make sure the child isn't still in exit() or swtch().
         acquire(&pp->lock);
 
         havekids = 1;
-        if (pp->state == ZOMBIE) {
+        ако (pp->state == ZOMBIE) {
           // Found one.
           pid = pp->pid;
-          if (addr != 0 &&
+          ако (addr != 0 &&
               copyout(p->pagetable, p->sz, addr, (char *)&pp->xstate,
                       sizeof(pp->xstate)) < 0) {
             release(&pp->lock);
             release(&wait_lock);
-            return -1;
+            върни -1;
           }
           pp->parent = 0;
           freeproc(pp);
           release(&pp->lock);
           release(&wait_lock);
-          return pid;
+          върни pid;
         }
         release(&pp->lock);
       }
     }
 
     // No point waiting if we don't have any children.
-    if (!havekids || killed(p)) {
+    ако (!havekids || killed(p)) {
       release(&wait_lock);
-      return -1;
+      върни -1;
     }
 
     // Wait for a child to exit.
@@ -432,7 +432,7 @@ scheduler(void)
   struct cpu *c = mycpu();
 
   c->proc = 0;
-  for (;;) {
+  за (;;) {
     // The most recent process to run may have had interrupts
     // turned off; enable them to avoid a deadlock if all
     // processes are waiting. Then turn them back off
@@ -441,10 +441,10 @@ scheduler(void)
     intr_on();
     intr_off();
 
-    int found = 0;
-    for (p = proc; p < &proc[NPROC]; p++) {
+    цяло found = 0;
+    за (p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
-      if (p->state == RUNNABLE) {
+      ако (p->state == RUNNABLE) {
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
@@ -462,7 +462,7 @@ scheduler(void)
       }
       release(&p->lock);
     }
-    if (found == 0) {
+    ако (found == 0) {
       // nothing to run; stop running on this core until an interrupt.
       asm volatile("wfi");
     }
@@ -479,16 +479,16 @@ scheduler(void)
 void
 sched(void)
 {
-  int intena;
+  цяло intena;
   struct proc *p = myproc();
 
-  if (!holding(&p->lock))
+  ако (!holding(&p->lock))
     panic("sched p->lock");
-  if (mycpu()->noff != 1)
+  ако (mycpu()->noff != 1)
     panic("sched locks");
-  if (p->state == RUNNING)
+  ако (p->state == RUNNING)
     panic("sched RUNNING");
-  if (intr_get())
+  ако (intr_get())
     panic("sched interruptible");
 
   intena = mycpu()->intena;
@@ -513,13 +513,13 @@ void
 forkret(void)
 {
   extern char userret[];
-  static int first = 1;
+  static цяло first = 1;
   struct proc *p = myproc();
 
   // Still holding p->lock from scheduler.
   release(&p->lock);
 
-  if (first) {
+  ако (first) {
     first = 0;
 
     // File system initialization must be run in the context of a
@@ -530,7 +530,7 @@ forkret(void)
     // We can invoke kexec() now that file system is initialized.
     // Put the return value (argc) of kexec into a0.
     p->trapframe->a0 = kexec("/init", (char *[]){"/init", 0});
-    if (p->trapframe->a0 == -1) {
+    ако (p->trapframe->a0 == -1) {
       panic("exec");
     }
   }
@@ -549,7 +549,7 @@ sleep_prepare(void *chan)
   struct proc *p = myproc();
 
   acquire(&p->lock);
-  if (chan == 0)
+  ако (chan == 0)
     panic("sleep_prepare: zero chan");
   p->chan = chan;
   release(&p->lock);
@@ -564,7 +564,7 @@ sleep(void)
   struct proc *p = myproc();
 
   acquire(&p->lock);
-  if (p->chan != 0) {
+  ако (p->chan != 0) {
     p->state = SLEEPING;
     sched();
   }
@@ -577,16 +577,16 @@ wakeup(void *chan)
 {
   struct proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  за (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->chan == chan) {
+    ако (p->chan == chan) {
       // If the process is waiting for wakeups on this channel,
       // signal that the wakeup happened by clearing p->chan.
       p->chan = 0;
 
       // If this waiting process has gotten so far as to actually
       // go to sleep, also set it back to RUNNING.
-      if (p->state == SLEEPING) {
+      ако (p->state == SLEEPING) {
         p->state = RUNNABLE;
       }
     }
@@ -597,28 +597,28 @@ wakeup(void *chan)
 // Kill the process with the given pid.
 // The victim won't exit until it tries to return
 // to user space (see usertrap() in trap.c).
-int
-kkill(int pid)
+цяло
+kkill(цяло pid)
 {
   struct proc *p;
 
-  if (pid == 0)
-    return -1;
+  ако (pid == 0)
+    върни -1;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  за (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->pid == pid) {
+    ако (p->pid == pid) {
       p->killed = 1;
-      if (p->state == SLEEPING) {
+      ако (p->state == SLEEPING) {
         // Wake process from sleep().
         p->state = RUNNABLE;
       }
       release(&p->lock);
-      return 0;
+      върни 0;
     }
     release(&p->lock);
   }
-  return -1;
+  върни -1;
 }
 
 void
@@ -629,44 +629,44 @@ setkilled(struct proc *p)
   release(&p->lock);
 }
 
-int
+цяло
 killed(struct proc *p)
 {
-  int k;
+  цяло k;
 
   acquire(&p->lock);
   k = p->killed;
   release(&p->lock);
-  return k;
+  върни k;
 }
 
 // Copy to either a user address, or kernel address,
 // depending on usr_dst.
 // Returns 0 on success, -1 on error.
-int
-either_copyout(int user_dst, uint64 dst, void *src, uint64 len)
+цяло
+either_copyout(цяло user_dst, uint64 dst, void *src, uint64 len)
 {
   struct proc *p = myproc();
-  if (user_dst) {
-    return copyout(p->pagetable, p->sz, dst, src, len);
-  } else {
+  ако (user_dst) {
+    върни copyout(p->pagetable, p->sz, dst, src, len);
+  } иначе {
     memmove((char *)dst, src, len);
-    return 0;
+    върни 0;
   }
 }
 
 // Copy from either a user address, or kernel address,
 // depending on usr_src.
 // Returns 0 on success, -1 on error.
-int
-either_copyin(void *dst, int user_src, uint64 src, uint64 len)
+цяло
+either_copyin(void *dst, цяло user_src, uint64 src, uint64 len)
 {
   struct proc *p = myproc();
-  if (user_src) {
-    return copyin(p->pagetable, p->sz, dst, src, len);
-  } else {
+  ако (user_src) {
+    върни copyin(p->pagetable, p->sz, dst, src, len);
+  } иначе {
     memmove(dst, (char *)src, len);
-    return 0;
+    върни 0;
   }
 }
 
@@ -690,12 +690,12 @@ procdump(void)
   char *state;
 
   printk("\n");
-  for (p = proc; p < &proc[NPROC]; p++) {
-    if (p->state == UNUSED)
+  за (p = proc; p < &proc[NPROC]; p++) {
+    ако (p->state == UNUSED)
       continue;
-    if (p->state >= 0 && p->state < NELEM(states) && states[p->state])
+    ако (p->state >= 0 && p->state < NELEM(states) && states[p->state])
       state = states[p->state];
-    else
+    иначе
       state = "???";
     printk("%d %s %s", p->pid, state, p->name);
     printk("\n");

@@ -3,46 +3,46 @@
 struct stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+цяло fork(void);
+цяло exit(цяло) __attribute__((noreturn));
+цяло wait(цяло *);
+цяло pipe(цяло *);
+цяло write(цяло, const void *, цяло);
+цяло read(цяло, void *, цяло);
+цяло close(цяло);
+цяло kill(цяло);
+цяло exec(const char *, char **);
+цяло open(const char *, цяло);
+цяло mknod(const char *, short, short);
+цяло unlink(const char *);
+цяло fstat(цяло fd, struct stat *);
+цяло link(const char *, const char *);
+цяло mkdir(const char *);
+цяло chdir(const char *);
+цяло dup(цяло);
+цяло getpid(void);
+char *sys_sbrk(цяло, цяло);
+цяло pause(цяло);
+цяло uptime(void);
+цяло sync(void);
 
 // ulib.c
-int stat(const char *, struct stat *);
+цяло stat(const char *, struct stat *);
 char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
+void *memmove(void *, const void *, цяло);
 char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
+цяло strcmp(const char *, const char *);
+char *gets(char *, цяло max);
 uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
+void *memset(void *, цяло, uint);
+цяло atoi(const char *);
+цяло memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+char *sbrk(цяло);
+char *sbrklazy(цяло);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
+void fprintf(цяло, const char *, ...) __attribute__((format(printf, 2, 3)));
 void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c

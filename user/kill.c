@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char **argv)
+цяло
+main(цяло argc, char **argv)
 {
-  int i;
+  цяло i;
 
-  if (argc < 2) {
+  ако (argc < 2) {
     fprintf(2, "usage: kill pid...\n");
     exit(1);
   }
-  for (i = 1; i < argc; i++)
+  за (i = 1; i < argc; i++)
     kill(atoi(argv[i]));
   exit(0);
 }
