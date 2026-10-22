@@ -6,53 +6,53 @@
 #include "user/user.h"
 
 char buf[1024];
-int match(char *, char *);
+целое match(char *, char *);
 
 void
-grep(char *pattern, int fd)
+grep(char *pattern, целое fd)
 {
-  int n, m;
+  целое n, m;
   char *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  пока ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    пока ((q = strchr(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      если (match(pattern, p)) {
         *q = '\n';
         write(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    если (m > 0) {
       m -= p - buf;
       memmove(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+целое
+основной(целое argc, char *argv[])
 {
-  int fd, i;
+  целое fd, i;
   char *pattern;
 
-  if (argc <= 1) {
+  если (argc <= 1) {
     fprintf(2, "usage: grep pattern [file ...]\n");
     exit(1);
   }
   pattern = argv[1];
 
-  if (argc <= 2) {
+  если (argc <= 2) {
     grep(pattern, 0);
     exit(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  для (i = 2; i < argc; i++) {
+    если ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("grep: cannot open %s\n", argv[i]);
       exit(1);
     }
@@ -66,43 +66,43 @@ main(int argc, char *argv[])
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+целое matchhere(char *, char *);
+целое matchstar(целое, char *, char *);
 
-int
+целое
 match(char *re, char *text)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
+  если (re[0] == '^')
+    вернуть matchhere(re + 1, text);
   do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+    если (matchhere(re, text))
+      вернуть 1;
+  } пока (*text++ != '\0');
+  вернуть 0;
 }
 
 // matchhere: search for re at beginning of text
-int
+целое
 matchhere(char *re, char *text)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  если (re[0] == '\0')
+    вернуть 1;
+  если (re[1] == '*')
+    вернуть matchstar(re[0], re + 2, text);
+  если (re[0] == '$' && re[1] == '\0')
+    вернуть *text == '\0';
+  если (*text != '\0' && (re[0] == '.' || re[0] == *text))
+    вернуть matchhere(re + 1, text + 1);
+  вернуть 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+целое
+matchstar(целое c, char *re, char *text)
 {
   do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+    если (matchhere(re, text))
+      вернуть 1;
+  } пока (*text != '\0' && (*text++ == c || c == '.'));
+  вернуть 0;
 }

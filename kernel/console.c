@@ -32,14 +32,14 @@
 // characters.
 //
 void
-consputc(int c)
+consputc(целое c)
 {
-  if (c == BACKSPACE) {
+  если (c == BACKSPACE) {
     // if the user typed backspace, overwrite with a space.
     uartputc_sync('\b');
     uartputc_sync(' ');
     uartputc_sync('\b');
-  } else {
+  } иначе {
     uartputc_sync(c);
   }
 }
@@ -59,23 +59,23 @@ struct {
 // user write() system calls to the console go here.
 // uses sleep() and UART interrupts.
 //
-int
-consolewrite(int user_src, uint64 src, int n)
+целое
+consolewrite(целое user_src, uint64 src, целое n)
 {
   char buf[32]; // move batches from user space to uart.
-  int i = 0;
+  целое i = 0;
 
-  while (i < n) {
-    int nn = sizeof(buf);
-    if (nn > n - i)
+  пока (i < n) {
+    целое nn = sizeof(buf);
+    если (nn > n - i)
       nn = n - i;
-    if (either_copyin(buf, user_src, src + i, nn) == -1)
+    если (either_copyin(buf, user_src, src + i, nn) == -1)
       break;
     uartwrite(buf, nn);
     i += nn;
   }
 
-  return i;
+  вернуть i;
 }
 
 //
@@ -84,22 +84,22 @@ consolewrite(int user_src, uint64 src, int n)
 // user_dst indicates whether dst is a user
 // or kernel address.
 //
-int
-consoleread(int user_dst, uint64 dst, int n)
+целое
+consoleread(целое user_dst, uint64 dst, целое n)
 {
   uint target;
-  int c;
+  целое c;
   char cbuf;
 
   target = n;
   acquire(&cons.lock);
-  while (n > 0) {
+  пока (n > 0) {
     // wait until interrupt handler has put some
     // input into cons.buffer.
-    while (cons.r == cons.w) {
-      if (killed(myproc())) {
+    пока (cons.r == cons.w) {
+      если (killed(myproc())) {
         release(&cons.lock);
-        return -1;
+        вернуть -1;
       }
       sleep_prepare(&cons.r);
       release(&cons.lock);
@@ -109,8 +109,8 @@ consoleread(int user_dst, uint64 dst, int n)
 
     c = cons.buf[cons.r++ % INPUT_BUF_SIZE];
 
-    if (c == C('D')) { // end-of-file
-      if (n < target) {
+    если (c == C('D')) { // end-of-file
+      если (n < target) {
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
         cons.r--;
@@ -120,13 +120,13 @@ consoleread(int user_dst, uint64 dst, int n)
 
     // copy the input byte to the user-space buffer.
     cbuf = c;
-    if (either_copyout(user_dst, dst, &cbuf, 1) == -1)
+    если (either_copyout(user_dst, dst, &cbuf, 1) == -1)
       break;
 
     dst++;
     --n;
 
-    if (c == '\n') {
+    если (c == '\n') {
       // a whole line has arrived, return to
       // the user-level read().
       break;
@@ -134,7 +134,7 @@ consoleread(int user_dst, uint64 dst, int n)
   }
   release(&cons.lock);
 
-  return target - n;
+  вернуть target - n;
 }
 
 //
@@ -144,7 +144,7 @@ consoleread(int user_dst, uint64 dst, int n)
 // wake up consoleread() if a whole line has arrived.
 //
 void
-consoleintr(int c)
+consoleintr(целое c)
 {
   acquire(&cons.lock);
 
@@ -153,7 +153,7 @@ consoleintr(int c)
     procdump();
     break;
   case C('U'): // Kill line.
-    while (cons.e != cons.w &&
+    пока (cons.e != cons.w &&
            cons.buf[(cons.e - 1) % INPUT_BUF_SIZE] != '\n') {
       cons.e--;
       consputc(BACKSPACE);
@@ -161,13 +161,13 @@ consoleintr(int c)
     break;
   case C('H'): // Backspace
   case '\x7f': // Delete key
-    if (cons.e != cons.w) {
+    если (cons.e != cons.w) {
       cons.e--;
       consputc(BACKSPACE);
     }
     break;
   default:
-    if (c != 0 && cons.e - cons.r < INPUT_BUF_SIZE) {
+    если (c != 0 && cons.e - cons.r < INPUT_BUF_SIZE) {
       c = (c == '\r') ? '\n' : c;
 
       // echo back to the user.
@@ -176,7 +176,7 @@ consoleintr(int c)
       // store for consumption by consoleread().
       cons.buf[cons.e++ % INPUT_BUF_SIZE] = c;
 
-      if (c == '\n' || c == C('D') || cons.e - cons.r == INPUT_BUF_SIZE) {
+      если (c == '\n' || c == C('D') || cons.e - cons.r == INPUT_BUF_SIZE) {
         // wake up consoleread() if a whole line (or end-of-file)
         // has arrived.
         cons.w = cons.e;

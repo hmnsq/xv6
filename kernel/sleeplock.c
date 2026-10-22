@@ -22,7 +22,7 @@ void
 acquiresleep(struct sleeplock *lk)
 {
   acquire(&lk->lk);
-  while (lk->locked) {
+  пока (lk->locked) {
     sleep_prepare(lk);
     release(&lk->lk);
     sleep();
@@ -43,13 +43,13 @@ releasesleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-int
+целое
 holdingsleep(struct sleeplock *lk)
 {
-  int r;
+  целое r;
 
   acquire(&lk->lk);
   r = lk->locked && (lk->pid == myproc()->pid);
   release(&lk->lk);
-  return r;
+  вернуть r;
 }

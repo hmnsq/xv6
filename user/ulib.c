@@ -9,11 +9,11 @@
 // wrapper so that it's OK if main() does not call exit().
 //
 void
-start(int argc, char **argv)
+start(целое argc, char **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
-  r = main(argc, argv);
+  целое r;
+  extern целое основной(целое argc, char **argv);
+  r = основной(argc, argv);
   exit(r);
 }
 
@@ -23,140 +23,140 @@ strcpy(char *s, const char *t)
   char *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  пока ((*s++ = *t++) != 0)
     ;
-  return os;
+  вернуть os;
 }
 
-int
+целое
 strcmp(const char *p, const char *q)
 {
-  while (*p && *p == *q)
+  пока (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  вернуть (uchar)*p - (uchar)*q;
 }
 
 uint
 strlen(const char *s)
 {
-  int n;
+  целое n;
 
-  for (n = 0; s[n]; n++)
+  для (n = 0; s[n]; n++)
     ;
-  return n;
+  вернуть n;
 }
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, целое c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  целое i;
+  для (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  вернуть dst;
 }
 
 char *
 strchr(const char *s, char c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  для (; *s; s++)
+    если (*s == c)
+      вернуть (char *)s;
+  вернуть 0;
 }
 
 char *
-gets(char *buf, int max)
+gets(char *buf, целое max)
 {
-  int i, cc;
+  целое i, cc;
   char c;
 
-  for (i = 0; i + 1 < max;) {
+  для (i = 0; i + 1 < max;) {
     cc = read(0, &c, 1);
-    if (cc < 1)
+    если (cc < 1)
       break;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
+    если (c == '\n' || c == '\r')
       break;
   }
   buf[i] = '\0';
-  return buf;
+  вернуть buf;
 }
 
-int
+целое
 stat(const char *n, struct stat *st)
 {
-  int fd;
-  int r;
+  целое fd;
+  целое r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  если (fd < 0)
+    вернуть -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  вернуть r;
 }
 
-int
+целое
 atoi(const char *s)
 {
-  int n;
+  целое n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  пока ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  вернуть n;
 }
 
 void *
-memmove(void *vdst, const void *vsrc, int n)
+memmove(void *vdst, const void *vsrc, целое n)
 {
   char *dst;
   const char *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  если (src > dst) {
+    пока (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } иначе {
     dst += n;
     src += n;
-    while (n-- > 0)
+    пока (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  вернуть vdst;
 }
 
-int
+целое
 memcmp(const void *s1, const void *s2, uint n)
 {
   const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  пока (n-- > 0) {
+    если (*p1 != *p2) {
+      вернуть *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  вернуть 0;
 }
 
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  вернуть memmove(dst, src, n);
 }
 
 char *
-sbrk(int n)
+sbrk(целое n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  вернуть sys_sbrk(n, SBRK_EAGER);
 }
 
 char *
-sbrklazy(int n)
+sbrklazy(целое n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  вернуть sys_sbrk(n, SBRK_LAZY);
 }

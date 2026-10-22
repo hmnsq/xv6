@@ -15,20 +15,20 @@ struct pipe {
   char data[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  целое readopen;  // read fd is still open
+  целое writeopen; // write fd is still open
 };
 
-int
+целое
 pipealloc(struct file **f0, struct file **f1)
 {
   struct pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+  если ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
+  если ((pi = (struct pipe *)kalloc()) == 0)
     goto bad;
   pi->readopen = 1;
   pi->writeopen = 1;
@@ -43,58 +43,58 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  вернуть 0;
 
 bad:
-  if (pi)
+  если (pi)
     kfree((char *)pi);
-  if (*f0)
+  если (*f0)
     fileclose(*f0);
-  if (*f1)
+  если (*f1)
     fileclose(*f1);
-  return -1;
+  вернуть -1;
 }
 
 void
-pipeclose(struct pipe *pi, int writable)
+pipeclose(struct pipe *pi, целое writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  если (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } иначе {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  если (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
     kfree((char *)pi);
-  } else
+  } иначе
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+целое
+pipewrite(struct pipe *pi, uint64 addr, целое n)
 {
-  int i = 0;
+  целое i = 0;
   struct proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  пока (i < n) {
+    если (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      вернуть -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    если (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
+    } иначе {
       char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+      если (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        если (i == 0)
           i = -1;
         break;
       }
@@ -105,33 +105,33 @@ pipewrite(struct pipe *pi, uint64 addr, int n)
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  вернуть i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+целое
+piperead(struct pipe *pi, uint64 addr, целое n)
 {
-  int i;
+  целое i;
   struct proc *pr = myproc();
   char ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  пока (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    если (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      вернуть -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
+  для (i = 0; i < n; i++) { //DOC: piperead-copy
+    если (pi->nread == pi->nwrite)
       break;
     ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+    если (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      если (i == 0)
         i = -1;
       break;
     }
@@ -139,5 +139,5 @@ piperead(struct pipe *pi, uint64 addr, int n)
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  вернуть i;
 }

@@ -10,22 +10,22 @@
 uint64
 sys_exit(void)
 {
-  int n;
+  целое n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  вернуть 0; // not reached
 }
 
 uint64
 sys_getpid(void)
 {
-  return myproc()->pid;
+  вернуть myproc()->pid;
 }
 
 uint64
 sys_fork(void)
 {
-  return kfork();
+  вернуть kfork();
 }
 
 uint64
@@ -33,52 +33,52 @@ sys_wait(void)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  вернуть kwait(p);
 }
 
 uint64
 sys_sbrk(void)
 {
   uint64 addr;
-  int t;
-  int n;
+  целое t;
+  целое n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  если (t == SBRK_EAGER || n < 0) {
+    если (growproc(n) < 0) {
+      вернуть -1;
     }
-  } else {
+  } иначе {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    если (addr + n < addr)
+      вернуть -1;
+    если (addr + n > TRAPFRAME)
+      вернуть -1;
     myproc()->sz += n;
   }
-  return addr;
+  вернуть addr;
 }
 
 uint64
 sys_pause(void)
 {
-  int n;
+  целое n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  если (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  пока (ticks - ticks0 < n) {
+    если (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      вернуть -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,16 +86,16 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  вернуть 0;
 }
 
 uint64
 sys_kill(void)
 {
-  int pid;
+  целое pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  вернуть kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
@@ -108,5 +108,5 @@ sys_uptime(void)
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  вернуть xticks;
 }

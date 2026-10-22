@@ -40,10 +40,10 @@
 
 // for sending threads to serialize their writes
 static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+static целое tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+extern volatile целое panicking; // from printk.c
+extern volatile целое panicked;  // from printk.c
 
 void
 uartinit(void)
@@ -77,17 +77,17 @@ uartinit(void)
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
 void
-uartwrite(char buf[], int n)
+uartwrite(char buf[], целое n)
 {
   acquiresleep(&tx_lock);
 
-  int i = 0;
-  while (i < n) {
+  целое i = 0;
+  пока (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    если (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } иначе {
       sleep();
     }
   }
@@ -100,35 +100,35 @@ uartwrite(char buf[], int n)
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
 void
-uartputc_sync(int c)
+uartputc_sync(целое c)
 {
-  if (panicking == 0)
+  если (panicking == 0)
     push_off();
 
-  if (panicked) {
-    for (;;)
+  если (panicked) {
+    для (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  пока ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
+  если (panicking == 0)
     pop_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
+static целое
 uartgetc(void)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  если (ReadReg(LSR) & LSR_RX_READY) {
+    вернуть ReadReg(RHR);
+  } иначе {
+    вернуть -1;
   }
 }
 
@@ -140,15 +140,15 @@ uartintr(void)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  если (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
+  пока (1) {
+    целое c = uartgetc();
+    если (c == -1)
       break;
     consoleintr(c);
   }

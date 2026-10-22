@@ -21,7 +21,7 @@ args = parser.parse_args()
 class QEMU(object):
 
     def __init__(self, reset=False):
-        if reset:
+        если reset:
             self.build_xv6()
             self.reset_fs()
         q = ["make", "qemu"]
@@ -56,15 +56,15 @@ class QEMU(object):
         print("Provided a bad results path. Error:", e)     
         
     def cmd(self, c):
-        if isinstance(c, str):
+        если isinstance(c, str):
             c = c.encode('utf-8')
         self.proc.stdin.write(c)
         self.proc.stdin.flush()
         
     def crash(self):
         ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
-        if len(kids) == 0:
+        kids = [целое(line) для line in ps.stdout.splitlines()]
+        если len(kids) == 0:
             print("no qemu")
             sys.exit(1)
         print("kill", kids[0])
@@ -74,18 +74,18 @@ class QEMU(object):
         self.proc.terminate()
 
     def read(self):
-        while True:
+        пока True:
             try:
                 buf = os.read(self.proc.stdout.fileno(), 4096)
             except BlockingIOError:
                 break
-            if len(buf) == 0:  # qemu exited
+            если len(buf) == 0:  # qemu exited
                 break
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
     def lines(self):
-        return self.output.splitlines()
+        вернуть self.output.splitlines()
 
     def error(self, *regexps):
         print("FAIL: match failed", regexps)
@@ -95,38 +95,38 @@ class QEMU(object):
 
     def match(self, *regexps, exit=True):
         found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
+        для line in self.lines():
+            если any(re.match(r, line) для r in regexps):
                 print(line)
                 found = True
-        if not found and exit:
+        если not found and exit:
             self.error(*regexps)
-        return found
+        вернуть found
 
     # Print the lines matching regexp that have arrived since the last
     # call.  A trailing partial line is left for the next call, so that
     # each line is printed once, after all of it has been read.
     def progress(self, regexp):
         end = self.output.rfind("\n") + 1
-        if end <= self.reported:
-            return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
+        если end <= self.reported:
+            вернуть
+        для line in self.output[self.reported:end].splitlines():
+            если re.match(regexp, line):
                 print(line)
         self.reported = end
 
     def monitor(self, *regexps, progress="", timeout):
         deadline = time.time() + timeout
-        while True:
+        пока True:
             time.sleep(1)
             timeleft = deadline - time.time()
-            if timeleft < 0:
+            если timeleft < 0:
                 self.error(*regexps)
             self.read()
-            if progress:
+            если progress:
                 self.progress(progress)
-            if self.match(*regexps, exit=False):
-                return
+            если self.match(*regexps, exit=False):
+                вернуть
 
 def crash_log():
     q = QEMU(True)
@@ -140,11 +140,11 @@ def recover_log():
     time.sleep(2)
     q.read()
     ok = q.match('^recovering', exit=False)
-    if ok:
+    если ok:
         q.cmd("ls\n")
         q.monitor('f5', timeout=30)
     q.stop()
-    return ok
+    вернуть ok
 
 def forphan():
     q = QEMU(True)
@@ -167,12 +167,12 @@ def recover_orphan():
 
 def test_log():
     print("Test recovery of log")
-    for i in range(20):
+    для i in range(20):
         crash_log()
         ok = recover_log()
-        if ok:
+        если ok:
             print("OK")
-            return
+            вернуть
         print("log attempt ", i+1)
     print("FAIL")
     sys.exit(1)
@@ -197,7 +197,7 @@ def test_crash():
 def test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    если args.q:
         opt = " -q"
         timeout = 300
     elif test != "":
@@ -207,18 +207,18 @@ def test_usertests(test=""):
     q.monitor('^ALL TESTS PASSED', progress='test', timeout=timeout)
     q.stop()
 
-def main():
+def основной():
     print(args)
     rex = r'%s' % args.testrex
-    funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
-                     if (inspect.isfunction(obj) and 
+    funcs = [(obj,name) для name,obj in inspect.getmembers(sys.modules[__name__]) 
+                     если (inspect.isfunction(obj) and 
                          name.startswith('test'))]
     none = True
-    for (f,n) in funcs:
-        if re.search(rex, n):
+    для (f,n) in funcs:
+        если re.search(rex, n):
             none = False
             f()
-    if none:
+    если none:
         test_usertests(test=args.testrex)
 
-main()
+основной()
