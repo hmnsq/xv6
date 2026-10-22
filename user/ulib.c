@@ -9,154 +9,154 @@
 // wrapper so that it's OK if main() does not call exit().
 //
 void
-start(int argc, char **argv)
+start(ចំនួនគត់ argc, var_na **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
+  ចំនួនគត់ r;
+  extern ចំនួនគត់ main(ចំនួនគត់ argc, var_na **argv);
   r = main(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+var_na *
+strcpy(var_na *s, const var_na *t)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  ខណៈពេល ((*s++ = *t++) != 0)
     ;
-  return os;
+  ត្រឡប់ os;
 }
 
-int
-strcmp(const char *p, const char *q)
+ចំនួនគត់
+strcmp(const var_na *p, const var_na *q)
 {
-  while (*p && *p == *q)
+  ខណៈពេល (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  ត្រឡប់ (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(const var_na *s)
 {
-  int n;
+  ចំនួនគត់ n;
 
-  for (n = 0; s[n]; n++)
+  សម្រាប់ (n = 0; s[n]; n++)
     ;
-  return n;
+  ត្រឡប់ n;
 }
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, ចំនួនគត់ c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  var_na *cdst = (var_na *)dst;
+  ចំនួនគត់ i;
+  សម្រាប់ (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ត្រឡប់ dst;
 }
 
-char *
-strchr(const char *s, char c)
+var_na *
+strchr(const var_na *s, var_na c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  សម្រាប់ (; *s; s++)
+    ប្រសិនបើ (*s == c)
+      ត្រឡប់ (var_na *)s;
+  ត្រឡប់ 0;
 }
 
-char *
-gets(char *buf, int max)
+var_na *
+gets(var_na *buf, ចំនួនគត់ max)
 {
-  int i, cc;
-  char c;
+  ចំនួនគត់ i, cc;
+  var_na c;
 
-  for (i = 0; i + 1 < max;) {
+  សម្រាប់ (i = 0; i + 1 < max;) {
     cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+    ប្រសិនបើ (cc < 1)
+      bha_nga;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    ប្រសិនបើ (c == '\n' || c == '\r')
+      bha_nga;
   }
   buf[i] = '\0';
-  return buf;
+  ត្រឡប់ buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+ចំនួនគត់
+stat(const var_na *n, sa_nracanaa stat *st)
 {
-  int fd;
-  int r;
+  ចំនួនគត់ fd;
+  ចំនួនគត់ r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  ប្រសិនបើ (fd < 0)
+    ត្រឡប់ -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  ត្រឡប់ r;
 }
 
-int
-atoi(const char *s)
+ចំនួនគត់
+atoi(const var_na *s)
 {
-  int n;
+  ចំនួនគត់ n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  ខណៈពេល ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  ត្រឡប់ n;
 }
 
 void *
-memmove(void *vdst, const void *vsrc, int n)
+memmove(void *vdst, const void *vsrc, ចំនួនគត់ n)
 {
-  char *dst;
-  const char *src;
+  var_na *dst;
+  const var_na *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  ប្រសិនបើ (src > dst) {
+    ខណៈពេល (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } បើមិនដូច្នេះ {
     dst += n;
     src += n;
-    while (n-- > 0)
+    ខណៈពេល (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  ត្រឡប់ vdst;
 }
 
-int
+ចំនួនគត់
 memcmp(const void *s1, const void *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  const var_na *p1 = s1, *p2 = s2;
+  ខណៈពេល (n-- > 0) {
+    ប្រសិនបើ (*p1 != *p2) {
+      ត្រឡប់ *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  ត្រឡប់ 0;
 }
 
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  ត្រឡប់ memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+var_na *
+sbrk(ចំនួនគត់ n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  ត្រឡប់ sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+var_na *
+sbrklazy(ចំនួនគត់ n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  ត្រឡប់ sys_sbrk(n, SBRK_LAZY);
 }

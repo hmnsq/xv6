@@ -10,22 +10,22 @@
 uint64
 sys_exit(void)
 {
-  int n;
+  ចំនួនគត់ n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  ត្រឡប់ 0; // not reached
 }
 
 uint64
 sys_getpid(void)
 {
-  return myproc()->pid;
+  ត្រឡប់ myproc()->pid;
 }
 
 uint64
 sys_fork(void)
 {
-  return kfork();
+  ត្រឡប់ kfork();
 }
 
 uint64
@@ -33,52 +33,52 @@ sys_wait(void)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  ត្រឡប់ kwait(p);
 }
 
 uint64
 sys_sbrk(void)
 {
   uint64 addr;
-  int t;
-  int n;
+  ចំនួនគត់ t;
+  ចំនួនគត់ n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  ប្រសិនបើ (t == SBRK_EAGER || n < 0) {
+    ប្រសិនបើ (growproc(n) < 0) {
+      ត្រឡប់ -1;
     }
-  } else {
+  } បើមិនដូច្នេះ {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    ប្រសិនបើ (addr + n < addr)
+      ត្រឡប់ -1;
+    ប្រសិនបើ (addr + n > TRAPFRAME)
+      ត្រឡប់ -1;
     myproc()->sz += n;
   }
-  return addr;
+  ត្រឡប់ addr;
 }
 
 uint64
 sys_pause(void)
 {
-  int n;
+  ចំនួនគត់ n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  ប្រសិនបើ (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  ខណៈពេល (ticks - ticks0 < n) {
+    ប្រសិនបើ (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      ត្រឡប់ -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,16 +86,16 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  ត្រឡប់ 0;
 }
 
 uint64
 sys_kill(void)
 {
-  int pid;
+  ចំនួនគត់ pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  ត្រឡប់ kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
@@ -108,5 +108,5 @@ sys_uptime(void)
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  ត្រឡប់ xticks;
 }

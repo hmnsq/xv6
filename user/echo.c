@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+ចំនួនគត់
+main(ចំនួនគត់ argc, var_na *argv[])
 {
-  int i;
+  ចំនួនគត់ i;
 
-  for (i = 1; i < argc; i++) {
+  សម្រាប់ (i = 1; i < argc; i++) {
     write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
+    ប្រសិនបើ (i + 1 < argc) {
       write(1, " ", 1);
-    } else {
+    } បើមិនដូច្នេះ {
       write(1, "\n", 1);
     }
   }

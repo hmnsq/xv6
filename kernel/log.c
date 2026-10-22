@@ -32,29 +32,29 @@
 
 // Contents of the header block, used for both the on-disk header block
 // and to keep track in memory of logged block# before commit.
-struct logheader {
-  int n;
-  int block[LOGBLOCKS];
+sa_nracanaa logheader {
+  ចំនួនគត់ n;
+  ចំនួនគត់ block[LOGBLOCKS];
 };
 
-struct log {
-  struct spinlock lock;
-  int start;
-  int outstanding; // how many FS sys calls are executing.
-  int committing;  // in commit(), please wait.
-  int dev;
-  int ncommit;
-  struct logheader lh;
+sa_nracanaa log {
+  sa_nracanaa spinlock lock;
+  ចំនួនគត់ start;
+  ចំនួនគត់ outstanding; // how many FS sys calls are executing.
+  ចំនួនគត់ committing;  // in commit(), please wait.
+  ចំនួនគត់ dev;
+  ចំនួនគត់ ncommit;
+  sa_nracanaa logheader lh;
 };
-struct log log;
+sa_nracanaa log log;
 
 static void recover_from_log(void);
 static void commit();
 
 void
-initlog(int dev, struct superblock *sb)
+initlog(ចំនួនគត់ dev, sa_nracanaa superblock *sb)
 {
-  if (sizeof(struct logheader) >= BSIZE)
+  ប្រសិនបើ (parimaa_na(sa_nracanaa logheader) >= BSIZE)
     panic("initlog: too big logheader");
 
   initlock(&log.lock, "log");
@@ -65,19 +65,19 @@ initlog(int dev, struct superblock *sb)
 
 // Copy committed blocks from log to their home location
 static void
-install_trans(int recovering)
+install_trans(ចំនួនគត់ recovering)
 {
-  int tail;
+  ចំនួនគត់ tail;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    if (recovering) {
+  សម្រាប់ (tail = 0; tail < log.lh.n; tail++) {
+    ប្រសិនបើ (recovering) {
       printk("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
     }
-    struct buf *lbuf = bread(log.dev, log.start + tail + 1); // read log block
-    struct buf *dbuf = bread(log.dev, log.lh.block[tail]);   // read dst
+    sa_nracanaa buf *lbuf = bread(log.dev, log.start + tail + 1); // read log block
+    sa_nracanaa buf *dbuf = bread(log.dev, log.lh.block[tail]);   // read dst
     memmove(dbuf->data, lbuf->data, BSIZE); // copy block to dst
     bwrite(dbuf);                           // write dst to disk
-    if (recovering == 0)
+    ប្រសិនបើ (recovering == 0)
       bunpin(dbuf);
     brelse(lbuf);
     brelse(dbuf);
@@ -88,11 +88,11 @@ install_trans(int recovering)
 static void
 read_head(void)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *lh = (struct logheader *)(buf->data);
-  int i;
+  sa_nracanaa buf *buf = bread(log.dev, log.start);
+  sa_nracanaa logheader *lh = (sa_nracanaa logheader *)(buf->data);
+  ចំនួនគត់ i;
   log.lh.n = lh->n;
-  for (i = 0; i < log.lh.n; i++) {
+  សម្រាប់ (i = 0; i < log.lh.n; i++) {
     log.lh.block[i] = lh->block[i];
   }
   brelse(buf);
@@ -104,11 +104,11 @@ read_head(void)
 static void
 write_head(void)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *hb = (struct logheader *)(buf->data);
-  int i;
+  sa_nracanaa buf *buf = bread(log.dev, log.start);
+  sa_nracanaa logheader *hb = (sa_nracanaa logheader *)(buf->data);
+  ចំនួនគត់ i;
   hb->n = log.lh.n;
-  for (i = 0; i < log.lh.n; i++) {
+  សម្រាប់ (i = 0; i < log.lh.n; i++) {
     hb->block[i] = log.lh.block[i];
   }
   bwrite(buf);
@@ -129,22 +129,22 @@ void
 begin_op(void)
 {
   acquire(&log.lock);
-  while (1) {
-    if (log.committing) {
+  ខណៈពេល (1) {
+    ប្រសិនបើ (log.committing) {
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
       acquire(&log.lock);
-    } else if (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
+    } បើមិនដូច្នេះ ប្រសិនបើ (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
       // this op might exhaust log space; wait for commit.
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
       acquire(&log.lock);
-    } else {
+    } បើមិនដូច្នេះ {
       log.outstanding += 1;
       release(&log.lock);
-      break;
+      bha_nga;
     }
   }
 }
@@ -154,16 +154,16 @@ begin_op(void)
 void
 end_op(void)
 {
-  int do_commit = 0;
+  ចំនួនគត់ do_commit = 0;
 
   acquire(&log.lock);
   log.outstanding -= 1;
-  if (log.committing)
+  ប្រសិនបើ (log.committing)
     panic("log.committing");
-  if (log.outstanding == 0) {
+  ប្រសិនបើ (log.outstanding == 0) {
     do_commit = 1;
     log.committing = 1;
-  } else {
+  } បើមិនដូច្នេះ {
     // begin_op() may be waiting for log space,
     // and decrementing log.outstanding has decreased
     // the amount of reserved space.
@@ -171,7 +171,7 @@ end_op(void)
   }
   release(&log.lock);
 
-  if (do_commit) {
+  ប្រសិនបើ (do_commit) {
     // call commit w/o holding locks, since not allowed
     // to sleep with locks.
     commit();
@@ -187,11 +187,11 @@ end_op(void)
 static void
 write_log(void)
 {
-  int tail;
+  ចំនួនគត់ tail;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    struct buf *to = bread(log.dev, log.start + tail + 1); // log block
-    struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
+  សម្រាប់ (tail = 0; tail < log.lh.n; tail++) {
+    sa_nracanaa buf *to = bread(log.dev, log.start + tail + 1); // log block
+    sa_nracanaa buf *from = bread(log.dev, log.lh.block[tail]); // cache block
     memmove(to->data, from->data, BSIZE);
     bwrite(to); // write the log
     brelse(from);
@@ -202,7 +202,7 @@ write_log(void)
 static void
 commit()
 {
-  if (log.lh.n > 0) {
+  ប្រសិនបើ (log.lh.n > 0) {
     write_log();      // Write modified blocks from cache to log
     write_head();     // Write header to disk -- the real commit
     install_trans(0); // Now install writes to home locations
@@ -221,22 +221,22 @@ commit()
 //   log_write(bp)
 //   brelse(bp)
 void
-log_write(struct buf *b)
+log_write(sa_nracanaa buf *b)
 {
-  int i;
+  ចំនួនគត់ i;
 
   acquire(&log.lock);
-  if (log.lh.n >= LOGBLOCKS)
+  ប្រសិនបើ (log.lh.n >= LOGBLOCKS)
     panic("too big a transaction");
-  if (log.outstanding < 1)
+  ប្រសិនបើ (log.outstanding < 1)
     panic("log_write outside of trans");
 
-  for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno) // log absorption
-      break;
+  សម្រាប់ (i = 0; i < log.lh.n; i++) {
+    ប្រសិនបើ (log.lh.block[i] == b->blockno) // log absorption
+      bha_nga;
   }
   log.lh.block[i] = b->blockno;
-  if (i == log.lh.n) { // Add new block to log?
+  ប្រសិនបើ (i == log.lh.n) { // Add new block to log?
     bpin(b);
     log.lh.n++;
   }
@@ -247,9 +247,9 @@ uint64
 sys_sync(void)
 {
   acquire(&log.lock);
-  if (log.committing || log.outstanding > 0) {
-    int n = log.ncommit + 1;
-    while (log.ncommit < n) {
+  ប្រសិនបើ (log.committing || log.outstanding > 0) {
+    ចំនួនគត់ n = log.ncommit + 1;
+    ខណៈពេល (log.ncommit < n) {
       sleep_prepare(&log);
       release(&log.lock);
       sleep();
@@ -257,5 +257,5 @@ sys_sync(void)
     }
   }
   release(&log.lock);
-  return 0;
+  ត្រឡប់ 0;
 }

@@ -9,44 +9,44 @@
 #include "user/user.h"
 #include "kernel/fcntl.h"
 
-char *argv[] = {"sh", 0};
+var_na *argv[] = {"sh", 0};
 
-int
+ចំនួនគត់
 main(void)
 {
-  int pid, wpid;
+  ចំនួនគត់ pid, wpid;
 
-  if (open("console", O_RDWR) < 0) {
+  ប្រសិនបើ (open("console", O_RDWR) < 0) {
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
   dup(0); // stdout
   dup(0); // stderr
 
-  for (;;) {
+  សម្រាប់ (;;) {
     printf("init: starting sh\n");
     pid = fork();
-    if (pid < 0) {
+    ប្រសិនបើ (pid < 0) {
       printf("init: fork failed\n");
       exit(1);
     }
-    if (pid == 0) {
+    ប្រសិនបើ (pid == 0) {
       exec("sh", argv);
       printf("init: exec sh failed\n");
       exit(1);
     }
 
-    for (;;) {
+    សម្រាប់ (;;) {
       // this call to wait() returns if the shell exits,
       // or if a parentless process exits.
-      wpid = wait((int *)0);
-      if (wpid == pid) {
+      wpid = wait((ចំនួនគត់ *)0);
+      ប្រសិនបើ (wpid == pid) {
         // the shell exited; restart it.
-        break;
-      } else if (wpid < 0) {
+        bha_nga;
+      } បើមិនដូច្នេះ ប្រសិនបើ (wpid < 0) {
         printf("init: wait returned an error\n");
         exit(1);
-      } else {
+      } បើមិនដូច្នេះ {
         // it was a parentless process; do nothing.
       }
     }

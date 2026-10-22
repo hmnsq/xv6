@@ -5,10 +5,10 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
+ចំនួនគត់
 main(void)
 {
-  if (fork() > 0)
+  ប្រសិនបើ (fork() > 0)
     pause(5); // Let child exit before parent.
   exit(0);
 }

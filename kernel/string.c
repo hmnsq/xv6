@@ -1,106 +1,106 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, ចំនួនគត់ c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  var_na *cdst = (var_na *)dst;
+  ចំនួនគត់ i;
+  សម្រាប់ (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ត្រឡប់ dst;
 }
 
-int
+ចំនួនគត់
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  ខណៈពេល (n-- > 0) {
+    ប្រសិនបើ (*s1 != *s2)
+      ត្រឡប់ *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  ត្រឡប់ 0;
 }
 
 void *
 memmove(void *dst, const void *src, uint n)
 {
-  const char *s;
-  char *d;
+  const var_na *s;
+  var_na *d;
 
-  if (n == 0)
-    return dst;
+  ប្រសិនបើ (n == 0)
+    ត្រឡប់ dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  ប្រសិនបើ (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    ខណៈពេល (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } បើមិនដូច្នេះ
+    ខណៈពេល (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  ត្រឡប់ dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  ត្រឡប់ memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+ចំនួនគត់
+strncmp(const var_na *p, const var_na *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  ខណៈពេល (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  ប្រសិនបើ (n == 0)
+    ត្រឡប់ 0;
+  ត្រឡប់ (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+var_na *
+strncpy(var_na *s, const var_na *t, ចំនួនគត់ n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  ខណៈពេល (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  ខណៈពេល (n-- > 0)
     *s++ = 0;
-  return os;
+  ត្រឡប់ os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+var_na *
+safestrcpy(var_na *s, const var_na *t, ចំនួនគត់ n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  ប្រសិនបើ (n <= 0)
+    ត្រឡប់ os;
+  ខណៈពេល (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  ត្រឡប់ os;
 }
 
-int
-strlen(const char *s)
+ចំនួនគត់
+strlen(const var_na *s)
 {
-  int n;
+  ចំនួនគត់ n;
 
-  for (n = 0; s[n]; n++)
+  សម្រាប់ (n = 0; s[n]; n++)
     ;
-  return n;
+  ត្រឡប់ n;
 }

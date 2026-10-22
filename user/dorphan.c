@@ -7,29 +7,29 @@
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+var_na buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+ចំនួនគត់
+main(ចំនួនគត់ argc, var_na **argv)
 {
-  char *s = argv[0];
+  var_na *s = argv[0];
 
-  if (mkdir("dd") != 0) {
+  ប្រសិនបើ (mkdir("dd") != 0) {
     printf("%s: mkdir dd failed\n", s);
     exit(1);
   }
 
-  if (chdir("dd") != 0) {
+  ប្រសិនបើ (chdir("dd") != 0) {
     printf("%s: chdir dd failed\n", s);
     exit(1);
   }
 
-  if (unlink("../dd") < 0) {
+  ប្រសិនបើ (unlink("../dd") < 0) {
     printf("%s: unlink failed\n", s);
     exit(1);
   }
   printf("wait for kill and reclaim\n");
   // sit around until killed
-  for (;;)
+  សម្រាប់ (;;)
     pause(1000);
 }
