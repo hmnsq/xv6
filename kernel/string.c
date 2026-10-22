@@ -1,106 +1,106 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, จำนวนเต็ม c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  var_na *cdst = (var_na *)dst;
+  จำนวนเต็ม i;
+  สำหรับ (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  คืน dst;
 }
 
-int
+จำนวนเต็ม
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  ขณะ (n-- > 0) {
+    ถ้า (*s1 != *s2)
+      คืน *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  คืน 0;
 }
 
 void *
 memmove(void *dst, const void *src, uint n)
 {
-  const char *s;
-  char *d;
+  const var_na *s;
+  var_na *d;
 
-  if (n == 0)
-    return dst;
+  ถ้า (n == 0)
+    คืน dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  ถ้า (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    ขณะ (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } มิฉะนั้น
+    ขณะ (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  คืน dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  คืน memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+จำนวนเต็ม
+strncmp(const var_na *p, const var_na *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  ขณะ (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  ถ้า (n == 0)
+    คืน 0;
+  คืน (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+var_na *
+strncpy(var_na *s, const var_na *t, จำนวนเต็ม n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  ขณะ (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  ขณะ (n-- > 0)
     *s++ = 0;
-  return os;
+  คืน os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+var_na *
+safestrcpy(var_na *s, const var_na *t, จำนวนเต็ม n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  ถ้า (n <= 0)
+    คืน os;
+  ขณะ (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  คืน os;
 }
 
-int
-strlen(const char *s)
+จำนวนเต็ม
+strlen(const var_na *s)
 {
-  int n;
+  จำนวนเต็ม n;
 
-  for (n = 0; s[n]; n++)
+  สำหรับ (n = 0; s[n]; n++)
     ;
-  return n;
+  คืน n;
 }

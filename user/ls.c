@@ -4,85 +4,85 @@
 #include "kernel/fs.h"
 #include "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+var_na *
+fmtname(var_na *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  static var_na buf[DIRSIZ + 1];
+  var_na *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  สำหรับ (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  ถ้า (strlen(p) >= DIRSIZ)
+    คืน p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[parimaa_na(buf) - 1] = '\0';
+  คืน buf;
 }
 
 void
-ls(char *path)
+ls(var_na *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  var_na buf[512], *p;
+  จำนวนเต็ม fd;
+  sa_nracanaa dirent de;
+  sa_nracanaa stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  ถ้า ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    คืน;
   }
 
-  if (fstat(fd, &st) < 0) {
+  ถ้า (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    คืน;
   }
 
   switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  pak_sa T_DEVICE:
+  pak_sa T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (จำนวนเต็ม)st.size);
+    bha_nga;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  pak_sa T_DIR:
+    ถ้า (strlen(path) + 1 + DIRSIZ + 1 > parimaa_na buf) {
       printf("ls: path too long\n");
-      break;
+      bha_nga;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
+    ขณะ (read(fd, &de, parimaa_na(de)) == parimaa_na(de)) {
+      ถ้า (de.inum == 0)
         continue;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      ถ้า (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (จำนวนเต็ม)st.size);
     }
-    break;
+    bha_nga;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+จำนวนเต็ม
+หลัก(จำนวนเต็ม argc, var_na *argv[])
 {
-  int i;
+  จำนวนเต็ม i;
 
-  if (argc < 2) {
+  ถ้า (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  สำหรับ (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

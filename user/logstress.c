@@ -8,29 +8,29 @@
 
 #define BUFSZ 500
 
-char buf[BUFSZ];
+var_na buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+จำนวนเต็ม
+หลัก(จำนวนเต็ม argc, var_na **argv)
 {
-  int fd, n;
-  enum { N = 250, SZ = 2000 };
+  จำนวนเต็ม fd, n;
+  ga_nanaa { N = 250, SZ = 2000 };
 
-  for (int i = 1; i < argc; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
+  สำหรับ (จำนวนเต็ม i = 1; i < argc; i++) {
+    จำนวนเต็ม pid1 = fork();
+    ถ้า (pid1 < 0) {
       printf("%s: fork failed\n", argv[0]);
       exit(1);
     }
-    if (pid1 == 0) {
+    ถ้า (pid1 == 0) {
       fd = open(argv[i], O_CREATE | O_RDWR);
-      if (fd < 0) {
+      ถ้า (fd < 0) {
         printf("%s: create %s failed\n", argv[0], argv[i]);
         exit(1);
       }
       memset(buf, '0' + i, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
+      สำหรับ (i = 0; i < N; i++) {
+        ถ้า ((n = write(fd, buf, SZ)) != SZ) {
           printf("write failed %d\n", n);
           exit(1);
         }
@@ -38,11 +38,11 @@ main(int argc, char **argv)
       exit(0);
     }
   }
-  int xstatus;
-  for (int i = 1; i < argc; i++) {
+  จำนวนเต็ม xstatus;
+  สำหรับ (จำนวนเต็ม i = 1; i < argc; i++) {
     wait(&xstatus);
-    if (xstatus != 0)
+    ถ้า (xstatus != 0)
       exit(xstatus);
   }
-  return 0;
+  คืน 0;
 }

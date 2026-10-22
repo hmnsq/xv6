@@ -2,37 +2,37 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
-char buf[512];
+var_na buf[512];
 
 void
-cat(int fd)
+cat(จำนวนเต็ม fd)
 {
-  int n;
+  จำนวนเต็ม n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  ขณะ ((n = read(fd, buf, parimaa_na(buf))) > 0) {
+    ถ้า (write(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  ถ้า (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+จำนวนเต็ม
+หลัก(จำนวนเต็ม argc, var_na *argv[])
 {
-  int fd, i;
+  จำนวนเต็ม fd, i;
 
-  if (argc <= 1) {
+  ถ้า (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  สำหรับ (i = 1; i < argc; i++) {
+    ถ้า ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

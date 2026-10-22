@@ -10,22 +10,22 @@
 uint64
 sys_exit(void)
 {
-  int n;
+  จำนวนเต็ม n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  คืน 0; // not reached
 }
 
 uint64
 sys_getpid(void)
 {
-  return myproc()->pid;
+  คืน myproc()->pid;
 }
 
 uint64
 sys_fork(void)
 {
-  return kfork();
+  คืน kfork();
 }
 
 uint64
@@ -33,52 +33,52 @@ sys_wait(void)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  คืน kwait(p);
 }
 
 uint64
 sys_sbrk(void)
 {
   uint64 addr;
-  int t;
-  int n;
+  จำนวนเต็ม t;
+  จำนวนเต็ม n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  ถ้า (t == SBRK_EAGER || n < 0) {
+    ถ้า (growproc(n) < 0) {
+      คืน -1;
     }
-  } else {
+  } มิฉะนั้น {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    ถ้า (addr + n < addr)
+      คืน -1;
+    ถ้า (addr + n > TRAPFRAME)
+      คืน -1;
     myproc()->sz += n;
   }
-  return addr;
+  คืน addr;
 }
 
 uint64
 sys_pause(void)
 {
-  int n;
+  จำนวนเต็ม n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  ถ้า (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  ขณะ (ticks - ticks0 < n) {
+    ถ้า (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      คืน -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,16 +86,16 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  คืน 0;
 }
 
 uint64
 sys_kill(void)
 {
-  int pid;
+  จำนวนเต็ม pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  คืน kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
@@ -108,5 +108,5 @@ sys_uptime(void)
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  คืน xticks;
 }

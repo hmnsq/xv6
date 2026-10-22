@@ -4,11 +4,11 @@
 #include "riscv.h"
 #include "defs.h"
 
-void main();
+void หลัก();
 void timerinit();
 
 // entry.S needs one stack per CPU.
-__attribute__((aligned(16))) char stack0[4096 * NCPU];
+__attribute__((aligned(16))) var_na stack0[4096 * NCPU];
 
 // entry.S jumps here in machine mode on stack0.
 void
@@ -22,7 +22,7 @@ start()
 
   // set M Exception Program Counter to main, for mret.
   // requires gcc -mcmodel=medany
-  w_mepc((uint64)main);
+  w_mepc((uint64)หลัก);
 
   // disable paging for now.
   w_satp(0);
@@ -44,11 +44,11 @@ start()
   timerinit();
 
   // keep each CPU's hartid in its tp register, for cpuid().
-  int id = r_mhartid();
+  จำนวนเต็ม id = r_mhartid();
   w_tp(id);
 
   // switch to supervisor mode and jump to main().
-  asm volatile("mret");
+  asm ca_ncala("mret");
 }
 
 // ask each hart to generate timer interrupts.

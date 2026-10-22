@@ -1,10 +1,10 @@
-struct file {
-  enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
-  int ref; // reference count
-  char readable;
-  char writable;
-  struct pipe *pipe; // FD_PIPE
-  struct inode *ip;  // FD_INODE and FD_DEVICE
+sa_nracanaa file {
+  ga_nanaa { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE } type;
+  จำนวนเต็ม ref; // reference count
+  var_na readable;
+  var_na writable;
+  sa_nracanaa pipe *pipe; // FD_PIPE
+  sa_nracanaa inode *ip;  // FD_INODE and FD_DEVICE
   uint off;          // FD_INODE
   short major;       // FD_DEVICE
 };
@@ -14,12 +14,12 @@ struct file {
 #define mkdev(m, n) ((uint)((m) << 16 | (n)))
 
 // in-memory copy of an inode
-struct inode {
+sa_nracanaa inode {
   uint dev;              // Device number
   uint inum;             // Inode number
-  int ref;               // Reference count
-  struct sleeplock lock; // protects everything below here
-  int valid;             // inode has been read from disk?
+  จำนวนเต็ม ref;               // Reference count
+  sa_nracanaa sleeplock lock; // protects everything below here
+  จำนวนเต็ม valid;             // inode has been read from disk?
 
   short type; // copy of disk inode
   short major;
@@ -30,11 +30,11 @@ struct inode {
 };
 
 // map major device number to device functions.
-struct devsw {
-  int (*read)(int, uint64, int);
-  int (*write)(int, uint64, int);
+sa_nracanaa devsw {
+  จำนวนเต็ม (*read)(จำนวนเต็ม, uint64, จำนวนเต็ม);
+  จำนวนเต็ม (*write)(จำนวนเต็ม, uint64, จำนวนเต็ม);
 };
 
-extern struct devsw devsw[];
+extern sa_nracanaa devsw devsw[];
 
 #define CONSOLE 1
