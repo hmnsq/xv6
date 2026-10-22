@@ -1,48 +1,48 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "kernel/fcntl.h"
+#شامل "user/user.h"
 
 // Stress xv6 logging system by having several processes writing
 // concurrently to their own file (e.g., logstress f1 f2 f3 f4)
 
-#define BUFSZ 500
+#تعریف_کرو BUFSZ 500
 
-char buf[BUFSZ];
+حرف buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+صحیح
+مین(صحیح argc, حرف **argv)
 {
-  int fd, n;
-  enum { N = 250, SZ = 2000 };
+  صحیح fd, n;
+  شمار { N = 250, SZ = 2000 };
 
-  for (int i = 1; i < argc; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", argv[0]);
-      exit(1);
+  برائے (صحیح i = 1; i < argc; i++) {
+    صحیح pid1 = fork();
+    اگر (pid1 < 0) {
+      لکھو("%s: fork failed\n", argv[0]);
+      باہر_نکلو(1);
     }
-    if (pid1 == 0) {
+    اگر (pid1 == 0) {
       fd = open(argv[i], O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("%s: create %s failed\n", argv[0], argv[i]);
-        exit(1);
+      اگر (fd < 0) {
+        لکھو("%s: create %s failed\n", argv[0], argv[i]);
+        باہر_نکلو(1);
       }
       memset(buf, '0' + i, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
-          printf("write failed %d\n", n);
-          exit(1);
+      برائے (i = 0; i < N; i++) {
+        اگر ((n = اكتب(fd, buf, SZ)) != SZ) {
+          لکھو("write failed %d\n", n);
+          باہر_نکلو(1);
         }
       }
-      exit(0);
+      باہر_نکلو(0);
     }
   }
-  int xstatus;
-  for (int i = 1; i < argc; i++) {
+  صحیح xstatus;
+  برائے (صحیح i = 1; i < argc; i++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    اگر (xstatus != 0)
+      باہر_نکلو(xstatus);
   }
-  return 0;
+  واپس 0;
 }

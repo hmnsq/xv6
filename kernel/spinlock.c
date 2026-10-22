@@ -1,15 +1,15 @@
 // Mutual exclusion spin locks.
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "proc.h"
-#include "defs.h"
+#شامل "types.h"
+#شامل "param.h"
+#شامل "memlayout.h"
+#شامل "spinlock.h"
+#شامل "riscv.h"
+#شامل "proc.h"
+#شامل "defs.h"
 
-void
-initlock(struct spinlock *lk, char *name)
+خالی
+initlock(ساخت spinlock *lk, حرف *name)
 {
   lk->name = name;
   lk->locked = 0;
@@ -18,11 +18,11 @@ initlock(struct spinlock *lk, char *name)
 
 // Acquire the lock.
 // Loops (spins) until the lock is acquired.
-void
-acquire(struct spinlock *lk)
+خالی
+acquire(ساخت spinlock *lk)
 {
-  push_off(); // disable interrupts to avoid deadlock.
-  if (holding(lk))
+  ڈالو_off(); // disable interrupts to avoid deadlock.
+  اگر (holding(lk))
     panic("acquire");
 
   // On RISC-V, __atomic_exchange_n turns into an atomic swap:
@@ -34,7 +34,7 @@ acquire(struct spinlock *lk)
   // the C compiler and the processor to not move loads or stores
   // past this point, to ensure that the critical section's memory
   // references happen strictly after the lock is acquired.
-  while (__atomic_exchange_n(&lk->locked, 1, __ATOMIC_ACQUIRE) != 0)
+  جب (__atomic_exchange_n(&lk->locked, 1, __ATOMIC_ACQUIRE) != 0)
     ;
 
   // Record info about lock acquisition for holding() and debugging.
@@ -42,10 +42,10 @@ acquire(struct spinlock *lk)
 }
 
 // Release the lock.
-void
-release(struct spinlock *lk)
+خالی
+release(ساخت spinlock *lk)
 {
-  if (!holding(lk))
+  اگر (!holding(lk))
     panic("release");
 
   lk->cpu = 0;
@@ -72,45 +72,45 @@ release(struct spinlock *lk)
   //   fence rw,w
   __atomic_store_n(&lk->locked, 0, __ATOMIC_RELEASE);
 
-  pop_off();
+  نکالو_off();
 }
 
 // Check whether this cpu is holding the lock.
 // Interrupts must be off.
-int
-holding(struct spinlock *lk)
+صحیح
+holding(ساخت spinlock *lk)
 {
-  int r;
+  صحیح r;
   r = (lk->locked && lk->cpu == mycpu());
-  return r;
+  واپس r;
 }
 
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
 
-void
-push_off(void)
+خالی
+ڈالو_off(خالی)
 {
   // disable interrupts to prevent an involuntary context
   // switch while using mycpu().
   uint64 flags = rc_sstatus(SSTATUS_SIE);
-  int old = !!(flags & SSTATUS_SIE);
+  صحیح old = !!(flags & SSTATUS_SIE);
 
-  if (mycpu()->noff == 0)
+  اگر (mycpu()->noff == 0)
     mycpu()->intena = old;
   mycpu()->noff += 1;
 }
 
-void
-pop_off(void)
+خالی
+نکالو_off(خالی)
 {
-  struct cpu *c = mycpu();
-  if (intr_get())
+  ساخت cpu *c = mycpu();
+  اگر (intr_get())
     panic("pop_off - interruptible");
-  if (c->noff < 1)
+  اگر (c->noff < 1)
     panic("pop_off");
   c->noff -= 1;
-  if (c->noff == 0 && c->intena)
+  اگر (c->noff == 0 && c->intena)
     intr_on();
 }

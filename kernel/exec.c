@@ -1,83 +1,83 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
-#include "elf.h"
+#شامل "types.h"
+#شامل "param.h"
+#شامل "memlayout.h"
+#شامل "riscv.h"
+#شامل "spinlock.h"
+#شامل "proc.h"
+#شامل "defs.h"
+#شامل "elf.h"
 
-static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
+ساکن صحیح loadseg(pde_t *, uint64, ساخت inode *, uint, uint);
 
 // map ELF permissions to PTE permission bits.
-int
-flags2perm(int flags)
+صحیح
+flags2perm(صحیح flags)
 {
-  int perm = 0;
-  if (flags & 0x1)
+  صحیح perm = 0;
+  اگر (flags & 0x1)
     perm = PTE_X;
-  if (flags & 0x2)
+  اگر (flags & 0x2)
     perm |= PTE_W;
-  return perm;
+  واپس perm;
 }
 
 //
 // the implementation of the exec() system call
 //
-int
-kexec(char *path, char **argv)
+صحیح
+kexec(حرف *راستہ, حرف **argv)
 {
-  char *s, *last;
-  int i, off;
+  حرف *s, *آخری;
+  صحیح i, off;
   uint64 argc, sz = 0, sp, ustack[MAXARG], stackbase;
-  struct elfhdr elf;
-  struct inode *ip;
-  struct proghdr ph;
+  ساخت elfhdr elf;
+  ساخت inode *ip;
+  ساخت proghdr ph;
   pagetable_t pagetable = 0, oldpagetable;
-  struct proc *p = myproc();
+  ساخت proc *p = myproc();
 
   begin_op();
 
   // Open the executable file.
-  if ((ip = namei(path)) == 0) {
-    end_op();
-    return -1;
+  اگر ((ip = namei(راستہ)) == 0) {
+    انتہا_op();
+    واپس -1;
   }
   ilock(ip);
 
   // Read the ELF header.
-  if (readi(ip, 0, (uint64)&elf, 0, sizeof(elf)) != sizeof(elf))
-    goto bad;
+  اگر (readi(ip, 0, (uint64)&elf, 0, حجم(elf)) != حجم(elf))
+    جاؤ bad;
 
   // Is this really an ELF file?
-  if (elf.magic != ELF_MAGIC)
-    goto bad;
+  اگر (elf.magic != ELF_MAGIC)
+    جاؤ bad;
 
-  if ((pagetable = proc_pagetable(p)) == 0)
-    goto bad;
+  اگر ((pagetable = proc_pagetable(p)) == 0)
+    جاؤ bad;
 
   // Load program into memory.
-  for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
-    if (readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
-      goto bad;
-    if (ph.type != ELF_PROG_LOAD)
-      continue;
-    if (ph.memsz < ph.filesz)
-      goto bad;
-    if (ph.vaddr + ph.memsz < ph.vaddr)
-      goto bad;
-    if (ph.vaddr % PGSIZE != 0)
-      goto bad;
+  برائے (i = 0, off = elf.phoff; i < elf.phnum; i++, off += حجم(ph)) {
+    اگر (readi(ip, 0, (uint64)&ph, off, حجم(ph)) != حجم(ph))
+      جاؤ bad;
+    اگر (ph.type != ELF_PROG_بھرو)
+      جاری;
+    اگر (ph.memsz < ph.filesz)
+      جاؤ bad;
+    اگر (ph.vaddr + ph.memsz < ph.vaddr)
+      جاؤ bad;
+    اگر (ph.vaddr % PGSIZE != 0)
+      جاؤ bad;
     uint64 sz1;
-    if ((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz,
+    اگر ((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz,
                         flags2perm(ph.flags))) == 0)
-      goto bad;
+      جاؤ bad;
     sz = sz1;
-    if (loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
-      goto bad;
+    اگر (loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
+      جاؤ bad;
   }
   iunlockput(ip);
-  end_op();
+  انتہا_op();
   ip = 0;
 
   p = myproc();
@@ -88,9 +88,9 @@ kexec(char *path, char **argv)
   // Use the rest as the user stack.
   sz = PGROUNDUP(sz);
   uint64 sz1;
-  if ((sz1 = uvmalloc(pagetable, sz, sz + (USERSTACK + 1) * PGSIZE, PTE_W)) ==
+  اگر ((sz1 = uvmalloc(pagetable, sz, sz + (USERSTACK + 1) * PGSIZE, PTE_W)) ==
       0)
-    goto bad;
+    جاؤ bad;
   sz = sz1;
   uvmclear(pagetable, sz - (USERSTACK + 1) * PGSIZE);
   sp = sz;
@@ -98,25 +98,25 @@ kexec(char *path, char **argv)
 
   // Copy argument strings into new stack, remember their
   // addresses in ustack[].
-  for (argc = 0; argv[argc]; argc++) {
-    sp -= strlen(argv[argc]) + 1;
+  برائے (argc = 0; argv[argc]; argc++) {
+    sp -= لڑی_لمبائی(argv[argc]) + 1;
     sp -= sp % 16; // riscv sp must be 16-byte aligned
-    if (sp < stackbase)
-      goto bad;
-    if (copyout(pagetable, sz, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
-      goto bad;
+    اگر (sp < stackbase)
+      جاؤ bad;
+    اگر (copyout(pagetable, sz, sp, argv[argc], لڑی_لمبائی(argv[argc]) + 1) < 0)
+      جاؤ bad;
     ustack[argc] = sp;
   }
   ustack[argc] = 0;
 
   // push a copy of ustack[], the array of argv[] pointers.
-  sp -= (argc + 1) * sizeof(uint64);
+  sp -= (argc + 1) * حجم(uint64);
   sp -= sp % 16;
-  if (sp < stackbase)
-    goto bad;
-  if (copyout(pagetable, sz, sp, (char *)ustack, (argc + 1) * sizeof(uint64)) <
+  اگر (sp < stackbase)
+    جاؤ bad;
+  اگر (copyout(pagetable, sz, sp, (حرف *)ustack, (argc + 1) * حجم(uint64)) <
       0)
-    goto bad;
+    جاؤ bad;
 
   // a0 and a1 contain arguments to user main(argc, argv)
   // argc is returned via the system call return
@@ -124,53 +124,53 @@ kexec(char *path, char **argv)
   p->trapframe->a1 = sp;
 
   // Save program name for debugging.
-  for (last = s = path; *s; s++)
-    if (*s == '/')
-      last = s + 1;
-  safestrcpy(p->name, last, sizeof(p->name));
+  برائے (آخری = s = راستہ; *s; s++)
+    اگر (*s == '/')
+      آخری = s + 1;
+  safestrcpy(p->name, آخری, حجم(p->name));
 
   // Commit to the user image.
   oldpagetable = p->pagetable;
   p->pagetable = pagetable;
   p->sz = sz;
-  p->trapframe->epc = elf.entry; // initial program counter = ulib.c:start()
+  p->trapframe->epc = elf.اندراج_2; // initial program counter = ulib.c:start()
   p->trapframe->sp = sp;         // initial stack pointer
   proc_freepagetable(oldpagetable, oldsz);
 
-  return argc; // this ends up in a0, the first argument to main(argc, argv)
+  واپس argc; // this ends up in a0, the first argument to main(argc, argv)
 
 bad:
-  if (pagetable)
+  اگر (pagetable)
     proc_freepagetable(pagetable, sz);
-  if (ip) {
+  اگر (ip) {
     iunlockput(ip);
-    end_op();
+    انتہا_op();
   }
-  return -1;
+  واپس -1;
 }
 
 // Load an ELF program segment into pagetable at virtual address va.
 // va must be page-aligned
 // and the pages from va to va+sz must already be mapped.
 // Returns 0 on success, -1 on failure.
-static int
-loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset,
+ساکن صحیح
+loadseg(pagetable_t pagetable, uint64 va, ساخت inode *ip, uint انحراف,
         uint sz)
 {
   uint i, n;
   uint64 pa;
 
-  for (i = 0; i < sz; i += PGSIZE) {
+  برائے (i = 0; i < sz; i += PGSIZE) {
     pa = walkaddr(pagetable, va + i);
-    if (pa == 0)
+    اگر (pa == 0)
       panic("loadseg: address should exist");
-    if (sz - i < PGSIZE)
+    اگر (sz - i < PGSIZE)
       n = sz - i;
-    else
+    ورنہ
       n = PGSIZE;
-    if (readi(ip, 0, (uint64)pa, offset + i, n) != n)
-      return -1;
+    اگر (readi(ip, 0, (uint64)pa, انحراف + i, n) != n)
+      واپس -1;
   }
 
-  return 0;
+  واپس 0;
 }

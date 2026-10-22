@@ -1,43 +1,43 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/fcntl.h"
+#شامل "user/user.h"
 
-char buf[512];
+حرف buf[512];
 
-void
-cat(int fd)
+خالی
+cat(صحیح fd)
 {
-  int n;
+  صحیح n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  جب ((n = اقرأ(fd, buf, حجم(buf))) > 0) {
+    اگر (اكتب(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
-      exit(1);
+      باہر_نکلو(1);
     }
   }
-  if (n < 0) {
+  اگر (n < 0) {
     fprintf(2, "cat: read error\n");
-    exit(1);
+    باہر_نکلو(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+صحیح
+مین(صحیح argc, حرف *argv[])
 {
-  int fd, i;
+  صحیح fd, i;
 
-  if (argc <= 1) {
+  اگر (argc <= 1) {
     cat(0);
-    exit(0);
+    باہر_نکلو(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  برائے (i = 1; i < argc; i++) {
+    اگر ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
-      exit(1);
+      باہر_نکلو(1);
     }
     cat(fd);
     close(fd);
   }
-  exit(0);
+  باہر_نکلو(0);
 }

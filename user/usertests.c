@@ -1,12 +1,12 @@
-#include "kernel/param.h"
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
-#include "kernel/syscall.h"
-#include "kernel/memlayout.h"
-#include "kernel/riscv.h"
+#شامل "kernel/param.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "user/user.h"
+#شامل "kernel/fs.h"
+#شامل "kernel/fcntl.h"
+#شامل "kernel/syscall.h"
+#شامل "kernel/memlayout.h"
+#شامل "kernel/riscv.h"
 
 //
 // Tests xv6 system calls.  usertests without arguments runs them all
@@ -17,9 +17,9 @@
 // prints "OK".
 //
 
-#define BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
+#تعریف_کرو BUFSZ ((MAXOPBLOCKS + 2) * BSIZE)
 
-char buf[BUFSZ];
+حرف buf[BUFSZ];
 
 //
 // Section with tests that run fairly quickly.  Use -q if you want to
@@ -29,44 +29,44 @@ char buf[BUFSZ];
 
 // what if you pass ridiculous pointers to system calls
 // that read user memory with copyin?
-void
-copyin(char *s)
+خالی
+copyin(حرف *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  برائے (صحیح ai = 0; ai < حجم(addrs) / حجم(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("copyin1", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open(copyin1) failed\n");
-      exit(1);
+    صحیح fd = open("copyin1", O_CREATE | O_WRONLY);
+    اگر (fd < 0) {
+      لکھو("open(copyin1) failed\n");
+      باہر_نکلو(1);
     }
-    int n = write(fd, (void *)addr, 8192);
-    if (n >= 0) {
-      printf("write(fd, %p, 8192) returned %d, not -1\n", (void *)addr, n);
-      exit(1);
+    صحیح n = اكتب(fd, (خالی *)addr, 8192);
+    اگر (n >= 0) {
+      لکھو("write(fd, %p, 8192) returned %d, not -1\n", (خالی *)addr, n);
+      باہر_نکلو(1);
     }
     close(fd);
     unlink("copyin1");
 
-    n = write(1, (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(1, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    n = اكتب(1, (حرف *)addr, 8192);
+    اگر (n > 0) {
+      لکھو("write(1, %p, 8192) returned %d, not -1 or 0\n", (خالی *)addr, n);
+      باہر_نکلو(1);
     }
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    صحیح fds[2];
+    اگر (pipe(fds) < 0) {
+      لکھو("pipe() failed\n");
+      باہر_نکلو(1);
     }
-    n = write(fds[1], (char *)addr, 8192);
-    if (n > 0) {
-      printf("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = اكتب(fds[1], (حرف *)addr, 8192);
+    اگر (n > 0) {
+      لکھو("write(pipe, %p, 8192) returned %d, not -1 or 0\n", (خالی *)addr,
              n);
-      exit(1);
+      باہر_نکلو(1);
     }
     close(fds[0]);
     close(fds[1]);
@@ -75,42 +75,42 @@ copyin(char *s)
 
 // what if you pass ridiculous pointers to system calls
 // that write user memory with copyout?
-void
-copyout(char *s)
+خالی
+copyout(حرف *s)
 {
   uint64 addrs[] = {0LL,          0x80000000LL, 0x3fffffe000,
                     0x3ffffff000, 0x4000000000, 0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  برائے (صحیح ai = 0; ai < حجم(addrs) / حجم(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("open(README) failed\n");
-      exit(1);
+    صحیح fd = open("README", 0);
+    اگر (fd < 0) {
+      لکھو("open(README) failed\n");
+      باہر_نکلو(1);
     }
-    int n = read(fd, (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(fd, %p, 8192) returned %d, not -1 or 0\n", (void *)addr, n);
-      exit(1);
+    صحیح n = اقرأ(fd, (خالی *)addr, 8192);
+    اگر (n > 0) {
+      لکھو("read(fd, %p, 8192) returned %d, not -1 or 0\n", (خالی *)addr, n);
+      باہر_نکلو(1);
     }
     close(fd);
 
-    int fds[2];
-    if (pipe(fds) < 0) {
-      printf("pipe() failed\n");
-      exit(1);
+    صحیح fds[2];
+    اگر (pipe(fds) < 0) {
+      لکھو("pipe() failed\n");
+      باہر_نکلو(1);
     }
-    n = write(fds[1], "x", 1);
-    if (n != 1) {
-      printf("pipe write failed\n");
-      exit(1);
+    n = اكتب(fds[1], "x", 1);
+    اگر (n != 1) {
+      لکھو("pipe write failed\n");
+      باہر_نکلو(1);
     }
-    n = read(fds[0], (void *)addr, 8192);
-    if (n > 0) {
-      printf("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (void *)addr,
+    n = اقرأ(fds[0], (خالی *)addr, 8192);
+    اگر (n > 0) {
+      لکھو("read(pipe, %p, 8192) returned %d, not -1 or 0\n", (خالی *)addr,
              n);
-      exit(1);
+      باہر_نکلو(1);
     }
     close(fds[0]);
     close(fds[1]);
@@ -118,19 +118,19 @@ copyout(char *s)
 }
 
 // what if you pass ridiculous string pointers to system calls?
-void
-copyinstr1(char *s)
+خالی
+copyinstr1(حرف *s)
 {
   uint64 addrs[] = {0x80000000LL, 0x3fffffe000, 0x3ffffff000, 0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  برائے (صحیح ai = 0; ai < حجم(addrs) / حجم(addrs[0]); ai++) {
     uint64 addr = addrs[ai];
 
-    int fd = open((char *)addr, O_CREATE | O_WRONLY);
-    if (fd >= 0) {
-      printf("open(%p) returned %d, not -1\n", (void *)addr, fd);
-      exit(1);
+    صحیح fd = open((حرف *)addr, O_CREATE | O_WRONLY);
+    اگر (fd >= 0) {
+      لکھو("open(%p) returned %d, not -1\n", (خالی *)addr, fd);
+      باہر_نکلو(1);
     }
   }
 }
@@ -138,205 +138,205 @@ copyinstr1(char *s)
 // what if a string system call argument is exactly the size
 // of the kernel buffer it is copied into, so that the null
 // would fall just beyond the end of the kernel buffer?
-void
-copyinstr2(char *s)
+خالی
+copyinstr2(حرف *s)
 {
-  char b[MAXPATH + 1];
+  حرف b[MAXPATH + 1];
 
-  for (int i = 0; i < MAXPATH; i++)
+  برائے (صحیح i = 0; i < MAXPATH; i++)
     b[i] = 'x';
   b[MAXPATH] = '\0';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  صحیح ret = unlink(b);
+  اگر (ret != -1) {
+    لکھو("unlink(%s) returned %d, not -1\n", b, ret);
+    باہر_نکلو(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  صحیح fd = open(b, O_CREATE | O_WRONLY);
+  اگر (fd != -1) {
+    لکھو("open(%s) returned %d, not -1\n", b, fd);
+    باہر_نکلو(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  اگر (ret != -1) {
+    لکھو("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    باہر_نکلو(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  حرف *دلائل[] = {"xx", 0};
+  ret = exec(b, دلائل);
+  اگر (ret != -1) {
+    لکھو("exec(%s) returned %d, not -1\n", b, fd);
+    باہر_نکلو(1);
   }
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  صحیح pid = fork();
+  اگر (pid < 0) {
+    لکھو("fork failed\n");
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    static char big[PGSIZE + 1];
-    for (int i = 0; i < PGSIZE; i++)
+  اگر (pid == 0) {
+    ساکن حرف big[PGSIZE + 1];
+    برائے (صحیح i = 0; i < PGSIZE; i++)
       big[i] = 'x';
     big[PGSIZE] = '\0';
-    char *args2[] = {big, big, big, 0};
+    حرف *args2[] = {big, big, big, 0};
     ret = exec("echo", args2);
-    if (ret != -1) {
-      printf("exec(echo, BIG) returned %d, not -1\n", fd);
-      exit(1);
+    اگر (ret != -1) {
+      لکھو("exec(echo, BIG) returned %d, not -1\n", fd);
+      باہر_نکلو(1);
     }
-    exit(747); // OK
+    باہر_نکلو(747); // OK
   }
 
-  int st = 0;
+  صحیح st = 0;
   wait(&st);
-  if (st != 747) {
-    printf("exec(echo, BIG) succeeded, should have failed\n");
-    exit(1);
+  اگر (st != 747) {
+    لکھو("exec(echo, BIG) succeeded, should have failed\n");
+    باہر_نکلو(1);
   }
 }
 
 // what if a string argument crosses over the end of last user page?
-void
-copyinstr3(char *s)
+خالی
+copyinstr3(حرف *s)
 {
   sbrk(8192);
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0) {
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 چوٹی = (uint64)sbrk(0);
+  اگر ((چوٹی % PGSIZE) != 0) {
+    sbrk(PGSIZE - (چوٹی % PGSIZE));
   }
-  top = (uint64)sbrk(0);
-  if (top % PGSIZE) {
-    printf("oops\n");
-    exit(1);
+  چوٹی = (uint64)sbrk(0);
+  اگر (چوٹی % PGSIZE) {
+    لکھو("oops\n");
+    باہر_نکلو(1);
   }
 
-  char *b = (char *)(top - 1);
+  حرف *b = (حرف *)(چوٹی - 1);
   *b = 'x';
 
-  int ret = unlink(b);
-  if (ret != -1) {
-    printf("unlink(%s) returned %d, not -1\n", b, ret);
-    exit(1);
+  صحیح ret = unlink(b);
+  اگر (ret != -1) {
+    لکھو("unlink(%s) returned %d, not -1\n", b, ret);
+    باہر_نکلو(1);
   }
 
-  int fd = open(b, O_CREATE | O_WRONLY);
-  if (fd != -1) {
-    printf("open(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  صحیح fd = open(b, O_CREATE | O_WRONLY);
+  اگر (fd != -1) {
+    لکھو("open(%s) returned %d, not -1\n", b, fd);
+    باہر_نکلو(1);
   }
 
   ret = link(b, b);
-  if (ret != -1) {
-    printf("link(%s, %s) returned %d, not -1\n", b, b, ret);
-    exit(1);
+  اگر (ret != -1) {
+    لکھو("link(%s, %s) returned %d, not -1\n", b, b, ret);
+    باہر_نکلو(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
-  if (ret != -1) {
-    printf("exec(%s) returned %d, not -1\n", b, fd);
-    exit(1);
+  حرف *دلائل[] = {"xx", 0};
+  ret = exec(b, دلائل);
+  اگر (ret != -1) {
+    لکھو("exec(%s) returned %d, not -1\n", b, fd);
+    باہر_نکلو(1);
   }
 }
 
 // See if the kernel refuses to read/write user memory that the
 // application doesn't have anymore, because it returned it.
-void
-rwsbrk(char *s)
+خالی
+rwsbrk(حرف *s)
 {
-  int fd, n;
+  صحیح fd, n;
 
   uint64 a = (uint64)sbrk(8192);
 
-  if (a == (uint64)SBRK_ERROR) {
-    printf("sbrk(rwsbrk) failed\n");
-    exit(1);
+  اگر (a == (uint64)SBRK_ERROR) {
+    لکھو("sbrk(rwsbrk) failed\n");
+    باہر_نکلو(1);
   }
 
-  if (sbrk(-8192) == SBRK_ERROR) {
-    printf("sbrk(rwsbrk) shrink failed\n");
-    exit(1);
+  اگر (sbrk(-8192) == SBRK_ERROR) {
+    لکھو("sbrk(rwsbrk) shrink failed\n");
+    باہر_نکلو(1);
   }
 
   fd = open("rwsbrk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open(rwsbrk) failed\n");
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("open(rwsbrk) failed\n");
+    باہر_نکلو(1);
   }
-  n = write(fd, (void *)(a + PGSIZE), 1024);
-  if (n >= 0) {
-    printf("write(fd, %p, 1024) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = اكتب(fd, (خالی *)(a + PGSIZE), 1024);
+  اگر (n >= 0) {
+    لکھو("write(fd, %p, 1024) returned %d, not -1\n", (خالی *)a + PGSIZE, n);
+    باہر_نکلو(1);
   }
   close(fd);
   unlink("rwsbrk");
 
   fd = open("README", O_RDONLY);
-  if (fd < 0) {
-    printf("open(README) failed\n");
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("open(README) failed\n");
+    باہر_نکلو(1);
   }
-  n = read(fd, (void *)(a + PGSIZE), 10);
-  if (n >= 0) {
-    printf("read(fd, %p, 10) returned %d, not -1\n", (void *)a + PGSIZE, n);
-    exit(1);
+  n = اقرأ(fd, (خالی *)(a + PGSIZE), 10);
+  اگر (n >= 0) {
+    لکھو("read(fd, %p, 10) returned %d, not -1\n", (خالی *)a + PGSIZE, n);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // test O_TRUNC.
-void
-truncate1(char *s)
+خالی
+truncate1(حرف *s)
 {
-  char buf[32];
+  حرف buf[32];
 
   unlink("truncfile");
-  int fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-  write(fd1, "abcd", 4);
+  صحیح fd1 = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+  اكتب(fd1, "abcd", 4);
   close(fd1);
 
-  int fd2 = open("truncfile", O_RDONLY);
-  int n = read(fd2, buf, sizeof(buf));
-  if (n != 4) {
-    printf("%s: read %d bytes, wanted 4\n", s, n);
-    exit(1);
+  صحیح fd2 = open("truncfile", O_RDONLY);
+  صحیح n = اقرأ(fd2, buf, حجم(buf));
+  اگر (n != 4) {
+    لکھو("%s: read %d bytes, wanted 4\n", s, n);
+    باہر_نکلو(1);
   }
 
   fd1 = open("truncfile", O_WRONLY | O_TRUNC);
 
-  int fd3 = open("truncfile", O_RDONLY);
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 0) {
-    printf("aaa fd3=%d\n", fd3);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  صحیح fd3 = open("truncfile", O_RDONLY);
+  n = اقرأ(fd3, buf, حجم(buf));
+  اگر (n != 0) {
+    لکھو("aaa fd3=%d\n", fd3);
+    لکھو("%s: read %d bytes, wanted 0\n", s, n);
+    باہر_نکلو(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 0) {
-    printf("bbb fd2=%d\n", fd2);
-    printf("%s: read %d bytes, wanted 0\n", s, n);
-    exit(1);
+  n = اقرأ(fd2, buf, حجم(buf));
+  اگر (n != 0) {
+    لکھو("bbb fd2=%d\n", fd2);
+    لکھو("%s: read %d bytes, wanted 0\n", s, n);
+    باہر_نکلو(1);
   }
 
-  write(fd1, "abcdef", 6);
+  اكتب(fd1, "abcdef", 6);
 
-  n = read(fd3, buf, sizeof(buf));
-  if (n != 6) {
-    printf("%s: read %d bytes, wanted 6\n", s, n);
-    exit(1);
+  n = اقرأ(fd3, buf, حجم(buf));
+  اگر (n != 6) {
+    لکھو("%s: read %d bytes, wanted 6\n", s, n);
+    باہر_نکلو(1);
   }
 
-  n = read(fd2, buf, sizeof(buf));
-  if (n != 2) {
-    printf("%s: read %d bytes, wanted 2\n", s, n);
-    exit(1);
+  n = اقرأ(fd2, buf, حجم(buf));
+  اگر (n != 2) {
+    لکھو("%s: read %d bytes, wanted 2\n", s, n);
+    باہر_نکلو(1);
   }
 
   unlink("truncfile");
@@ -350,20 +350,20 @@ truncate1(char *s)
 // this causes a write at an offset beyond the end of the file.
 // such writes fail on xv6 (unlike POSIX) but at least
 // they don't crash.
-void
-truncate2(char *s)
+خالی
+truncate2(حرف *s)
 {
   unlink("truncfile");
 
-  int fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
-  write(fd1, "abcd", 4);
+  صحیح fd1 = open("truncfile", O_CREATE | O_TRUNC | O_WRONLY);
+  اكتب(fd1, "abcd", 4);
 
-  int fd2 = open("truncfile", O_TRUNC | O_WRONLY);
+  صحیح fd2 = open("truncfile", O_TRUNC | O_WRONLY);
 
-  int n = write(fd1, "x", 1);
-  if (n != -1) {
-    printf("%s: write returned %d, expected -1\n", s, n);
-    exit(1);
+  صحیح n = اكتب(fd1, "x", 1);
+  اگر (n != -1) {
+    لکھو("%s: write returned %d, expected -1\n", s, n);
+    باہر_نکلو(1);
   }
 
   unlink("truncfile");
@@ -371,109 +371,109 @@ truncate2(char *s)
   close(fd2);
 }
 
-void
-truncate3(char *s)
+خالی
+truncate3(حرف *s)
 {
-  int pid, xstatus;
+  صحیح pid, xstatus;
 
   close(open("truncfile", O_CREATE | O_TRUNC | O_WRONLY));
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
 
-  if (pid == 0) {
-    for (int i = 0; i < 100; i++) {
-      char buf[32];
-      int fd = open("truncfile", O_WRONLY);
-      if (fd < 0) {
-        printf("%s: open failed\n", s);
-        exit(1);
+  اگر (pid == 0) {
+    برائے (صحیح i = 0; i < 100; i++) {
+      حرف buf[32];
+      صحیح fd = open("truncfile", O_WRONLY);
+      اگر (fd < 0) {
+        لکھو("%s: open failed\n", s);
+        باہر_نکلو(1);
       }
-      int n = write(fd, "1234567890", 10);
-      if (n != 10) {
-        printf("%s: write got %d, expected 10\n", s, n);
-        exit(1);
+      صحیح n = اكتب(fd, "1234567890", 10);
+      اگر (n != 10) {
+        لکھو("%s: write got %d, expected 10\n", s, n);
+        باہر_نکلو(1);
       }
       close(fd);
       fd = open("truncfile", O_RDONLY);
-      read(fd, buf, sizeof(buf));
+      اقرأ(fd, buf, حجم(buf));
       close(fd);
     }
-    exit(0);
+    باہر_نکلو(0);
   }
 
-  for (int i = 0; i < 150; i++) {
-    int fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
-    if (fd < 0) {
-      printf("%s: open failed\n", s);
-      exit(1);
+  برائے (صحیح i = 0; i < 150; i++) {
+    صحیح fd = open("truncfile", O_CREATE | O_WRONLY | O_TRUNC);
+    اگر (fd < 0) {
+      لکھو("%s: open failed\n", s);
+      باہر_نکلو(1);
     }
-    int n = write(fd, "xxx", 3);
-    if (n != 3) {
-      printf("%s: write got %d, expected 3\n", s, n);
-      exit(1);
+    صحیح n = اكتب(fd, "xxx", 3);
+    اگر (n != 3) {
+      لکھو("%s: write got %d, expected 3\n", s, n);
+      باہر_نکلو(1);
     }
     close(fd);
   }
 
   wait(&xstatus);
   unlink("truncfile");
-  exit(xstatus);
+  باہر_نکلو(xstatus);
 }
 
 // does chdir() call iput(p->cwd) in a transaction?
-void
-iputtest(char *s)
+خالی
+iputtest(حرف *s)
 {
-  if (mkdir("iputdir") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  اگر (mkdir("iputdir") < 0) {
+    لکھو("%s: mkdir failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("iputdir") < 0) {
-    printf("%s: chdir iputdir failed\n", s);
-    exit(1);
+  اگر (chdir("iputdir") < 0) {
+    لکھو("%s: chdir iputdir failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("../iputdir") < 0) {
-    printf("%s: unlink ../iputdir failed\n", s);
-    exit(1);
+  اگر (unlink("../iputdir") < 0) {
+    لکھو("%s: unlink ../iputdir failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("/") < 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  اگر (chdir("/") < 0) {
+    لکھو("%s: chdir / failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // does exit() call iput(p->cwd) in a transaction?
-void
-exitiputtest(char *s)
+خالی
+exitiputtest(حرف *s)
 {
-  int pid, xstatus;
+  صحیح pid, xstatus;
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    if (mkdir("iputdir") < 0) {
-      printf("%s: mkdir failed\n", s);
-      exit(1);
+  اگر (pid == 0) {
+    اگر (mkdir("iputdir") < 0) {
+      لکھو("%s: mkdir failed\n", s);
+      باہر_نکلو(1);
     }
-    if (chdir("iputdir") < 0) {
-      printf("%s: child chdir failed\n", s);
-      exit(1);
+    اگر (chdir("iputdir") < 0) {
+      لکھو("%s: child chdir failed\n", s);
+      باہر_نکلو(1);
     }
-    if (unlink("../iputdir") < 0) {
-      printf("%s: unlink ../iputdir failed\n", s);
-      exit(1);
+    اگر (unlink("../iputdir") < 0) {
+      لکھو("%s: unlink ../iputdir failed\n", s);
+      باہر_نکلو(1);
     }
-    exit(0);
+    باہر_نکلو(0);
   }
   wait(&xstatus);
-  exit(xstatus);
+  باہر_نکلو(xstatus);
 }
 
 // does the error path in open() for attempt to write a
@@ -487,450 +487,450 @@ exitiputtest(char *s)
 //      for(i = 0; i < 10000; i++)
 //        yield();
 //    }
-void
-openiputtest(char *s)
+خالی
+openiputtest(حرف *s)
 {
-  int pid, xstatus;
+  صحیح pid, xstatus;
 
-  if (mkdir("oidir") < 0) {
-    printf("%s: mkdir oidir failed\n", s);
-    exit(1);
+  اگر (mkdir("oidir") < 0) {
+    لکھو("%s: mkdir oidir failed\n", s);
+    باہر_نکلو(1);
   }
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    int fd = open("oidir", O_RDWR);
-    if (fd >= 0) {
-      printf("%s: open directory for write succeeded\n", s);
-      exit(1);
+  اگر (pid == 0) {
+    صحیح fd = open("oidir", O_RDWR);
+    اگر (fd >= 0) {
+      لکھو("%s: open directory for write succeeded\n", s);
+      باہر_نکلو(1);
     }
-    exit(0);
+    باہر_نکلو(0);
   }
   pause(1);
-  if (unlink("oidir") != 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  اگر (unlink("oidir") != 0) {
+    لکھو("%s: unlink failed\n", s);
+    باہر_نکلو(1);
   }
   wait(&xstatus);
-  exit(xstatus);
+  باہر_نکلو(xstatus);
 }
 
 // simple file system tests
 
-void
-opentest(char *s)
+خالی
+opentest(حرف *s)
 {
-  int fd;
+  صحیح fd;
 
   fd = open("echo", 0);
-  if (fd < 0) {
-    printf("%s: open echo failed!\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open echo failed!\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
   fd = open("doesnotexist", 0);
-  if (fd >= 0) {
-    printf("%s: open doesnotexist succeeded!\n", s);
-    exit(1);
+  اگر (fd >= 0) {
+    لکھو("%s: open doesnotexist succeeded!\n", s);
+    باہر_نکلو(1);
   }
 }
 
-void
-writetest(char *s)
+خالی
+writetest(حرف *s)
 {
-  int fd;
-  int i;
-  enum { N = 100, SZ = 10 };
+  صحیح fd;
+  صحیح i;
+  شمار { N = 100, SZ = 10 };
 
   fd = open("small", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat small failed!\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: error: creat small failed!\n", s);
+    باہر_نکلو(1);
   }
-  for (i = 0; i < N; i++) {
-    if (write(fd, "aaaaaaaaaa", SZ) != SZ) {
-      printf("%s: error: write aa %d new file failed\n", s, i);
-      exit(1);
+  برائے (i = 0; i < N; i++) {
+    اگر (اكتب(fd, "aaaaaaaaaa", SZ) != SZ) {
+      لکھو("%s: error: write aa %d new file failed\n", s, i);
+      باہر_نکلو(1);
     }
-    if (write(fd, "bbbbbbbbbb", SZ) != SZ) {
-      printf("%s: error: write bb %d new file failed\n", s, i);
-      exit(1);
+    اگر (اكتب(fd, "bbbbbbbbbb", SZ) != SZ) {
+      لکھو("%s: error: write bb %d new file failed\n", s, i);
+      باہر_نکلو(1);
     }
   }
   close(fd);
   fd = open("small", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open small failed!\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: error: open small failed!\n", s);
+    باہر_نکلو(1);
   }
-  i = read(fd, buf, N * SZ * 2);
-  if (i != N * SZ * 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  i = اقرأ(fd, buf, N * SZ * 2);
+  اگر (i != N * SZ * 2) {
+    لکھو("%s: read failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  if (unlink("small") < 0) {
-    printf("%s: unlink small failed\n", s);
-    exit(1);
+  اگر (unlink("small") < 0) {
+    لکھو("%s: unlink small failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
-void
-writebig(char *s)
+خالی
+writebig(حرف *s)
 {
-  int i, fd, n;
+  صحیح i, fd, n;
 
   fd = open("big", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: error: creat big failed!\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: error: creat big failed!\n", s);
+    باہر_نکلو(1);
   }
 
-  for (i = 0; i < MAXFILE; i++) {
-    ((int *)buf)[0] = i;
-    if (write(fd, buf, BSIZE) != BSIZE) {
-      printf("%s: error: write big file failed i=%d\n", s, i);
-      exit(1);
+  برائے (i = 0; i < MAXFILE; i++) {
+    ((صحیح *)buf)[0] = i;
+    اگر (اكتب(fd, buf, BSIZE) != BSIZE) {
+      لکھو("%s: error: write big file failed i=%d\n", s, i);
+      باہر_نکلو(1);
     }
   }
 
   close(fd);
 
   fd = open("big", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: error: open big failed!\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: error: open big failed!\n", s);
+    باہر_نکلو(1);
   }
 
   n = 0;
-  for (;;) {
-    i = read(fd, buf, BSIZE);
-    if (i == 0) {
-      if (n != MAXFILE) {
-        printf("%s: read only %d blocks from big", s, n);
-        exit(1);
+  برائے (;;) {
+    i = اقرأ(fd, buf, BSIZE);
+    اگر (i == 0) {
+      اگر (n != MAXFILE) {
+        لکھو("%s: read only %d blocks from big", s, n);
+        باہر_نکلو(1);
       }
-      break;
-    } else if (i != BSIZE) {
-      printf("%s: read failed %d\n", s, i);
-      exit(1);
+      توڑو;
+    } ورنہ اگر (i != BSIZE) {
+      لکھو("%s: read failed %d\n", s, i);
+      باہر_نکلو(1);
     }
-    if (((int *)buf)[0] != n) {
-      printf("%s: read content of block %d is %d\n", s, n, ((int *)buf)[0]);
-      exit(1);
+    اگر (((صحیح *)buf)[0] != n) {
+      لکھو("%s: read content of block %d is %d\n", s, n, ((صحیح *)buf)[0]);
+      باہر_نکلو(1);
     }
     n++;
   }
   close(fd);
-  if (unlink("big") < 0) {
-    printf("%s: unlink big failed\n", s);
-    exit(1);
+  اگر (unlink("big") < 0) {
+    لکھو("%s: unlink big failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // many creates, followed by unlink test
-void
-createtest(char *s)
+خالی
+createtest(حرف *s)
 {
-  int i, fd;
-  enum { N = 52 };
+  صحیح i, fd;
+  شمار { N = 52 };
 
-  char name[3];
+  حرف name[3];
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     name[1] = '0' + i;
     fd = open(name, O_CREATE | O_RDWR);
     close(fd);
   }
   name[0] = 'a';
   name[2] = '\0';
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     name[1] = '0' + i;
     unlink(name);
   }
 }
 
-void
-dirtest(char *s)
+خالی
+dirtest(حرف *s)
 {
-  if (mkdir("dir0") < 0) {
-    printf("%s: mkdir failed\n", s);
-    exit(1);
+  اگر (mkdir("dir0") < 0) {
+    لکھو("%s: mkdir failed\n", s);
+    باہر_نکلو(1);
   }
 
-  if (chdir("dir0") < 0) {
-    printf("%s: chdir dir0 failed\n", s);
-    exit(1);
+  اگر (chdir("dir0") < 0) {
+    لکھو("%s: chdir dir0 failed\n", s);
+    باہر_نکلو(1);
   }
 
-  if (chdir("..") < 0) {
-    printf("%s: chdir .. failed\n", s);
-    exit(1);
+  اگر (chdir("..") < 0) {
+    لکھو("%s: chdir .. failed\n", s);
+    باہر_نکلو(1);
   }
 
-  if (unlink("dir0") < 0) {
-    printf("%s: unlink dir0 failed\n", s);
-    exit(1);
+  اگر (unlink("dir0") < 0) {
+    لکھو("%s: unlink dir0 failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
-void
-exectest(char *s)
+خالی
+exectest(حرف *s)
 {
-  int fd, xstatus, pid;
-  char *echoargv[] = {"echo", "OK", 0};
-  char buf[3];
+  صحیح fd, xstatus, pid;
+  حرف *echoargv[] = {"echo", "OK", 0};
+  حرف buf[3];
 
   unlink("echo-ok");
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    int errfd = dup(1);
-    if (errfd < 0) {
-      printf("%s: dup failed\n", s);
-      exit(1);
+  اگر (pid == 0) {
+    صحیح errfd = dup(1);
+    اگر (errfd < 0) {
+      لکھو("%s: dup failed\n", s);
+      باہر_نکلو(1);
     }
     close(1);
     fd = open("echo-ok", O_CREATE | O_WRONLY);
-    if (fd < 0) {
+    اگر (fd < 0) {
       fprintf(errfd, "%s: create failed\n", s);
-      exit(1);
+      باہر_نکلو(1);
     }
-    if (fd != 1) {
+    اگر (fd != 1) {
       fprintf(errfd, "%s: wrong fd\n", s);
-      exit(1);
+      باہر_نکلو(1);
     }
-    if (exec("echo", echoargv) < 0) {
+    اگر (exec("echo", echoargv) < 0) {
       fprintf(errfd, "%s: exec echo failed\n", s);
-      exit(1);
+      باہر_نکلو(1);
     }
     // won't get to here
   }
-  if (wait(&xstatus) != pid) {
-    printf("%s: wait failed!\n", s);
+  اگر (wait(&xstatus) != pid) {
+    لکھو("%s: wait failed!\n", s);
   }
-  if (xstatus != 0) {
-    printf("%s: nonzero wait status %d\n", s, xstatus);
-    exit(1);
+  اگر (xstatus != 0) {
+    لکھو("%s: nonzero wait status %d\n", s, xstatus);
+    باہر_نکلو(1);
   }
 
   fd = open("echo-ok", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open failed\n", s);
+    باہر_نکلو(1);
   }
-  if (read(fd, buf, 2) != 2) {
-    printf("%s: read failed\n", s);
-    exit(1);
+  اگر (اقرأ(fd, buf, 2) != 2) {
+    لکھو("%s: read failed\n", s);
+    باہر_نکلو(1);
   }
   unlink("echo-ok");
-  if (buf[0] == 'O' && buf[1] == 'K')
-    exit(0);
-  else {
-    printf("%s: wrong output\n", s);
-    exit(1);
+  اگر (buf[0] == 'O' && buf[1] == 'K')
+    باہر_نکلو(0);
+  ورنہ {
+    لکھو("%s: wrong output\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // simple fork and pipe read/write
 
-void
-pipe1(char *s)
+خالی
+pipe1(حرف *s)
 {
-  int fds[2], pid, xstatus;
-  int seq, i, n, cc, total;
-  enum { N = 5, SZ = 1033 };
+  صحیح fds[2], pid, xstatus;
+  صحیح seq, i, n, cc, کل;
+  شمار { N = 5, SZ = 1033 };
 
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  اگر (pipe(fds) != 0) {
+    لکھو("%s: pipe() failed\n", s);
+    باہر_نکلو(1);
   }
   pid = fork();
   seq = 0;
-  if (pid == 0) {
+  اگر (pid == 0) {
     close(fds[0]);
-    for (n = 0; n < N; n++) {
-      for (i = 0; i < SZ; i++)
+    برائے (n = 0; n < N; n++) {
+      برائے (i = 0; i < SZ; i++)
         buf[i] = seq++;
-      if (write(fds[1], buf, SZ) != SZ) {
-        printf("%s: pipe1 oops 1\n", s);
-        exit(1);
+      اگر (اكتب(fds[1], buf, SZ) != SZ) {
+        لکھو("%s: pipe1 oops 1\n", s);
+        باہر_نکلو(1);
       }
     }
-    exit(0);
-  } else if (pid > 0) {
+    باہر_نکلو(0);
+  } ورنہ اگر (pid > 0) {
     close(fds[1]);
-    total = 0;
+    کل = 0;
     cc = 1;
-    while ((n = read(fds[0], buf, cc)) > 0) {
-      for (i = 0; i < n; i++) {
-        if ((buf[i] & 0xff) != (seq++ & 0xff)) {
-          printf("%s: pipe1 oops 2\n", s);
-          return;
+    جب ((n = اقرأ(fds[0], buf, cc)) > 0) {
+      برائے (i = 0; i < n; i++) {
+        اگر ((buf[i] & 0xff) != (seq++ & 0xff)) {
+          لکھو("%s: pipe1 oops 2\n", s);
+          واپس;
         }
       }
-      total += n;
+      کل += n;
       cc = cc * 2;
-      if (cc > sizeof(buf))
-        cc = sizeof(buf);
+      اگر (cc > حجم(buf))
+        cc = حجم(buf);
     }
-    if (total != N * SZ) {
-      printf("%s: pipe1 oops 3 total %d\n", s, total);
-      exit(1);
+    اگر (کل != N * SZ) {
+      لکھو("%s: pipe1 oops 3 total %d\n", s, کل);
+      باہر_نکلو(1);
     }
     close(fds[0]);
     wait(&xstatus);
-    exit(xstatus);
-  } else {
-    printf("%s: fork() failed\n", s);
-    exit(1);
+    باہر_نکلو(xstatus);
+  } ورنہ {
+    لکھو("%s: fork() failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // test if child is killed (status = -1)
-void
-killstatus(char *s)
+خالی
+killstatus(حرف *s)
 {
-  int xst;
+  صحیح xst;
 
-  for (int i = 0; i < 100; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  برائے (صحیح i = 0; i < 100; i++) {
+    صحیح pid1 = fork();
+    اگر (pid1 < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (pid1 == 0) {
-      while (1) {
+    اگر (pid1 == 0) {
+      جب (1) {
         getpid();
       }
-      exit(0);
+      باہر_نکلو(0);
     }
     pause(1);
     kill(pid1);
     wait(&xst);
-    if (xst != -1) {
-      printf("%s: status should be -1\n", s);
-      exit(1);
+    اگر (xst != -1) {
+      لکھو("%s: status should be -1\n", s);
+      باہر_نکلو(1);
     }
   }
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // test that kill on unused process 0 doesn't set the killed flag
-void
-killzero(char *s)
+خالی
+killzero(حرف *s)
 {
-  int pid, xst;
+  صحیح pid, xst;
 
   kill(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    exit(7);
+  اگر (pid == 0) {
+    باہر_نکلو(7);
   }
-  if (wait(&xst) != pid) {
-    printf("%s: wait wrong pid\n", s);
-    exit(1);
+  اگر (wait(&xst) != pid) {
+    لکھو("%s: wait wrong pid\n", s);
+    باہر_نکلو(1);
   }
-  if (xst != 7) {
-    printf("%s: child exited with status %d, expected 7\n", s, xst);
-    exit(1);
+  اگر (xst != 7) {
+    لکھو("%s: child exited with status %d, expected 7\n", s, xst);
+    باہر_نکلو(1);
   }
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // meant to be run w/ at most two CPUs
-void
-preempt(char *s)
+خالی
+preempt(حرف *s)
 {
-  int pid1, pid2, pid3;
-  int pfds[2];
+  صحیح pid1, pid2, pid3;
+  صحیح pfds[2];
 
   pid1 = fork();
-  if (pid1 < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  اگر (pid1 < 0) {
+    لکھو("%s: fork failed", s);
+    باہر_نکلو(1);
   }
-  if (pid1 == 0)
-    for (;;)
+  اگر (pid1 == 0)
+    برائے (;;)
       ;
 
   pid2 = fork();
-  if (pid2 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid2 < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid2 == 0)
-    for (;;)
+  اگر (pid2 == 0)
+    برائے (;;)
       ;
 
   pipe(pfds);
   pid3 = fork();
-  if (pid3 < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid3 < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid3 == 0) {
+  اگر (pid3 == 0) {
     close(pfds[0]);
-    if (write(pfds[1], "x", 1) != 1)
-      printf("%s: preempt write error", s);
+    اگر (اكتب(pfds[1], "x", 1) != 1)
+      لکھو("%s: preempt write error", s);
     close(pfds[1]);
-    for (;;)
+    برائے (;;)
       ;
   }
 
   close(pfds[1]);
-  if (read(pfds[0], buf, sizeof(buf)) != 1) {
-    printf("%s: preempt read error", s);
-    return;
+  اگر (اقرأ(pfds[0], buf, حجم(buf)) != 1) {
+    لکھو("%s: preempt read error", s);
+    واپس;
   }
   close(pfds[0]);
-  printf("kill... ");
+  لکھو("kill... ");
   kill(pid1);
   kill(pid2);
   kill(pid3);
-  printf("wait... ");
+  لکھو("wait... ");
   wait(0);
   wait(0);
   wait(0);
 }
 
 // try to find any races between exit and wait
-void
-exitwait(char *s)
+خالی
+exitwait(حرف *s)
 {
-  int i, pid;
+  صحیح i, pid;
 
-  for (i = 0; i < 100; i++) {
+  برائے (i = 0; i < 100; i++) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (pid) {
-      int xstate;
-      if (wait(&xstate) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    اگر (pid) {
+      صحیح xstate;
+      اگر (wait(&xstate) != pid) {
+        لکھو("%s: wait wrong pid\n", s);
+        باہر_نکلو(1);
       }
-      if (i != xstate) {
-        printf("%s: wait wrong exit status\n", s);
-        exit(1);
+      اگر (i != xstate) {
+        لکھو("%s: wait wrong exit status\n", s);
+        باہر_نکلو(1);
       }
-    } else {
-      exit(i);
+    } ورنہ {
+      باہر_نکلو(i);
     }
   }
 }
@@ -938,54 +938,54 @@ exitwait(char *s)
 // try to find races in the reparenting
 // code that handles a parent exiting
 // when it still has live children.
-void
-reparent(char *s)
+خالی
+reparent(حرف *s)
 {
-  int master_pid = getpid();
-  for (int i = 0; i < 200; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  صحیح master_pid = getpid();
+  برائے (صحیح i = 0; i < 200; i++) {
+    صحیح pid = fork();
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (pid) {
-      if (wait(0) != pid) {
-        printf("%s: wait wrong pid\n", s);
-        exit(1);
+    اگر (pid) {
+      اگر (wait(0) != pid) {
+        لکھو("%s: wait wrong pid\n", s);
+        باہر_نکلو(1);
       }
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
+    } ورنہ {
+      صحیح pid2 = fork();
+      اگر (pid2 < 0) {
         kill(master_pid);
-        exit(1);
+        باہر_نکلو(1);
       }
-      exit(0);
+      باہر_نکلو(0);
     }
   }
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // what if two children exit() at the same time?
-void
-twochildren(char *s)
+خالی
+twochildren(حرف *s)
 {
-  for (int i = 0; i < 1000; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+  برائے (صحیح i = 0; i < 1000; i++) {
+    صحیح pid1 = fork();
+    اگر (pid1 < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (pid1 == 0) {
-      exit(0);
-    } else {
-      int pid2 = fork();
-      if (pid2 < 0) {
-        printf("%s: fork failed\n", s);
-        exit(1);
+    اگر (pid1 == 0) {
+      باہر_نکلو(0);
+    } ورنہ {
+      صحیح pid2 = fork();
+      اگر (pid2 < 0) {
+        لکھو("%s: fork failed\n", s);
+        باہر_نکلو(1);
       }
-      if (pid2 == 0) {
-        exit(0);
-      } else {
+      اگر (pid2 == 0) {
+        باہر_نکلو(0);
+      } ورنہ {
         wait(0);
         wait(0);
       }
@@ -994,64 +994,64 @@ twochildren(char *s)
 }
 
 // concurrent forks to try to expose locking bugs.
-void
-forkfork(char *s)
+خالی
+forkfork(حرف *s)
 {
-  enum { N = 2 };
+  شمار { N = 2 };
 
-  for (int i = 0; i < N; i++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed", s);
-      exit(1);
+  برائے (صحیح i = 0; i < N; i++) {
+    صحیح pid = fork();
+    اگر (pid < 0) {
+      لکھو("%s: fork failed", s);
+      باہر_نکلو(1);
     }
-    if (pid == 0) {
-      for (int j = 0; j < 200; j++) {
-        int pid1 = fork();
-        if (pid1 < 0) {
-          exit(1);
+    اگر (pid == 0) {
+      برائے (صحیح j = 0; j < 200; j++) {
+        صحیح pid1 = fork();
+        اگر (pid1 < 0) {
+          باہر_نکلو(1);
         }
-        if (pid1 == 0) {
-          exit(0);
+        اگر (pid1 == 0) {
+          باہر_نکلو(0);
         }
         wait(0);
       }
-      exit(0);
+      باہر_نکلو(0);
     }
   }
 
-  int xstatus;
-  for (int i = 0; i < N; i++) {
+  صحیح xstatus;
+  برائے (صحیح i = 0; i < N; i++) {
     wait(&xstatus);
-    if (xstatus != 0) {
-      printf("%s: fork in child failed", s);
-      exit(1);
+    اگر (xstatus != 0) {
+      لکھو("%s: fork in child failed", s);
+      باہر_نکلو(1);
     }
   }
 }
 
-void
-forkforkfork(char *s)
+خالی
+forkforkfork(حرف *s)
 {
   unlink("stopforking");
 
-  int pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed", s);
-    exit(1);
+  صحیح pid = fork();
+  اگر (pid < 0) {
+    لکھو("%s: fork failed", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    while (1) {
-      int fd = open("stopforking", 0);
-      if (fd >= 0) {
-        exit(0);
+  اگر (pid == 0) {
+    جب (1) {
+      صحیح fd = open("stopforking", 0);
+      اگر (fd >= 0) {
+        باہر_نکلو(0);
       }
-      if (fork() < 0) {
+      اگر (fork() < 0) {
         close(open("stopforking", O_CREATE | O_RDWR));
       }
     }
 
-    exit(0);
+    باہر_نکلو(0);
   }
 
   pause(20); // two seconds
@@ -1065,60 +1065,60 @@ forkforkfork(char *s)
 // deadlocks against init's wait()? also used to trigger a "panic:
 // release" due to exit() releasing a different p->parent->lock than
 // it acquired.
-void
-reparent2(char *s)
+خالی
+reparent2(حرف *s)
 {
-  for (int i = 0; i < 800; i++) {
-    int pid1 = fork();
-    if (pid1 < 0) {
-      printf("fork failed\n");
-      exit(1);
+  برائے (صحیح i = 0; i < 800; i++) {
+    صحیح pid1 = fork();
+    اگر (pid1 < 0) {
+      لکھو("fork failed\n");
+      باہر_نکلو(1);
     }
-    if (pid1 == 0) {
+    اگر (pid1 == 0) {
       fork();
       fork();
-      exit(0);
+      باہر_نکلو(0);
     }
     wait(0);
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // allocate all mem, free it, and allocate again
-void
-mem(char *s)
+خالی
+mem(حرف *s)
 {
-  void *m1, *m2;
-  int pid;
+  خالی *m1, *m2;
+  صحیح pid;
 
-  if ((pid = fork()) == 0) {
+  اگر ((pid = fork()) == 0) {
     m1 = 0;
-    while ((m2 = malloc(10001)) != 0) {
-      *(char **)m2 = m1;
+    جب ((m2 = حافظہ_دو(10001)) != 0) {
+      *(حرف **)m2 = m1;
       m1 = m2;
     }
-    while (m1) {
-      m2 = *(char **)m1;
-      free(m1);
+    جب (m1) {
+      m2 = *(حرف **)m1;
+      آزاد(m1);
       m1 = m2;
     }
-    m1 = malloc(1024 * 20);
-    if (m1 == 0) {
-      printf("%s: couldn't allocate mem?!!\n", s);
-      exit(1);
+    m1 = حافظہ_دو(1024 * 20);
+    اگر (m1 == 0) {
+      لکھو("%s: couldn't allocate mem?!!\n", s);
+      باہر_نکلو(1);
     }
-    free(m1);
-    exit(0);
-  } else {
-    int xstatus;
+    آزاد(m1);
+    باہر_نکلو(0);
+  } ورنہ {
+    صحیح xstatus;
     wait(&xstatus);
-    if (xstatus == -1) {
+    اگر (xstatus == -1) {
       // probably page fault, so might be lazy lab,
       // so OK.
-      exit(0);
+      باہر_نکلو(0);
     }
-    exit(xstatus);
+    باہر_نکلو(xstatus);
   }
 }
 
@@ -1126,193 +1126,193 @@ mem(char *s)
 
 // two processes write to the same file descriptor
 // is the offset shared? does inode locking work?
-void
-sharedfd(char *s)
+خالی
+sharedfd(حرف *s)
 {
-  int fd, pid, i, n, nc, np;
-  enum { N = 1000, SZ = 10 };
-  char buf[SZ];
+  صحیح fd, pid, i, n, nc, np;
+  شمار { N = 1000, SZ = 10 };
+  حرف buf[SZ];
 
   unlink("sharedfd");
   fd = open("sharedfd", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for writing", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot open sharedfd for writing", s);
+    باہر_نکلو(1);
   }
   pid = fork();
-  memset(buf, pid == 0 ? 'c' : 'p', sizeof(buf));
-  for (i = 0; i < N; i++) {
-    if (write(fd, buf, sizeof(buf)) != sizeof(buf)) {
-      printf("%s: write sharedfd failed\n", s);
-      exit(1);
+  memset(buf, pid == 0 ? 'c' : 'p', حجم(buf));
+  برائے (i = 0; i < N; i++) {
+    اگر (اكتب(fd, buf, حجم(buf)) != حجم(buf)) {
+      لکھو("%s: write sharedfd failed\n", s);
+      باہر_نکلو(1);
     }
   }
-  if (pid == 0) {
-    exit(0);
-  } else {
-    int xstatus;
+  اگر (pid == 0) {
+    باہر_نکلو(0);
+  } ورنہ {
+    صحیح xstatus;
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    اگر (xstatus != 0)
+      باہر_نکلو(xstatus);
   }
 
   close(fd);
   fd = open("sharedfd", 0);
-  if (fd < 0) {
-    printf("%s: cannot open sharedfd for reading\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot open sharedfd for reading\n", s);
+    باہر_نکلو(1);
   }
   nc = np = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < sizeof(buf); i++) {
-      if (buf[i] == 'c')
+  جب ((n = اقرأ(fd, buf, حجم(buf))) > 0) {
+    برائے (i = 0; i < حجم(buf); i++) {
+      اگر (buf[i] == 'c')
         nc++;
-      if (buf[i] == 'p')
+      اگر (buf[i] == 'p')
         np++;
     }
   }
   close(fd);
   unlink("sharedfd");
-  if (nc == N * SZ && np == N * SZ) {
-    exit(0);
-  } else {
-    printf("%s: nc/np test fails\n", s);
-    exit(1);
+  اگر (nc == N * SZ && np == N * SZ) {
+    باہر_نکلو(0);
+  } ورنہ {
+    لکھو("%s: nc/np test fails\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // four processes write different files at the same
 // time, to test block allocation.
-void
-fourfiles(char *s)
+خالی
+fourfiles(حرف *s)
 {
-  int fd, pid, i, j, n, total, pi;
-  char *names[] = {"f0", "f1", "f2", "f3"};
-  char *fname;
-  enum { N = 12, NCHILD = 4, SZ = 500 };
+  صحیح fd, pid, i, j, n, کل, pi;
+  حرف *نام[] = {"f0", "f1", "f2", "f3"};
+  حرف *fname;
+  شمار { N = 12, NCHILD = 4, SZ = 500 };
 
-  for (pi = 0; pi < NCHILD; pi++) {
-    fname = names[pi];
+  برائے (pi = 0; pi < NCHILD; pi++) {
+    fname = نام[pi];
     unlink(fname);
 
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
 
-    if (pid == 0) {
+    اگر (pid == 0) {
       fd = open(fname, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("%s: create failed\n", s);
-        exit(1);
+      اگر (fd < 0) {
+        لکھو("%s: create failed\n", s);
+        باہر_نکلو(1);
       }
 
       memset(buf, '0' + pi, SZ);
-      for (i = 0; i < N; i++) {
-        if ((n = write(fd, buf, SZ)) != SZ) {
-          printf("write failed %d\n", n);
-          exit(1);
+      برائے (i = 0; i < N; i++) {
+        اگر ((n = اكتب(fd, buf, SZ)) != SZ) {
+          لکھو("write failed %d\n", n);
+          باہر_نکلو(1);
         }
       }
-      exit(0);
+      باہر_نکلو(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
+  صحیح xstatus;
+  برائے (pi = 0; pi < NCHILD; pi++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(xstatus);
+    اگر (xstatus != 0)
+      باہر_نکلو(xstatus);
   }
 
-  for (i = 0; i < NCHILD; i++) {
-    fname = names[i];
+  برائے (i = 0; i < NCHILD; i++) {
+    fname = نام[i];
     fd = open(fname, 0);
-    total = 0;
-    while ((n = read(fd, buf, sizeof(buf))) > 0) {
-      for (j = 0; j < n; j++) {
-        if (buf[j] != '0' + i) {
-          printf("%s: wrong char\n", s);
-          exit(1);
+    کل = 0;
+    جب ((n = اقرأ(fd, buf, حجم(buf))) > 0) {
+      برائے (j = 0; j < n; j++) {
+        اگر (buf[j] != '0' + i) {
+          لکھو("%s: wrong char\n", s);
+          باہر_نکلو(1);
         }
       }
-      total += n;
+      کل += n;
     }
     close(fd);
-    if (total != N * SZ) {
-      printf("wrong length %d\n", total);
-      exit(1);
+    اگر (کل != N * SZ) {
+      لکھو("wrong length %d\n", کل);
+      باہر_نکلو(1);
     }
     unlink(fname);
   }
 }
 
 // four processes create and delete different files in same directory
-void
-createdelete(char *s)
+خالی
+createdelete(حرف *s)
 {
-  enum { N = 20, NCHILD = 4 };
-  int pid, i, fd, pi;
-  char name[32];
+  شمار { N = 20, NCHILD = 4 };
+  صحیح pid, i, fd, pi;
+  حرف name[32];
 
-  for (pi = 0; pi < NCHILD; pi++) {
+  برائے (pi = 0; pi < NCHILD; pi++) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
 
-    if (pid == 0) {
+    اگر (pid == 0) {
       name[0] = 'p' + pi;
       name[2] = '\0';
-      for (i = 0; i < N; i++) {
+      برائے (i = 0; i < N; i++) {
         name[1] = '0' + i;
         fd = open(name, O_CREATE | O_RDWR);
-        if (fd < 0) {
-          printf("%s: create failed\n", s);
-          exit(1);
+        اگر (fd < 0) {
+          لکھو("%s: create failed\n", s);
+          باہر_نکلو(1);
         }
         close(fd);
-        if (i > 0 && (i % 2) == 0) {
+        اگر (i > 0 && (i % 2) == 0) {
           name[1] = '0' + (i / 2);
-          if (unlink(name) < 0) {
-            printf("%s: unlink failed\n", s);
-            exit(1);
+          اگر (unlink(name) < 0) {
+            لکھو("%s: unlink failed\n", s);
+            باہر_نکلو(1);
           }
         }
       }
-      exit(0);
+      باہر_نکلو(0);
     }
   }
 
-  int xstatus;
-  for (pi = 0; pi < NCHILD; pi++) {
+  صحیح xstatus;
+  برائے (pi = 0; pi < NCHILD; pi++) {
     wait(&xstatus);
-    if (xstatus != 0)
-      exit(1);
+    اگر (xstatus != 0)
+      باہر_نکلو(1);
   }
 
   name[0] = name[1] = name[2] = 0;
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  برائے (i = 0; i < N; i++) {
+    برائے (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       fd = open(name, 0);
-      if ((i == 0 || i >= N / 2) && fd < 0) {
-        printf("%s: oops createdelete %s didn't exist\n", s, name);
-        exit(1);
-      } else if ((i >= 1 && i < N / 2) && fd >= 0) {
-        printf("%s: oops createdelete %s did exist\n", s, name);
-        exit(1);
+      اگر ((i == 0 || i >= N / 2) && fd < 0) {
+        لکھو("%s: oops createdelete %s didn't exist\n", s, name);
+        باہر_نکلو(1);
+      } ورنہ اگر ((i >= 1 && i < N / 2) && fd >= 0) {
+        لکھو("%s: oops createdelete %s did exist\n", s, name);
+        باہر_نکلو(1);
       }
-      if (fd >= 0)
+      اگر (fd >= 0)
         close(fd);
     }
   }
 
-  for (i = 0; i < N; i++) {
-    for (pi = 0; pi < NCHILD; pi++) {
+  برائے (i = 0; i < N; i++) {
+    برائے (pi = 0; pi < NCHILD; pi++) {
       name[0] = 'p' + pi;
       name[1] = '0' + i;
       unlink(name);
@@ -1321,165 +1321,165 @@ createdelete(char *s)
 }
 
 // can I unlink a file and still read it?
-void
-unlinkread(char *s)
+خالی
+unlinkread(حرف *s)
 {
-  enum { SZ = 5 };
-  int fd, fd1;
+  شمار { SZ = 5 };
+  صحیح fd, fd1;
 
   fd = open("unlinkread", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create unlinkread failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: create unlinkread failed\n", s);
+    باہر_نکلو(1);
   }
-  write(fd, "hello", SZ);
+  اكتب(fd, "hello", SZ);
   close(fd);
 
   fd = open("unlinkread", O_RDWR);
-  if (fd < 0) {
-    printf("%s: open unlinkread failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open unlinkread failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("unlinkread") != 0) {
-    printf("%s: unlink unlinkread failed\n", s);
-    exit(1);
+  اگر (unlink("unlinkread") != 0) {
+    لکھو("%s: unlink unlinkread failed\n", s);
+    باہر_نکلو(1);
   }
 
   fd1 = open("unlinkread", O_CREATE | O_RDWR);
-  write(fd1, "yyy", 3);
+  اكتب(fd1, "yyy", 3);
   close(fd1);
 
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: unlinkread read failed", s);
-    exit(1);
+  اگر (اقرأ(fd, buf, حجم(buf)) != SZ) {
+    لکھو("%s: unlinkread read failed", s);
+    باہر_نکلو(1);
   }
-  if (buf[0] != 'h') {
-    printf("%s: unlinkread wrong data\n", s);
-    exit(1);
+  اگر (buf[0] != 'h') {
+    لکھو("%s: unlinkread wrong data\n", s);
+    باہر_نکلو(1);
   }
-  if (write(fd, buf, 10) != 10) {
-    printf("%s: unlinkread write failed\n", s);
-    exit(1);
+  اگر (اكتب(fd, buf, 10) != 10) {
+    لکھو("%s: unlinkread write failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
   unlink("unlinkread");
 }
 
-void
-linktest(char *s)
+خالی
+linktest(حرف *s)
 {
-  enum { SZ = 5 };
-  int fd;
+  شمار { SZ = 5 };
+  صحیح fd;
 
   unlink("lf1");
   unlink("lf2");
 
   fd = open("lf1", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create lf1 failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: create lf1 failed\n", s);
+    باہر_نکلو(1);
   }
-  if (write(fd, "hello", SZ) != SZ) {
-    printf("%s: write lf1 failed\n", s);
-    exit(1);
+  اگر (اكتب(fd, "hello", SZ) != SZ) {
+    لکھو("%s: write lf1 failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  if (link("lf1", "lf2") < 0) {
-    printf("%s: link lf1 lf2 failed\n", s);
-    exit(1);
+  اگر (link("lf1", "lf2") < 0) {
+    لکھو("%s: link lf1 lf2 failed\n", s);
+    باہر_نکلو(1);
   }
   unlink("lf1");
 
-  if (open("lf1", 0) >= 0) {
-    printf("%s: unlinked lf1 but it is still there!\n", s);
-    exit(1);
+  اگر (open("lf1", 0) >= 0) {
+    لکھو("%s: unlinked lf1 but it is still there!\n", s);
+    باہر_نکلو(1);
   }
 
   fd = open("lf2", 0);
-  if (fd < 0) {
-    printf("%s: open lf2 failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open lf2 failed\n", s);
+    باہر_نکلو(1);
   }
-  if (read(fd, buf, sizeof(buf)) != SZ) {
-    printf("%s: read lf2 failed\n", s);
-    exit(1);
+  اگر (اقرأ(fd, buf, حجم(buf)) != SZ) {
+    لکھو("%s: read lf2 failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  if (link("lf2", "lf2") >= 0) {
-    printf("%s: link lf2 lf2 succeeded! oops\n", s);
-    exit(1);
+  اگر (link("lf2", "lf2") >= 0) {
+    لکھو("%s: link lf2 lf2 succeeded! oops\n", s);
+    باہر_نکلو(1);
   }
 
   unlink("lf2");
-  if (link("lf2", "lf1") >= 0) {
-    printf("%s: link non-existent succeeded! oops\n", s);
-    exit(1);
+  اگر (link("lf2", "lf1") >= 0) {
+    لکھو("%s: link non-existent succeeded! oops\n", s);
+    باہر_نکلو(1);
   }
 
-  if (link(".", "lf1") >= 0) {
-    printf("%s: link . lf1 succeeded! oops\n", s);
-    exit(1);
+  اگر (link(".", "lf1") >= 0) {
+    لکھو("%s: link . lf1 succeeded! oops\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // test concurrent create/link/unlink of the same file
-void
-concreate(char *s)
+خالی
+concreate(حرف *s)
 {
-  enum { N = 40 };
-  char file[3];
-  int i, pid, n, fd;
-  char fa[N];
-  struct {
+  شمار { N = 40 };
+  حرف file[3];
+  صحیح i, pid, n, fd;
+  حرف fa[N];
+  ساخت {
     ushort inum;
-    char name[DIRSIZ];
+    حرف name[DIRSIZ];
   } de;
 
   file[0] = 'C';
   file[2] = '\0';
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     file[1] = '0' + i;
     unlink(file);
     pid = fork();
-    if (pid && (i % 3) == 1) {
+    اگر (pid && (i % 3) == 1) {
       link("C0", file);
-    } else if (pid == 0 && (i % 5) == 1) {
+    } ورنہ اگر (pid == 0 && (i % 5) == 1) {
       link("C0", file);
-    } else {
+    } ورنہ {
       fd = open(file, O_CREATE | O_RDWR);
-      if (fd < 0) {
-        printf("concreate create %s failed\n", file);
-        exit(1);
+      اگر (fd < 0) {
+        لکھو("concreate create %s failed\n", file);
+        باہر_نکلو(1);
       }
       close(fd);
     }
-    if (pid == 0) {
-      exit(0);
-    } else {
-      int xstatus;
+    اگر (pid == 0) {
+      باہر_نکلو(0);
+    } ورنہ {
+      صحیح xstatus;
       wait(&xstatus);
-      if (xstatus != 0)
-        exit(1);
+      اگر (xstatus != 0)
+        باہر_نکلو(1);
     }
   }
 
-  memset(fa, 0, sizeof(fa));
+  memset(fa, 0, حجم(fa));
   fd = open(".", 0);
   n = 0;
-  while (read(fd, &de, sizeof(de)) > 0) {
-    if (de.inum == 0)
-      continue;
-    if (de.name[0] == 'C' && de.name[2] == '\0') {
+  جب (اقرأ(fd, &de, حجم(de)) > 0) {
+    اگر (de.inum == 0)
+      جاری;
+    اگر (de.name[0] == 'C' && de.name[2] == '\0') {
       i = de.name[1] - '0';
-      if (i < 0 || i >= sizeof(fa)) {
-        printf("%s: concreate weird file %s\n", s, de.name);
-        exit(1);
+      اگر (i < 0 || i >= حجم(fa)) {
+        لکھو("%s: concreate weird file %s\n", s, de.name);
+        باہر_نکلو(1);
       }
-      if (fa[i]) {
-        printf("%s: concreate duplicate file %s\n", s, de.name);
-        exit(1);
+      اگر (fa[i]) {
+        لکھو("%s: concreate duplicate file %s\n", s, de.name);
+        باہر_نکلو(1);
       }
       fa[i] = 1;
       n++;
@@ -1487,26 +1487,26 @@ concreate(char *s)
   }
   close(fd);
 
-  if (n != N) {
-    printf("%s: concreate not enough files in directory listing\n", s);
-    exit(1);
+  اگر (n != N) {
+    لکھو("%s: concreate not enough files in directory listing\n", s);
+    باہر_نکلو(1);
   }
 
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     file[1] = '0' + i;
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
+    اگر (((i % 3) == 0 && pid == 0) || ((i % 3) == 1 && pid != 0)) {
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
       close(open(file, 0));
-    } else {
+    } ورنہ {
       unlink(file);
       unlink(file);
       unlink(file);
@@ -1514,243 +1514,243 @@ concreate(char *s)
       unlink(file);
       unlink(file);
     }
-    if (pid == 0)
-      exit(0);
-    else
+    اگر (pid == 0)
+      باہر_نکلو(0);
+    ورنہ
       wait(0);
   }
 }
 
 // another concurrent link/unlink/create test,
 // to look for deadlocks.
-void
-linkunlink(char *s)
+خالی
+linkunlink(حرف *s)
 {
-  int pid, i;
+  صحیح pid, i;
 
   unlink("x");
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
 
-  unsigned int x = (pid ? 1 : 97);
-  for (i = 0; i < 100; i++) {
+  غیرعلامتی صحیح x = (pid ? 1 : 97);
+  برائے (i = 0; i < 100; i++) {
     x = x * 1103515245 + 12345;
-    if ((x % 3) == 0) {
+    اگر ((x % 3) == 0) {
       close(open("x", O_RDWR | O_CREATE));
-    } else if ((x % 3) == 1) {
+    } ورنہ اگر ((x % 3) == 1) {
       link("cat", "x");
-    } else {
+    } ورنہ {
       unlink("x");
     }
   }
 
-  if (pid)
+  اگر (pid)
     wait(0);
-  else
-    exit(0);
+  ورنہ
+    باہر_نکلو(0);
 }
 
-void
-subdir(char *s)
+خالی
+subdir(حرف *s)
 {
-  int fd, cc;
+  صحیح fd, cc;
 
   unlink("ff");
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  اگر (mkdir("dd") != 0) {
+    لکھو("%s: mkdir dd failed\n", s);
+    باہر_نکلو(1);
   }
 
   fd = open("dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/ff failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: create dd/ff failed\n", s);
+    باہر_نکلو(1);
   }
-  write(fd, "ff", 2);
+  اكتب(fd, "ff", 2);
   close(fd);
 
-  if (unlink("dd") >= 0) {
-    printf("%s: unlink dd (non-empty dir) succeeded!\n", s);
-    exit(1);
+  اگر (unlink("dd") >= 0) {
+    لکھو("%s: unlink dd (non-empty dir) succeeded!\n", s);
+    باہر_نکلو(1);
   }
 
-  if (mkdir("/dd/dd") != 0) {
-    printf("%s: subdir mkdir dd/dd failed\n", s);
-    exit(1);
+  اگر (mkdir("/dd/dd") != 0) {
+    لکھو("%s: subdir mkdir dd/dd failed\n", s);
+    باہر_نکلو(1);
   }
 
   fd = open("dd/dd/ff", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: create dd/dd/ff failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: create dd/dd/ff failed\n", s);
+    باہر_نکلو(1);
   }
-  write(fd, "FF", 2);
+  اكتب(fd, "FF", 2);
   close(fd);
 
   fd = open("dd/dd/../ff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/../ff failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open dd/dd/../ff failed\n", s);
+    باہر_نکلو(1);
   }
-  cc = read(fd, buf, sizeof(buf));
-  if (cc != 2 || buf[0] != 'f') {
-    printf("%s: dd/dd/../ff wrong content\n", s);
-    exit(1);
+  cc = اقرأ(fd, buf, حجم(buf));
+  اگر (cc != 2 || buf[0] != 'f') {
+    لکھو("%s: dd/dd/../ff wrong content\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  if (link("dd/dd/ff", "dd/dd/ffff") != 0) {
-    printf("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
-    exit(1);
+  اگر (link("dd/dd/ff", "dd/dd/ffff") != 0) {
+    لکھو("%s: link dd/dd/ff dd/dd/ffff failed\n", s);
+    باہر_نکلو(1);
   }
 
-  if (unlink("dd/dd/ff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  اگر (unlink("dd/dd/ff") != 0) {
+    لکھو("%s: unlink dd/dd/ff failed\n", s);
+    باہر_نکلو(1);
   }
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded\n", s);
-    exit(1);
+  اگر (open("dd/dd/ff", O_RDONLY) >= 0) {
+    لکھو("%s: open (unlinked) dd/dd/ff succeeded\n", s);
+    باہر_نکلو(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  اگر (chdir("dd") != 0) {
+    لکھو("%s: chdir dd failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("dd/../../dd") != 0) {
-    printf("%s: chdir dd/../../dd failed\n", s);
-    exit(1);
+  اگر (chdir("dd/../../dd") != 0) {
+    لکھو("%s: chdir dd/../../dd failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("dd/../../../dd") != 0) {
-    printf("%s: chdir dd/../../../dd failed\n", s);
-    exit(1);
+  اگر (chdir("dd/../../../dd") != 0) {
+    لکھو("%s: chdir dd/../../../dd failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("./..") != 0) {
-    printf("%s: chdir ./.. failed\n", s);
-    exit(1);
+  اگر (chdir("./..") != 0) {
+    لکھو("%s: chdir ./.. failed\n", s);
+    باہر_نکلو(1);
   }
 
   fd = open("dd/dd/ffff", 0);
-  if (fd < 0) {
-    printf("%s: open dd/dd/ffff failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open dd/dd/ffff failed\n", s);
+    باہر_نکلو(1);
   }
-  if (read(fd, buf, sizeof(buf)) != 2) {
-    printf("%s: read dd/dd/ffff wrong len\n", s);
-    exit(1);
+  اگر (اقرأ(fd, buf, حجم(buf)) != 2) {
+    لکھو("%s: read dd/dd/ffff wrong len\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  if (open("dd/dd/ff", O_RDONLY) >= 0) {
-    printf("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
-    exit(1);
+  اگر (open("dd/dd/ff", O_RDONLY) >= 0) {
+    لکھو("%s: open (unlinked) dd/dd/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
 
-  if (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/ff/ff succeeded!\n", s);
-    exit(1);
+  اگر (open("dd/ff/ff", O_CREATE | O_RDWR) >= 0) {
+    لکھو("%s: create dd/ff/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
-    printf("%s: create dd/xx/ff succeeded!\n", s);
-    exit(1);
+  اگر (open("dd/xx/ff", O_CREATE | O_RDWR) >= 0) {
+    لکھو("%s: create dd/xx/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (open("dd", O_CREATE) >= 0) {
-    printf("%s: create dd succeeded!\n", s);
-    exit(1);
+  اگر (open("dd", O_CREATE) >= 0) {
+    لکھو("%s: create dd succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (open("dd", O_RDWR) >= 0) {
-    printf("%s: open dd rdwr succeeded!\n", s);
-    exit(1);
+  اگر (open("dd", O_RDWR) >= 0) {
+    لکھو("%s: open dd rdwr succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (open("dd", O_WRONLY) >= 0) {
-    printf("%s: open dd wronly succeeded!\n", s);
-    exit(1);
+  اگر (open("dd", O_WRONLY) >= 0) {
+    لکھو("%s: open dd wronly succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (link("dd/ff/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
+  اگر (link("dd/ff/ff", "dd/dd/xx") == 0) {
+    لکھو("%s: link dd/ff/ff dd/dd/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (link("dd/xx/ff", "dd/dd/xx") == 0) {
-    printf("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
-    exit(1);
+  اگر (link("dd/xx/ff", "dd/dd/xx") == 0) {
+    لکھو("%s: link dd/xx/ff dd/dd/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (link("dd/ff", "dd/dd/ffff") == 0) {
-    printf("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
-    exit(1);
+  اگر (link("dd/ff", "dd/dd/ffff") == 0) {
+    لکھو("%s: link dd/ff dd/dd/ffff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("dd/ff/ff") == 0) {
-    printf("%s: mkdir dd/ff/ff succeeded!\n", s);
-    exit(1);
+  اگر (mkdir("dd/ff/ff") == 0) {
+    لکھو("%s: mkdir dd/ff/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("dd/xx/ff") == 0) {
-    printf("%s: mkdir dd/xx/ff succeeded!\n", s);
-    exit(1);
+  اگر (mkdir("dd/xx/ff") == 0) {
+    لکھو("%s: mkdir dd/xx/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("dd/dd/ffff") == 0) {
-    printf("%s: mkdir dd/dd/ffff succeeded!\n", s);
-    exit(1);
+  اگر (mkdir("dd/dd/ffff") == 0) {
+    لکھو("%s: mkdir dd/dd/ffff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dd/xx/ff") == 0) {
-    printf("%s: unlink dd/xx/ff succeeded!\n", s);
-    exit(1);
+  اگر (unlink("dd/xx/ff") == 0) {
+    لکھو("%s: unlink dd/xx/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dd/ff/ff") == 0) {
-    printf("%s: unlink dd/ff/ff succeeded!\n", s);
-    exit(1);
+  اگر (unlink("dd/ff/ff") == 0) {
+    لکھو("%s: unlink dd/ff/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("dd/ff") == 0) {
-    printf("%s: chdir dd/ff succeeded!\n", s);
-    exit(1);
+  اگر (chdir("dd/ff") == 0) {
+    لکھو("%s: chdir dd/ff succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("dd/xx") == 0) {
-    printf("%s: chdir dd/xx succeeded!\n", s);
-    exit(1);
+  اگر (chdir("dd/xx") == 0) {
+    لکھو("%s: chdir dd/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
 
-  if (unlink("dd/dd/ffff") != 0) {
-    printf("%s: unlink dd/dd/ff failed\n", s);
-    exit(1);
+  اگر (unlink("dd/dd/ffff") != 0) {
+    لکھو("%s: unlink dd/dd/ff failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dd/ff") != 0) {
-    printf("%s: unlink dd/ff failed\n", s);
-    exit(1);
+  اگر (unlink("dd/ff") != 0) {
+    لکھو("%s: unlink dd/ff failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dd") == 0) {
-    printf("%s: unlink non-empty dd succeeded!\n", s);
-    exit(1);
+  اگر (unlink("dd") == 0) {
+    لکھو("%s: unlink non-empty dd succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dd/dd") < 0) {
-    printf("%s: unlink dd/dd failed\n", s);
-    exit(1);
+  اگر (unlink("dd/dd") < 0) {
+    لکھو("%s: unlink dd/dd failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dd") < 0) {
-    printf("%s: unlink dd failed\n", s);
-    exit(1);
+  اگر (unlink("dd") < 0) {
+    لکھو("%s: unlink dd failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
 // test writes that are larger than the log.
-void
-bigwrite(char *s)
+خالی
+bigwrite(حرف *s)
 {
-  int fd, sz;
+  صحیح fd, sz;
 
   unlink("bigwrite");
-  for (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
+  برائے (sz = 499; sz < (MAXOPBLOCKS + 2) * BSIZE; sz += 471) {
     fd = open("bigwrite", O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("%s: cannot create bigwrite\n", s);
-      exit(1);
+    اگر (fd < 0) {
+      لکھو("%s: cannot create bigwrite\n", s);
+      باہر_نکلو(1);
     }
-    int i;
-    for (i = 0; i < 2; i++) {
-      int cc = write(fd, buf, sz);
-      if (cc != sz) {
-        printf("%s: write(%d) ret %d\n", s, sz, cc);
-        exit(1);
+    صحیح i;
+    برائے (i = 0; i < 2; i++) {
+      صحیح cc = اكتب(fd, buf, sz);
+      اگر (cc != sz) {
+        لکھو("%s: write(%d) ret %d\n", s, sz, cc);
+        باہر_نکلو(1);
       }
     }
     close(fd);
@@ -1758,95 +1758,95 @@ bigwrite(char *s)
   }
 }
 
-void
-bigfile(char *s)
+خالی
+bigfile(حرف *s)
 {
-  enum { N = 20, SZ = 600 };
-  int fd, i, total, cc;
+  شمار { N = 20, SZ = 600 };
+  صحیح fd, i, کل, cc;
 
   unlink("bigfile.dat");
   fd = open("bigfile.dat", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create bigfile", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot create bigfile", s);
+    باہر_نکلو(1);
   }
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     memset(buf, i, SZ);
-    if (write(fd, buf, SZ) != SZ) {
-      printf("%s: write bigfile failed\n", s);
-      exit(1);
+    اگر (اكتب(fd, buf, SZ) != SZ) {
+      لکھو("%s: write bigfile failed\n", s);
+      باہر_نکلو(1);
     }
   }
   close(fd);
 
   fd = open("bigfile.dat", 0);
-  if (fd < 0) {
-    printf("%s: cannot open bigfile\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot open bigfile\n", s);
+    باہر_نکلو(1);
   }
-  total = 0;
-  for (i = 0;; i++) {
-    cc = read(fd, buf, SZ / 2);
-    if (cc < 0) {
-      printf("%s: read bigfile failed\n", s);
-      exit(1);
+  کل = 0;
+  برائے (i = 0;; i++) {
+    cc = اقرأ(fd, buf, SZ / 2);
+    اگر (cc < 0) {
+      لکھو("%s: read bigfile failed\n", s);
+      باہر_نکلو(1);
     }
-    if (cc == 0)
-      break;
-    if (cc != SZ / 2) {
-      printf("%s: short read bigfile\n", s);
-      exit(1);
+    اگر (cc == 0)
+      توڑو;
+    اگر (cc != SZ / 2) {
+      لکھو("%s: short read bigfile\n", s);
+      باہر_نکلو(1);
     }
-    if (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
-      printf("%s: read bigfile wrong data\n", s);
-      exit(1);
+    اگر (buf[0] != i / 2 || buf[SZ / 2 - 1] != i / 2) {
+      لکھو("%s: read bigfile wrong data\n", s);
+      باہر_نکلو(1);
     }
-    total += cc;
+    کل += cc;
   }
   close(fd);
-  if (total != N * SZ) {
-    printf("%s: read bigfile wrong total\n", s);
-    exit(1);
+  اگر (کل != N * SZ) {
+    لکھو("%s: read bigfile wrong total\n", s);
+    باہر_نکلو(1);
   }
   unlink("bigfile.dat");
 }
 
-void
-fourteen(char *s)
+خالی
+fourteen(حرف *s)
 {
-  int fd;
+  صحیح fd;
 
   // DIRSIZ is 14.
 
-  if (mkdir("12345678901234") != 0) {
-    printf("%s: mkdir 12345678901234 failed\n", s);
-    exit(1);
+  اگر (mkdir("12345678901234") != 0) {
+    لکھو("%s: mkdir 12345678901234 failed\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("12345678901234/123456789012345") != 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 failed\n", s);
-    exit(1);
+  اگر (mkdir("12345678901234/123456789012345") != 0) {
+    لکھو("%s: mkdir 12345678901234/123456789012345 failed\n", s);
+    باہر_نکلو(1);
   }
   fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
-  if (fd < 0) {
-    printf(
+  اگر (fd < 0) {
+    لکھو(
       "%s: create 123456789012345/123456789012345/123456789012345 failed\n", s);
-    exit(1);
+    باہر_نکلو(1);
   }
   close(fd);
   fd = open("12345678901234/12345678901234/12345678901234", 0);
-  if (fd < 0) {
-    printf("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open 12345678901234/12345678901234/12345678901234 failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  if (mkdir("12345678901234/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
-    exit(1);
+  اگر (mkdir("12345678901234/12345678901234") == 0) {
+    لکھو("%s: mkdir 12345678901234/12345678901234 succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("123456789012345/12345678901234") == 0) {
-    printf("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
-    exit(1);
+  اگر (mkdir("123456789012345/12345678901234") == 0) {
+    لکھو("%s: mkdir 12345678901234/123456789012345 succeeded!\n", s);
+    باہر_نکلو(1);
   }
 
   // clean up
@@ -1858,128 +1858,128 @@ fourteen(char *s)
   unlink("12345678901234");
 }
 
-void
-rmdot(char *s)
+خالی
+rmdot(حرف *s)
 {
-  if (mkdir("dots") != 0) {
-    printf("%s: mkdir dots failed\n", s);
-    exit(1);
+  اگر (mkdir("dots") != 0) {
+    لکھو("%s: mkdir dots failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("dots") != 0) {
-    printf("%s: chdir dots failed\n", s);
-    exit(1);
+  اگر (chdir("dots") != 0) {
+    لکھو("%s: chdir dots failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink(".") == 0) {
-    printf("%s: rm . worked!\n", s);
-    exit(1);
+  اگر (unlink(".") == 0) {
+    لکھو("%s: rm . worked!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("..") == 0) {
-    printf("%s: rm .. worked!\n", s);
-    exit(1);
+  اگر (unlink("..") == 0) {
+    لکھو("%s: rm .. worked!\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("/") != 0) {
-    printf("%s: chdir / failed\n", s);
-    exit(1);
+  اگر (chdir("/") != 0) {
+    لکھو("%s: chdir / failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dots/.") == 0) {
-    printf("%s: unlink dots/. worked!\n", s);
-    exit(1);
+  اگر (unlink("dots/.") == 0) {
+    لکھو("%s: unlink dots/. worked!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dots/..") == 0) {
-    printf("%s: unlink dots/.. worked!\n", s);
-    exit(1);
+  اگر (unlink("dots/..") == 0) {
+    لکھو("%s: unlink dots/.. worked!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dots") != 0) {
-    printf("%s: unlink dots failed!\n", s);
-    exit(1);
+  اگر (unlink("dots") != 0) {
+    لکھو("%s: unlink dots failed!\n", s);
+    باہر_نکلو(1);
   }
 }
 
-void
-dirfile(char *s)
+خالی
+dirfile(حرف *s)
 {
-  int fd;
+  صحیح fd;
 
   fd = open("dirfile", O_CREATE);
-  if (fd < 0) {
-    printf("%s: create dirfile failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: create dirfile failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
-  if (chdir("dirfile") == 0) {
-    printf("%s: chdir dirfile succeeded!\n", s);
-    exit(1);
+  اگر (chdir("dirfile") == 0) {
+    لکھو("%s: chdir dirfile succeeded!\n", s);
+    باہر_نکلو(1);
   }
   fd = open("dirfile/xx", 0);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  اگر (fd >= 0) {
+    لکھو("%s: create dirfile/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
   fd = open("dirfile/xx", O_CREATE);
-  if (fd >= 0) {
-    printf("%s: create dirfile/xx succeeded!\n", s);
-    exit(1);
+  اگر (fd >= 0) {
+    لکھو("%s: create dirfile/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("dirfile/xx") == 0) {
-    printf("%s: mkdir dirfile/xx succeeded!\n", s);
-    exit(1);
+  اگر (mkdir("dirfile/xx") == 0) {
+    لکھو("%s: mkdir dirfile/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dirfile/xx") == 0) {
-    printf("%s: unlink dirfile/xx succeeded!\n", s);
-    exit(1);
+  اگر (unlink("dirfile/xx") == 0) {
+    لکھو("%s: unlink dirfile/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (link("README", "dirfile/xx") == 0) {
-    printf("%s: link to dirfile/xx succeeded!\n", s);
-    exit(1);
+  اگر (link("README", "dirfile/xx") == 0) {
+    لکھو("%s: link to dirfile/xx succeeded!\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("dirfile") != 0) {
-    printf("%s: unlink dirfile failed!\n", s);
-    exit(1);
+  اگر (unlink("dirfile") != 0) {
+    لکھو("%s: unlink dirfile failed!\n", s);
+    باہر_نکلو(1);
   }
 
   fd = open(".", O_RDWR);
-  if (fd >= 0) {
-    printf("%s: open . for writing succeeded!\n", s);
-    exit(1);
+  اگر (fd >= 0) {
+    لکھو("%s: open . for writing succeeded!\n", s);
+    باہر_نکلو(1);
   }
   fd = open(".", 0);
-  if (write(fd, "x", 1) > 0) {
-    printf("%s: write . succeeded!\n", s);
-    exit(1);
+  اگر (اكتب(fd, "x", 1) > 0) {
+    لکھو("%s: write . succeeded!\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 }
 
 // test that iput() is called at the end of _namei().
 // also tests empty file names.
-void
-iref(char *s)
+خالی
+iref(حرف *s)
 {
-  int i, fd;
+  صحیح i, fd;
 
-  for (i = 0; i < NINODE + 1; i++) {
-    if (mkdir("irefd") != 0) {
-      printf("%s: mkdir irefd failed\n", s);
-      exit(1);
+  برائے (i = 0; i < NINODE + 1; i++) {
+    اگر (mkdir("irefd") != 0) {
+      لکھو("%s: mkdir irefd failed\n", s);
+      باہر_نکلو(1);
     }
-    if (chdir("irefd") != 0) {
-      printf("%s: chdir irefd failed\n", s);
-      exit(1);
+    اگر (chdir("irefd") != 0) {
+      لکھو("%s: chdir irefd failed\n", s);
+      باہر_نکلو(1);
     }
 
     mkdir("");
     link("README", "");
     fd = open("", O_CREATE);
-    if (fd >= 0)
+    اگر (fd >= 0)
       close(fd);
     fd = open("xx", O_CREATE);
-    if (fd >= 0)
+    اگر (fd >= 0)
       close(fd);
     unlink("xx");
   }
 
   // clean up
-  for (i = 0; i < NINODE + 1; i++) {
+  برائے (i = 0; i < NINODE + 1; i++) {
     chdir("..");
     unlink("irefd");
   }
@@ -1990,112 +1990,112 @@ iref(char *s)
 // test that fork fails gracefully
 // the forktest binary also does this, but it runs out of proc entries first.
 // inside the bigger usertests binary, we run out of memory first.
-void
-forktest(char *s)
+خالی
+forktest(حرف *s)
 {
-  enum { N = 1000 };
-  int n, pid;
+  شمار { N = 1000 };
+  صحیح n, pid;
 
-  for (n = 0; n < N; n++) {
+  برائے (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    اگر (pid < 0)
+      توڑو;
+    اگر (pid == 0)
+      باہر_نکلو(0);
   }
 
-  if (n == 0) {
-    printf("%s: no fork at all!\n", s);
-    exit(1);
+  اگر (n == 0) {
+    لکھو("%s: no fork at all!\n", s);
+    باہر_نکلو(1);
   }
 
-  if (n == N) {
-    printf("%s: fork claimed to work 1000 times!\n", s);
-    exit(1);
+  اگر (n == N) {
+    لکھو("%s: fork claimed to work 1000 times!\n", s);
+    باہر_نکلو(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
-      printf("%s: wait stopped early\n", s);
-      exit(1);
+  برائے (; n > 0; n--) {
+    اگر (wait(0) < 0) {
+      لکھو("%s: wait stopped early\n", s);
+      باہر_نکلو(1);
     }
   }
 
-  if (wait(0) != -1) {
-    printf("%s: wait got too many\n", s);
-    exit(1);
+  اگر (wait(0) != -1) {
+    لکھو("%s: wait got too many\n", s);
+    باہر_نکلو(1);
   }
 }
 
-void
-sbrkbasic(char *s)
+خالی
+sbrkbasic(حرف *s)
 {
-  enum { TOOMUCH = 1024 * 1024 * 1024 };
-  int i, pid, xstatus;
-  char *c, *a, *b;
+  شمار { TOOMUCH = 1024 * 1024 * 1024 };
+  صحیح i, pid, xstatus;
+  حرف *c, *a, *b;
 
   // does sbrk() return the expected failure value?
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed in sbrkbasic\n");
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("fork failed in sbrkbasic\n");
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
+  اگر (pid == 0) {
     a = sbrk(TOOMUCH);
-    if (a == (char *)SBRK_ERROR) {
+    اگر (a == (حرف *)SBRK_ERROR) {
       // it's OK if this fails.
-      exit(0);
+      باہر_نکلو(0);
     }
 
-    for (b = a; b < a + TOOMUCH; b += PGSIZE) {
+    برائے (b = a; b < a + TOOMUCH; b += PGSIZE) {
       *b = 99;
     }
 
     // we should not get here! either sbrk(TOOMUCH)
     // should have failed, or (with lazy allocation)
     // a pagefault should have killed this process.
-    exit(1);
+    باہر_نکلو(1);
   }
 
   wait(&xstatus);
-  if (xstatus == 1) {
-    printf("%s: too much memory allocated!\n", s);
-    exit(1);
+  اگر (xstatus == 1) {
+    لکھو("%s: too much memory allocated!\n", s);
+    باہر_نکلو(1);
   }
 
   // can one sbrk() less than a page?
   a = sbrk(0);
-  for (i = 0; i < 5000; i++) {
+  برائے (i = 0; i < 5000; i++) {
     b = sbrk(1);
-    if (b != a) {
-      printf("%s: sbrk test failed %d %p %p\n", s, i, a, b);
-      exit(1);
+    اگر (b != a) {
+      لکھو("%s: sbrk test failed %d %p %p\n", s, i, a, b);
+      باہر_نکلو(1);
     }
     *b = 1;
     a = b + 1;
   }
   pid = fork();
-  if (pid < 0) {
-    printf("%s: sbrk test fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: sbrk test fork failed\n", s);
+    باہر_نکلو(1);
   }
   c = sbrk(1);
   c = sbrk(1);
-  if (c != a + 1) {
-    printf("%s: sbrk test failed post-fork\n", s);
-    exit(1);
+  اگر (c != a + 1) {
+    لکھو("%s: sbrk test failed post-fork\n", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0)
-    exit(0);
+  اگر (pid == 0)
+    باہر_نکلو(0);
   wait(&xstatus);
-  exit(xstatus);
+  باہر_نکلو(xstatus);
 }
 
-void
-sbrkmuch(char *s)
+خالی
+sbrkmuch(حرف *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  char *c, *oldbrk, *a, *lastaddr, *p;
+  شمار { BIG = 100 * 1024 * 1024 };
+  حرف *c, *oldbrk, *a, *lastaddr, *p;
   uint64 amt;
 
   oldbrk = sbrk(0);
@@ -2104,227 +2104,227 @@ sbrkmuch(char *s)
   a = sbrk(0);
   amt = BIG - (uint64)a;
   p = sbrk(amt);
-  if (p != a) {
-    printf("%s: sbrk test failed to grow big address space; enough phys mem?\n",
+  اگر (p != a) {
+    لکھو("%s: sbrk test failed to grow big address space; enough phys mem?\n",
            s);
-    exit(1);
+    باہر_نکلو(1);
   }
 
-  lastaddr = (char *)(BIG - 1);
+  lastaddr = (حرف *)(BIG - 1);
   *lastaddr = 99;
 
   // can one de-allocate?
   a = sbrk(0);
   c = sbrk(-PGSIZE);
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: sbrk could not deallocate\n", s);
-    exit(1);
+  اگر (c == (حرف *)SBRK_ERROR) {
+    لکھو("%s: sbrk could not deallocate\n", s);
+    باہر_نکلو(1);
   }
   c = sbrk(0);
-  if (c != a - PGSIZE) {
-    printf("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
+  اگر (c != a - PGSIZE) {
+    لکھو("%s: sbrk deallocation produced wrong address, a %p c %p\n", s, a,
            c);
-    exit(1);
+    باہر_نکلو(1);
   }
 
   // can one re-allocate that page?
   a = sbrk(0);
   c = sbrk(PGSIZE);
-  if (c != a || sbrk(0) != a + PGSIZE) {
-    printf("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
-    exit(1);
+  اگر (c != a || sbrk(0) != a + PGSIZE) {
+    لکھو("%s: sbrk re-allocation failed, a %p c %p\n", s, a, c);
+    باہر_نکلو(1);
   }
-  if (*lastaddr == 99) {
+  اگر (*lastaddr == 99) {
     // should be zero
-    printf("%s: sbrk de-allocation didn't really deallocate\n", s);
-    exit(1);
+    لکھو("%s: sbrk de-allocation didn't really deallocate\n", s);
+    باہر_نکلو(1);
   }
 
   a = sbrk(0);
   c = sbrk(-(sbrk(0) - oldbrk));
-  if (c != a) {
-    printf("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
-    exit(1);
+  اگر (c != a) {
+    لکھو("%s: sbrk downsize failed, a %p c %p\n", s, a, c);
+    باہر_نکلو(1);
   }
 }
 
 // can we read the kernel's memory?
-void
-kernmem(char *s)
+خالی
+kernmem(حرف *s)
 {
-  char *a;
-  int pid;
+  حرف *a;
+  صحیح pid;
 
-  for (a = (char *)(KERNBASE); a < (char *)(KERNBASE + 2000000); a += 50000) {
+  برائے (a = (حرف *)(KERNBASE); a < (حرف *)(KERNBASE + 2000000); a += 50000) {
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (pid == 0) {
-      printf("%s: oops could read %p = %x\n", s, a, *a);
-      exit(1);
+    اگر (pid == 0) {
+      لکھو("%s: oops could read %p = %x\n", s, a, *a);
+      باہر_نکلو(1);
     }
-    int xstatus;
+    صحیح xstatus;
     wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    اگر (xstatus != -1) // did kernel kill child?
+      باہر_نکلو(1);
   }
 }
 
 // user code should not be able to write to addresses above MAXVA.
-void
-MAXVAplus(char *s)
+خالی
+MAXVAplus(حرف *s)
 {
-  volatile uint64 a = MAXVA;
-  for (; a != 0; a <<= 1) {
-    int pid;
+  متلون uint64 a = MAXVA;
+  برائے (; a != 0; a <<= 1) {
+    صحیح pid;
     pid = fork();
-    if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+    اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
-    if (pid == 0) {
-      *(char *)a = 99;
-      printf("%s: oops wrote %p\n", s, (void *)a);
-      exit(1);
+    اگر (pid == 0) {
+      *(حرف *)a = 99;
+      لکھو("%s: oops wrote %p\n", s, (خالی *)a);
+      باہر_نکلو(1);
     }
-    int xstatus;
+    صحیح xstatus;
     wait(&xstatus);
-    if (xstatus != -1) // did kernel kill child?
-      exit(1);
+    اگر (xstatus != -1) // did kernel kill child?
+      باہر_نکلو(1);
   }
 }
 
 // if we run the system out of memory, does it clean up the last
 // failed allocation?
-void
-sbrkfail(char *s)
+خالی
+sbrkfail(حرف *s)
 {
-  enum { BIG = 100 * 1024 * 1024 };
-  int i, xstatus;
-  int fds[2];
-  char scratch;
-  char *c, *a;
-  int pids[10];
-  int pid;
-  int failed;
+  شمار { BIG = 100 * 1024 * 1024 };
+  صحیح i, xstatus;
+  صحیح fds[2];
+  حرف scratch;
+  حرف *c, *a;
+  صحیح pids[10];
+  صحیح pid;
+  صحیح failed;
 
   failed = 0;
-  if (pipe(fds) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  اگر (pipe(fds) != 0) {
+    لکھو("%s: pipe() failed\n", s);
+    باہر_نکلو(1);
   }
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if ((pids[i] = fork()) == 0) {
+  برائے (i = 0; i < حجم(pids) / حجم(pids[0]); i++) {
+    اگر ((pids[i] = fork()) == 0) {
       // allocate a lot of memory
-      if (sbrk(BIG - (uint64)sbrk(0)) == (char *)SBRK_ERROR)
-        write(fds[1], "0", 1);
-      else
-        write(fds[1], "1", 1);
+      اگر (sbrk(BIG - (uint64)sbrk(0)) == (حرف *)SBRK_ERROR)
+        اكتب(fds[1], "0", 1);
+      ورنہ
+        اكتب(fds[1], "1", 1);
       // sit around until killed
-      for (;;)
+      برائے (;;)
         pause(1000);
     }
-    if (pids[i] != -1) {
-      read(fds[0], &scratch, 1);
-      if (scratch == '0')
+    اگر (pids[i] != -1) {
+      اقرأ(fds[0], &scratch, 1);
+      اگر (scratch == '0')
         failed = 1;
     }
   }
-  if (!failed) {
-    printf("%s: no allocation failed; allocate more?\n", s);
+  اگر (!failed) {
+    لکھو("%s: no allocation failed; allocate more?\n", s);
   }
 
   // if those failed allocations freed up the pages they did allocate,
   // we'll be able to allocate here
   c = sbrk(PGSIZE);
-  for (i = 0; i < sizeof(pids) / sizeof(pids[0]); i++) {
-    if (pids[i] == -1)
-      continue;
+  برائے (i = 0; i < حجم(pids) / حجم(pids[0]); i++) {
+    اگر (pids[i] == -1)
+      جاری;
     kill(pids[i]);
     wait(0);
   }
-  if (c == (char *)SBRK_ERROR) {
-    printf("%s: failed sbrk leaked memory\n", s);
-    exit(1);
+  اگر (c == (حرف *)SBRK_ERROR) {
+    لکھو("%s: failed sbrk leaked memory\n", s);
+    باہر_نکلو(1);
   }
 
   // test running fork with the above allocated page
   pid = fork();
-  if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
+  اگر (pid == 0) {
     // allocate a lot of memory. this should produce an error
     a = sbrk(10 * BIG);
-    if (a == (char *)SBRK_ERROR) {
-      exit(0);
+    اگر (a == (حرف *)SBRK_ERROR) {
+      باہر_نکلو(0);
     }
-    printf("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
-    exit(1);
+    لکھو("%s: allocate a lot of memory succeeded %d\n", s, 10 * BIG);
+    باہر_نکلو(1);
   }
   wait(&xstatus);
-  if (xstatus != 0)
-    exit(1);
+  اگر (xstatus != 0)
+    باہر_نکلو(1);
 }
 
 // test reads/writes from/to allocated memory
-void
-sbrkarg(char *s)
+خالی
+sbrkarg(حرف *s)
 {
-  char *a;
-  int fd, n;
+  حرف *a;
+  صحیح fd, n;
 
   a = sbrk(PGSIZE);
   fd = open("sbrk", O_CREATE | O_WRONLY);
   unlink("sbrk");
-  if (fd < 0) {
-    printf("%s: open sbrk failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open sbrk failed\n", s);
+    باہر_نکلو(1);
   }
-  if ((n = write(fd, a, PGSIZE)) < 0) {
-    printf("%s: write sbrk failed\n", s);
-    exit(1);
+  اگر ((n = اكتب(fd, a, PGSIZE)) < 0) {
+    لکھو("%s: write sbrk failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
   // test writes to allocated memory
   a = sbrk(PGSIZE);
-  if (pipe((int *)a) != 0) {
-    printf("%s: pipe() failed\n", s);
-    exit(1);
+  اگر (pipe((صحیح *)a) != 0) {
+    لکھو("%s: pipe() failed\n", s);
+    باہر_نکلو(1);
   }
 }
 
-void
-validatetest(char *s)
+خالی
+validatetest(حرف *s)
 {
-  int hi;
+  صحیح hi;
   uint64 p;
 
   hi = 1100 * 1024;
-  for (p = 0; p <= (uint)hi; p += PGSIZE) {
+  برائے (p = 0; p <= (uint)hi; p += PGSIZE) {
     // try to crash the kernel by passing in a bad string pointer
-    if (link("nosuchfile", (char *)p) != -1) {
-      printf("%s: link should not succeed\n", s);
-      exit(1);
+    اگر (link("nosuchfile", (حرف *)p) != -1) {
+      لکھو("%s: link should not succeed\n", s);
+      باہر_نکلو(1);
     }
   }
 }
 
 // does uninitialized data start out zero?
-char uninit[10000];
-void
-bsstest(char *s)
+حرف uninit[10000];
+خالی
+bsstest(حرف *s)
 {
-  int i;
+  صحیح i;
 
-  for (i = 0; i < sizeof(uninit); i++) {
-    if (uninit[i] != '\0') {
-      printf("%s: bss test failed\n", s);
-      exit(1);
+  برائے (i = 0; i < حجم(uninit); i++) {
+    اگر (uninit[i] != '\0') {
+      لکھو("%s: bss test failed\n", s);
+      باہر_نکلو(1);
     }
   }
 }
@@ -2332,84 +2332,84 @@ bsstest(char *s)
 // does exec return an error if the arguments
 // are larger than a page? or does it write
 // below the stack and wreck the instructions/data?
-void
-bigargtest(char *s)
+خالی
+bigargtest(حرف *s)
 {
-  int pid, fd, xstatus;
+  صحیح pid, fd, xstatus;
 
   unlink("bigarg-ok");
   pid = fork();
-  if (pid == 0) {
-    static char *args[MAXARG];
-    int i;
-    char big[400];
-    memset(big, ' ', sizeof(big));
-    big[sizeof(big) - 1] = '\0';
-    for (i = 0; i < MAXARG - 1; i++)
-      args[i] = big;
-    args[MAXARG - 1] = 0;
+  اگر (pid == 0) {
+    ساکن حرف *دلائل[MAXARG];
+    صحیح i;
+    حرف big[400];
+    memset(big, ' ', حجم(big));
+    big[حجم(big) - 1] = '\0';
+    برائے (i = 0; i < MAXARG - 1; i++)
+      دلائل[i] = big;
+    دلائل[MAXARG - 1] = 0;
     // this exec() should fail (and return) because the
     // arguments are too large.
-    exec("echo", args);
+    exec("echo", دلائل);
     fd = open("bigarg-ok", O_CREATE);
     close(fd);
-    exit(0);
-  } else if (pid < 0) {
-    printf("%s: bigargtest: fork failed\n", s);
-    exit(1);
+    باہر_نکلو(0);
+  } ورنہ اگر (pid < 0) {
+    لکھو("%s: bigargtest: fork failed\n", s);
+    باہر_نکلو(1);
   }
 
   wait(&xstatus);
-  if (xstatus != 0)
-    exit(xstatus);
+  اگر (xstatus != 0)
+    باہر_نکلو(xstatus);
   fd = open("bigarg-ok", 0);
-  if (fd < 0) {
-    printf("%s: bigarg test failed!\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: bigarg test failed!\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 }
 
 // what happens when the file system runs out of blocks?
 // answer: balloc panics, so this test is not useful.
-void
+خالی
 fsfull()
 {
-  int nfiles;
-  int fsblocks = 0;
+  صحیح nfiles;
+  صحیح fsblocks = 0;
 
-  printf("fsfull test\n");
+  لکھو("fsfull test\n");
 
-  for (nfiles = 0;; nfiles++) {
-    char name[64];
+  برائے (nfiles = 0;; nfiles++) {
+    حرف name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
     name[3] = '0' + (nfiles % 100) / 10;
     name[4] = '0' + (nfiles % 10);
     name[5] = '\0';
-    printf("writing %s\n", name);
-    int fd = open(name, O_CREATE | O_RDWR);
-    if (fd < 0) {
-      printf("open %s failed\n", name);
-      break;
+    لکھو("writing %s\n", name);
+    صحیح fd = open(name, O_CREATE | O_RDWR);
+    اگر (fd < 0) {
+      لکھو("open %s failed\n", name);
+      توڑو;
     }
-    int total = 0;
-    while (1) {
-      int cc = write(fd, buf, BSIZE);
-      if (cc < BSIZE)
-        break;
-      total += cc;
+    صحیح کل = 0;
+    جب (1) {
+      صحیح cc = اكتب(fd, buf, BSIZE);
+      اگر (cc < BSIZE)
+        توڑو;
+      کل += cc;
       fsblocks++;
     }
-    printf("wrote %d bytes\n", total);
+    لکھو("wrote %d bytes\n", کل);
     close(fd);
-    if (total == 0)
-      break;
+    اگر (کل == 0)
+      توڑو;
   }
 
-  while (nfiles >= 0) {
-    char name[64];
+  جب (nfiles >= 0) {
+    حرف name[64];
     name[0] = 'f';
     name[1] = '0' + nfiles / 1000;
     name[2] = '0' + (nfiles % 1000) / 100;
@@ -2420,55 +2420,55 @@ fsfull()
     nfiles--;
   }
 
-  printf("fsfull test finished, %d blocks\n", fsblocks);
+  لکھو("fsfull test finished, %d blocks\n", fsblocks);
 }
 
-void
-argptest(char *s)
+خالی
+argptest(حرف *s)
 {
-  int fd;
+  صحیح fd;
   fd = open("init", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: open failed\n", s);
+    باہر_نکلو(1);
   }
-  read(fd, sbrk(0) - 1, -1);
+  اقرأ(fd, sbrk(0) - 1, -1);
   close(fd);
 }
 
 // check that there's an invalid page beneath
 // the user stack, to catch stack overflow.
-void
-stacktest(char *s)
+خالی
+stacktest(حرف *s)
 {
-  int pid;
-  int xstatus;
+  صحیح pid;
+  صحیح xstatus;
 
   pid = fork();
-  if (pid == 0) {
-    char *sp = (char *)r_sp();
+  اگر (pid == 0) {
+    حرف *sp = (حرف *)r_sp();
     sp -= USERSTACK * PGSIZE;
     // the *sp should cause a trap.
-    printf("%s: stacktest: read below stack %d\n", s, *sp);
-    exit(1);
-  } else if (pid < 0) {
-    printf("%s: fork failed\n", s);
-    exit(1);
+    لکھو("%s: stacktest: read below stack %d\n", s, *sp);
+    باہر_نکلو(1);
+  } ورنہ اگر (pid < 0) {
+    لکھو("%s: fork failed\n", s);
+    باہر_نکلو(1);
   }
   wait(&xstatus);
-  if (xstatus == -1) // kernel killed child?
-    exit(0);
-  else
-    exit(xstatus);
+  اگر (xstatus == -1) // kernel killed child?
+    باہر_نکلو(0);
+  ورنہ
+    باہر_نکلو(xstatus);
 }
 
 // check that writes to a few forbidden addresses
 // cause a fault, e.g. process's text and TRAMPOLINE.
-void
-nowrite(char *s)
+خالی
+nowrite(حرف *s)
 {
-  int pid;
-  int xstatus;
+  صحیح pid;
+  صحیح xstatus;
   uint64 addrs[] = {0,
                     0x80000000LL,
                     0x3fffffe000,
@@ -2476,84 +2476,84 @@ nowrite(char *s)
                     0x4000000000,
                     0xffffffffffffffff};
 
-  for (int ai = 0; ai < sizeof(addrs) / sizeof(addrs[0]); ai++) {
+  برائے (صحیح ai = 0; ai < حجم(addrs) / حجم(addrs[0]); ai++) {
     pid = fork();
-    if (pid == 0) {
-      volatile int *addr = (int *)addrs[ai];
+    اگر (pid == 0) {
+      متلون صحیح *addr = (صحیح *)addrs[ai];
       *addr = 10;
-      printf("%s: write to %p did not fail!\n", s, addr);
-      exit(0);
-    } else if (pid < 0) {
-      printf("%s: fork failed\n", s);
-      exit(1);
+      لکھو("%s: write to %p did not fail!\n", s, addr);
+      باہر_نکلو(0);
+    } ورنہ اگر (pid < 0) {
+      لکھو("%s: fork failed\n", s);
+      باہر_نکلو(1);
     }
     wait(&xstatus);
-    if (xstatus == 0) {
+    اگر (xstatus == 0) {
       // kernel did not kill child!
-      exit(1);
+      باہر_نکلو(1);
     }
   }
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // regression test. copyin(), copyout(), and copyinstr() used to cast
 // the virtual page address to uint, which (with certain wild system
 // call arguments) resulted in a kernel page faults.
-void *big = (void *)0xeaeb0b5b00002f5e;
-void
-pgbug(char *s)
+خالی *big = (خالی *)0xeaeb0b5b00002f5e;
+خالی
+pgbug(حرف *s)
 {
-  char *argv[1];
+  حرف *argv[1];
   argv[0] = 0;
   exec(big, argv);
   pipe(big);
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // regression test. does the kernel panic if a process sbrk()s its
 // size to be less than a page, or zero, or reduces the break by an
 // amount too small to cause a page to be freed?
-void
-sbrkbugs(char *s)
+خالی
+sbrkbugs(حرف *s)
 {
-  int pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  صحیح pid = fork();
+  اگر (pid < 0) {
+    لکھو("fork failed\n");
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  اگر (pid == 0) {
+    صحیح sz = (uint64)sbrk(0);
     // free all user memory; there used to be a bug that
     // would not adjust p->sz correctly in this case,
     // causing exit() to panic.
     sbrk(-sz);
     // user page fault here.
-    exit(0);
+    باہر_نکلو(0);
   }
   wait(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("fork failed\n");
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
-    int sz = (uint64)sbrk(0);
+  اگر (pid == 0) {
+    صحیح sz = (uint64)sbrk(0);
     // set the break to somewhere in the very first
     // page; there used to be a bug that would incorrectly
     // free the first page.
     sbrk(-(sz - 3500));
-    exit(0);
+    باہر_نکلو(0);
   }
   wait(0);
 
   pid = fork();
-  if (pid < 0) {
-    printf("fork failed\n");
-    exit(1);
+  اگر (pid < 0) {
+    لکھو("fork failed\n");
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
+  اگر (pid == 0) {
     // set the break in the middle of a page.
     sbrk((10 * PGSIZE + 2048) - (uint64)sbrk(0));
 
@@ -2562,271 +2562,271 @@ sbrkbugs(char *s)
     // a panic.
     sbrk(-10);
 
-    exit(0);
+    باہر_نکلو(0);
   }
   wait(0);
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // if process size was somewhat more than a page boundary, and then
 // shrunk to be somewhat less than that page boundary, can the kernel
 // still copyin() from addresses in the last page?
-void
-sbrklast(char *s)
+خالی
+sbrklast(حرف *s)
 {
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0)
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 چوٹی = (uint64)sbrk(0);
+  اگر ((چوٹی % PGSIZE) != 0)
+    sbrk(PGSIZE - (چوٹی % PGSIZE));
   sbrk(PGSIZE);
   sbrk(10);
   sbrk(-20);
-  top = (uint64)sbrk(0);
-  char *p = (char *)(top - 64);
+  چوٹی = (uint64)sbrk(0);
+  حرف *p = (حرف *)(چوٹی - 64);
   p[0] = 'x';
   p[1] = '\0';
-  int fd = open(p, O_RDWR | O_CREATE);
-  write(fd, p, 1);
+  صحیح fd = open(p, O_RDWR | O_CREATE);
+  اكتب(fd, p, 1);
   close(fd);
   fd = open(p, O_RDWR);
   p[0] = '\0';
-  read(fd, p, 1);
-  if (p[0] != 'x')
-    exit(1);
+  اقرأ(fd, p, 1);
+  اگر (p[0] != 'x')
+    باہر_نکلو(1);
 }
 
 // does sbrk handle signed int32 wrap-around with
 // negative arguments?
-void
-sbrk8000(char *s)
+خالی
+sbrk8000(حرف *s)
 {
   sbrk(0x80000004);
-  volatile char *top = sbrk(0);
-  *(top - 1) = *(top - 1) + 1;
+  متلون حرف *چوٹی = sbrk(0);
+  *(چوٹی - 1) = *(چوٹی - 1) + 1;
 }
 
 // regression test. test whether exec() leaks memory if one of the
 // arguments is invalid. the test passes if the kernel doesn't panic.
-void
-badarg(char *s)
+خالی
+badarg(حرف *s)
 {
-  for (int i = 0; i < 50000; i++) {
-    char *argv[2];
-    argv[0] = (char *)0xffffffff;
+  برائے (صحیح i = 0; i < 50000; i++) {
+    حرف *argv[2];
+    argv[0] = (حرف *)0xffffffff;
     argv[1] = 0;
     exec("echo", argv);
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
-#define REGION_SZ (1024 * 1024 * 1024)
+#تعریف_کرو REGION_SZ (1024 * 1024 * 1024)
 
 // Touch a page every 64 pages, which with lazy allocation
 // causes one page to be allocated.
-void
-lazy_alloc(char *s)
+خالی
+lazy_alloc(حرف *s)
 {
-  char *i, *prev_end, *new_end;
+  حرف *i, *پچھلا_انتہا, *new_انتہا;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  پچھلا_انتہا = sbrklazy(REGION_SZ);
+  اگر (پچھلا_انتہا == (حرف *)SBRK_ERROR) {
+    لکھو("sbrklazy() failed\n");
+    باہر_نکلو(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_انتہا = پچھلا_انتہا + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE)
-    *(char **)i = i;
+  برائے (i = پچھلا_انتہا + PGSIZE; i < new_انتہا; i += 64 * PGSIZE)
+    *(حرف **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += 64 * PGSIZE) {
-    if (*(char **)i != i) {
-      printf("failed to read value from memory\n");
-      exit(1);
+  برائے (i = پچھلا_انتہا + PGSIZE; i < new_انتہا; i += 64 * PGSIZE) {
+    اگر (*(حرف **)i != i) {
+      لکھو("failed to read value from memory\n");
+      باہر_نکلو(1);
     }
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // Touch a page every 64 pages in region, which with lazy allocation
 // causes one page to be allocated. Check that freeing the region
 // frees the allocated pages.
-void
-lazy_unmap(char *s)
+خالی
+lazy_unmap(حرف *s)
 {
-  int pid;
-  char *i, *prev_end, *new_end;
+  صحیح pid;
+  حرف *i, *پچھلا_انتہا, *new_انتہا;
 
-  prev_end = sbrklazy(REGION_SZ);
-  if (prev_end == (char *)SBRK_ERROR) {
-    printf("sbrklazy() failed\n");
-    exit(1);
+  پچھلا_انتہا = sbrklazy(REGION_SZ);
+  اگر (پچھلا_انتہا == (حرف *)SBRK_ERROR) {
+    لکھو("sbrklazy() failed\n");
+    باہر_نکلو(1);
   }
-  new_end = prev_end + REGION_SZ;
+  new_انتہا = پچھلا_انتہا + REGION_SZ;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE)
-    *(char **)i = i;
+  برائے (i = پچھلا_انتہا + PGSIZE; i < new_انتہا; i += PGSIZE * PGSIZE)
+    *(حرف **)i = i;
 
-  for (i = prev_end + PGSIZE; i < new_end; i += PGSIZE * PGSIZE) {
+  برائے (i = پچھلا_انتہا + PGSIZE; i < new_انتہا; i += PGSIZE * PGSIZE) {
     pid = fork();
-    if (pid < 0) {
-      printf("error forking\n");
-      exit(1);
-    } else if (pid == 0) {
+    اگر (pid < 0) {
+      لکھو("error forking\n");
+      باہر_نکلو(1);
+    } ورنہ اگر (pid == 0) {
       sbrklazy(-1L * REGION_SZ);
-      *(char **)i = i;
-      exit(0);
-    } else {
-      int status;
-      wait(&status);
-      if (status == 0) {
-        printf("memory not unmapped\n");
-        exit(1);
+      *(حرف **)i = i;
+      باہر_نکلو(0);
+    } ورنہ {
+      صحیح حالت_2;
+      wait(&حالت_2);
+      اگر (حالت_2 == 0) {
+        لکھو("memory not unmapped\n");
+        باہر_نکلو(1);
       }
     }
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
-void
-lazy_copy(char *s)
+خالی
+lazy_copy(حرف *s)
 {
   // copyinstr on lazy page
   {
-    char *p = sbrk(0);
+    حرف *p = sbrk(0);
     sbrklazy(4 * PGSIZE);
     open(p + 8192, 0);
   }
 
   {
-    void *xx = sbrk(0);
-    void *ret = sbrk(-(((uint64)xx) + 1));
-    if (ret != xx) {
-      printf("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
-      exit(1);
+    خالی *xx = sbrk(0);
+    خالی *ret = sbrk(-(((uint64)xx) + 1));
+    اگر (ret != xx) {
+      لکھو("sbrk(sbrk(0)+1) returned %p, not old sz\n", ret);
+      باہر_نکلو(1);
     }
   }
 
   // read() and write() to these addresses should fail.
-  unsigned long bad[] = {
+  غیرعلامتی طویل bad[] = {
     0x3fffffc000, 0x3fffffd000, 0x3fffffe000,
     0x3ffffff000, 0x4000000000, 0x8000000000,
   };
-  for (int i = 0; i < sizeof(bad) / sizeof(bad[0]); i++) {
-    int fd = open("README", 0);
-    if (fd < 0) {
-      printf("cannot open README\n");
-      exit(1);
+  برائے (صحیح i = 0; i < حجم(bad) / حجم(bad[0]); i++) {
+    صحیح fd = open("README", 0);
+    اگر (fd < 0) {
+      لکھو("cannot open README\n");
+      باہر_نکلو(1);
     }
-    if (read(fd, (char *)bad[i], 512) >= 0) {
-      printf("read succeeded\n");
-      exit(1);
+    اگر (اقرأ(fd, (حرف *)bad[i], 512) >= 0) {
+      لکھو("read succeeded\n");
+      باہر_نکلو(1);
     }
     close(fd);
     fd = open("junk", O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
-      printf("cannot open junk\n");
-      exit(1);
+    اگر (fd < 0) {
+      لکھو("cannot open junk\n");
+      باہر_نکلو(1);
     }
-    if (write(fd, (char *)bad[i], 512) >= 0) {
-      printf("write succeeded\n");
-      exit(1);
+    اگر (اكتب(fd, (حرف *)bad[i], 512) >= 0) {
+      لکھو("write succeeded\n");
+      باہر_نکلو(1);
     }
     close(fd);
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
-void
-lazy_copyinstr(char *s)
+خالی
+lazy_copyinstr(حرف *s)
 {
-  char *p = sbrk(0);
+  حرف *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  اگر ((uint64)p % PGSIZE != 0) {
+    لکھو("%s: sbrk did not align\n", s);
+    باہر_نکلو(1);
   }
 
   sbrklazy(2 * PGSIZE);
   p[4095] = '/';
-  int fd = open(&p[4095], O_RDONLY);
-  if (fd < 0) {
-    printf("could not open /");
-    exit(1);
+  صحیح fd = open(&p[4095], O_RDONLY);
+  اگر (fd < 0) {
+    لکھو("could not open /");
+    باہر_نکلو(1);
   }
 
-  struct stat st;
-  int r = fstat(fd, &st);
-  if (r < 0) {
-    printf("could not stat /");
-    exit(1);
+  ساخت stat st;
+  صحیح r = fstat(fd, &st);
+  اگر (r < 0) {
+    لکھو("could not stat /");
+    باہر_نکلو(1);
   }
 
-  if (st.type != T_DIR) {
-    printf("/ is not T_DIR");
-    exit(1);
+  اگر (st.type != T_DIR) {
+    لکھو("/ is not T_DIR");
+    باہر_نکلو(1);
   }
 
   close(fd);
 }
 
-void
-lazy_sbrk(char *s)
+خالی
+lazy_sbrk(حرف *s)
 {
   // sbrk() takes just int, so take 2^30-sized steps towards MAXVA
-  char *p = sbrk(0);
-  while ((uint64)p < MAXVA - (1 << 30)) {
+  حرف *p = sbrk(0);
+  جب ((uint64)p < MAXVA - (1 << 30)) {
     p = sbrklazy(1 << 30);
-    if (p < 0) {
-      printf("sbrklazy(%d) returned %p\n", 1 << 30, p);
-      exit(1);
+    اگر (p < 0) {
+      لکھو("sbrklazy(%d) returned %p\n", 1 << 30, p);
+      باہر_نکلو(1);
     }
 
     p = sbrklazy(0);
   }
 
-  int n = TRAPFRAME - PGSIZE - (uint64)p;
+  صحیح n = TRAPFRAME - PGSIZE - (uint64)p;
 
-  char *p1 = sbrklazy(n);
-  if (p1 < 0 || p1 != p) {
-    printf("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
-    exit(1);
+  حرف *p1 = sbrklazy(n);
+  اگر (p1 < 0 || p1 != p) {
+    لکھو("sbrklazy(%d) returned %p, not expected %p\n", n, p1, p);
+    باہر_نکلو(1);
   }
 
   p = sbrk(PGSIZE);
-  if (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
-    printf("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
-    exit(1);
+  اگر (p < 0 || (uint64)p != TRAPFRAME - PGSIZE) {
+    لکھو("sbrk(%d) returned %p, not expected TRAPFRAME-PGSIZE\n", PGSIZE, p);
+    باہر_نکلو(1);
   }
 
   p[0] = 1;
-  if (p[1] != 0) {
-    printf("sbrk() returned non-zero-filled memory\n");
-    exit(1);
+  اگر (p[1] != 0) {
+    لکھو("sbrk() returned non-zero-filled memory\n");
+    باہر_نکلو(1);
   }
 
   p = sbrk(1);
-  if ((uint64)p != -1) {
-    printf("sbrk(1) returned %p, expected error\n", p);
-    exit(1);
+  اگر ((uint64)p != -1) {
+    لکھو("sbrk(1) returned %p, expected error\n", p);
+    باہر_نکلو(1);
   }
 
   p = sbrklazy(1);
-  if ((uint64)p != -1) {
-    printf("sbrklazy(1) returned %p, expected error\n", p);
-    exit(1);
+  اگر ((uint64)p != -1) {
+    لکھو("sbrklazy(1) returned %p, expected error\n", p);
+    باہر_نکلو(1);
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
-void
-partial_write(char *s)
+خالی
+partial_write(حرف *s)
 {
   // Create testfile containing "A".
   // write() 2 bytes that span page boundary: first is "X", second is unmapped.
@@ -2836,72 +2836,72 @@ partial_write(char *s)
   // read() from file should still return "X" (but might return "A" due to bug).
 
   unlink("testfile");
-  int fd = open("testfile", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create testfile\n", s);
-    exit(1);
+  صحیح fd = open("testfile", O_CREATE | O_RDWR);
+  اگر (fd < 0) {
+    لکھو("%s: cannot create testfile\n", s);
+    باہر_نکلو(1);
   }
 
-  int cc = write(fd, "A", 1);
-  if (cc != 1) {
-    printf("%s: could not write A\n", s);
-    exit(1);
+  صحیح cc = اكتب(fd, "A", 1);
+  اگر (cc != 1) {
+    لکھو("%s: could not write A\n", s);
+    باہر_نکلو(1);
   }
 
   close(fd);
   fd = open("testfile", O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot re-open testfile\n", s);
+    باہر_نکلو(1);
   }
 
-  char *p = sbrk(0);
+  حرف *p = sbrk(0);
   sbrk(PGSIZE - ((uint64)p % PGSIZE));
 
   p = sbrk(0);
-  if ((uint64)p % PGSIZE != 0) {
-    printf("%s: sbrk did not align\n", s);
-    exit(1);
+  اگر ((uint64)p % PGSIZE != 0) {
+    لکھو("%s: sbrk did not align\n", s);
+    باہر_نکلو(1);
   }
 
   p[-1] = 'X';
 
-  cc = write(fd, p - 1, 2);
-  if (cc != -1) {
-    printf("%s: write succeeded, should have failed\n", s);
-    exit(1);
+  cc = اكتب(fd, p - 1, 2);
+  اگر (cc != -1) {
+    لکھو("%s: write succeeded, should have failed\n", s);
+    باہر_نکلو(1);
   }
 
   close(fd);
 
   fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot re-open testfile\n", s);
+    باہر_نکلو(1);
   }
 
-  char b;
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  حرف b;
+  cc = اقرأ(fd, &b, 1);
+  اگر (cc != 1) {
+    لکھو("%s: cannot read testfile\n", s);
+    باہر_نکلو(1);
   }
 
   close(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  اگر (b != 'X') {
+    لکھو("%s: read returned %c, expected X\n", s, b);
+    باہر_نکلو(1);
   }
 
   fd = open("bigfile", O_CREATE | O_RDWR);
-  for (int i = 0; i < 64; i++) {
-    char buf[1024];
-    memset(buf, 0, sizeof(buf));
-    cc = write(fd, buf, sizeof(buf));
-    if (cc != sizeof(buf)) {
-      printf("%s: could not write to bigfile\n", s);
-      exit(-1);
+  برائے (صحیح i = 0; i < 64; i++) {
+    حرف buf[1024];
+    memset(buf, 0, حجم(buf));
+    cc = اكتب(fd, buf, حجم(buf));
+    اگر (cc != حجم(buf)) {
+      لکھو("%s: could not write to bigfile\n", s);
+      باہر_نکلو(-1);
     }
   }
   close(fd);
@@ -2909,61 +2909,61 @@ partial_write(char *s)
   unlink("bigfile");
 
   fd = open("testfile", O_RDONLY);
-  if (fd < 0) {
-    printf("%s: cannot re-open testfile\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: cannot re-open testfile\n", s);
+    باہر_نکلو(1);
   }
 
-  cc = read(fd, &b, 1);
-  if (cc != 1) {
-    printf("%s: cannot read testfile\n", s);
-    exit(1);
+  cc = اقرأ(fd, &b, 1);
+  اگر (cc != 1) {
+    لکھو("%s: cannot read testfile\n", s);
+    باہر_نکلو(1);
   }
 
   close(fd);
 
-  if (b != 'X') {
-    printf("%s: read returned %c, expected X\n", s, b);
-    exit(1);
+  اگر (b != 'X') {
+    لکھو("%s: read returned %c, expected X\n", s, b);
+    باہر_نکلو(1);
   }
 
   unlink("testfile");
 }
 
-void
-unlinkcwd(char *s)
+خالی
+unlinkcwd(حرف *s)
 {
-  if (mkdir("/a") < 0) {
-    printf("%s: mkdir /a failed\n", s);
-    exit(1);
+  اگر (mkdir("/a") < 0) {
+    لکھو("%s: mkdir /a failed\n", s);
+    باہر_نکلو(1);
   }
-  if (mkdir("/a/b") < 0) {
-    printf("%s: mkdir /a/b failed\n", s);
-    exit(1);
+  اگر (mkdir("/a/b") < 0) {
+    لکھو("%s: mkdir /a/b failed\n", s);
+    باہر_نکلو(1);
   }
-  if (chdir("/a/b") < 0) {
-    printf("%s: chdir failed\n", s);
-    exit(1);
+  اگر (chdir("/a/b") < 0) {
+    لکھو("%s: chdir failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("/a/b") < 0) {
-    printf("%s: unlink /a/b failed\n", s);
-    exit(1);
+  اگر (unlink("/a/b") < 0) {
+    لکھو("%s: unlink /a/b failed\n", s);
+    باہر_نکلو(1);
   }
-  if (unlink("/a") < 0) {
-    printf("%s: unlink /a failed\n", s);
-    exit(1);
+  اگر (unlink("/a") < 0) {
+    لکھو("%s: unlink /a failed\n", s);
+    باہر_نکلو(1);
   }
-  if (open("../", O_RDONLY) > 0) {
-    printf("%s: open ../ non-existing directory\n", s);
+  اگر (open("../", O_RDONLY) > 0) {
+    لکھو("%s: open ../ non-existing directory\n", s);
   }
-  if (open("../c", O_CREATE) > 0) {
-    printf("%s: create ../c non-existing file\n", s);
+  اگر (open("../c", O_CREATE) > 0) {
+    لکھو("%s: create ../c non-existing file\n", s);
   }
 }
 
-struct test {
-  void (*f)(char *);
-  char *s;
+ساخت test {
+  خالی (*f)(حرف *);
+  حرف *s;
 } quicktests[] = {
   {copyin, "copyin"},
   {copyout, "copyout"},
@@ -3041,80 +3041,80 @@ struct test {
 //
 
 // directory that uses indirect blocks
-void
-bigdir(char *s)
+خالی
+bigdir(حرف *s)
 {
-  enum { N = 500 };
-  int i, fd;
-  char name[10];
+  شمار { N = 500 };
+  صحیح i, fd;
+  حرف name[10];
 
   unlink("bd");
 
   fd = open("bd", O_CREATE);
-  if (fd < 0) {
-    printf("%s: bigdir create failed\n", s);
-    exit(1);
+  اگر (fd < 0) {
+    لکھو("%s: bigdir create failed\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (link("bd", name) != 0) {
-      printf("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
-      exit(1);
+    اگر (link("bd", name) != 0) {
+      لکھو("%s: bigdir i=%d link(bd, %s) failed\n", s, i, name);
+      باہر_نکلو(1);
     }
   }
 
   unlink("bd");
-  for (i = 0; i < N; i++) {
+  برائے (i = 0; i < N; i++) {
     name[0] = 'x';
     name[1] = '0' + (i / 64);
     name[2] = '0' + (i % 64);
     name[3] = '\0';
-    if (unlink(name) != 0) {
-      printf("%s: bigdir unlink failed", s);
-      exit(1);
+    اگر (unlink(name) != 0) {
+      لکھو("%s: bigdir unlink failed", s);
+      باہر_نکلو(1);
     }
   }
 }
 
 // concurrent writes to try to provoke deadlock in the virtio disk
 // driver.
-void
-manywrites(char *s)
+خالی
+manywrites(حرف *s)
 {
-  int nchildren = 4;
-  int howmany = 30; // increase to look for deadlock
+  صحیح nchildren = 4;
+  صحیح howmany = 30; // increase to look for deadlock
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
+  برائے (صحیح ci = 0; ci < nchildren; ci++) {
+    صحیح pid = fork();
+    اگر (pid < 0) {
+      لکھو("fork failed\n");
+      باہر_نکلو(1);
     }
 
-    if (pid == 0) {
-      char name[3];
+    اگر (pid == 0) {
+      حرف name[3];
       name[0] = 'b';
       name[1] = 'a' + ci;
       name[2] = '\0';
       unlink(name);
 
-      for (int iters = 0; iters < howmany; iters++) {
-        for (int i = 0; i < ci + 1; i++) {
-          int fd = open(name, O_CREATE | O_RDWR);
-          if (fd < 0) {
-            printf("%s: cannot create %s\n", s, name);
-            exit(1);
+      برائے (صحیح iters = 0; iters < howmany; iters++) {
+        برائے (صحیح i = 0; i < ci + 1; i++) {
+          صحیح fd = open(name, O_CREATE | O_RDWR);
+          اگر (fd < 0) {
+            لکھو("%s: cannot create %s\n", s, name);
+            باہر_نکلو(1);
           }
-          int sz = sizeof(buf);
-          int cc = write(fd, buf, sz);
-          if (cc != sz) {
-            printf("%s: write(%d) ret %d\n", s, sz, cc);
-            exit(1);
+          صحیح sz = حجم(buf);
+          صحیح cc = اكتب(fd, buf, sz);
+          اگر (cc != sz) {
+            لکھو("%s: write(%d) ret %d\n", s, sz, cc);
+            باہر_نکلو(1);
           }
           close(fd);
         }
@@ -3122,17 +3122,17 @@ manywrites(char *s)
       }
 
       unlink(name);
-      exit(0);
+      باہر_نکلو(0);
     }
   }
 
-  for (int ci = 0; ci < nchildren; ci++) {
-    int st = 0;
+  برائے (صحیح ci = 0; ci < nchildren; ci++) {
+    صحیح st = 0;
     wait(&st);
-    if (st != 0)
-      exit(st);
+    اگر (st != 0)
+      باہر_نکلو(st);
   }
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // regression test. does write() with an invalid buffer pointer cause
@@ -3140,105 +3140,105 @@ manywrites(char *s)
 // file is deleted? if the kernel has this bug, it will panic: balloc:
 // out of blocks. assumed_free may need to be raised to be more than
 // the number of free blocks. this test takes a long time.
-void
-badwrite(char *s)
+خالی
+badwrite(حرف *s)
 {
-  int assumed_free = 600;
+  صحیح assumed_free = 600;
 
   unlink("junk");
-  for (int i = 0; i < assumed_free; i++) {
-    int fd = open("junk", O_CREATE | O_WRONLY);
-    if (fd < 0) {
-      printf("open junk failed\n");
-      exit(1);
+  برائے (صحیح i = 0; i < assumed_free; i++) {
+    صحیح fd = open("junk", O_CREATE | O_WRONLY);
+    اگر (fd < 0) {
+      لکھو("open junk failed\n");
+      باہر_نکلو(1);
     }
-    write(fd, (char *)0xffffffffffL, 1);
+    اكتب(fd, (حرف *)0xffffffffffL, 1);
     close(fd);
     unlink("junk");
   }
 
-  int fd = open("junk", O_CREATE | O_WRONLY);
-  if (fd < 0) {
-    printf("open junk failed\n");
-    exit(1);
+  صحیح fd = open("junk", O_CREATE | O_WRONLY);
+  اگر (fd < 0) {
+    لکھو("open junk failed\n");
+    باہر_نکلو(1);
   }
-  if (write(fd, "x", 1) != 1) {
-    printf("write failed\n");
-    exit(1);
+  اگر (اكتب(fd, "x", 1) != 1) {
+    لکھو("write failed\n");
+    باہر_نکلو(1);
   }
   close(fd);
   unlink("junk");
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // test the exec() code that cleans up if it runs out
 // of memory. it's really a test that such a condition
 // doesn't cause a panic.
-void
-execout(char *s)
+خالی
+execout(حرف *s)
 {
-  for (int avail = 0; avail < 15; avail++) {
-    int pid = fork();
-    if (pid < 0) {
-      printf("fork failed\n");
-      exit(1);
-    } else if (pid == 0) {
+  برائے (صحیح avail = 0; avail < 15; avail++) {
+    صحیح pid = fork();
+    اگر (pid < 0) {
+      لکھو("fork failed\n");
+      باہر_نکلو(1);
+    } ورنہ اگر (pid == 0) {
       // allocate all of memory.
-      while (1) {
-        char *a = sbrk(PGSIZE);
-        if (a == SBRK_ERROR)
-          break;
+      جب (1) {
+        حرف *a = sbrk(PGSIZE);
+        اگر (a == SBRK_ERROR)
+          توڑو;
         *(a + PGSIZE - 1) = 1;
       }
 
       // free a few pages, in order to let exec() make some
       // progress.
-      for (int i = 0; i < avail; i++)
+      برائے (صحیح i = 0; i < avail; i++)
         sbrk(-PGSIZE);
 
       close(1);
-      char *args[] = {"echo", "x", 0};
-      exec("echo", args);
-      exit(0);
-    } else {
-      wait((int *)0);
+      حرف *دلائل[] = {"echo", "x", 0};
+      exec("echo", دلائل);
+      باہر_نکلو(0);
+    } ورنہ {
+      wait((صحیح *)0);
     }
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
 // can the kernel tolerate running out of disk space?
-void
-diskfull(char *s)
+خالی
+diskfull(حرف *s)
 {
-  int fi;
-  int done = 0;
+  صحیح fi;
+  صحیح مکمل = 0;
 
   unlink("diskfulldir");
 
-  for (fi = 0; done == 0 && '0' + fi < 0177; fi++) {
-    char name[32];
+  برائے (fi = 0; مکمل == 0 && '0' + fi < 0177; fi++) {
+    حرف name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
     name[3] = '0' + fi;
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    صحیح fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    اگر (fd < 0) {
       // oops, ran out of inodes before running out of blocks.
-      printf("%s: could not create file %s\n", s, name);
-      done = 1;
-      break;
+      لکھو("%s: could not create file %s\n", s, name);
+      مکمل = 1;
+      توڑو;
     }
-    for (int i = 0; i < MAXFILE; i++) {
-      char buf[BSIZE];
-      if (write(fd, buf, BSIZE) != BSIZE) {
-        done = 1;
+    برائے (صحیح i = 0; i < MAXFILE; i++) {
+      حرف buf[BSIZE];
+      اگر (اكتب(fd, buf, BSIZE) != BSIZE) {
+        مکمل = 1;
         close(fd);
-        break;
+        توڑو;
       }
     }
     close(fd);
@@ -3248,29 +3248,29 @@ diskfull(char *s)
   // merely fails (doesn't panic) if it can't extend
   // directory content. one of these file creations
   // is expected to fail.
-  int nzz = 128;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  صحیح nzz = 128;
+  برائے (صحیح i = 0; i < nzz; i++) {
+    حرف name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0)
-      break;
+    صحیح fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    اگر (fd < 0)
+      توڑو;
     close(fd);
   }
 
   // this mkdir() is expected to fail.
-  if (mkdir("diskfulldir") == 0)
-    printf("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
+  اگر (mkdir("diskfulldir") == 0)
+    لکھو("%s: mkdir(diskfulldir) unexpectedly succeeded!\n", s);
 
   unlink("diskfulldir");
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  برائے (صحیح i = 0; i < nzz; i++) {
+    حرف name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3279,8 +3279,8 @@ diskfull(char *s)
     unlink(name);
   }
 
-  for (int i = 0; '0' + i < 0177; i++) {
-    char name[32];
+  برائے (صحیح i = 0; '0' + i < 0177; i++) {
+    حرف name[32];
     name[0] = 'b';
     name[1] = 'i';
     name[2] = 'g';
@@ -3290,28 +3290,28 @@ diskfull(char *s)
   }
 }
 
-void
-outofinodes(char *s)
+خالی
+outofinodes(حرف *s)
 {
-  int nzz = 32 * 32;
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  صحیح nzz = 32 * 32;
+  برائے (صحیح i = 0; i < nzz; i++) {
+    حرف name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
     name[3] = '0' + (i % 32);
     name[4] = '\0';
     unlink(name);
-    int fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
-    if (fd < 0) {
+    صحیح fd = open(name, O_CREATE | O_RDWR | O_TRUNC);
+    اگر (fd < 0) {
       // failure is eventually expected.
-      break;
+      توڑو;
     }
     close(fd);
   }
 
-  for (int i = 0; i < nzz; i++) {
-    char name[32];
+  برائے (صحیح i = 0; i < nzz; i++) {
+    حرف name[32];
     name[0] = 'z';
     name[1] = 'z';
     name[2] = '0' + (i / 32);
@@ -3321,36 +3321,36 @@ outofinodes(char *s)
   }
 }
 
-void
-linkoverflow(char *s)
+خالی
+linkoverflow(حرف *s)
 {
-  enum { TARGET = 32768 };
-  enum { DIRS = 64 };
-  struct stat st;
-  int i;
+  شمار { ہدف_2 = 32768 };
+  شمار { DIRS = 64 };
+  ساخت stat st;
+  صحیح i;
 
   unlink("/lof");
-  int fd = open("/lof", O_CREATE | O_RDWR);
-  if (fd < 0) {
-    printf("%s: cannot create /lof\n", s);
-    exit(1);
+  صحیح fd = open("/lof", O_CREATE | O_RDWR);
+  اگر (fd < 0) {
+    لکھو("%s: cannot create /lof\n", s);
+    باہر_نکلو(1);
   }
   close(fd);
 
-  for (i = 0; i < TARGET; i++) {
-    int d = i % DIRS;
-    int f = i / DIRS;
+  برائے (i = 0; i < ہدف_2; i++) {
+    صحیح d = i % DIRS;
+    صحیح f = i / DIRS;
 
-    char pn[16];
+    حرف pn[16];
     pn[0] = '/';
     pn[1] = 'd';
     pn[2] = '_';
     pn[3] = 'a' + (d / 16);
     pn[4] = 'a' + (d % 16);
     pn[5] = '\0';
-    if (f == 0 && mkdir(pn) < 0) {
-      printf("%s: mkdir(%s) failed\n", s, pn);
-      exit(1);
+    اگر (f == 0 && mkdir(pn) < 0) {
+      لکھو("%s: mkdir(%s) failed\n", s, pn);
+      باہر_نکلو(1);
     }
 
     pn[5] = '/';
@@ -3360,38 +3360,38 @@ linkoverflow(char *s)
     pn[9] = 'a' + (f % 16);
     pn[10] = '\0';
 
-    if (link("/lof", pn) < 0) {
-      if (stat("/lof", &st) < 0) {
-        printf("%s: stat(/lof) failed\n", s);
-        exit(1);
+    اگر (link("/lof", pn) < 0) {
+      اگر (stat("/lof", &st) < 0) {
+        لکھو("%s: stat(/lof) failed\n", s);
+        باہر_نکلو(1);
       }
-      if (st.nlink >= 32767) {
+      اگر (st.nlink >= 32767) {
         // overflow check succeeded.
-        break;
+        توڑو;
       }
-      printf("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
-      exit(1);
+      لکھو("%s: link failed after %d links (nlink=%d)\n", s, i, st.nlink);
+      باہر_نکلو(1);
     }
 
-    if (i % 100 == 0) {
-      printf("%s: i=%d, pn=%s\n", s, i, pn);
+    اگر (i % 100 == 0) {
+      لکھو("%s: i=%d, pn=%s\n", s, i, pn);
     }
   }
 
-  if (stat("/lof", &st) < 0) {
-    printf("%s: stat(/lof) failed\n", s);
-    exit(1);
+  اگر (stat("/lof", &st) < 0) {
+    لکھو("%s: stat(/lof) failed\n", s);
+    باہر_نکلو(1);
   }
 
   unlink("/lof");
 
-  if (st.nlink < 0) {
-    printf("%s: negative link count: %d\n", s, st.nlink);
-    exit(1);
+  اگر (st.nlink < 0) {
+    لکھو("%s: negative link count: %d\n", s, st.nlink);
+    باہر_نکلو(1);
   }
 }
 
-struct test slowtests[] = {
+ساخت test slowtests[] = {
   {bigdir, "bigdir"},
   {manywrites, "manywrites"},
   {badwrite, "badwrite"},
@@ -3409,130 +3409,130 @@ struct test slowtests[] = {
 
 // run each test in its own process. run returns 1 if child's exit()
 // indicates success.
-int
-run(void f(char *), char *s)
+صحیح
+تسلسل(خالی f(حرف *), حرف *s)
 {
-  int pid;
-  int xstatus;
+  صحیح pid;
+  صحیح xstatus;
 
-  printf("test %s: ", s);
-  if ((pid = fork()) < 0) {
-    printf("runtest: fork error\n");
-    exit(1);
+  لکھو("test %s: ", s);
+  اگر ((pid = fork()) < 0) {
+    لکھو("runtest: fork error\n");
+    باہر_نکلو(1);
   }
-  if (pid == 0) {
+  اگر (pid == 0) {
     f(s);
-    exit(0);
-  } else {
+    باہر_نکلو(0);
+  } ورنہ {
     wait(&xstatus);
-    if (xstatus != 0)
-      printf("FAILED\n");
-    else
-      printf("OK\n");
-    return xstatus == 0;
+    اگر (xstatus != 0)
+      لکھو("FAILED\n");
+    ورنہ
+      لکھو("OK\n");
+    واپس xstatus == 0;
   }
 }
 
-int
-runtests(struct test *tests, char *justone, int continuous)
+صحیح
+runtests(ساخت test *tests, حرف *justone, صحیح continuous)
 {
-  int ntests = 0;
-  for (struct test *t = tests; t->s != 0; t++) {
-    if ((justone == 0) || strcmp(t->s, justone) == 0) {
+  صحیح ntests = 0;
+  برائے (ساخت test *t = tests; t->s != 0; t++) {
+    اگر ((justone == 0) || strcmp(t->s, justone) == 0) {
       ntests++;
-      if (!run(t->f, t->s)) {
-        if (continuous != 2) {
-          printf("SOME TESTS FAILED\n");
-          return -1;
+      اگر (!تسلسل(t->f, t->s)) {
+        اگر (continuous != 2) {
+          لکھو("SOME TESTS FAILED\n");
+          واپس -1;
         }
       }
     }
   }
-  return ntests;
+  واپس ntests;
 }
 
 // use sbrk() to count how many free physical memory pages there are.
-int
+صحیح
 countfree()
 {
-  int n = 0;
+  صحیح n = 0;
   uint64 sz0 = (uint64)sbrk(0);
-  while (1) {
-    char *a = sbrk(PGSIZE);
-    if (a == SBRK_ERROR) {
-      break;
+  جب (1) {
+    حرف *a = sbrk(PGSIZE);
+    اگر (a == SBRK_ERROR) {
+      توڑو;
     }
     n += 1;
   }
   sbrk(-((uint64)sbrk(0) - sz0));
-  return n;
+  واپس n;
 }
 
-int
-drivetests(int quick, int continuous, char *justone)
+صحیح
+drivetests(صحیح تیز, صحیح continuous, حرف *justone)
 {
-  do {
-    printf("usertests starting\n");
-    int free0 = countfree();
-    int free1 = 0;
-    int ntests = 0;
-    int n;
+  کرو {
+    لکھو("usertests starting\n");
+    صحیح free0 = countfree();
+    صحیح free1 = 0;
+    صحیح ntests = 0;
+    صحیح n;
     n = runtests(quicktests, justone, continuous);
-    if (n < 0) {
-      if (continuous != 2) {
-        return 1;
+    اگر (n < 0) {
+      اگر (continuous != 2) {
+        واپس 1;
       }
-    } else {
+    } ورنہ {
       ntests += n;
     }
-    if (!quick) {
-      if (justone == 0)
-        printf("usertests slow tests starting\n");
+    اگر (!تیز) {
+      اگر (justone == 0)
+        لکھو("usertests slow tests starting\n");
       n = runtests(slowtests, justone, continuous);
-      if (n < 0) {
-        if (continuous != 2) {
-          return 1;
+      اگر (n < 0) {
+        اگر (continuous != 2) {
+          واپس 1;
         }
-      } else {
+      } ورنہ {
         ntests += n;
       }
     }
-    if ((free1 = countfree()) < free0) {
-      printf("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
-      if (continuous != 2) {
-        return 1;
+    اگر ((free1 = countfree()) < free0) {
+      لکھو("FAILED -- lost some free pages %d (out of %d)\n", free1, free0);
+      اگر (continuous != 2) {
+        واپس 1;
       }
     }
-    if (justone != 0 && ntests == 0) {
-      printf("NO TESTS EXECUTED\n");
-      return 1;
+    اگر (justone != 0 && ntests == 0) {
+      لکھو("NO TESTS EXECUTED\n");
+      واپس 1;
     }
-  } while (continuous);
-  return 0;
+  } جب (continuous);
+  واپس 0;
 }
 
-int
-main(int argc, char *argv[])
+صحیح
+مین(صحیح argc, حرف *argv[])
 {
-  int continuous = 0;
-  int quick = 0;
-  char *justone = 0;
+  صحیح continuous = 0;
+  صحیح تیز = 0;
+  حرف *justone = 0;
 
-  if (argc == 2 && strcmp(argv[1], "-q") == 0) {
-    quick = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-c") == 0) {
+  اگر (argc == 2 && strcmp(argv[1], "-q") == 0) {
+    تیز = 1;
+  } ورنہ اگر (argc == 2 && strcmp(argv[1], "-c") == 0) {
     continuous = 1;
-  } else if (argc == 2 && strcmp(argv[1], "-C") == 0) {
+  } ورنہ اگر (argc == 2 && strcmp(argv[1], "-C") == 0) {
     continuous = 2;
-  } else if (argc == 2 && argv[1][0] != '-') {
+  } ورنہ اگر (argc == 2 && argv[1][0] != '-') {
     justone = argv[1];
-  } else if (argc > 1) {
-    printf("Usage: usertests [-c] [-C] [-q] [testname]\n");
-    exit(1);
+  } ورنہ اگر (argc > 1) {
+    لکھو("Usage: usertests [-c] [-C] [-q] [testname]\n");
+    باہر_نکلو(1);
   }
-  if (drivetests(quick, continuous, justone)) {
-    exit(1);
+  اگر (drivetests(تیز, continuous, justone)) {
+    باہر_نکلو(1);
   }
-  printf("ALL TESTS PASSED\n");
-  exit(0);
+  لکھو("ALL TESTS PASSED\n");
+  باہر_نکلو(0);
 }

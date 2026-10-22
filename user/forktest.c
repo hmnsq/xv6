@@ -1,56 +1,56 @@
 // Test that fork fails gracefully.
 // Tiny executable so that the limit can be filling the proc table.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "user/user.h"
 
-#define N 1000
+#تعریف_کرو N 1000
 
-void
-print(const char *s)
+خالی
+print(ثابت حرف *s)
 {
-  write(1, s, strlen(s));
+  اكتب(1, s, لڑی_لمبائی(s));
 }
 
-void
-forktest(void)
+خالی
+forktest(خالی)
 {
-  int n, pid;
+  صحیح n, pid;
 
   print("fork test\n");
 
-  for (n = 0; n < N; n++) {
+  برائے (n = 0; n < N; n++) {
     pid = fork();
-    if (pid < 0)
-      break;
-    if (pid == 0)
-      exit(0);
+    اگر (pid < 0)
+      توڑو;
+    اگر (pid == 0)
+      باہر_نکلو(0);
   }
 
-  if (n == N) {
+  اگر (n == N) {
     print("fork claimed to work N times!\n");
-    exit(1);
+    باہر_نکلو(1);
   }
 
-  for (; n > 0; n--) {
-    if (wait(0) < 0) {
+  برائے (; n > 0; n--) {
+    اگر (wait(0) < 0) {
       print("wait stopped early\n");
-      exit(1);
+      باہر_نکلو(1);
     }
   }
 
-  if (wait(0) != -1) {
+  اگر (wait(0) != -1) {
     print("wait got too many\n");
-    exit(1);
+    باہر_نکلو(1);
   }
 
   print("fork test OK\n");
 }
 
-int
-main(void)
+صحیح
+مین(خالی)
 {
   forktest();
-  exit(0);
+  باہر_نکلو(0);
 }

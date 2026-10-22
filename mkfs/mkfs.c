@@ -1,50 +1,50 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <assert.h>
+#شامل <stdio.h>
+#شامل <unistd.h>
+#شامل <stdlib.h>
+#شامل <string.h>
+#شامل <fcntl.h>
+#شامل <assert.h>
 
-#define stat xv6_stat // avoid clash with host struct stat
-#include "kernel/types.h"
-#include "kernel/fs.h"
-#include "kernel/stat.h"
-#include "kernel/param.h"
+#تعریف_کرو stat xv6_stat // avoid clash with host struct stat
+#شامل "kernel/types.h"
+#شامل "kernel/fs.h"
+#شامل "kernel/stat.h"
+#شامل "kernel/param.h"
 
-#ifndef static_assert
-#define static_assert(a, b)                                                    \
-  do {                                                                         \
-    switch (0)                                                                 \
-    case 0:                                                                    \
-    case (a):;                                                                 \
-  } while (0)
-#endif
+#اگر_غیر_تعریف_شدہ static_assert
+#تعریف_کرو static_assert(a, b)                                                    \
+  کرو {                                                                         \
+    انتخاب (0)                                                                 \
+    حالت 0:                                                                    \
+    حالت (a):;                                                                 \
+  } جب (0)
+#اگر_ختم
 
-#define NINODES 200
+#تعریف_کرو NINODES 200
 
 // Disk layout:
 // [ boot block | sb block | log | inode blocks | free bit map | data blocks ]
 
-int nbitmap = FSSIZE / BPB + 1;
-int ninodeblocks = NINODES / IPB + 1;
-int nlog = LOGBLOCKS + 1; // Header followed by LOGBLOCKS data blocks.
-int nmeta;   // Number of meta blocks (boot, sb, nlog, inode, bitmap)
-int nblocks; // Number of data blocks
+صحیح nbitmap = FSSIZE / BPB + 1;
+صحیح ninodeblocks = NINODES / IPB + 1;
+صحیح nlog = LOGBLOCKS + 1; // Header followed by LOGBLOCKS data blocks.
+صحیح nmeta;   // Number of meta blocks (boot, sb, nlog, inode, bitmap)
+صحیح nblocks; // Number of data blocks
 
-int fsfd;
-struct superblock sb;
-char zeroes[BSIZE];
+صحیح fsfd;
+ساخت superblock sb;
+حرف zeroes[BSIZE];
 uint freeinode = 1;
 uint freeblock;
 
-void balloc(int);
-void wsect(uint, void *);
-void winode(uint, struct dinode *);
-void rinode(uint inum, struct dinode *ip);
-void rsect(uint sec, void *buf);
+خالی balloc(صحیح);
+خالی wsect(uint, خالی *);
+خالی winode(uint, ساخت dinode *);
+خالی rinode(uint inum, ساخت dinode *ip);
+خالی rsect(uint sec, خالی *buf);
 uint ialloc(ushort type);
-void iappend(uint inum, void *p, int n);
-void die(const char *);
+خالی iappend(uint inum, خالی *p, صحیح n);
+خالی die(ثابت حرف *);
 
 // convert to riscv byte order
 ushort
@@ -54,7 +54,7 @@ xshort(ushort x)
   uchar *a = (uchar *)&y;
   a[0] = x;
   a[1] = x >> 8;
-  return y;
+  واپس y;
 }
 
 uint
@@ -66,30 +66,30 @@ xint(uint x)
   a[1] = x >> 8;
   a[2] = x >> 16;
   a[3] = x >> 24;
-  return y;
+  واپس y;
 }
 
-int
-main(int argc, char *argv[])
+صحیح
+مین(صحیح argc, حرف *argv[])
 {
-  int i, cc, fd;
+  صحیح i, cc, fd;
   uint rootino, inum, off;
-  struct dirent de;
-  char buf[BSIZE];
-  struct dinode din;
+  ساخت dirent de;
+  حرف buf[BSIZE];
+  ساخت dinode din;
 
-  static_assert(sizeof(int) == 4, "Integers must be 4 bytes!");
+  static_assert(حجم(صحیح) == 4, "Integers must be 4 bytes!");
 
-  if (argc < 2) {
+  اگر (argc < 2) {
     fprintf(stderr, "Usage: mkfs fs.img files...\n");
-    exit(1);
+    باہر_نکلو(1);
   }
 
-  assert((BSIZE % sizeof(struct dinode)) == 0);
-  assert((BSIZE % sizeof(struct dirent)) == 0);
+  أكد((BSIZE % حجم(ساخت dinode)) == 0);
+  أكد((BSIZE % حجم(ساخت dirent)) == 0);
 
   fsfd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, 0666);
-  if (fsfd < 0)
+  اگر (fsfd < 0)
     die(argv[1]);
 
   // 1 fs block = 1 disk sector
@@ -97,7 +97,7 @@ main(int argc, char *argv[])
   nblocks = FSSIZE - nmeta;
 
   sb.magic = FSMAGIC;
-  sb.size = xint(FSSIZE);
+  sb.سائز = xint(FSSIZE);
   sb.nblocks = xint(nblocks);
   sb.ninodes = xint(NINODES);
   sb.nlog = xint(nlog);
@@ -105,62 +105,62 @@ main(int argc, char *argv[])
   sb.inodestart = xint(2 + nlog);
   sb.bmapstart = xint(2 + nlog + ninodeblocks);
 
-  printf(
+  لکھو(
     "nmeta %d (boot, super, log blocks %u, inode blocks %u, bitmap blocks %u) blocks %d total %d\n",
     nmeta, nlog, ninodeblocks, nbitmap, nblocks, FSSIZE);
 
   freeblock = nmeta; // the first free block that we can allocate
 
-  for (i = 0; i < FSSIZE; i++)
+  برائے (i = 0; i < FSSIZE; i++)
     wsect(i, zeroes);
 
-  memset(buf, 0, sizeof(buf));
-  memmove(buf, &sb, sizeof(sb));
+  memset(buf, 0, حجم(buf));
+  memmove(buf, &sb, حجم(sb));
   wsect(1, buf);
 
   rootino = ialloc(T_DIR);
-  assert(rootino == ROOTINO);
+  أكد(rootino == ROOTINO);
 
-  bzero(&de, sizeof(de));
+  bzero(&de, حجم(de));
   de.inum = xshort(rootino);
   strcpy(de.name, ".");
-  iappend(rootino, &de, sizeof(de));
+  iappend(rootino, &de, حجم(de));
 
-  bzero(&de, sizeof(de));
+  bzero(&de, حجم(de));
   de.inum = xshort(rootino);
   strcpy(de.name, "..");
-  iappend(rootino, &de, sizeof(de));
+  iappend(rootino, &de, حجم(de));
 
-  for (i = 2; i < argc; i++) {
+  برائے (i = 2; i < argc; i++) {
     // get rid of "user/"
-    char *shortname;
-    if (strncmp(argv[i], "user/", 5) == 0)
+    حرف *shortname;
+    اگر (لڑی_موازنہ(argv[i], "user/", 5) == 0)
       shortname = argv[i] + 5;
-    else
+    ورنہ
       shortname = argv[i];
 
-    assert(index(shortname, '/') == 0);
+    أكد(index(shortname, '/') == 0);
 
-    if ((fd = open(argv[i], 0)) < 0)
+    اگر ((fd = open(argv[i], 0)) < 0)
       die(argv[i]);
 
     // Skip leading _ in name when writing to file system.
     // The binaries are named _rm, _cat, etc. to keep the
     // build operating system from trying to execute them
     // in place of system binaries like rm and cat.
-    if (shortname[0] == '_')
+    اگر (shortname[0] == '_')
       shortname += 1;
 
-    assert(strlen(shortname) <= DIRSIZ);
+    أكد(لڑی_لمبائی(shortname) <= DIRSIZ);
 
     inum = ialloc(T_FILE);
 
-    bzero(&de, sizeof(de));
+    bzero(&de, حجم(de));
     de.inum = xshort(inum);
     strncpy(de.name, shortname, DIRSIZ);
-    iappend(rootino, &de, sizeof(de));
+    iappend(rootino, &de, حجم(de));
 
-    while ((cc = read(fd, buf, sizeof(buf))) > 0)
+    جب ((cc = اقرأ(fd, buf, حجم(buf))) > 0)
       iappend(inum, buf, cc);
 
     close(fd);
@@ -168,58 +168,58 @@ main(int argc, char *argv[])
 
   // fix size of root inode dir
   rinode(rootino, &din);
-  off = xint(din.size);
+  off = xint(din.سائز);
   off = ((off / BSIZE) + 1) * BSIZE;
-  din.size = xint(off);
+  din.سائز = xint(off);
   winode(rootino, &din);
 
   balloc(freeblock);
 
-  exit(0);
+  باہر_نکلو(0);
 }
 
-void
-wsect(uint sec, void *buf)
+خالی
+wsect(uint sec, خالی *buf)
 {
-  if (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
+  اگر (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
     die("lseek");
-  if (write(fsfd, buf, BSIZE) != BSIZE)
+  اگر (اكتب(fsfd, buf, BSIZE) != BSIZE)
     die("write");
 }
 
-void
-winode(uint inum, struct dinode *ip)
+خالی
+winode(uint inum, ساخت dinode *ip)
 {
-  char buf[BSIZE];
+  حرف buf[BSIZE];
   uint bn;
-  struct dinode *dip;
+  ساخت dinode *dip;
 
   bn = IBLOCK(inum, sb);
   rsect(bn, buf);
-  dip = ((struct dinode *)buf) + (inum % IPB);
+  dip = ((ساخت dinode *)buf) + (inum % IPB);
   *dip = *ip;
   wsect(bn, buf);
 }
 
-void
-rinode(uint inum, struct dinode *ip)
+خالی
+rinode(uint inum, ساخت dinode *ip)
 {
-  char buf[BSIZE];
+  حرف buf[BSIZE];
   uint bn;
-  struct dinode *dip;
+  ساخت dinode *dip;
 
   bn = IBLOCK(inum, sb);
   rsect(bn, buf);
-  dip = ((struct dinode *)buf) + (inum % IPB);
+  dip = ((ساخت dinode *)buf) + (inum % IPB);
   *ip = *dip;
 }
 
-void
-rsect(uint sec, void *buf)
+خالی
+rsect(uint sec, خالی *buf)
 {
-  if (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
+  اگر (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
     die("lseek");
-  if (read(fsfd, buf, BSIZE) != BSIZE)
+  اگر (اقرأ(fsfd, buf, BSIZE) != BSIZE)
     die("read");
 }
 
@@ -227,65 +227,65 @@ uint
 ialloc(ushort type)
 {
   uint inum = freeinode++;
-  struct dinode din;
+  ساخت dinode din;
 
-  bzero(&din, sizeof(din));
+  bzero(&din, حجم(din));
   din.type = xshort(type);
   din.nlink = xshort(1);
-  din.size = xint(0);
+  din.سائز = xint(0);
   winode(inum, &din);
-  return inum;
+  واپس inum;
 }
 
-void
-balloc(int used)
+خالی
+balloc(صحیح مستعمل_2)
 {
   uchar buf[BSIZE];
-  int i;
+  صحیح i;
 
-  printf("balloc: first %d blocks have been allocated\n", used);
-  assert(used < BPB);
+  لکھو("balloc: first %d blocks have been allocated\n", مستعمل_2);
+  أكد(مستعمل_2 < BPB);
   bzero(buf, BSIZE);
-  for (i = 0; i < used; i++) {
+  برائے (i = 0; i < مستعمل_2; i++) {
     buf[i / 8] = buf[i / 8] | (0x1 << (i % 8));
   }
-  printf("balloc: write bitmap block at sector %d\n", sb.bmapstart);
+  لکھو("balloc: write bitmap block at sector %d\n", sb.bmapstart);
   wsect(sb.bmapstart, buf);
 }
 
-#define min(a, b) ((a) < (b) ? (a) : (b))
+#تعریف_کرو min(a, b) ((a) < (b) ? (a) : (b))
 
-void
-iappend(uint inum, void *xp, int n)
+خالی
+iappend(uint inum, خالی *xp, صحیح n)
 {
-  char *p = (char *)xp;
+  حرف *p = (حرف *)xp;
   uint fbn, off, n1;
-  struct dinode din;
-  char buf[BSIZE];
-  uint indirect[NINDIRECT];
+  ساخت dinode din;
+  حرف buf[BSIZE];
+  uint بالواسطہ[NINDIRECT];
   uint x;
 
   rinode(inum, &din);
-  off = xint(din.size);
+  off = xint(din.سائز);
   // printf("append inum %d at off %d sz %d\n", inum, off, n);
-  while (n > 0) {
+  جب (n > 0) {
     fbn = off / BSIZE;
-    assert(fbn < MAXFILE);
-    if (fbn < NDIRECT) {
-      if (xint(din.addrs[fbn]) == 0) {
+    أكد(fbn < MAXFILE);
+    اگر (fbn < NDIRECT) {
+      اگر (xint(din.addrs[fbn]) == 0) {
         din.addrs[fbn] = xint(freeblock++);
       }
       x = xint(din.addrs[fbn]);
-    } else {
-      if (xint(din.addrs[NDIRECT]) == 0) {
+    } ورنہ {
+      اگر (xint(din.addrs[NDIRECT]) == 0) {
         din.addrs[NDIRECT] = xint(freeblock++);
       }
-      rsect(xint(din.addrs[NDIRECT]), (char *)indirect);
-      if (indirect[fbn - NDIRECT] == 0) {
-        indirect[fbn - NDIRECT] = xint(freeblock++);
-        wsect(xint(din.addrs[NDIRECT]), (char *)indirect);
+      rsect(xint(din.addrs[NDIRECT]), (حرف *)بالواسطہ);
+      اگر (بالواسطہ[fbn - NDIRECT] == 0) {
+        بالواسطہ[fbn - NDIRECT] = xint(freeblock++);
+        wsect(xint(din.addrs[NDIRECT]), (حرف *)بالواسطہ);
       }
-      x = xint(indirect[fbn - NDIRECT]);
+      x = xint(بالواسطہ[fbn - NDIRECT]);
     }
     n1 = min(n, (fbn + 1) * BSIZE - off);
     rsect(x, buf);
@@ -295,13 +295,13 @@ iappend(uint inum, void *xp, int n)
     off += n1;
     p += n1;
   }
-  din.size = xint(off);
+  din.سائز = xint(off);
   winode(inum, &din);
 }
 
-void
-die(const char *s)
+خالی
+die(ثابت حرف *s)
 {
   perror(s);
-  exit(1);
+  باہر_نکلو(1);
 }

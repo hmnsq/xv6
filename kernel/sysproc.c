@@ -1,84 +1,84 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "vm.h"
+#شامل "types.h"
+#شامل "riscv.h"
+#شامل "defs.h"
+#شامل "param.h"
+#شامل "memlayout.h"
+#شامل "spinlock.h"
+#شامل "proc.h"
+#شامل "vm.h"
 
 uint64
-sys_exit(void)
+sys_exit(خالی)
 {
-  int n;
+  صحیح n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  واپس 0; // not reached
 }
 
 uint64
-sys_getpid(void)
+sys_getpid(خالی)
 {
-  return myproc()->pid;
+  واپس myproc()->pid;
 }
 
 uint64
-sys_fork(void)
+sys_fork(خالی)
 {
-  return kfork();
+  واپس kfork();
 }
 
 uint64
-sys_wait(void)
+sys_wait(خالی)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  واپس kwait(p);
 }
 
 uint64
-sys_sbrk(void)
+sys_sbrk(خالی)
 {
   uint64 addr;
-  int t;
-  int n;
+  صحیح t;
+  صحیح n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  اگر (t == SBRK_EAGER || n < 0) {
+    اگر (growproc(n) < 0) {
+      واپس -1;
     }
-  } else {
+  } ورنہ {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    اگر (addr + n < addr)
+      واپس -1;
+    اگر (addr + n > TRAPFRAME)
+      واپس -1;
     myproc()->sz += n;
   }
-  return addr;
+  واپس addr;
 }
 
 uint64
-sys_pause(void)
+sys_pause(خالی)
 {
-  int n;
+  صحیح n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  اگر (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  جب (ticks - ticks0 < n) {
+    اگر (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      واپس -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,27 +86,27 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  واپس 0;
 }
 
 uint64
-sys_kill(void)
+sys_kill(خالی)
 {
-  int pid;
+  صحیح pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  واپس kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
 // since start.
 uint64
-sys_uptime(void)
+sys_uptime(خالی)
 {
   uint xticks;
 
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  واپس xticks;
 }

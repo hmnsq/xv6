@@ -9,21 +9,21 @@
 //   control-p -- print process list
 //
 
-#include <stdarg.h>
+#شامل <stdarg.h>
 
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
+#شامل "types.h"
+#شامل "param.h"
+#شامل "spinlock.h"
+#شامل "sleeplock.h"
+#شامل "fs.h"
+#شامل "file.h"
+#شامل "memlayout.h"
+#شامل "riscv.h"
+#شامل "defs.h"
+#شامل "proc.h"
 
-#define BACKSPACE 0x100       // erase the last output character
-#define C(x)      ((x) - '@') // Control-x
+#تعریف_کرو BACKSPACE 0x100       // erase the last output character
+#تعریف_کرو C(x)      ((x) - '@') // Control-x
 
 //
 // send one character to the uart, but don't use
@@ -31,25 +31,25 @@
 // interrupts, e.g. by printk and to echo input
 // characters.
 //
-void
-consputc(int c)
+خالی
+consputc(صحیح c)
 {
-  if (c == BACKSPACE) {
+  اگر (c == BACKSPACE) {
     // if the user typed backspace, overwrite with a space.
     uartputc_sync('\b');
     uartputc_sync(' ');
     uartputc_sync('\b');
-  } else {
+  } ورنہ {
     uartputc_sync(c);
   }
 }
 
-struct {
-  struct spinlock lock;
+ساخت {
+  ساخت spinlock تالا;
 
   // input circular buffer
-#define INPUT_BUF_SIZE 128
-  char buf[INPUT_BUF_SIZE];
+#تعریف_کرو داخلہ_BUF_سائز 128
+  حرف buf[داخلہ_BUF_سائز];
   uint r; // Read index
   uint w; // Write index
   uint e; // Edit index
@@ -59,23 +59,23 @@ struct {
 // user write() system calls to the console go here.
 // uses sleep() and UART interrupts.
 //
-int
-consolewrite(int user_src, uint64 src, int n)
+صحیح
+consolewrite(صحیح user_src, uint64 src, صحیح n)
 {
-  char buf[32]; // move batches from user space to uart.
-  int i = 0;
+  حرف buf[32]; // move batches from user space to uart.
+  صحیح i = 0;
 
-  while (i < n) {
-    int nn = sizeof(buf);
-    if (nn > n - i)
+  جب (i < n) {
+    صحیح nn = حجم(buf);
+    اگر (nn > n - i)
       nn = n - i;
-    if (either_copyin(buf, user_src, src + i, nn) == -1)
-      break;
+    اگر (either_copyin(buf, user_src, src + i, nn) == -1)
+      توڑو;
     uartwrite(buf, nn);
     i += nn;
   }
 
-  return i;
+  واپس i;
 }
 
 //
@@ -84,57 +84,57 @@ consolewrite(int user_src, uint64 src, int n)
 // user_dst indicates whether dst is a user
 // or kernel address.
 //
-int
-consoleread(int user_dst, uint64 dst, int n)
+صحیح
+consoleread(صحیح user_dst, uint64 dst, صحیح n)
 {
-  uint target;
-  int c;
-  char cbuf;
+  uint ہدف;
+  صحیح c;
+  حرف cbuf;
 
-  target = n;
-  acquire(&cons.lock);
-  while (n > 0) {
+  ہدف = n;
+  acquire(&cons.تالا);
+  جب (n > 0) {
     // wait until interrupt handler has put some
     // input into cons.buffer.
-    while (cons.r == cons.w) {
-      if (killed(myproc())) {
-        release(&cons.lock);
-        return -1;
+    جب (cons.r == cons.w) {
+      اگر (killed(myproc())) {
+        release(&cons.تالا);
+        واپس -1;
       }
       sleep_prepare(&cons.r);
-      release(&cons.lock);
+      release(&cons.تالا);
       sleep();
-      acquire(&cons.lock);
+      acquire(&cons.تالا);
     }
 
-    c = cons.buf[cons.r++ % INPUT_BUF_SIZE];
+    c = cons.buf[cons.r++ % داخلہ_BUF_سائز];
 
-    if (c == C('D')) { // end-of-file
-      if (n < target) {
+    اگر (c == C('D')) { // end-of-file
+      اگر (n < ہدف) {
         // Save ^D for next time, to make sure
         // caller gets a 0-byte result.
         cons.r--;
       }
-      break;
+      توڑو;
     }
 
     // copy the input byte to the user-space buffer.
     cbuf = c;
-    if (either_copyout(user_dst, dst, &cbuf, 1) == -1)
-      break;
+    اگر (either_copyout(user_dst, dst, &cbuf, 1) == -1)
+      توڑو;
 
     dst++;
     --n;
 
-    if (c == '\n') {
+    اگر (c == '\n') {
       // a whole line has arrived, return to
       // the user-level read().
-      break;
+      توڑو;
     }
   }
-  release(&cons.lock);
+  release(&cons.تالا);
 
-  return target - n;
+  واپس ہدف - n;
 }
 
 //
@@ -143,61 +143,61 @@ consoleread(int user_dst, uint64 dst, int n)
 // do erase/kill processing, append to cons.buf,
 // wake up consoleread() if a whole line has arrived.
 //
-void
-consoleintr(int c)
+خالی
+consoleintr(صحیح c)
 {
-  acquire(&cons.lock);
+  acquire(&cons.تالا);
 
-  switch (c) {
-  case C('P'): // Print process list.
+  انتخاب (c) {
+  حالت C('P'): // Print process list.
     procdump();
-    break;
-  case C('U'): // Kill line.
-    while (cons.e != cons.w &&
-           cons.buf[(cons.e - 1) % INPUT_BUF_SIZE] != '\n') {
+    توڑو;
+  حالت C('U'): // Kill line.
+    جب (cons.e != cons.w &&
+           cons.buf[(cons.e - 1) % داخلہ_BUF_سائز] != '\n') {
       cons.e--;
       consputc(BACKSPACE);
     }
-    break;
-  case C('H'): // Backspace
-  case '\x7f': // Delete key
-    if (cons.e != cons.w) {
+    توڑو;
+  حالت C('H'): // Backspace
+  حالت '\x7f': // Delete key
+    اگر (cons.e != cons.w) {
       cons.e--;
       consputc(BACKSPACE);
     }
-    break;
-  default:
-    if (c != 0 && cons.e - cons.r < INPUT_BUF_SIZE) {
+    توڑو;
+  طےشدہ:
+    اگر (c != 0 && cons.e - cons.r < داخلہ_BUF_سائز) {
       c = (c == '\r') ? '\n' : c;
 
       // echo back to the user.
       consputc(c);
 
       // store for consumption by consoleread().
-      cons.buf[cons.e++ % INPUT_BUF_SIZE] = c;
+      cons.buf[cons.e++ % داخلہ_BUF_سائز] = c;
 
-      if (c == '\n' || c == C('D') || cons.e - cons.r == INPUT_BUF_SIZE) {
+      اگر (c == '\n' || c == C('D') || cons.e - cons.r == داخلہ_BUF_سائز) {
         // wake up consoleread() if a whole line (or end-of-file)
         // has arrived.
         cons.w = cons.e;
         wakeup(&cons.r);
       }
     }
-    break;
+    توڑو;
   }
 
-  release(&cons.lock);
+  release(&cons.تالا);
 }
 
-void
-consoleinit(void)
+خالی
+consoleinit(خالی)
 {
-  initlock(&cons.lock, "cons");
+  initlock(&cons.تالا, "cons");
 
   uartinit();
 
   // connect read and write system calls
   // to consoleread and consolewrite.
-  devsw[CONSOLE].read = consoleread;
-  devsw[CONSOLE].write = consolewrite;
+  devsw[CONSOLE].اقرأ = consoleread;
+  devsw[CONSOLE].اكتب = consolewrite;
 }

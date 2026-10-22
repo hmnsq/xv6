@@ -1,23 +1,23 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#شامل "kernel/types.h"
+#شامل "kernel/stat.h"
+#شامل "user/user.h"
 
-int
-main(int argc, char *argv[])
+صحیح
+مین(صحیح argc, حرف *argv[])
 {
-  int i;
+  صحیح i;
 
-  if (argc < 2) {
+  اگر (argc < 2) {
     fprintf(2, "Usage: rm files...\n");
-    exit(1);
+    باہر_نکلو(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (unlink(argv[i]) < 0) {
+  برائے (i = 1; i < argc; i++) {
+    اگر (unlink(argv[i]) < 0) {
       fprintf(2, "rm: %s failed to delete\n", argv[i]);
-      break;
+      توڑو;
     }
   }
 
-  exit(0);
+  باہر_نکلو(0);
 }

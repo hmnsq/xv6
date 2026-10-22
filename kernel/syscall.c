@@ -1,61 +1,61 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "syscall.h"
-#include "defs.h"
+#شامل "types.h"
+#شامل "param.h"
+#شامل "memlayout.h"
+#شامل "riscv.h"
+#شامل "spinlock.h"
+#شامل "proc.h"
+#شامل "syscall.h"
+#شامل "defs.h"
 
 // Fetch the uint64 at addr from the current process.
-int
+صحیح
 fetchaddr(uint64 addr, uint64 *ip)
 {
-  struct proc *p = myproc();
-  if (addr >= p->sz ||
-      addr + sizeof(uint64) > p->sz) // both tests needed, in case of overflow
-    return -1;
-  if (copyin(p->pagetable, p->sz, (char *)ip, addr, sizeof(*ip)) != 0)
-    return -1;
-  return 0;
+  ساخت proc *p = myproc();
+  اگر (addr >= p->sz ||
+      addr + حجم(uint64) > p->sz) // both tests needed, in case of overflow
+    واپس -1;
+  اگر (copyin(p->pagetable, p->sz, (حرف *)ip, addr, حجم(*ip)) != 0)
+    واپس -1;
+  واپس 0;
 }
 
 // Fetch the nul-terminated string at addr from the current process.
 // Returns length of string, not including nul, or -1 for error.
-int
-fetchstr(uint64 addr, char *buf, int max)
+صحیح
+fetchstr(uint64 addr, حرف *buf, صحیح max)
 {
-  struct proc *p = myproc();
-  if (copyinstr(p->pagetable, p->sz, buf, addr, max) < 0)
-    return -1;
-  return strlen(buf);
+  ساخت proc *p = myproc();
+  اگر (copyinstr(p->pagetable, p->sz, buf, addr, max) < 0)
+    واپس -1;
+  واپس لڑی_لمبائی(buf);
 }
 
-static uint64
-argraw(int n)
+ساکن uint64
+argraw(صحیح n)
 {
-  struct proc *p = myproc();
-  switch (n) {
-  case 0:
-    return p->trapframe->a0;
-  case 1:
-    return p->trapframe->a1;
-  case 2:
-    return p->trapframe->a2;
-  case 3:
-    return p->trapframe->a3;
-  case 4:
-    return p->trapframe->a4;
-  case 5:
-    return p->trapframe->a5;
+  ساخت proc *p = myproc();
+  انتخاب (n) {
+  حالت 0:
+    واپس p->trapframe->a0;
+  حالت 1:
+    واپس p->trapframe->a1;
+  حالت 2:
+    واپس p->trapframe->a2;
+  حالت 3:
+    واپس p->trapframe->a3;
+  حالت 4:
+    واپس p->trapframe->a4;
+  حالت 5:
+    واپس p->trapframe->a5;
   }
   panic("argraw");
-  return -1;
+  واپس -1;
 }
 
 // Fetch the nth 32-bit system call argument.
-void
-argint(int n, int *ip)
+خالی
+argint(صحیح n, صحیح *ip)
 {
   *ip = argraw(n);
 }
@@ -63,8 +63,8 @@ argint(int n, int *ip)
 // Retrieve an argument as a pointer.
 // Doesn't check for legality, since
 // copyin/copyout will do that.
-void
-argaddr(int n, uint64 *ip)
+خالی
+argaddr(صحیح n, uint64 *ip)
 {
   *ip = argraw(n);
 }
@@ -72,41 +72,41 @@ argaddr(int n, uint64 *ip)
 // Fetch the nth word-sized system call argument as a null-terminated string.
 // Copies into buf, at most max.
 // Returns string length if OK (not including nul), -1 if error.
-int
-argstr(int n, char *buf, int max)
+صحیح
+argstr(صحیح n, حرف *buf, صحیح max)
 {
   uint64 addr;
   argaddr(n, &addr);
-  return fetchstr(addr, buf, max);
+  واپس fetchstr(addr, buf, max);
 }
 
 // Prototypes for the functions that handle system calls.
-extern uint64 sys_fork(void);
-extern uint64 sys_exit(void);
-extern uint64 sys_wait(void);
-extern uint64 sys_pipe(void);
-extern uint64 sys_read(void);
-extern uint64 sys_kill(void);
-extern uint64 sys_exec(void);
-extern uint64 sys_fstat(void);
-extern uint64 sys_chdir(void);
-extern uint64 sys_dup(void);
-extern uint64 sys_getpid(void);
-extern uint64 sys_sbrk(void);
-extern uint64 sys_pause(void);
-extern uint64 sys_uptime(void);
-extern uint64 sys_open(void);
-extern uint64 sys_write(void);
-extern uint64 sys_mknod(void);
-extern uint64 sys_unlink(void);
-extern uint64 sys_link(void);
-extern uint64 sys_mkdir(void);
-extern uint64 sys_close(void);
-extern uint64 sys_sync(void);
+خارجی uint64 sys_fork(خالی);
+خارجی uint64 sys_exit(خالی);
+خارجی uint64 sys_wait(خالی);
+خارجی uint64 sys_pipe(خالی);
+خارجی uint64 sys_read(خالی);
+خارجی uint64 sys_kill(خالی);
+خارجی uint64 sys_exec(خالی);
+خارجی uint64 sys_fstat(خالی);
+خارجی uint64 sys_chdir(خالی);
+خارجی uint64 sys_dup(خالی);
+خارجی uint64 sys_getpid(خالی);
+خارجی uint64 sys_sbrk(خالی);
+خارجی uint64 sys_pause(خالی);
+خارجی uint64 sys_uptime(خالی);
+خارجی uint64 sys_open(خالی);
+خارجی uint64 sys_write(خالی);
+خارجی uint64 sys_mknod(خالی);
+خارجی uint64 sys_unlink(خالی);
+خارجی uint64 sys_link(خالی);
+خارجی uint64 sys_mkdir(خالی);
+خارجی uint64 sys_close(خالی);
+خارجی uint64 sys_sync(خالی);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
-static uint64 (*syscalls[])(void) = {
+ساکن uint64 (*syscalls[])(خالی) = {
   // clang-format off
   [SYS_fork]    = sys_fork,
   [SYS_exit]    = sys_exit,
@@ -133,19 +133,19 @@ static uint64 (*syscalls[])(void) = {
   // clang-format on
 };
 
-void
-syscall(void)
+خالی
+syscall(خالی)
 {
-  int num;
-  struct proc *p = myproc();
+  صحیح عدد;
+  ساخت proc *p = myproc();
 
-  num = p->trapframe->a7;
-  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+  عدد = p->trapframe->a7;
+  اگر (عدد > 0 && عدد < NELEM(syscalls) && syscalls[عدد]) {
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
-    p->trapframe->a0 = syscalls[num]();
-  } else {
-    printk("%d %s: unknown sys call %d\n", p->pid, p->name, num);
+    p->trapframe->a0 = syscalls[عدد]();
+  } ورنہ {
+    printk("%d %s: unknown sys call %d\n", p->pid, p->name, عدد);
     p->trapframe->a0 = -1;
   }
 }

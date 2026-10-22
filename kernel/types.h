@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+قسمتعریف غیرعلامتی صحیح uint;
+قسمتعریف غیرعلامتی مختصر ushort;
+قسمتعریف غیرعلامتی حرف uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+قسمتعریف غیرعلامتی حرف uint8;
+قسمتعریف غیرعلامتی مختصر uint16;
+قسمتعریف غیرعلامتی صحیح uint32;
+قسمتعریف غیرعلامتی طویل uint64;
 
-typedef uint64 pde_t;
+قسمتعریف uint64 pde_t;
