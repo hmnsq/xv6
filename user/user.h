@@ -1,49 +1,49 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((var_na *)-1)
 
-struct stat;
+sa_nracanaa stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+ཧྲིལ fork(void);
+ཧྲིལ exit(ཧྲིལ) __attribute__((noreturn));
+ཧྲིལ wait(ཧྲིལ *);
+ཧྲིལ pipe(ཧྲིལ *);
+ཧྲིལ write(ཧྲིལ, const void *, ཧྲིལ);
+ཧྲིལ read(ཧྲིལ, void *, ཧྲིལ);
+ཧྲིལ close(ཧྲིལ);
+ཧྲིལ kill(ཧྲིལ);
+ཧྲིལ exec(const var_na *, var_na **);
+ཧྲིལ open(const var_na *, ཧྲིལ);
+ཧྲིལ mknod(const var_na *, short, short);
+ཧྲིལ unlink(const var_na *);
+ཧྲིལ fstat(ཧྲིལ fd, sa_nracanaa stat *);
+ཧྲིལ link(const var_na *, const var_na *);
+ཧྲིལ mkdir(const var_na *);
+ཧྲིལ chdir(const var_na *);
+ཧྲིལ dup(ཧྲིལ);
+ཧྲིལ getpid(void);
+var_na *sys_sbrk(ཧྲིལ, ཧྲིལ);
+ཧྲིལ pause(ཧྲིལ);
+ཧྲིལ uptime(void);
+ཧྲིལ sync(void);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
+ཧྲིལ stat(const var_na *, sa_nracanaa stat *);
+var_na *strcpy(var_na *, const var_na *);
+void *memmove(void *, const void *, ཧྲིལ);
+var_na *strchr(const var_na *, var_na c);
+ཧྲིལ strcmp(const var_na *, const var_na *);
+var_na *gets(var_na *, ཧྲིལ max);
+uint strlen(const var_na *);
+void *memset(void *, ཧྲིལ, uint);
+ཧྲིལ atoi(const var_na *);
+ཧྲིལ memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+var_na *sbrk(ཧྲིལ);
+var_na *sbrklazy(ཧྲིལ);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+void fprintf(ཧྲིལ, const var_na *, ...) __attribute__((format(printf, 2, 3)));
+void printf(const var_na *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
 void *malloc(uint);

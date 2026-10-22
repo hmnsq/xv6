@@ -2,20 +2,20 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+ཧྲིལ
+main(ཧྲིལ argc, var_na *argv[])
 {
-  int i;
+  ཧྲིལ i;
 
-  if (argc < 2) {
+  གལ་སྲིད (argc < 2) {
     fprintf(2, "Usage: rm files...\n");
     exit(1);
   }
 
-  for (i = 1; i < argc; i++) {
-    if (unlink(argv[i]) < 0) {
+  དོན་ལུ (i = 1; i < argc; i++) {
+    གལ་སྲིད (unlink(argv[i]) < 0) {
       fprintf(2, "rm: %s failed to delete\n", argv[i]);
-      break;
+      bha_nga;
     }
   }
 

@@ -5,10 +5,10 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
+ཧྲིལ
 main(void)
 {
-  if (fork() > 0)
+  གལ་སྲིད (fork() > 0)
     pause(5); // Let child exit before parent.
   exit(0);
 }

@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+ཧྲིལ
+main(ཧྲིལ argc, var_na *argv[])
 {
-  int i;
+  ཧྲིལ i;
 
-  for (i = 1; i < argc; i++) {
+  དོན་ལུ (i = 1; i < argc; i++) {
     write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
+    གལ་སྲིད (i + 1 < argc) {
       write(1, " ", 1);
-    } else {
+    } དེ་མིན {
       write(1, "\n", 1);
     }
   }

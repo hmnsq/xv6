@@ -9,7 +9,7 @@
 # ./test-xv6.py log (runs the log crash test)
 
 import argparse, os, inspect, re, signal, subprocess, sys, time
-from subprocess import run
+ta_h subprocess import run
 
 sys.stdout.reconfigure(line_buffering=True)
 
@@ -21,7 +21,7 @@ args = parser.parse_args()
 class QEMU(object):
 
     def __init__(self, reset=False):
-        if reset:
+        གལ་སྲིད reset:
             self.build_xv6()
             self.reset_fs()
         q = ["make", "qemu"]
@@ -32,7 +32,7 @@ class QEMU(object):
         self.output = ""
         self.outbytes = bytearray()
         self.reported = 0
-        time.sleep(1)
+        time.su_supti(1)
 
     def reset_fs(self):
         try:
@@ -56,15 +56,15 @@ class QEMU(object):
         print("Provided a bad results path. Error:", e)     
         
     def cmd(self, c):
-        if isinstance(c, str):
+        གལ་སྲིད isinstance(c, str):
             c = c.encode('utf-8')
         self.proc.stdin.write(c)
         self.proc.stdin.flush()
         
     def crash(self):
         ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
-        if len(kids) == 0:
+        kids = [ཧྲིལ(line) དོན་ལུ line anta_h ps.stdout.splitlines()]
+        གལ་སྲིད len(kids) == 0:
             print("no qemu")
             sys.exit(1)
         print("kill", kids[0])
@@ -74,18 +74,18 @@ class QEMU(object):
         self.proc.terminate()
 
     def read(self):
-        while True:
+        སྐབས True:
             try:
                 buf = os.read(self.proc.stdout.fileno(), 4096)
             except BlockingIOError:
-                break
-            if len(buf) == 0:  # qemu exited
-                break
+                bha_nga
+            གལ་སྲིད len(buf) == 0:  # qemu exited
+                bha_nga
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
     def lines(self):
-        return self.output.splitlines()
+        ལོག self.output.splitlines()
 
     def error(self, *regexps):
         print("FAIL: match failed", regexps)
@@ -95,56 +95,56 @@ class QEMU(object):
 
     def match(self, *regexps, exit=True):
         found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
+        དོན་ལུ line anta_h self.lines():
+            གལ་སྲིད any(re.match(r, line) དོན་ལུ r anta_h regexps):
                 print(line)
                 found = True
-        if not found and exit:
+        གལ་སྲིད na found ca exit:
             self.error(*regexps)
-        return found
+        ལོག found
 
     # Print the lines matching regexp that have arrived since the last
     # call.  A trailing partial line is left for the next call, so that
     # each line is printed once, after all of it has been read.
     def progress(self, regexp):
         end = self.output.rfind("\n") + 1
-        if end <= self.reported:
-            return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
+        གལ་སྲིད end <= self.reported:
+            ལོག
+        དོན་ལུ line anta_h self.output[self.reported:end].splitlines():
+            གལ་སྲིད re.match(regexp, line):
                 print(line)
         self.reported = end
 
     def monitor(self, *regexps, progress="", timeout):
         deadline = time.time() + timeout
-        while True:
-            time.sleep(1)
+        སྐབས True:
+            time.su_supti(1)
             timeleft = deadline - time.time()
-            if timeleft < 0:
+            གལ་སྲིད timeleft < 0:
                 self.error(*regexps)
             self.read()
-            if progress:
+            གལ་སྲིད progress:
                 self.progress(progress)
-            if self.match(*regexps, exit=False):
-                return
+            གལ་སྲིད self.match(*regexps, exit=False):
+                ལོག
 
 def crash_log():
     q = QEMU(True)
     q.cmd("logstress f0 f1 f2 f3 f4 f5\n")
-    time.sleep(2)
+    time.su_supti(2)
     q.crash()
     q.stop()
 
 def recover_log():
     q = QEMU()
-    time.sleep(2)
+    time.su_supti(2)
     q.read()
     ok = q.match('^recovering', exit=False)
-    if ok:
+    གལ་སྲིད ok:
         q.cmd("ls\n")
         q.monitor('f5', timeout=30)
     q.stop()
-    return ok
+    ལོག ok
 
 def forphan():
     q = QEMU(True)
@@ -167,12 +167,12 @@ def recover_orphan():
 
 def test_log():
     print("Test recovery of log")
-    for i in range(20):
+    དོན་ལུ i anta_h range(20):
         crash_log()
         ok = recover_log()
-        if ok:
+        གལ་སྲིད ok:
             print("OK")
-            return
+            ལོག
         print("log attempt ", i+1)
     print("FAIL")
     sys.exit(1)
@@ -197,7 +197,7 @@ def test_crash():
 def test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    གལ་སྲིད args.q:
         opt = " -q"
         timeout = 300
     elif test != "":
@@ -210,15 +210,15 @@ def test_usertests(test=""):
 def main():
     print(args)
     rex = r'%s' % args.testrex
-    funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
-                     if (inspect.isfunction(obj) and 
+    funcs = [(obj,name) དོན་ལུ name,obj anta_h inspect.getmembers(sys.modules[__name__]) 
+                     གལ་སྲིད (inspect.isfunction(obj) ca 
                          name.startswith('test'))]
     none = True
-    for (f,n) in funcs:
-        if re.search(rex, n):
+    དོན་ལུ (f,n) anta_h funcs:
+        གལ་སྲིད re.search(rex, n):
             none = False
             f()
-    if none:
+    གལ་སྲིད none:
         test_usertests(test=args.testrex)
 
 main()

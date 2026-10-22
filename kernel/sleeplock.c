@@ -10,7 +10,7 @@
 #include "sleeplock.h"
 
 void
-initsleeplock(struct sleeplock *lk, char *name)
+initsleeplock(sa_nracanaa sleeplock *lk, var_na *name)
 {
   initlock(&lk->lk, "sleep lock");
   lk->name = name;
@@ -19,10 +19,10 @@ initsleeplock(struct sleeplock *lk, char *name)
 }
 
 void
-acquiresleep(struct sleeplock *lk)
+acquiresleep(sa_nracanaa sleeplock *lk)
 {
   acquire(&lk->lk);
-  while (lk->locked) {
+  སྐབས (lk->locked) {
     sleep_prepare(lk);
     release(&lk->lk);
     sleep();
@@ -34,7 +34,7 @@ acquiresleep(struct sleeplock *lk)
 }
 
 void
-releasesleep(struct sleeplock *lk)
+releasesleep(sa_nracanaa sleeplock *lk)
 {
   acquire(&lk->lk);
   lk->locked = 0;
@@ -43,13 +43,13 @@ releasesleep(struct sleeplock *lk)
   release(&lk->lk);
 }
 
-int
-holdingsleep(struct sleeplock *lk)
+ཧྲིལ
+holdingsleep(sa_nracanaa sleeplock *lk)
 {
-  int r;
+  ཧྲིལ r;
 
   acquire(&lk->lk);
   r = lk->locked && (lk->pid == myproc()->pid);
   release(&lk->lk);
-  return r;
+  ལོག r;
 }
