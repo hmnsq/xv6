@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((वर्ण *)-1)
 
-struct stat;
+संरचना stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+पूर्णाङ्क fork(शून्य);
+पूर्णाङ्क exit(पूर्णाङ्क) __attribute__((noreturn));
+पूर्णाङ्क wait(पूर्णाङ्क *);
+पूर्णाङ्क pipe(पूर्णाङ्क *);
+पूर्णाङ्क लिख(पूर्णाङ्क, ध्रुव शून्य *, पूर्णाङ्क);
+पूर्णाङ्क पठ(पूर्णाङ्क, शून्य *, पूर्णाङ्क);
+पूर्णाङ्क close(पूर्णाङ्क);
+पूर्णाङ्क kill(पूर्णाङ्क);
+पूर्णाङ्क exec(ध्रुव वर्ण *, वर्ण **);
+पूर्णाङ्क open(ध्रुव वर्ण *, पूर्णाङ्क);
+पूर्णाङ्क mknod(ध्रुव वर्ण *, short, short);
+पूर्णाङ्क unlink(ध्रुव वर्ण *);
+पूर्णाङ्क fstat(पूर्णाङ्क fd, संरचना stat *);
+पूर्णाङ्क link(ध्रुव वर्ण *, ध्रुव वर्ण *);
+पूर्णाङ्क mkdir(ध्रुव वर्ण *);
+पूर्णाङ्क chdir(ध्रुव वर्ण *);
+पूर्णाङ्क dup(पूर्णाङ्क);
+पूर्णाङ्क getpid(शून्य);
+वर्ण *sys_sbrk(पूर्णाङ्क, पूर्णाङ्क);
+पूर्णाङ्क pause(पूर्णाङ्क);
+पूर्णाङ्क uptime(शून्य);
+पूर्णाङ्क sync(शून्य);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+पूर्णाङ्क stat(ध्रुव वर्ण *, संरचना stat *);
+वर्ण *strcpy(वर्ण *, ध्रुव वर्ण *);
+शून्य *memmove(शून्य *, ध्रुव शून्य *, पूर्णाङ्क);
+वर्ण *strchr(ध्रुव वर्ण *, वर्ण c);
+पूर्णाङ्क strcmp(ध्रुव वर्ण *, ध्रुव वर्ण *);
+वर्ण *gets(वर्ण *, पूर्णाङ्क max);
+uint strlen(ध्रुव वर्ण *);
+शून्य *memset(शून्य *, पूर्णाङ्क, uint);
+पूर्णाङ्क atoi(ध्रुव वर्ण *);
+पूर्णाङ्क memcmp(ध्रुव शून्य *, ध्रुव शून्य *, uint);
+शून्य *memcpy(शून्य *, ध्रुव शून्य *, uint);
+वर्ण *sbrk(पूर्णाङ्क);
+वर्ण *sbrklazy(पूर्णाङ्क);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+शून्य fprintf(पूर्णाङ्क, ध्रुव वर्ण *, ...) __attribute__((format(printf, 2, 3)));
+शून्य printf(ध्रुव वर्ण *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+शून्य *malloc(uint);
+शून्य मुक्त(शून्य *);
