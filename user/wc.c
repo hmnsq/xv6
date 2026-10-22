@@ -3,48 +3,48 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
-char buf[512];
+var_na buf[512];
 
 void
-wc(int fd, char *name)
+wc(ကိန်းပြည့် fd, var_na *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  ကိန်းပြည့် i, n;
+  ကိန်းပြည့် l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  နေစဉ် ((n = read(fd, buf, parimaa_na(buf))) > 0) {
+    အတွက် (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      အကယ်၍ (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      အကယ်၍ (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      မဟုတ်ပါက အကယ်၍ (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  အကယ်၍ (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+ကိန်းပြည့်
+main(ကိန်းပြည့် argc, var_na *argv[])
 {
-  int fd, i;
+  ကိန်းပြည့် fd, i;
 
-  if (argc <= 1) {
+  အကယ်၍ (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  အတွက် (i = 1; i < argc; i++) {
+    အကယ်၍ ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

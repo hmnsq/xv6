@@ -10,25 +10,25 @@
 
 #define PIPESIZE 512
 
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
+sa_nracanaa pipe {
+  sa_nracanaa spinlock lock;
+  var_na data[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  ကိန်းပြည့် readopen;  // read fd is still open
+  ကိန်းပြည့် writeopen; // write fd is still open
 };
 
-int
-pipealloc(struct file **f0, struct file **f1)
+ကိန်းပြည့်
+pipealloc(sa_nracanaa file **f0, sa_nracanaa file **f1)
 {
-  struct pipe *pi;
+  sa_nracanaa pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+  အကယ်၍ ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
+  အကယ်၍ ((pi = (sa_nracanaa pipe *)kalloc()) == 0)
     goto bad;
   pi->readopen = 1;
   pi->writeopen = 1;
@@ -43,60 +43,60 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  ပြန်ပေး 0;
 
 bad:
-  if (pi)
-    kfree((char *)pi);
-  if (*f0)
+  အကယ်၍ (pi)
+    kfree((var_na *)pi);
+  အကယ်၍ (*f0)
     fileclose(*f0);
-  if (*f1)
+  အကယ်၍ (*f1)
     fileclose(*f1);
-  return -1;
+  ပြန်ပေး -1;
 }
 
 void
-pipeclose(struct pipe *pi, int writable)
+pipeclose(sa_nracanaa pipe *pi, ကိန်းပြည့် writable)
 {
   acquire(&pi->lock);
-  if (writable) {
+  အကယ်၍ (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } မဟုတ်ပါက {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
+  အကယ်၍ (pi->readopen == 0 && pi->writeopen == 0) {
     release(&pi->lock);
-    kfree((char *)pi);
-  } else
+    kfree((var_na *)pi);
+  } မဟုတ်ပါက
     release(&pi->lock);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+ကိန်းပြည့်
+pipewrite(sa_nracanaa pipe *pi, uint64 addr, ကိန်းပြည့် n)
 {
-  int i = 0;
-  struct proc *pr = myproc();
+  ကိန်းပြည့် i = 0;
+  sa_nracanaa proc *pr = myproc();
 
   acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
+  နေစဉ် (i < n) {
+    အကယ်၍ (pi->readopen == 0 || killed(pr)) {
       release(&pi->lock);
-      return -1;
+      ပြန်ပေး -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    အကယ်၍ (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
       release(&pi->lock);
       sleep();
       acquire(&pi->lock);
-    } else {
-      char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+    } မဟုတ်ပါက {
+      var_na ch;
+      အကယ်၍ (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        အကယ်၍ (i == 0)
           i = -1;
-        break;
+        bha_nga;
       }
       pi->data[pi->nwrite++ % PIPESIZE] = ch;
       i++;
@@ -105,39 +105,39 @@ pipewrite(struct pipe *pi, uint64 addr, int n)
   wakeup(&pi->nread);
   release(&pi->lock);
 
-  return i;
+  ပြန်ပေး i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+ကိန်းပြည့်
+piperead(sa_nracanaa pipe *pi, uint64 addr, ကိန်းပြည့် n)
 {
-  int i;
-  struct proc *pr = myproc();
-  char ch;
+  ကိန်းပြည့် i;
+  sa_nracanaa proc *pr = myproc();
+  var_na ch;
 
   acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
+  နေစဉ် (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    အကယ်၍ (killed(pr)) {
       release(&pi->lock);
-      return -1;
+      ပြန်ပေး -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
     release(&pi->lock);
     sleep();
     acquire(&pi->lock);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
-      break;
+  အတွက် (i = 0; i < n; i++) { //DOC: piperead-copy
+    အကယ်၍ (pi->nread == pi->nwrite)
+      bha_nga;
     ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+    အကယ်၍ (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      အကယ်၍ (i == 0)
         i = -1;
-      break;
+      bha_nga;
     }
     pi->nread++;
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
   release(&pi->lock);
-  return i;
+  ပြန်ပေး i;
 }

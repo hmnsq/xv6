@@ -1,60 +1,60 @@
 // clang-format off
-struct buf;
-struct context;
-struct file;
-struct inode;
-struct pipe;
-struct proc;
-struct spinlock;
-struct sleeplock;
-struct stat;
-struct superblock;
+sa_nracanaa buf;
+sa_nracanaa context;
+sa_nracanaa file;
+sa_nracanaa inode;
+sa_nracanaa pipe;
+sa_nracanaa proc;
+sa_nracanaa spinlock;
+sa_nracanaa sleeplock;
+sa_nracanaa stat;
+sa_nracanaa superblock;
 
 // bio.c
 void            binit(void);
-struct buf*     bread(uint, uint);
-void            brelse(struct buf*);
-void            bwrite(struct buf*);
-void            bpin(struct buf*);
-void            bunpin(struct buf*);
+sa_nracanaa buf*     bread(uint, uint);
+void            brelse(sa_nracanaa buf*);
+void            bwrite(sa_nracanaa buf*);
+void            bpin(sa_nracanaa buf*);
+void            bunpin(sa_nracanaa buf*);
 
 // console.c
 void            consoleinit(void);
-void            consoleintr(int);
-void            consputc(int);
+void            consoleintr(ကိန်းပြည့်);
+void            consputc(ကိန်းပြည့်);
 
 // exec.c
-int             kexec(char*, char**);
+ကိန်းပြည့်             kexec(var_na*, var_na**);
 
 // file.c
-struct file*    filealloc(void);
-void            fileclose(struct file*);
-struct file*    filedup(struct file*);
+sa_nracanaa file*    filealloc(void);
+void            fileclose(sa_nracanaa file*);
+sa_nracanaa file*    filedup(sa_nracanaa file*);
 void            fileinit(void);
-int             fileread(struct file*, uint64, int n);
-int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, uint64, int n);
+ကိန်းပြည့်             fileread(sa_nracanaa file*, uint64, ကိန်းပြည့် n);
+ကိန်းပြည့်             filestat(sa_nracanaa file*, uint64 addr);
+ကိန်းပြည့်             filewrite(sa_nracanaa file*, uint64, ကိန်းပြည့် n);
 
 // fs.c
-void            fsinit(int);
-int             dirlink(struct inode*, char*, uint);
-struct inode*   dirlookup(struct inode*, char*, uint*);
-struct inode*   ialloc(uint, short);
-struct inode*   idup(struct inode*);
+void            fsinit(ကိန်းပြည့်);
+ကိန်းပြည့်             dirlink(sa_nracanaa inode*, var_na*, uint);
+sa_nracanaa inode*   dirlookup(sa_nracanaa inode*, var_na*, uint*);
+sa_nracanaa inode*   ialloc(uint, short);
+sa_nracanaa inode*   idup(sa_nracanaa inode*);
 void            iinit();
-void            ilock(struct inode*);
-void            iput(struct inode*);
-void            iunlock(struct inode*);
-void            iunlockput(struct inode*);
-void            iupdate(struct inode*);
-int             namecmp(const char*, const char*);
-struct inode*   namei(char*);
-struct inode*   nameiparent(char*, char*);
-int             readi(struct inode*, int, uint64, uint, uint);
-void            stati(struct inode*, struct stat*);
-int             writei(struct inode*, int, uint64, uint, uint);
-void            itrunc(struct inode*);
-void            ireclaim(int);
+void            ilock(sa_nracanaa inode*);
+void            iput(sa_nracanaa inode*);
+void            iunlock(sa_nracanaa inode*);
+void            iunlockput(sa_nracanaa inode*);
+void            iupdate(sa_nracanaa inode*);
+ကိန်းပြည့်             namecmp(const var_na*, const var_na*);
+sa_nracanaa inode*   namei(var_na*);
+sa_nracanaa inode*   nameiparent(var_na*, var_na*);
+ကိန်းပြည့်             readi(sa_nracanaa inode*, ကိန်းပြည့်, uint64, uint, uint);
+void            stati(sa_nracanaa inode*, sa_nracanaa stat*);
+ကိန်းပြည့်             writei(sa_nracanaa inode*, ကိန်းပြည့်, uint64, uint, uint);
+void            itrunc(sa_nracanaa inode*);
+void            ireclaim(ကိန်းပြည့်);
 
 // kalloc.c
 void*           kalloc(void);
@@ -62,125 +62,125 @@ void            kfree(void *);
 void            kinit(void);
 
 // log.c
-void            initlog(int, struct superblock*);
-void            log_write(struct buf*);
+void            initlog(ကိန်းပြည့်, sa_nracanaa superblock*);
+void            log_write(sa_nracanaa buf*);
 void            begin_op(void);
 void            end_op(void);
 
 // pipe.c
-int             pipealloc(struct file**, struct file**);
-void            pipeclose(struct pipe*, int);
-int             piperead(struct pipe*, uint64, int);
-int             pipewrite(struct pipe*, uint64, int);
+ကိန်းပြည့်             pipealloc(sa_nracanaa file**, sa_nracanaa file**);
+void            pipeclose(sa_nracanaa pipe*, ကိန်းပြည့်);
+ကိန်းပြည့်             piperead(sa_nracanaa pipe*, uint64, ကိန်းပြည့်);
+ကိန်းပြည့်             pipewrite(sa_nracanaa pipe*, uint64, ကိန်းပြည့်);
 
 // printk.c
-int             printk(char*, ...) __attribute__ ((format (printf, 1, 2)));
-void            panic(char*) __attribute__((noreturn));
+ကိန်းပြည့်             printk(var_na*, ...) __attribute__ ((format (printf, 1, 2)));
+void            panic(var_na*) __attribute__((noreturn));
 void            printkinit(void);
 
 // proc.c
-int             cpuid(void);
-void            kexit(int);
-int             kfork(void);
-int             growproc(int);
+ကိန်းပြည့်             cpuid(void);
+void            kexit(ကိန်းပြည့်);
+ကိန်းပြည့်             kfork(void);
+ကိန်းပြည့်             growproc(ကိန်းပြည့်);
 void            proc_mapstacks(pagetable_t);
-pagetable_t     proc_pagetable(struct proc *);
+pagetable_t     proc_pagetable(sa_nracanaa proc *);
 void            proc_freepagetable(pagetable_t, uint64);
-int             kkill(int);
-int             killed(struct proc*);
-void            setkilled(struct proc*);
-struct cpu*     mycpu(void);
-struct proc*    myproc();
+ကိန်းပြည့်             kkill(ကိန်းပြည့်);
+ကိန်းပြည့်             killed(sa_nracanaa proc*);
+void            setkilled(sa_nracanaa proc*);
+sa_nracanaa cpu*     mycpu(void);
+sa_nracanaa proc*    myproc();
 void            procinit(void);
 void            scheduler(void) __attribute__((noreturn));
 void            sched(void);
 void            sleep_prepare(void*);
 void            sleep(void);
 void            userinit(void);
-int             kwait(uint64);
+ကိန်းပြည့်             kwait(uint64);
 void            wakeup(void*);
 void            yield(void);
-int             either_copyout(int user_dst, uint64 dst, void *src, uint64 len);
-int             either_copyin(void *dst, int user_src, uint64 src, uint64 len);
+ကိန်းပြည့်             either_copyout(ကိန်းပြည့် user_dst, uint64 dst, void *src, uint64 len);
+ကိန်းပြည့်             either_copyin(void *dst, ကိန်းပြည့် user_src, uint64 src, uint64 len);
 void            procdump(void);
 
 // swtch.S
-void            swtch(struct context*, struct context*);
+void            swtch(sa_nracanaa context*, sa_nracanaa context*);
 
 // spinlock.c
-void            acquire(struct spinlock*);
-int             holding(struct spinlock*);
-void            initlock(struct spinlock*, char*);
-void            release(struct spinlock*);
+void            acquire(sa_nracanaa spinlock*);
+ကိန်းပြည့်             holding(sa_nracanaa spinlock*);
+void            initlock(sa_nracanaa spinlock*, var_na*);
+void            release(sa_nracanaa spinlock*);
 void            push_off(void);
 void            pop_off(void);
 
 // sleeplock.c
-void            acquiresleep(struct sleeplock*);
-void            releasesleep(struct sleeplock*);
-int             holdingsleep(struct sleeplock*);
-void            initsleeplock(struct sleeplock*, char*);
+void            acquiresleep(sa_nracanaa sleeplock*);
+void            releasesleep(sa_nracanaa sleeplock*);
+ကိန်းပြည့်             holdingsleep(sa_nracanaa sleeplock*);
+void            initsleeplock(sa_nracanaa sleeplock*, var_na*);
 
 // string.c
-int             memcmp(const void*, const void*, uint);
+ကိန်းပြည့်             memcmp(const void*, const void*, uint);
 void*           memmove(void*, const void*, uint);
-void*           memset(void*, int, uint);
-char*           safestrcpy(char*, const char*, int);
-int             strlen(const char*);
-int             strncmp(const char*, const char*, uint);
-char*           strncpy(char*, const char*, int);
+void*           memset(void*, ကိန်းပြည့်, uint);
+var_na*           safestrcpy(var_na*, const var_na*, ကိန်းပြည့်);
+ကိန်းပြည့်             strlen(const var_na*);
+ကိန်းပြည့်             strncmp(const var_na*, const var_na*, uint);
+var_na*           strncpy(var_na*, const var_na*, ကိန်းပြည့်);
 
 // syscall.c
-void            argint(int, int*);
-int             argstr(int, char*, int);
-void            argaddr(int, uint64 *);
-int             fetchstr(uint64, char*, int);
-int             fetchaddr(uint64, uint64*);
+void            argint(ကိန်းပြည့်, ကိန်းပြည့်*);
+ကိန်းပြည့်             argstr(ကိန်းပြည့်, var_na*, ကိန်းပြည့်);
+void            argaddr(ကိန်းပြည့်, uint64 *);
+ကိန်းပြည့်             fetchstr(uint64, var_na*, ကိန်းပြည့်);
+ကိန်းပြည့်             fetchaddr(uint64, uint64*);
 void            syscall();
 
 // trap.c
 extern uint     ticks;
 void            trapinit(void);
 void            trapinithart(void);
-extern struct spinlock tickslock;
+extern sa_nracanaa spinlock tickslock;
 void            prepare_return(void);
 
 // uart.c
 void            uartinit(void);
 void            uartintr(void);
-void            uartwrite(char [], int);
-void            uartputc_sync(int);
+void            uartwrite(var_na [], ကိန်းပြည့်);
+void            uartputc_sync(ကိန်းပြည့်);
 
 // vm.c
 void            kvminit(void);
 void            kvminithart(void);
-void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
-int             mappages(pagetable_t, uint64, uint64, uint64, int);
+void            kvmmap(pagetable_t, uint64, uint64, uint64, ကိန်းပြည့်);
+ကိန်းပြည့်             mappages(pagetable_t, uint64, uint64, uint64, ကိန်းပြည့်);
 pagetable_t     uvmcreate(void);
-uint64          uvmalloc(pagetable_t, uint64, uint64, int);
+uint64          uvmalloc(pagetable_t, uint64, uint64, ကိန်းပြည့်);
 uint64          uvmdealloc(pagetable_t, uint64, uint64);
-int             uvmcopy(pagetable_t, pagetable_t, uint64);
+ကိန်းပြည့်             uvmcopy(pagetable_t, pagetable_t, uint64);
 void            uvmfree(pagetable_t, uint64);
-void            uvmunmap(pagetable_t, uint64, uint64, int);
+void            uvmunmap(pagetable_t, uint64, uint64, ကိန်းပြည့်);
 void            uvmclear(pagetable_t, uint64);
-pte_t *         walk(pagetable_t, uint64, int);
+pte_t *         walk(pagetable_t, uint64, ကိန်းပြည့်);
 uint64          walkaddr(pagetable_t, uint64);
-int             copyout(pagetable_t, uint64, uint64, char *, uint64);
-int             copyin(pagetable_t, uint64, char *, uint64, uint64);
-int             copyinstr(pagetable_t, uint64, char *, uint64, uint64);
-int             ismapped(pagetable_t, uint64);
-uint64          vmfault(pagetable_t, uint64, uint64, int);
+ကိန်းပြည့်             copyout(pagetable_t, uint64, uint64, var_na *, uint64);
+ကိန်းပြည့်             copyin(pagetable_t, uint64, var_na *, uint64, uint64);
+ကိန်းပြည့်             copyinstr(pagetable_t, uint64, var_na *, uint64, uint64);
+ကိန်းပြည့်             ismapped(pagetable_t, uint64);
+uint64          vmfault(pagetable_t, uint64, uint64, ကိန်းပြည့်);
 
 // plic.c
 void            plicinit(void);
 void            plicinithart(void);
-int             plic_claim(void);
-void            plic_complete(int);
+ကိန်းပြည့်             plic_claim(void);
+void            plic_complete(ကိန်းပြည့်);
 
 // virtio_disk.c
 void            virtio_disk_init(void);
-void            virtio_disk_rw(struct buf *, int);
+void            virtio_disk_rw(sa_nracanaa buf *, ကိန်းပြည့်);
 void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
-#define NELEM(x) (sizeof(x) / sizeof((x)[0]))
+#define NELEM(x) (parimaa_na(x) / parimaa_na((x)[0]))

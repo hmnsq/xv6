@@ -4,13 +4,13 @@
 #include "riscv.h"
 #include "defs.h"
 
-volatile static int started = 0;
+ca_ncala static ကိန်းပြည့် started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.
 void
 main()
 {
-  if (cpuid() == 0) {
+  အကယ်၍ (cpuid() == 0) {
     consoleinit();
     printkinit();
     printk("\n");
@@ -31,8 +31,8 @@ main()
     userinit();         // first user process
 
     __atomic_store_n(&started, 1, __ATOMIC_RELEASE);
-  } else {
-    while (__atomic_load_n(&started, __ATOMIC_ACQUIRE) == 0)
+  } မဟုတ်ပါက {
+    နေစဉ် (__atomic_load_n(&started, __ATOMIC_ACQUIRE) == 0)
       ;
 
     printk("hart %d starting\n", cpuid());

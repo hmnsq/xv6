@@ -10,22 +10,22 @@
 uint64
 sys_exit(void)
 {
-  int n;
+  ကိန်းပြည့် n;
   argint(0, &n);
   kexit(n);
-  return 0; // not reached
+  ပြန်ပေး 0; // not reached
 }
 
 uint64
 sys_getpid(void)
 {
-  return myproc()->pid;
+  ပြန်ပေး myproc()->pid;
 }
 
 uint64
 sys_fork(void)
 {
-  return kfork();
+  ပြန်ပေး kfork();
 }
 
 uint64
@@ -33,52 +33,52 @@ sys_wait(void)
 {
   uint64 p;
   argaddr(0, &p);
-  return kwait(p);
+  ပြန်ပေး kwait(p);
 }
 
 uint64
 sys_sbrk(void)
 {
   uint64 addr;
-  int t;
-  int n;
+  ကိန်းပြည့် t;
+  ကိန်းပြည့် n;
 
   argint(0, &n);
   argint(1, &t);
   addr = myproc()->sz;
 
-  if (t == SBRK_EAGER || n < 0) {
-    if (growproc(n) < 0) {
-      return -1;
+  အကယ်၍ (t == SBRK_EAGER || n < 0) {
+    အကယ်၍ (growproc(n) < 0) {
+      ပြန်ပေး -1;
     }
-  } else {
+  } မဟုတ်ပါက {
     // Lazily allocate memory for this process: increase its memory
     // size but don't allocate memory. If the processes uses the
     // memory, vmfault() will allocate it.
-    if (addr + n < addr)
-      return -1;
-    if (addr + n > TRAPFRAME)
-      return -1;
+    အကယ်၍ (addr + n < addr)
+      ပြန်ပေး -1;
+    အကယ်၍ (addr + n > TRAPFRAME)
+      ပြန်ပေး -1;
     myproc()->sz += n;
   }
-  return addr;
+  ပြန်ပေး addr;
 }
 
 uint64
 sys_pause(void)
 {
-  int n;
+  ကိန်းပြည့် n;
   uint ticks0;
 
   argint(0, &n);
-  if (n < 0)
+  အကယ်၍ (n < 0)
     n = 0;
   acquire(&tickslock);
   ticks0 = ticks;
-  while (ticks - ticks0 < n) {
-    if (killed(myproc())) {
+  နေစဉ် (ticks - ticks0 < n) {
+    အကယ်၍ (killed(myproc())) {
       release(&tickslock);
-      return -1;
+      ပြန်ပေး -1;
     }
     sleep_prepare(&ticks);
     release(&tickslock);
@@ -86,16 +86,16 @@ sys_pause(void)
     acquire(&tickslock);
   }
   release(&tickslock);
-  return 0;
+  ပြန်ပေး 0;
 }
 
 uint64
 sys_kill(void)
 {
-  int pid;
+  ကိန်းပြည့် pid;
 
   argint(0, &pid);
-  return kkill(pid);
+  ပြန်ပေး kkill(pid);
 }
 
 // return how many clock tick interrupts have occurred
@@ -108,5 +108,5 @@ sys_uptime(void)
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
-  return xticks;
+  ပြန်ပေး xticks;
 }

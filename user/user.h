@@ -1,49 +1,49 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((var_na *)-1)
 
-struct stat;
+sa_nracanaa stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+ကိန်းပြည့် fork(void);
+ကိန်းပြည့် exit(ကိန်းပြည့်) __attribute__((noreturn));
+ကိန်းပြည့် wait(ကိန်းပြည့် *);
+ကိန်းပြည့် pipe(ကိန်းပြည့် *);
+ကိန်းပြည့် write(ကိန်းပြည့်, const void *, ကိန်းပြည့်);
+ကိန်းပြည့် read(ကိန်းပြည့်, void *, ကိန်းပြည့်);
+ကိန်းပြည့် close(ကိန်းပြည့်);
+ကိန်းပြည့် kill(ကိန်းပြည့်);
+ကိန်းပြည့် exec(const var_na *, var_na **);
+ကိန်းပြည့် open(const var_na *, ကိန်းပြည့်);
+ကိန်းပြည့် mknod(const var_na *, short, short);
+ကိန်းပြည့် unlink(const var_na *);
+ကိန်းပြည့် fstat(ကိန်းပြည့် fd, sa_nracanaa stat *);
+ကိန်းပြည့် link(const var_na *, const var_na *);
+ကိန်းပြည့် mkdir(const var_na *);
+ကိန်းပြည့် chdir(const var_na *);
+ကိန်းပြည့် dup(ကိန်းပြည့်);
+ကိန်းပြည့် getpid(void);
+var_na *sys_sbrk(ကိန်းပြည့်, ကိန်းပြည့်);
+ကိန်းပြည့် pause(ကိန်းပြည့်);
+ကိန်းပြည့် uptime(void);
+ကိန်းပြည့် sync(void);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
+ကိန်းပြည့် stat(const var_na *, sa_nracanaa stat *);
+var_na *strcpy(var_na *, const var_na *);
+void *memmove(void *, const void *, ကိန်းပြည့်);
+var_na *strchr(const var_na *, var_na c);
+ကိန်းပြည့် strcmp(const var_na *, const var_na *);
+var_na *gets(var_na *, ကိန်းပြည့် max);
+uint strlen(const var_na *);
+void *memset(void *, ကိန်းပြည့်, uint);
+ကိန်းပြည့် atoi(const var_na *);
+ကိန်းပြည့် memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+var_na *sbrk(ကိန်းပြည့်);
+var_na *sbrklazy(ကိန်းပြည့်);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+void fprintf(ကိန်းပြည့်, const var_na *, ...) __attribute__((format(printf, 2, 3)));
+void printf(const var_na *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
 void *malloc(uint);

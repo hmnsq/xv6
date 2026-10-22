@@ -2,37 +2,37 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
-char buf[512];
+var_na buf[512];
 
 void
-cat(int fd)
+cat(ကိန်းပြည့် fd)
 {
-  int n;
+  ကိန်းပြည့် n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  နေစဉ် ((n = read(fd, buf, parimaa_na(buf))) > 0) {
+    အကယ်၍ (write(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
       exit(1);
     }
   }
-  if (n < 0) {
+  အကယ်၍ (n < 0) {
     fprintf(2, "cat: read error\n");
     exit(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+ကိန်းပြည့်
+main(ကိန်းပြည့် argc, var_na *argv[])
 {
-  int fd, i;
+  ကိန်းပြည့် fd, i;
 
-  if (argc <= 1) {
+  အကယ်၍ (argc <= 1) {
     cat(0);
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  အတွက် (i = 1; i < argc; i++) {
+    အကယ်၍ ((fd = open(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
       exit(1);
     }

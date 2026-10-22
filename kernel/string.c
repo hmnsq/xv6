@@ -1,106 +1,106 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, ကိန်းပြည့် c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  var_na *cdst = (var_na *)dst;
+  ကိန်းပြည့် i;
+  အတွက် (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ပြန်ပေး dst;
 }
 
-int
+ကိန်းပြည့်
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  နေစဉ် (n-- > 0) {
+    အကယ်၍ (*s1 != *s2)
+      ပြန်ပေး *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  ပြန်ပေး 0;
 }
 
 void *
 memmove(void *dst, const void *src, uint n)
 {
-  const char *s;
-  char *d;
+  const var_na *s;
+  var_na *d;
 
-  if (n == 0)
-    return dst;
+  အကယ်၍ (n == 0)
+    ပြန်ပေး dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  အကယ်၍ (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    နေစဉ် (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } မဟုတ်ပါက
+    နေစဉ် (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  ပြန်ပေး dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  ပြန်ပေး memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+ကိန်းပြည့်
+strncmp(const var_na *p, const var_na *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  နေစဉ် (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  အကယ်၍ (n == 0)
+    ပြန်ပေး 0;
+  ပြန်ပေး (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+var_na *
+strncpy(var_na *s, const var_na *t, ကိန်းပြည့် n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  နေစဉ် (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  နေစဉ် (n-- > 0)
     *s++ = 0;
-  return os;
+  ပြန်ပေး os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+var_na *
+safestrcpy(var_na *s, const var_na *t, ကိန်းပြည့် n)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  အကယ်၍ (n <= 0)
+    ပြန်ပေး os;
+  နေစဉ် (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  ပြန်ပေး os;
 }
 
-int
-strlen(const char *s)
+ကိန်းပြည့်
+strlen(const var_na *s)
 {
-  int n;
+  ကိန်းပြည့် n;
 
-  for (n = 0; s[n]; n++)
+  အတွက် (n = 0; s[n]; n++)
     ;
-  return n;
+  ပြန်ပေး n;
 }

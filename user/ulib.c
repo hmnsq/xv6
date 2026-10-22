@@ -9,154 +9,154 @@
 // wrapper so that it's OK if main() does not call exit().
 //
 void
-start(int argc, char **argv)
+start(ကိန်းပြည့် argc, var_na **argv)
 {
-  int r;
-  extern int main(int argc, char **argv);
+  ကိန်းပြည့် r;
+  extern ကိန်းပြည့် main(ကိန်းပြည့် argc, var_na **argv);
   r = main(argc, argv);
   exit(r);
 }
 
-char *
-strcpy(char *s, const char *t)
+var_na *
+strcpy(var_na *s, const var_na *t)
 {
-  char *os;
+  var_na *os;
 
   os = s;
-  while ((*s++ = *t++) != 0)
+  နေစဉ် ((*s++ = *t++) != 0)
     ;
-  return os;
+  ပြန်ပေး os;
 }
 
-int
-strcmp(const char *p, const char *q)
+ကိန်းပြည့်
+strcmp(const var_na *p, const var_na *q)
 {
-  while (*p && *p == *q)
+  နေစဉ် (*p && *p == *q)
     p++, q++;
-  return (uchar)*p - (uchar)*q;
+  ပြန်ပေး (uchar)*p - (uchar)*q;
 }
 
 uint
-strlen(const char *s)
+strlen(const var_na *s)
 {
-  int n;
+  ကိန်းပြည့် n;
 
-  for (n = 0; s[n]; n++)
+  အတွက် (n = 0; s[n]; n++)
     ;
-  return n;
+  ပြန်ပေး n;
 }
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, ကိန်းပြည့် c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  var_na *cdst = (var_na *)dst;
+  ကိန်းပြည့် i;
+  အတွက် (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ပြန်ပေး dst;
 }
 
-char *
-strchr(const char *s, char c)
+var_na *
+strchr(const var_na *s, var_na c)
 {
-  for (; *s; s++)
-    if (*s == c)
-      return (char *)s;
-  return 0;
+  အတွက် (; *s; s++)
+    အကယ်၍ (*s == c)
+      ပြန်ပေး (var_na *)s;
+  ပြန်ပေး 0;
 }
 
-char *
-gets(char *buf, int max)
+var_na *
+gets(var_na *buf, ကိန်းပြည့် max)
 {
-  int i, cc;
-  char c;
+  ကိန်းပြည့် i, cc;
+  var_na c;
 
-  for (i = 0; i + 1 < max;) {
+  အတွက် (i = 0; i + 1 < max;) {
     cc = read(0, &c, 1);
-    if (cc < 1)
-      break;
+    အကယ်၍ (cc < 1)
+      bha_nga;
     buf[i++] = c;
-    if (c == '\n' || c == '\r')
-      break;
+    အကယ်၍ (c == '\n' || c == '\r')
+      bha_nga;
   }
   buf[i] = '\0';
-  return buf;
+  ပြန်ပေး buf;
 }
 
-int
-stat(const char *n, struct stat *st)
+ကိန်းပြည့်
+stat(const var_na *n, sa_nracanaa stat *st)
 {
-  int fd;
-  int r;
+  ကိန်းပြည့် fd;
+  ကိန်းပြည့် r;
 
   fd = open(n, O_RDONLY);
-  if (fd < 0)
-    return -1;
+  အကယ်၍ (fd < 0)
+    ပြန်ပေး -1;
   r = fstat(fd, st);
   close(fd);
-  return r;
+  ပြန်ပေး r;
 }
 
-int
-atoi(const char *s)
+ကိန်းပြည့်
+atoi(const var_na *s)
 {
-  int n;
+  ကိန်းပြည့် n;
 
   n = 0;
-  while ('0' <= *s && *s <= '9')
+  နေစဉ် ('0' <= *s && *s <= '9')
     n = n * 10 + *s++ - '0';
-  return n;
+  ပြန်ပေး n;
 }
 
 void *
-memmove(void *vdst, const void *vsrc, int n)
+memmove(void *vdst, const void *vsrc, ကိန်းပြည့် n)
 {
-  char *dst;
-  const char *src;
+  var_na *dst;
+  const var_na *src;
 
   dst = vdst;
   src = vsrc;
-  if (src > dst) {
-    while (n-- > 0)
+  အကယ်၍ (src > dst) {
+    နေစဉ် (n-- > 0)
       *dst++ = *src++;
-  } else {
+  } မဟုတ်ပါက {
     dst += n;
     src += n;
-    while (n-- > 0)
+    နေစဉ် (n-- > 0)
       *--dst = *--src;
   }
-  return vdst;
+  ပြန်ပေး vdst;
 }
 
-int
+ကိန်းပြည့်
 memcmp(const void *s1, const void *s2, uint n)
 {
-  const char *p1 = s1, *p2 = s2;
-  while (n-- > 0) {
-    if (*p1 != *p2) {
-      return *p1 - *p2;
+  const var_na *p1 = s1, *p2 = s2;
+  နေစဉ် (n-- > 0) {
+    အကယ်၍ (*p1 != *p2) {
+      ပြန်ပေး *p1 - *p2;
     }
     p1++;
     p2++;
   }
-  return 0;
+  ပြန်ပေး 0;
 }
 
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  ပြန်ပေး memmove(dst, src, n);
 }
 
-char *
-sbrk(int n)
+var_na *
+sbrk(ကိန်းပြည့် n)
 {
-  return sys_sbrk(n, SBRK_EAGER);
+  ပြန်ပေး sys_sbrk(n, SBRK_EAGER);
 }
 
-char *
-sbrklazy(int n)
+var_na *
+sbrklazy(ကိန်းပြည့် n)
 {
-  return sys_sbrk(n, SBRK_LAZY);
+  ပြန်ပေး sys_sbrk(n, SBRK_LAZY);
 }

@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char **argv)
+ကိန်းပြည့်
+main(ကိန်းပြည့် argc, var_na **argv)
 {
-  int i;
+  ကိန်းပြည့် i;
 
-  if (argc < 2) {
+  အကယ်၍ (argc < 2) {
     fprintf(2, "usage: kill pid...\n");
     exit(1);
   }
-  for (i = 1; i < argc; i++)
+  အတွက် (i = 1; i < argc; i++)
     kill(atoi(argv[i]));
   exit(0);
 }

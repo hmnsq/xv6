@@ -4,85 +4,85 @@
 #include "kernel/fs.h"
 #include "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+var_na *
+fmtname(var_na *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  static var_na buf[DIRSIZ + 1];
+  var_na *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  အတွက် (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  အကယ်၍ (strlen(p) >= DIRSIZ)
+    ပြန်ပေး p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[parimaa_na(buf) - 1] = '\0';
+  ပြန်ပေး buf;
 }
 
 void
-ls(char *path)
+ls(var_na *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  var_na buf[512], *p;
+  ကိန်းပြည့် fd;
+  sa_nracanaa dirent de;
+  sa_nracanaa stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  အကယ်၍ ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    ပြန်ပေး;
   }
 
-  if (fstat(fd, &st) < 0) {
+  အကယ်၍ (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    ပြန်ပေး;
   }
 
   switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  pak_sa T_DEVICE:
+  pak_sa T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (ကိန်းပြည့်)st.size);
+    bha_nga;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  pak_sa T_DIR:
+    အကယ်၍ (strlen(path) + 1 + DIRSIZ + 1 > parimaa_na buf) {
       printf("ls: path too long\n");
-      break;
+      bha_nga;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
+    နေစဉ် (read(fd, &de, parimaa_na(de)) == parimaa_na(de)) {
+      အကယ်၍ (de.inum == 0)
         continue;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      အကယ်၍ (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (ကိန်းပြည့်)st.size);
     }
-    break;
+    bha_nga;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+ကိန်းပြည့်
+main(ကိန်းပြည့် argc, var_na *argv[])
 {
-  int i;
+  ကိန်းပြည့် i;
 
-  if (argc < 2) {
+  အကယ်၍ (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  အတွက် (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }
