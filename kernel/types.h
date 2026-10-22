@@ -1,10 +1,10 @@
-typedef unsigned int uint;
-typedef unsigned short ushort;
-typedef unsigned char uchar;
+प्रकारनिर्देश अचिह्नित पूर्णाङ्क uint;
+प्रकारनिर्देश अचिह्नित ह्रस्व ushort;
+प्रकारनिर्देश अचिह्नित वर्ण uchar;
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef unsigned long uint64;
+प्रकारनिर्देश अचिह्नित वर्ण uint8;
+प्रकारनिर्देश अचिह्नित ह्रस्व uint16;
+प्रकारनिर्देश अचिह्नित पूर्णाङ्क uint32;
+प्रकारनिर्देश अचिह्नित दीर्घ uint64;
 
-typedef uint64 pde_t;
+प्रकारनिर्देश uint64 pde_t;

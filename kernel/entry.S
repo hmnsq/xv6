@@ -2,8 +2,8 @@
         # and causes each hart (i.e. CPU) to jump there.
         # kernel.ld causes the following code to
         # be placed at 0x80000000.
-.section .text
-.global _entry
+.खण्डः .text
+.वैश्विक _entry
 _entry:
         # set up a stack for C.
         # stack0 is declared in start.c,
@@ -13,9 +13,9 @@ _entry:
         li a0, 1024*4
         csrr a1, mhartid
         addi a1, a1, 1
-        mul a0, a0, a1
-        add sp, sp, a0
+        गुणय a0, a0, a1
+        योजय sp, sp, a0
         # jump to start() in start.c
-        call start
+        आह्वान start
 spin:
         j spin

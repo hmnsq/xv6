@@ -1,43 +1,43 @@
-#include "kernel/types.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/fcntl.h"
+#अन्तर्भाव "user/user.h"
 
-char buf[512];
+वर्ण buf[512];
 
-void
-cat(int fd)
+शून्य
+cat(पूर्णाङ्क fd)
 {
-  int n;
+  पूर्णाङ्क n;
 
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    if (write(1, buf, n) != n) {
+  यावत् ((n = पठ(fd, buf, परिमाण(buf))) > 0) {
+    यदि (लिख(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
-      exit(1);
+      निर्गच्छ(1);
     }
   }
-  if (n < 0) {
+  यदि (n < 0) {
     fprintf(2, "cat: read error\n");
-    exit(1);
+    निर्गच्छ(1);
   }
 }
 
-int
-main(int argc, char *argv[])
+पूर्णाङ्क
+मुख्यम्(पूर्णाङ्क argc, वर्ण *argv[])
 {
-  int fd, i;
+  पूर्णाङ्क fd, i;
 
-  if (argc <= 1) {
+  यदि (argc <= 1) {
     cat(0);
-    exit(0);
+    निर्गच्छ(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  प्रति (i = 1; i < argc; i++) {
+    यदि ((fd = उद्घाटय(argv[i], O_RDONLY)) < 0) {
       fprintf(2, "cat: cannot open %s\n", argv[i]);
-      exit(1);
+      निर्गच्छ(1);
     }
     cat(fd);
     close(fd);
   }
-  exit(0);
+  निर्गच्छ(0);
 }

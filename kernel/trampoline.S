@@ -13,7 +13,7 @@
 #include "riscv.h"
 #include "memlayout.h"
 
-.section trampsec
+.खण्डः trampsec
 .globl trampoline
 .globl usertrap
 trampoline:
@@ -94,7 +94,7 @@ uservec:
         # flush now-stale user entries from the TLB.
         sfence.vma zero, zero
 
-        # call usertrap()
+        # आह्वान usertrap()
         jalr t0
 
 .globl userret

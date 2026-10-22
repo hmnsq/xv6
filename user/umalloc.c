@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "user/user.h"
+#अन्तर्भाव "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+प्रकारनिर्देश दीर्घ Align;
 
-union header {
-  struct {
-    union header *ptr;
-    uint size;
+सङ्घ शीर्षकम् {
+  संरचना {
+    सङ्घ शीर्षकम् *ptr;
+    uint आकार;
   } s;
   Align x;
 };
 
-typedef union header Header;
+प्रकारनिर्देश सङ्घ शीर्षकम् शीर्षकम्_2;
 
-static Header base;
-static Header *freep;
+स्थिर शीर्षकम्_2 आधारः;
+स्थिर शीर्षकम्_2 *freep;
 
-void
-free(void *ap)
+शून्य
+मुक्त(शून्य *ap)
 {
-  Header *bp, *p;
+  शीर्षकम्_2 *bp, *p;
 
-  bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
-    bp->s.size += p->s.ptr->s.size;
+  bp = (शीर्षकम्_2 *)ap - 1;
+  प्रति (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    यदि (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      भङ्ग;
+  यदि (bp + bp->s.आकार == p->s.ptr) {
+    bp->s.आकार += p->s.ptr->s.आकार;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } अन्यथा
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
-    p->s.size += bp->s.size;
+  यदि (p + p->s.आकार == bp) {
+    p->s.आकार += bp->s.आकार;
     p->s.ptr = bp->s.ptr;
-  } else
+  } अन्यथा
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+स्थिर शीर्षकम्_2 *
 morecore(uint nu)
 {
-  char *p;
-  Header *hp;
+  वर्ण *p;
+  शीर्षकम्_2 *hp;
 
-  if (nu < 4096)
+  यदि (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
-  hp = (Header *)p;
-  hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  p = sbrk(nu * परिमाण(शीर्षकम्_2));
+  यदि (p == SBRK_ERROR)
+    प्रत्यागम 0;
+  hp = (शीर्षकम्_2 *)p;
+  hp->s.आकार = nu;
+  मुक्त((शून्य *)(hp + 1));
+  प्रत्यागम freep;
 }
 
-void *
-malloc(uint nbytes)
+शून्य *
+स्मृतिं_देहि(uint nbytes)
 {
-  Header *p, *prevp;
+  शीर्षकम्_2 *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
-    base.s.ptr = freep = prevp = &base;
-    base.s.size = 0;
+  nunits = (nbytes + परिमाण(शीर्षकम्_2) - 1) / परिमाण(शीर्षकम्_2) + 1;
+  यदि ((prevp = freep) == 0) {
+    आधारः.s.ptr = freep = prevp = &आधारः;
+    आधारः.s.आकार = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  प्रति (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    यदि (p->s.आकार >= nunits) {
+      यदि (p->s.आकार == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
-        p->s.size -= nunits;
-        p += p->s.size;
-        p->s.size = nunits;
+      अन्यथा {
+        p->s.आकार -= nunits;
+        p += p->s.आकार;
+        p->s.आकार = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      प्रत्यागम (शून्य *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    यदि (p == freep)
+      यदि ((p = morecore(nunits)) == 0)
+        प्रत्यागम 0;
   }
 }
