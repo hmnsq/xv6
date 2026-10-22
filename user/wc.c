@@ -1,55 +1,55 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "kernel/fcntl.h"
+#अन्तर्भाव "user/user.h"
 
-char buf[512];
+वर्ण buf[512];
 
-void
-wc(int fd, char *name)
+शून्य
+wc(पूर्णाङ्क fd, वर्ण *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  पूर्णाङ्क i, n;
+  पूर्णाङ्क l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  जबसम्म ((n = पठ(fd, buf, परिमाण(buf))) > 0) {
+    लागि (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      यदि (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      यदि (म_अक्षर(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      अन्यथा यदि (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
-    printf("wc: read error\n");
-    exit(1);
+  यदि (n < 0) {
+    म_लिखो("wc: read error\n");
+    निकास(1);
   }
-  printf("%d %d %d %s\n", l, w, c, name);
+  म_लिखो("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+पूर्णाङ्क
+main(पूर्णाङ्क argc, वर्ण *argv[])
 {
-  int fd, i;
+  पूर्णाङ्क fd, i;
 
-  if (argc <= 1) {
+  यदि (argc <= 1) {
     wc(0, "");
-    exit(0);
+    निकास(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("wc: cannot open %s\n", argv[i]);
-      exit(1);
+  लागि (i = 1; i < argc; i++) {
+    यदि ((fd = खोलो(argv[i], O_RDONLY)) < 0) {
+      म_लिखो("wc: cannot open %s\n", argv[i]);
+      निकास(1);
     }
     wc(fd, argv[i]);
-    close(fd);
+    बंद(fd);
   }
-  exit(0);
+  निकास(0);
 }

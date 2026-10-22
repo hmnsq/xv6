@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "user/user.h"
+#अन्तर्भाव "kernel/fs.h"
+#अन्तर्भाव "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+वर्ण *
+fmtname(वर्ण *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  स्थिर वर्ण buf[DIRSIZ + 1];
+  वर्ण *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  लागि (p = path + म_माप(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
-  memmove(buf, p, strlen(p));
-  memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  यदि (म_माप(p) >= DIRSIZ)
+    फर्काऊ p;
+  स_हटाओ(buf, p, म_माप(p));
+  स_रखो(buf + म_माप(p), ' ', DIRSIZ - म_माप(p));
+  buf[परिमाण(buf) - 1] = '\0';
+  फर्काऊ buf;
 }
 
-void
-ls(char *path)
+शून्य
+ls(वर्ण *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  वर्ण buf[512], *p;
+  पूर्णाङ्क fd;
+  संरचना dirent de;
+  संरचना stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
-    fprintf(2, "ls: cannot open %s\n", path);
-    return;
+  यदि ((fd = खोलो(path, O_RDONLY)) < 0) {
+    ख_लिखो(2, "ls: cannot open %s\n", path);
+    फर्काऊ;
   }
 
-  if (fstat(fd, &st) < 0) {
-    fprintf(2, "ls: cannot stat %s\n", path);
-    close(fd);
-    return;
+  यदि (ख_स्थिति(fd, &st) < 0) {
+    ख_लिखो(2, "ls: cannot stat %s\n", path);
+    बंद(fd);
+    फर्काऊ;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  विकल्प (st.type) {
+  पक्ष T_DEVICE:
+  पक्ष T_FILE:
+    म_लिखो("%s %d %d %d\n", fmtname(path), st.type, st.ino, (पूर्णाङ्क)st.size);
+    रोक;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
-      printf("ls: path too long\n");
-      break;
+  पक्ष T_DIR:
+    यदि (म_माप(path) + 1 + DIRSIZ + 1 > परिमाण buf) {
+      म_लिखो("ls: path too long\n");
+      रोक;
     }
-    strcpy(buf, path);
-    p = buf + strlen(buf);
+    म_नकल(buf, path);
+    p = buf + म_माप(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
-      memmove(p, de.name, DIRSIZ);
+    जबसम्म (पठ(fd, &de, परिमाण(de)) == परिमाण(de)) {
+      यदि (de.inum == 0)
+        जारी;
+      स_हटाओ(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
-        printf("ls: cannot stat %s\n", buf);
-        continue;
+      यदि (stat(buf, &st) < 0) {
+        म_लिखो("ls: cannot stat %s\n", buf);
+        जारी;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      म_लिखो("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (पूर्णाङ्क)st.size);
     }
-    break;
+    रोक;
   }
-  close(fd);
+  बंद(fd);
 }
 
-int
-main(int argc, char *argv[])
+पूर्णाङ्क
+main(पूर्णाङ्क argc, वर्ण *argv[])
 {
-  int i;
+  पूर्णाङ्क i;
 
-  if (argc < 2) {
+  यदि (argc < 2) {
     ls(".");
-    exit(0);
+    निकास(0);
   }
-  for (i = 1; i < argc; i++)
+  लागि (i = 1; i < argc; i++)
     ls(argv[i]);
-  exit(0);
+  निकास(0);
 }
