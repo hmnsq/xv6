@@ -1,30 +1,30 @@
 #include "types.h"
 
 void *
-memset(void *dst, int c, uint n)
+memset(void *dst, цео c, uint n)
 {
   char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  цео i;
+  за (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  врати dst;
 }
 
-int
+цео
 memcmp(const void *v1, const void *v2, uint n)
 {
   const uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  док (n-- > 0) {
+    ако (*s1 != *s2)
+      врати *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  врати 0;
 }
 
 void *
@@ -33,74 +33,74 @@ memmove(void *dst, const void *src, uint n)
   const char *s;
   char *d;
 
-  if (n == 0)
-    return dst;
+  ако (n == 0)
+    врати dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  ако (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    док (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } инако
+    док (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  врати dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
 void *
 memcpy(void *dst, const void *src, uint n)
 {
-  return memmove(dst, src, n);
+  врати memmove(dst, src, n);
 }
 
-int
+цео
 strncmp(const char *p, const char *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  док (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  ако (n == 0)
+    врати 0;
+  врати (uchar)*p - (uchar)*q;
 }
 
 char *
-strncpy(char *s, const char *t, int n)
+strncpy(char *s, const char *t, цео n)
 {
   char *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  док (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  док (n-- > 0)
     *s++ = 0;
-  return os;
+  врати os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
 char *
-safestrcpy(char *s, const char *t, int n)
+safestrcpy(char *s, const char *t, цео n)
 {
   char *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  ако (n <= 0)
+    врати os;
+  док (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  врати os;
 }
 
-int
+цео
 strlen(const char *s)
 {
-  int n;
+  цео n;
 
-  for (n = 0; s[n]; n++)
+  за (n = 0; s[n]; n++)
     ;
-  return n;
+  врати n;
 }

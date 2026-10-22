@@ -2,16 +2,16 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char *argv[])
+цео
+main(цео argc, char *argv[])
 {
-  int i;
+  цео i;
 
-  for (i = 1; i < argc; i++) {
+  за (i = 1; i < argc; i++) {
     write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
+    ако (i + 1 < argc) {
       write(1, " ", 1);
-    } else {
+    } инако {
       write(1, "\n", 1);
     }
   }

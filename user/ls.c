@@ -11,78 +11,78 @@ fmtname(char *path)
   char *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  за (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  ако (strlen(p) >= DIRSIZ)
+    врати p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
   buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  врати buf;
 }
 
 void
 ls(char *path)
 {
   char buf[512], *p;
-  int fd;
+  цео fd;
   struct dirent de;
   struct stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  ако ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    врати;
   }
 
-  if (fstat(fd, &st) < 0) {
+  ако (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    врати;
   }
 
   switch (st.type) {
   case T_DEVICE:
   case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (цео)st.size);
     break;
 
   case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+    ако (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
       printf("ls: path too long\n");
       break;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
+    док (read(fd, &de, sizeof(de)) == sizeof(de)) {
+      ако (de.inum == 0)
         continue;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      ако (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
         continue;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (цео)st.size);
     }
     break;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+цео
+main(цео argc, char *argv[])
 {
-  int i;
+  цео i;
 
-  if (argc < 2) {
+  ако (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  за (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

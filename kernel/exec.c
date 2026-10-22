@@ -7,28 +7,28 @@
 #include "defs.h"
 #include "elf.h"
 
-static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
+static цео loadseg(pde_t *, uint64, struct inode *, uint, uint);
 
 // map ELF permissions to PTE permission bits.
-int
-flags2perm(int flags)
+цео
+flags2perm(цео flags)
 {
-  int perm = 0;
-  if (flags & 0x1)
+  цео perm = 0;
+  ако (flags & 0x1)
     perm = PTE_X;
-  if (flags & 0x2)
+  ако (flags & 0x2)
     perm |= PTE_W;
-  return perm;
+  врати perm;
 }
 
 //
 // the implementation of the exec() system call
 //
-int
+цео
 kexec(char *path, char **argv)
 {
   char *s, *last;
-  int i, off;
+  цео i, off;
   uint64 argc, sz = 0, sp, ustack[MAXARG], stackbase;
   struct elfhdr elf;
   struct inode *ip;
@@ -39,41 +39,41 @@ kexec(char *path, char **argv)
   begin_op();
 
   // Open the executable file.
-  if ((ip = namei(path)) == 0) {
+  ако ((ip = namei(path)) == 0) {
     end_op();
-    return -1;
+    врати -1;
   }
   ilock(ip);
 
   // Read the ELF header.
-  if (readi(ip, 0, (uint64)&elf, 0, sizeof(elf)) != sizeof(elf))
+  ако (readi(ip, 0, (uint64)&elf, 0, sizeof(elf)) != sizeof(elf))
     goto bad;
 
   // Is this really an ELF file?
-  if (elf.magic != ELF_MAGIC)
+  ако (elf.magic != ELF_MAGIC)
     goto bad;
 
-  if ((pagetable = proc_pagetable(p)) == 0)
+  ако ((pagetable = proc_pagetable(p)) == 0)
     goto bad;
 
   // Load program into memory.
-  for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
-    if (readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
+  за (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
+    ако (readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
       goto bad;
-    if (ph.type != ELF_PROG_LOAD)
+    ако (ph.type != ELF_PROG_LOAD)
       continue;
-    if (ph.memsz < ph.filesz)
+    ако (ph.memsz < ph.filesz)
       goto bad;
-    if (ph.vaddr + ph.memsz < ph.vaddr)
+    ако (ph.vaddr + ph.memsz < ph.vaddr)
       goto bad;
-    if (ph.vaddr % PGSIZE != 0)
+    ако (ph.vaddr % PGSIZE != 0)
       goto bad;
     uint64 sz1;
-    if ((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz,
+    ако ((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz,
                         flags2perm(ph.flags))) == 0)
       goto bad;
     sz = sz1;
-    if (loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
+    ако (loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
       goto bad;
   }
   iunlockput(ip);
@@ -88,7 +88,7 @@ kexec(char *path, char **argv)
   // Use the rest as the user stack.
   sz = PGROUNDUP(sz);
   uint64 sz1;
-  if ((sz1 = uvmalloc(pagetable, sz, sz + (USERSTACK + 1) * PGSIZE, PTE_W)) ==
+  ако ((sz1 = uvmalloc(pagetable, sz, sz + (USERSTACK + 1) * PGSIZE, PTE_W)) ==
       0)
     goto bad;
   sz = sz1;
@@ -98,12 +98,12 @@ kexec(char *path, char **argv)
 
   // Copy argument strings into new stack, remember their
   // addresses in ustack[].
-  for (argc = 0; argv[argc]; argc++) {
+  за (argc = 0; argv[argc]; argc++) {
     sp -= strlen(argv[argc]) + 1;
     sp -= sp % 16; // riscv sp must be 16-byte aligned
-    if (sp < stackbase)
+    ако (sp < stackbase)
       goto bad;
-    if (copyout(pagetable, sz, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
+    ако (copyout(pagetable, sz, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
       goto bad;
     ustack[argc] = sp;
   }
@@ -112,9 +112,9 @@ kexec(char *path, char **argv)
   // push a copy of ustack[], the array of argv[] pointers.
   sp -= (argc + 1) * sizeof(uint64);
   sp -= sp % 16;
-  if (sp < stackbase)
+  ако (sp < stackbase)
     goto bad;
-  if (copyout(pagetable, sz, sp, (char *)ustack, (argc + 1) * sizeof(uint64)) <
+  ако (copyout(pagetable, sz, sp, (char *)ustack, (argc + 1) * sizeof(uint64)) <
       0)
     goto bad;
 
@@ -124,8 +124,8 @@ kexec(char *path, char **argv)
   p->trapframe->a1 = sp;
 
   // Save program name for debugging.
-  for (last = s = path; *s; s++)
-    if (*s == '/')
+  за (last = s = path; *s; s++)
+    ако (*s == '/')
       last = s + 1;
   safestrcpy(p->name, last, sizeof(p->name));
 
@@ -137,40 +137,40 @@ kexec(char *path, char **argv)
   p->trapframe->sp = sp;         // initial stack pointer
   proc_freepagetable(oldpagetable, oldsz);
 
-  return argc; // this ends up in a0, the first argument to main(argc, argv)
+  врати argc; // this ends up in a0, the first argument to main(argc, argv)
 
 bad:
-  if (pagetable)
+  ако (pagetable)
     proc_freepagetable(pagetable, sz);
-  if (ip) {
+  ако (ip) {
     iunlockput(ip);
     end_op();
   }
-  return -1;
+  врати -1;
 }
 
 // Load an ELF program segment into pagetable at virtual address va.
 // va must be page-aligned
 // and the pages from va to va+sz must already be mapped.
 // Returns 0 on success, -1 on failure.
-static int
+static цео
 loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset,
         uint sz)
 {
   uint i, n;
   uint64 pa;
 
-  for (i = 0; i < sz; i += PGSIZE) {
+  за (i = 0; i < sz; i += PGSIZE) {
     pa = walkaddr(pagetable, va + i);
-    if (pa == 0)
+    ако (pa == 0)
       panic("loadseg: address should exist");
-    if (sz - i < PGSIZE)
+    ако (sz - i < PGSIZE)
       n = sz - i;
-    else
+    инако
       n = PGSIZE;
-    if (readi(ip, 0, (uint64)pa, offset + i, n) != n)
-      return -1;
+    ако (readi(ip, 0, (uint64)pa, offset + i, n) != n)
+      врати -1;
   }
 
-  return 0;
+  врати 0;
 }

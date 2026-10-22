@@ -3,46 +3,46 @@
 struct stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+цео fork(void);
+цео exit(цео) __attribute__((noreturn));
+цео wait(цео *);
+цео pipe(цео *);
+цео write(цео, const void *, цео);
+цео read(цео, void *, цео);
+цео close(цео);
+цео kill(цео);
+цео exec(const char *, char **);
+цео open(const char *, цео);
+цео mknod(const char *, short, short);
+цео unlink(const char *);
+цео fstat(цео fd, struct stat *);
+цео link(const char *, const char *);
+цео mkdir(const char *);
+цео chdir(const char *);
+цео dup(цео);
+цео getpid(void);
+char *sys_sbrk(цео, цео);
+цео pause(цео);
+цео uptime(void);
+цео sync(void);
 
 // ulib.c
-int stat(const char *, struct stat *);
+цео stat(const char *, struct stat *);
 char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
+void *memmove(void *, const void *, цео);
 char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
+цео strcmp(const char *, const char *);
+char *gets(char *, цео max);
 uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
+void *memset(void *, цео, uint);
+цео atoi(const char *);
+цео memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+char *sbrk(цео);
+char *sbrklazy(цео);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
+void fprintf(цео, const char *, ...) __attribute__((format(printf, 2, 3)));
 void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c

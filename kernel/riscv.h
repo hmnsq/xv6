@@ -6,7 +6,7 @@ r_mhartid()
 {
   uint64 x;
   asm volatile("csrr %0, mhartid" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // Machine Status Register, mstatus
@@ -21,7 +21,7 @@ r_mstatus()
 {
   uint64 x;
   asm volatile("csrr %0, mstatus" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -52,7 +52,7 @@ r_sstatus()
 {
   uint64 x;
   asm volatile("csrr %0, sstatus" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -77,7 +77,7 @@ static inline uint64
 rc_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrrc %0, sstatus, %1" : "=r"(x) : "rK"(x) : "memory");
-  return x;
+  врати x;
 }
 
 // Supervisor Interrupt Pending
@@ -86,7 +86,7 @@ r_sip()
 {
   uint64 x;
   asm volatile("csrr %0, sip" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -103,7 +103,7 @@ r_sie()
 {
   uint64 x;
   asm volatile("csrr %0, sie" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -119,7 +119,7 @@ r_mie()
 {
   uint64 x;
   asm volatile("csrr %0, mie" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -142,7 +142,7 @@ r_sepc()
 {
   uint64 x;
   asm volatile("csrr %0, sepc" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // Machine Exception Delegation
@@ -151,7 +151,7 @@ r_medeleg()
 {
   uint64 x;
   asm volatile("csrr %0, medeleg" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -166,7 +166,7 @@ r_mideleg()
 {
   uint64 x;
   asm volatile("csrr %0, mideleg" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -188,7 +188,7 @@ r_stvec()
 {
   uint64 x;
   asm volatile("csrr %0, stvec" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // Supervisor Timer Comparison Register
@@ -198,7 +198,7 @@ r_stimecmp()
   uint64 x;
   // asm volatile("csrr %0, stimecmp" : "=r" (x) );
   asm volatile("csrr %0, 0x14d" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -219,7 +219,7 @@ r_menvcfg()
   uint64 x;
   // asm volatile("csrr %0, menvcfg" : "=r" (x) );
   asm volatile("csrr %0, 0x30a" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -260,7 +260,7 @@ r_satp()
 {
   uint64 x;
   asm volatile("csrr %0, satp" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // Supervisor Trap Cause
@@ -269,7 +269,7 @@ r_scause()
 {
   uint64 x;
   asm volatile("csrr %0, scause" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // Supervisor Trap Value
@@ -278,7 +278,7 @@ r_stval()
 {
   uint64 x;
   asm volatile("csrr %0, stval" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // Machine-mode Counter-Enable
@@ -293,7 +293,7 @@ r_mcounteren()
 {
   uint64 x;
   asm volatile("csrr %0, mcounteren" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // machine-mode cycle counter
@@ -302,7 +302,7 @@ r_time()
 {
   uint64 x;
   asm volatile("csrr %0, time" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // enable device interrupts
@@ -320,11 +320,11 @@ intr_off()
 }
 
 // are device interrupts enabled?
-static inline int
+static inline цео
 intr_get()
 {
   uint64 x = r_sstatus();
-  return (x & SSTATUS_SIE) != 0;
+  врати (x & SSTATUS_SIE) != 0;
 }
 
 static inline uint64
@@ -332,7 +332,7 @@ r_sp()
 {
   uint64 x;
   asm volatile("mv %0, sp" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // read and write tp, the thread pointer, which xv6 uses to hold
@@ -342,7 +342,7 @@ r_tp()
 {
   uint64 x;
   asm volatile("mv %0, tp" : "=r"(x));
-  return x;
+  врати x;
 }
 
 static inline void
@@ -356,7 +356,7 @@ r_ra()
 {
   uint64 x;
   asm volatile("mv %0, ra" : "=r"(x));
-  return x;
+  врати x;
 }
 
 // flush the TLB.
