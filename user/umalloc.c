@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
+#ضمن "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+تعريفنوع long Align;
 
-union header {
-  struct {
-    union header *ptr;
+اتحاد header {
+  بنية {
+    اتحاد header *ptr;
     uint size;
   } s;
   Align x;
 };
 
-typedef union header Header;
+تعريفنوع اتحاد header Header;
 
-static Header base;
-static Header *freep;
+ساكن Header base;
+ساكن Header *freep;
 
-void
-free(void *ap)
+فراغ
+حرر(فراغ *ap)
 {
   Header *bp, *p;
 
   bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
+  עבור (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    אם (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      اكسر;
+  אם (bp + bp->s.size == p->s.ptr) {
     bp->s.size += p->s.ptr->s.size;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } אחרת
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
+  אם (p + p->s.size == bp) {
     p->s.size += bp->s.size;
     p->s.ptr = bp->s.ptr;
-  } else
+  } אחרת
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+ساكن Header *
 morecore(uint nu)
 {
-  char *p;
+  حرف *p;
   Header *hp;
 
-  if (nu < 4096)
+  אם (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
+  p = sbrk(nu * حجم(Header));
+  אם (p == SBRK_ERROR)
+    החזר 0;
   hp = (Header *)p;
   hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  حرر((فراغ *)(hp + 1));
+  החזר freep;
 }
 
-void *
+فراغ *
 malloc(uint nbytes)
 {
   Header *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
+  nunits = (nbytes + حجم(Header) - 1) / حجم(Header) + 1;
+  אם ((prevp = freep) == 0) {
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  עבור (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    אם (p->s.size >= nunits) {
+      אם (p->s.size == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
+      אחרת {
         p->s.size -= nunits;
         p += p->s.size;
         p->s.size = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      החזר (فراغ *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    אם (p == freep)
+      אם ((p = morecore(nunits)) == 0)
+        החזר 0;
   }
 }
