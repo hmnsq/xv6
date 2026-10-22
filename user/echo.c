@@ -1,18 +1,18 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಙ್ಕ
+main(ಪೂರ್ಣಾಙ್ಕ argc, ವರ್ಣ *argv[])
 {
-  int i;
+  ಪೂರ್ಣಾಙ್ಕ i;
 
-  for (i = 1; i < argc; i++) {
-    write(1, argv[i], strlen(argv[i]));
-    if (i + 1 < argc) {
-      write(1, " ", 1);
-    } else {
-      write(1, "\n", 1);
+  ಪ್ರತಿ (i = 1; i < argc; i++) {
+    ಲಿಖ(1, argv[i], strlen(argv[i]));
+    ಯದಿ (i + 1 < argc) {
+      ಲಿಖ(1, " ", 1);
+    } ಅನ್ಯಥಾ {
+      ಲಿಖ(1, "\n", 1);
     }
   }
   exit(0);

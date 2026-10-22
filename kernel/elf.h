@@ -3,7 +3,7 @@
 #define ELF_MAGIC 0x464C457FU // "\x7FELF" in little endian
 
 // File header
-struct elfhdr {
+ಸಂರಚನಾ elfhdr {
   uint magic; // must equal ELF_MAGIC
   uchar elf[12];
   ushort type;
@@ -22,7 +22,7 @@ struct elfhdr {
 };
 
 // Program section header
-struct proghdr {
+ಸಂರಚನಾ proghdr {
   uint32 type;
   uint32 flags;
   uint64 off;

@@ -1,50 +1,50 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ಅನ್ತರ್ಭಾವ "kernel/types.h"
+#ಅನ್ತರ್ಭಾವ "kernel/stat.h"
+#ಅನ್ತರ್ಭಾವ "kernel/fcntl.h"
+#ಅನ್ತರ್ಭಾವ "user/user.h"
 
-char buf[512];
+ವರ್ಣ buf[512];
 
-void
-wc(int fd, char *name)
+ಶೂನ್ಯ
+wc(ಪೂರ್ಣಾಙ್ಕ fd, ವರ್ಣ *name)
 {
-  int i, n;
-  int l, w, c, inword;
+  ಪೂರ್ಣಾಙ್ಕ i, n;
+  ಪೂರ್ಣಾಙ್ಕ l, w, c, inword;
 
   l = w = c = 0;
   inword = 0;
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
-    for (i = 0; i < n; i++) {
+  ಯಾವತ್ ((n = ಪಠ(fd, buf, ಪರಿಮಾಣ(buf))) > 0) {
+    ಪ್ರತಿ (i = 0; i < n; i++) {
       c++;
-      if (buf[i] == '\n')
+      ಯದಿ (buf[i] == '\n')
         l++;
-      if (strchr(" \r\t\n\v", buf[i]))
+      ಯದಿ (strchr(" \r\t\n\v", buf[i]))
         inword = 0;
-      else if (!inword) {
+      ಅನ್ಯಥಾ ಯದಿ (!inword) {
         w++;
         inword = 1;
       }
     }
   }
-  if (n < 0) {
+  ಯದಿ (n < 0) {
     printf("wc: read error\n");
     exit(1);
   }
   printf("%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char *argv[])
+ಪೂರ್ಣಾಙ್ಕ
+main(ಪೂರ್ಣಾಙ್ಕ argc, ವರ್ಣ *argv[])
 {
-  int fd, i;
+  ಪೂರ್ಣಾಙ್ಕ fd, i;
 
-  if (argc <= 1) {
+  ಯದಿ (argc <= 1) {
     wc(0, "");
     exit(0);
   }
 
-  for (i = 1; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
+  ಪ್ರತಿ (i = 1; i < argc; i++) {
+    ಯದಿ ((fd = open(argv[i], O_RDONLY)) < 0) {
       printf("wc: cannot open %s\n", argv[i]);
       exit(1);
     }

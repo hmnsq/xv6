@@ -1,15 +1,15 @@
 // Mutual exclusion spin locks.
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "proc.h"
-#include "defs.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
 
-void
-initlock(struct spinlock *lk, char *name)
+ಶೂನ್ಯ
+initlock(ಸಂರಚನಾ spinlock *lk, ವರ್ಣ *name)
 {
   lk->name = name;
   lk->locked = 0;
@@ -18,11 +18,11 @@ initlock(struct spinlock *lk, char *name)
 
 // Acquire the lock.
 // Loops (spins) until the lock is acquired.
-void
-acquire(struct spinlock *lk)
+ಶೂನ್ಯ
+acquire(ಸಂರಚನಾ spinlock *lk)
 {
-  push_off(); // disable interrupts to avoid deadlock.
-  if (holding(lk))
+  ತಳ್ಳು_off(); // disable interrupts to avoid deadlock.
+  ಯದಿ (holding(lk))
     panic("acquire");
 
   // On RISC-V, __atomic_exchange_n turns into an atomic swap:
@@ -34,7 +34,7 @@ acquire(struct spinlock *lk)
   // the C compiler and the processor to not move loads or stores
   // past this point, to ensure that the critical section's memory
   // references happen strictly after the lock is acquired.
-  while (__atomic_exchange_n(&lk->locked, 1, __ATOMIC_ACQUIRE) != 0)
+  ಯಾವತ್ (__atomic_exchange_n(&lk->locked, 1, __ATOMIC_ACQUIRE) != 0)
     ;
 
   // Record info about lock acquisition for holding() and debugging.
@@ -42,10 +42,10 @@ acquire(struct spinlock *lk)
 }
 
 // Release the lock.
-void
-release(struct spinlock *lk)
+ಶೂನ್ಯ
+release(ಸಂರಚನಾ spinlock *lk)
 {
-  if (!holding(lk))
+  ಯದಿ (!holding(lk))
     panic("release");
 
   lk->cpu = 0;
@@ -72,45 +72,45 @@ release(struct spinlock *lk)
   //   fence rw,w
   __atomic_store_n(&lk->locked, 0, __ATOMIC_RELEASE);
 
-  pop_off();
+  ತೆಗೆ_off();
 }
 
 // Check whether this cpu is holding the lock.
 // Interrupts must be off.
-int
-holding(struct spinlock *lk)
+ಪೂರ್ಣಾಙ್ಕ
+holding(ಸಂರಚನಾ spinlock *lk)
 {
-  int r;
+  ಪೂರ್ಣಾಙ್ಕ r;
   r = (lk->locked && lk->cpu == mycpu());
-  return r;
+  ಪ್ರತ್ಯಾಗಮ r;
 }
 
 // push_off/pop_off are like intr_off()/intr_on() except that they are matched:
 // it takes two pop_off()s to undo two push_off()s.  Also, if interrupts
 // are initially off, then push_off, pop_off leaves them off.
 
-void
-push_off(void)
+ಶೂನ್ಯ
+ತಳ್ಳು_off(ಶೂನ್ಯ)
 {
   // disable interrupts to prevent an involuntary context
   // switch while using mycpu().
   uint64 flags = rc_sstatus(SSTATUS_SIE);
-  int old = !!(flags & SSTATUS_SIE);
+  ಪೂರ್ಣಾಙ್ಕ old = !!(flags & SSTATUS_SIE);
 
-  if (mycpu()->noff == 0)
+  ಯದಿ (mycpu()->noff == 0)
     mycpu()->intena = old;
   mycpu()->noff += 1;
 }
 
-void
-pop_off(void)
+ಶೂನ್ಯ
+ತೆಗೆ_off(ಶೂನ್ಯ)
 {
-  struct cpu *c = mycpu();
-  if (intr_get())
+  ಸಂರಚನಾ cpu *c = mycpu();
+  ಯದಿ (intr_get())
     panic("pop_off - interruptible");
-  if (c->noff < 1)
+  ಯದಿ (c->noff < 1)
     panic("pop_off");
   c->noff -= 1;
-  if (c->noff == 0 && c->intena)
+  ಯದಿ (c->noff == 0 && c->intena)
     intr_on();
 }

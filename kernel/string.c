@@ -1,106 +1,106 @@
-#include "types.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
 
-void *
-memset(void *dst, int c, uint n)
+ಶೂನ್ಯ *
+memset(ಶೂನ್ಯ *dst, ಪೂರ್ಣಾಙ್ಕ c, uint n)
 {
-  char *cdst = (char *)dst;
-  int i;
-  for (i = 0; i < n; i++) {
+  ವರ್ಣ *cdst = (ವರ್ಣ *)dst;
+  ಪೂರ್ಣಾಙ್ಕ i;
+  ಪ್ರತಿ (i = 0; i < n; i++) {
     cdst[i] = c;
   }
-  return dst;
+  ಪ್ರತ್ಯಾಗಮ dst;
 }
 
-int
-memcmp(const void *v1, const void *v2, uint n)
+ಪೂರ್ಣಾಙ್ಕ
+memcmp(ಧ್ರುವ ಶೂನ್ಯ *v1, ಧ್ರುವ ಶೂನ್ಯ *v2, uint n)
 {
-  const uchar *s1, *s2;
+  ಧ್ರುವ uchar *s1, *s2;
 
   s1 = v1;
   s2 = v2;
-  while (n-- > 0) {
-    if (*s1 != *s2)
-      return *s1 - *s2;
+  ಯಾವತ್ (n-- > 0) {
+    ಯದಿ (*s1 != *s2)
+      ಪ್ರತ್ಯಾಗಮ *s1 - *s2;
     s1++, s2++;
   }
 
-  return 0;
+  ಪ್ರತ್ಯಾಗಮ 0;
 }
 
-void *
-memmove(void *dst, const void *src, uint n)
+ಶೂನ್ಯ *
+memmove(ಶೂನ್ಯ *dst, ಧ್ರುವ ಶೂನ್ಯ *src, uint n)
 {
-  const char *s;
-  char *d;
+  ಧ್ರುವ ವರ್ಣ *s;
+  ವರ್ಣ *d;
 
-  if (n == 0)
-    return dst;
+  ಯದಿ (n == 0)
+    ಪ್ರತ್ಯಾಗಮ dst;
 
   s = src;
   d = dst;
-  if (s < d && s + n > d) {
+  ಯದಿ (s < d && s + n > d) {
     s += n;
     d += n;
-    while (n-- > 0)
+    ಯಾವತ್ (n-- > 0)
       *--d = *--s;
-  } else
-    while (n-- > 0)
+  } ಅನ್ಯಥಾ
+    ಯಾವತ್ (n-- > 0)
       *d++ = *s++;
 
-  return dst;
+  ಪ್ರತ್ಯಾಗಮ dst;
 }
 
 // memcpy exists to placate GCC.  Use memmove.
-void *
-memcpy(void *dst, const void *src, uint n)
+ಶೂನ್ಯ *
+memcpy(ಶೂನ್ಯ *dst, ಧ್ರುವ ಶೂನ್ಯ *src, uint n)
 {
-  return memmove(dst, src, n);
+  ಪ್ರತ್ಯಾಗಮ memmove(dst, src, n);
 }
 
-int
-strncmp(const char *p, const char *q, uint n)
+ಪೂರ್ಣಾಙ್ಕ
+strncmp(ಧ್ರುವ ವರ್ಣ *p, ಧ್ರುವ ವರ್ಣ *q, uint n)
 {
-  while (n > 0 && *p && *p == *q)
+  ಯಾವತ್ (n > 0 && *p && *p == *q)
     n--, p++, q++;
-  if (n == 0)
-    return 0;
-  return (uchar)*p - (uchar)*q;
+  ಯದಿ (n == 0)
+    ಪ್ರತ್ಯಾಗಮ 0;
+  ಪ್ರತ್ಯಾಗಮ (uchar)*p - (uchar)*q;
 }
 
-char *
-strncpy(char *s, const char *t, int n)
+ವರ್ಣ *
+strncpy(ವರ್ಣ *s, ಧ್ರುವ ವರ್ಣ *t, ಪೂರ್ಣಾಙ್ಕ n)
 {
-  char *os;
+  ವರ್ಣ *os;
 
   os = s;
-  while (n-- > 0 && (*s++ = *t++) != 0)
+  ಯಾವತ್ (n-- > 0 && (*s++ = *t++) != 0)
     ;
-  while (n-- > 0)
+  ಯಾವತ್ (n-- > 0)
     *s++ = 0;
-  return os;
+  ಪ್ರತ್ಯಾಗಮ os;
 }
 
 // Like strncpy but guaranteed to NUL-terminate.
-char *
-safestrcpy(char *s, const char *t, int n)
+ವರ್ಣ *
+safestrcpy(ವರ್ಣ *s, ಧ್ರುವ ವರ್ಣ *t, ಪೂರ್ಣಾಙ್ಕ n)
 {
-  char *os;
+  ವರ್ಣ *os;
 
   os = s;
-  if (n <= 0)
-    return os;
-  while (--n > 0 && (*s++ = *t++) != 0)
+  ಯದಿ (n <= 0)
+    ಪ್ರತ್ಯಾಗಮ os;
+  ಯಾವತ್ (--n > 0 && (*s++ = *t++) != 0)
     ;
   *s = 0;
-  return os;
+  ಪ್ರತ್ಯಾಗಮ os;
 }
 
-int
-strlen(const char *s)
+ಪೂರ್ಣಾಙ್ಕ
+strlen(ಧ್ರುವ ವರ್ಣ *s)
 {
-  int n;
+  ಪೂರ್ಣಾಙ್ಕ n;
 
-  for (n = 0; s[n]; n++)
+  ಪ್ರತಿ (n = 0; s[n]; n++)
     ;
-  return n;
+  ಪ್ರತ್ಯಾಗಮ n;
 }

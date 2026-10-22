@@ -1,164 +1,164 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
+#ಅನ್ತರ್ಭಾವ "types.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "memlayout.h"
+#ಅನ್ತರ್ಭಾವ "riscv.h"
+#ಅನ್ತರ್ಭಾವ "spinlock.h"
+#ಅನ್ತರ್ಭಾವ "proc.h"
+#ಅನ್ತರ್ಭಾವ "defs.h"
 
-struct cpu cpus[NCPU];
+ಸಂರಚನಾ cpu cpus[NCPU];
 
-struct proc proc[NPROC];
+ಸಂರಚನಾ proc proc[NPROC];
 
-struct proc *initproc;
+ಸಂರಚನಾ proc *initproc;
 
-int nextpid = 1;
-struct spinlock pid_lock;
+ಪೂರ್ಣಾಙ್ಕ nextpid = 1;
+ಸಂರಚನಾ spinlock pid_lock;
 
-extern void forkret(void);
-static void freeproc(struct proc *p);
+ಬಾಹ್ಯ ಶೂನ್ಯ forkret(ಶೂನ್ಯ);
+ಸ್ಥಿರ ಶೂನ್ಯ freeproc(ಸಂರಚನಾ proc *p);
 
-extern char trampoline[]; // trampoline.S
+ಬಾಹ್ಯ ವರ್ಣ trampoline[]; // trampoline.S
 
 // helps ensure that wakeups of wait()ing
 // parents are not lost. helps obey the
 // memory model when using p->parent.
 // must be acquired before any p->lock.
-struct spinlock wait_lock;
+ಸಂರಚನಾ spinlock wait_lock;
 
 // Allocate a page for each process's kernel stack.
 // Map it high in memory, followed by an invalid
 // guard page.
-void
+ಶೂನ್ಯ
 proc_mapstacks(pagetable_t kpgtbl)
 {
-  struct proc *p;
+  ಸಂರಚನಾ proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
-    char *pa = kalloc();
-    if (pa == 0)
+  ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
+    ವರ್ಣ *pa = kalloc();
+    ಯದಿ (pa == 0)
       panic("kalloc");
-    uint64 va = KSTACK((int)(p - proc));
+    uint64 va = KSTACK((ಪೂರ್ಣಾಙ್ಕ)(p - proc));
     kvmmap(kpgtbl, va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
   }
 }
 
 // initialize the proc table.
-void
-procinit(void)
+ಶೂನ್ಯ
+procinit(ಶೂನ್ಯ)
 {
-  struct proc *p;
+  ಸಂರಚನಾ proc *p;
 
   initlock(&pid_lock, "nextpid");
   initlock(&wait_lock, "wait_lock");
-  for (p = proc; p < &proc[NPROC]; p++) {
+  ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
     initlock(&p->lock, "proc");
     p->state = UNUSED;
-    p->kstack = KSTACK((int)(p - proc));
+    p->kstack = KSTACK((ಪೂರ್ಣಾಙ್ಕ)(p - proc));
   }
 }
 
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
-int
+ಪೂರ್ಣಾಙ್ಕ
 cpuid()
 {
-  int id = r_tp();
-  return id;
+  ಪೂರ್ಣಾಙ್ಕ id = r_tp();
+  ಪ್ರತ್ಯಾಗಮ id;
 }
 
 // Return this CPU's cpu struct.
 // Interrupts must be disabled.
-struct cpu *
-mycpu(void)
+ಸಂರಚನಾ cpu *
+mycpu(ಶೂನ್ಯ)
 {
-  int id = cpuid();
-  struct cpu *c = &cpus[id];
-  return c;
+  ಪೂರ್ಣಾಙ್ಕ id = cpuid();
+  ಸಂರಚನಾ cpu *c = &cpus[id];
+  ಪ್ರತ್ಯಾಗಮ c;
 }
 
 // Return the current struct proc *, or zero if none.
-struct proc *
-myproc(void)
+ಸಂರಚನಾ proc *
+myproc(ಶೂನ್ಯ)
 {
-  push_off();
-  struct cpu *c = mycpu();
-  struct proc *p = c->proc;
-  pop_off();
-  return p;
+  ತಳ್ಳು_off();
+  ಸಂರಚನಾ cpu *c = mycpu();
+  ಸಂರಚನಾ proc *p = c->proc;
+  ತೆಗೆ_off();
+  ಪ್ರತ್ಯಾಗಮ p;
 }
 
-int
+ಪೂರ್ಣಾಙ್ಕ
 allocpid()
 {
-  int pid;
+  ಪೂರ್ಣಾಙ್ಕ pid;
 
   acquire(&pid_lock);
   pid = nextpid;
   nextpid = nextpid + 1;
   release(&pid_lock);
 
-  return pid;
+  ಪ್ರತ್ಯಾಗಮ pid;
 }
 
 // Look in the process table for an UNUSED proc.
 // If found, initialize state required to run in the kernel,
 // and return with p->lock held.
 // If there are no free procs, or a memory allocation fails, return 0.
-static struct proc *
-allocproc(void)
+ಸ್ಥಿರ ಸಂರಚನಾ proc *
+allocproc(ಶೂನ್ಯ)
 {
-  struct proc *p;
+  ಸಂರಚನಾ proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->state == UNUSED) {
-      goto found;
-    } else {
+    ಯದಿ (p->state == UNUSED) {
+      ಗಚ್ಛ found;
+    } ಅನ್ಯಥಾ {
       release(&p->lock);
     }
   }
-  return 0;
+  ಪ್ರತ್ಯಾಗಮ 0;
 
 found:
   p->pid = allocpid();
   p->state = USED;
 
   // Allocate a trapframe page.
-  if ((p->trapframe = (struct trapframe *)kalloc()) == 0) {
+  ಯದಿ ((p->trapframe = (ಸಂರಚನಾ trapframe *)kalloc()) == 0) {
     freeproc(p);
     release(&p->lock);
-    return 0;
+    ಪ್ರತ್ಯಾಗಮ 0;
   }
 
   // An empty user page table.
   p->pagetable = proc_pagetable(p);
-  if (p->pagetable == 0) {
+  ಯದಿ (p->pagetable == 0) {
     freeproc(p);
     release(&p->lock);
-    return 0;
+    ಪ್ರತ್ಯಾಗಮ 0;
   }
 
   // Set up new context to start executing at forkret,
   // which returns to user space.
-  memset(&p->context, 0, sizeof(p->context));
+  memset(&p->context, 0, ಪರಿಮಾಣ(p->context));
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
-  return p;
+  ಪ್ರತ್ಯಾಗಮ p;
 }
 
 // free a proc structure and the data hanging from it,
 // including user pages.
 // p->lock must be held.
-static void
-freeproc(struct proc *p)
+ಸ್ಥಿರ ಶೂನ್ಯ
+freeproc(ಸಂರಚನಾ proc *p)
 {
-  if (p->trapframe)
-    kfree((void *)p->trapframe);
+  ಯದಿ (p->trapframe)
+    kfree((ಶೂನ್ಯ *)p->trapframe);
   p->trapframe = 0;
-  if (p->pagetable)
+  ಯದಿ (p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
   p->sz = 0;
@@ -173,40 +173,40 @@ freeproc(struct proc *p)
 // Create a user page table for a given process, with no user memory,
 // but with trampoline and trapframe pages.
 pagetable_t
-proc_pagetable(struct proc *p)
+proc_pagetable(ಸಂರಚನಾ proc *p)
 {
   pagetable_t pagetable;
 
   // An empty page table.
   pagetable = uvmcreate();
-  if (pagetable == 0)
-    return 0;
+  ಯದಿ (pagetable == 0)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
   // map the trampoline code (for system call return)
   // at the highest user virtual address.
   // only the supervisor uses it, on the way
   // to/from user space, so not PTE_U.
-  if (mappages(pagetable, TRAMPOLINE, PGSIZE, (uint64)trampoline,
+  ಯದಿ (mappages(pagetable, TRAMPOLINE, PGSIZE, (uint64)trampoline,
                PTE_R | PTE_X) < 0) {
     uvmfree(pagetable, 0);
-    return 0;
+    ಪ್ರತ್ಯಾಗಮ 0;
   }
 
   // map the trapframe page just below the trampoline page, for
   // trampoline.S.
-  if (mappages(pagetable, TRAPFRAME, PGSIZE, (uint64)(p->trapframe),
+  ಯದಿ (mappages(pagetable, TRAPFRAME, PGSIZE, (uint64)(p->trapframe),
                PTE_R | PTE_W) < 0) {
     uvmunmap(pagetable, TRAMPOLINE, 1, 0);
     uvmfree(pagetable, 0);
-    return 0;
+    ಪ್ರತ್ಯಾಗಮ 0;
   }
 
-  return pagetable;
+  ಪ್ರತ್ಯಾಗಮ pagetable;
 }
 
 // Free a process's page table, and free the
 // physical memory it refers to.
-void
+ಶೂನ್ಯ
 proc_freepagetable(pagetable_t pagetable, uint64 sz)
 {
   uvmunmap(pagetable, TRAMPOLINE, 1, 0);
@@ -215,10 +215,10 @@ proc_freepagetable(pagetable_t pagetable, uint64 sz)
 }
 
 // Set up first user process.
-void
-userinit(void)
+ಶೂನ್ಯ
+userinit(ಶೂನ್ಯ)
 {
-  struct proc *p;
+  ಸಂರಚನಾ proc *p;
 
   p = allocproc();
   initproc = p;
@@ -232,46 +232,46 @@ userinit(void)
 
 // Grow or shrink user memory by n bytes.
 // Return 0 on success, -1 on failure.
-int
-growproc(int n)
+ಪೂರ್ಣಾಙ್ಕ
+growproc(ಪೂರ್ಣಾಙ್ಕ n)
 {
   uint64 sz;
-  struct proc *p = myproc();
+  ಸಂರಚನಾ proc *p = myproc();
 
   sz = p->sz;
-  if (n > 0) {
-    if (sz + n > TRAPFRAME) {
-      return -1;
+  ಯದಿ (n > 0) {
+    ಯದಿ (sz + n > TRAPFRAME) {
+      ಪ್ರತ್ಯಾಗಮ -1;
     }
-    if ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
-      return -1;
+    ಯದಿ ((sz = uvmalloc(p->pagetable, sz, sz + n, PTE_W)) == 0) {
+      ಪ್ರತ್ಯಾಗಮ -1;
     }
-  } else if (n < 0) {
+  } ಅನ್ಯಥಾ ಯದಿ (n < 0) {
     sz = uvmdealloc(p->pagetable, sz, sz + n);
   }
   p->sz = sz;
-  return 0;
+  ಪ್ರತ್ಯಾಗಮ 0;
 }
 
 // Create a new process, copying the parent.
 // Sets up child kernel stack to return as if from fork() system call.
-int
-kfork(void)
+ಪೂರ್ಣಾಙ್ಕ
+kfork(ಶೂನ್ಯ)
 {
-  int i, pid;
-  struct proc *np;
-  struct proc *p = myproc();
+  ಪೂರ್ಣಾಙ್ಕ i, pid;
+  ಸಂರಚನಾ proc *np;
+  ಸಂರಚನಾ proc *p = myproc();
 
   // Allocate process.
-  if ((np = allocproc()) == 0) {
-    return -1;
+  ಯದಿ ((np = allocproc()) == 0) {
+    ಪ್ರತ್ಯಾಗಮ -1;
   }
 
   // Copy user memory from parent to child.
-  if (uvmcopy(p->pagetable, np->pagetable, p->sz) < 0) {
+  ಯದಿ (uvmcopy(p->pagetable, np->pagetable, p->sz) < 0) {
     freeproc(np);
     release(&np->lock);
-    return -1;
+    ಪ್ರತ್ಯಾಗಮ -1;
   }
   np->sz = p->sz;
 
@@ -282,12 +282,12 @@ kfork(void)
   np->trapframe->a0 = 0;
 
   // increment reference counts on open file descriptors.
-  for (i = 0; i < NOFILE; i++)
-    if (p->ofile[i])
+  ಪ್ರತಿ (i = 0; i < NOFILE; i++)
+    ಯದಿ (p->ofile[i])
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
-  safestrcpy(np->name, p->name, sizeof(p->name));
+  safestrcpy(np->name, p->name, ಪರಿಮಾಣ(p->name));
 
   pid = np->pid;
 
@@ -301,18 +301,18 @@ kfork(void)
   np->state = RUNNABLE;
   release(&np->lock);
 
-  return pid;
+  ಪ್ರತ್ಯಾಗಮ pid;
 }
 
 // Pass p's abandoned children to init.
 // Caller must hold wait_lock.
-void
-reparent(struct proc *p)
+ಶೂನ್ಯ
+reparent(ಸಂರಚನಾ proc *p)
 {
-  struct proc *pp;
+  ಸಂರಚನಾ proc *pp;
 
-  for (pp = proc; pp < &proc[NPROC]; pp++) {
-    if (pp->parent == p) {
+  ಪ್ರತಿ (pp = proc; pp < &proc[NPROC]; pp++) {
+    ಯದಿ (pp->parent == p) {
       pp->parent = initproc;
       wakeup(initproc);
     }
@@ -322,18 +322,18 @@ reparent(struct proc *p)
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait().
-void
-kexit(int status)
+ಶೂನ್ಯ
+kexit(ಪೂರ್ಣಾಙ್ಕ status)
 {
-  struct proc *p = myproc();
+  ಸಂರಚನಾ proc *p = myproc();
 
-  if (p == initproc)
+  ಯದಿ (p == initproc)
     panic("init exiting");
 
   // Close all open files.
-  for (int fd = 0; fd < NOFILE; fd++) {
-    if (p->ofile[fd]) {
-      struct file *f = p->ofile[fd];
+  ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ fd = 0; fd < NOFILE; fd++) {
+    ಯದಿ (p->ofile[fd]) {
+      ಸಂರಚನಾ file *f = p->ofile[fd];
       fileclose(f);
       p->ofile[fd] = 0;
     }
@@ -366,48 +366,48 @@ kexit(int status)
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
-int
+ಪೂರ್ಣಾಙ್ಕ
 kwait(uint64 addr)
 {
-  struct proc *pp;
-  int havekids, pid;
-  struct proc *p = myproc();
+  ಸಂರಚನಾ proc *pp;
+  ಪೂರ್ಣಾಙ್ಕ havekids, pid;
+  ಸಂರಚನಾ proc *p = myproc();
 
   acquire(&wait_lock);
 
-  for (;;) {
+  ಪ್ರತಿ (;;) {
     // Scan through table looking for exited children.
     havekids = 0;
-    for (pp = proc; pp < &proc[NPROC]; pp++) {
-      if (pp->parent == p) {
+    ಪ್ರತಿ (pp = proc; pp < &proc[NPROC]; pp++) {
+      ಯದಿ (pp->parent == p) {
         // make sure the child isn't still in exit() or swtch().
         acquire(&pp->lock);
 
         havekids = 1;
-        if (pp->state == ZOMBIE) {
+        ಯದಿ (pp->state == ZOMBIE) {
           // Found one.
           pid = pp->pid;
-          if (addr != 0 &&
-              copyout(p->pagetable, p->sz, addr, (char *)&pp->xstate,
-                      sizeof(pp->xstate)) < 0) {
+          ಯದಿ (addr != 0 &&
+              copyout(p->pagetable, p->sz, addr, (ವರ್ಣ *)&pp->xstate,
+                      ಪರಿಮಾಣ(pp->xstate)) < 0) {
             release(&pp->lock);
             release(&wait_lock);
-            return -1;
+            ಪ್ರತ್ಯಾಗಮ -1;
           }
           pp->parent = 0;
           freeproc(pp);
           release(&pp->lock);
           release(&wait_lock);
-          return pid;
+          ಪ್ರತ್ಯಾಗಮ pid;
         }
         release(&pp->lock);
       }
     }
 
     // No point waiting if we don't have any children.
-    if (!havekids || killed(p)) {
+    ಯದಿ (!havekids || killed(p)) {
       release(&wait_lock);
-      return -1;
+      ಪ್ರತ್ಯಾಗಮ -1;
     }
 
     // Wait for a child to exit.
@@ -425,14 +425,14 @@ kwait(uint64 addr)
 //  - swtch to start running that process.
 //  - eventually that process transfers control
 //    via swtch back to the scheduler.
-void
-scheduler(void)
+ಶೂನ್ಯ
+scheduler(ಶೂನ್ಯ)
 {
-  struct proc *p;
-  struct cpu *c = mycpu();
+  ಸಂರಚನಾ proc *p;
+  ಸಂರಚನಾ cpu *c = mycpu();
 
   c->proc = 0;
-  for (;;) {
+  ಪ್ರತಿ (;;) {
     // The most recent process to run may have had interrupts
     // turned off; enable them to avoid a deadlock if all
     // processes are waiting. Then turn them back off
@@ -441,10 +441,10 @@ scheduler(void)
     intr_on();
     intr_off();
 
-    int found = 0;
-    for (p = proc; p < &proc[NPROC]; p++) {
+    ಪೂರ್ಣಾಙ್ಕ found = 0;
+    ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
-      if (p->state == RUNNABLE) {
+      ಯದಿ (p->state == RUNNABLE) {
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
@@ -462,9 +462,9 @@ scheduler(void)
       }
       release(&p->lock);
     }
-    if (found == 0) {
+    ಯದಿ (found == 0) {
       // nothing to run; stop running on this core until an interrupt.
-      asm volatile("wfi");
+      asm ಚಞ್ಚಲ("wfi");
     }
   }
 }
@@ -476,19 +476,19 @@ scheduler(void)
 // be proc->intena and proc->noff, but that would
 // break in the few places where a lock is held but
 // there's no process.
-void
-sched(void)
+ಶೂನ್ಯ
+sched(ಶೂನ್ಯ)
 {
-  int intena;
-  struct proc *p = myproc();
+  ಪೂರ್ಣಾಙ್ಕ intena;
+  ಸಂರಚನಾ proc *p = myproc();
 
-  if (!holding(&p->lock))
+  ಯದಿ (!holding(&p->lock))
     panic("sched p->lock");
-  if (mycpu()->noff != 1)
+  ಯದಿ (mycpu()->noff != 1)
     panic("sched locks");
-  if (p->state == RUNNING)
+  ಯದಿ (p->state == RUNNING)
     panic("sched RUNNING");
-  if (intr_get())
+  ಯದಿ (intr_get())
     panic("sched interruptible");
 
   intena = mycpu()->intena;
@@ -497,10 +497,10 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
-void
-yield(void)
+ಶೂನ್ಯ
+yield(ಶೂನ್ಯ)
 {
-  struct proc *p = myproc();
+  ಸಂರಚನಾ proc *p = myproc();
   acquire(&p->lock);
   p->state = RUNNABLE;
   sched();
@@ -509,17 +509,17 @@ yield(void)
 
 // A fork child's very first scheduling by scheduler()
 // will swtch to forkret.
-void
-forkret(void)
+ಶೂನ್ಯ
+forkret(ಶೂನ್ಯ)
 {
-  extern char userret[];
-  static int first = 1;
-  struct proc *p = myproc();
+  ಬಾಹ್ಯ ವರ್ಣ userret[];
+  ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ first = 1;
+  ಸಂರಚನಾ proc *p = myproc();
 
   // Still holding p->lock from scheduler.
   release(&p->lock);
 
-  if (first) {
+  ಯದಿ (first) {
     first = 0;
 
     // File system initialization must be run in the context of a
@@ -529,8 +529,8 @@ forkret(void)
 
     // We can invoke kexec() now that file system is initialized.
     // Put the return value (argc) of kexec into a0.
-    p->trapframe->a0 = kexec("/init", (char *[]){"/init", 0});
-    if (p->trapframe->a0 == -1) {
+    p->trapframe->a0 = kexec("/init", (ವರ್ಣ *[]){"/init", 0});
+    ಯದಿ (p->trapframe->a0 == -1) {
       panic("exec");
     }
   }
@@ -539,17 +539,17 @@ forkret(void)
   prepare_return();
   uint64 satp = MAKE_SATP(p->pagetable);
   uint64 trampoline_userret = TRAMPOLINE + (userret - trampoline);
-  ((void (*)(uint64))trampoline_userret)(satp);
+  ((ಶೂನ್ಯ (*)(uint64))trampoline_userret)(satp);
 }
 
 // Register current process as waiting for wakeups on chan.
-void
-sleep_prepare(void *chan)
+ಶೂನ್ಯ
+sleep_prepare(ಶೂನ್ಯ *chan)
 {
-  struct proc *p = myproc();
+  ಸಂರಚನಾ proc *p = myproc();
 
   acquire(&p->lock);
-  if (chan == 0)
+  ಯದಿ (chan == 0)
     panic("sleep_prepare: zero chan");
   p->chan = chan;
   release(&p->lock);
@@ -558,13 +558,13 @@ sleep_prepare(void *chan)
 // Put the thread to sleep.  Assumes sleep_prepare() was called before.
 // If the channel registered by sleep_prepare() has been woken up in
 // the meantime, do not go to sleep, and instead return immediately.
-void
-sleep(void)
+ಶೂನ್ಯ
+sleep(ಶೂನ್ಯ)
 {
-  struct proc *p = myproc();
+  ಸಂರಚನಾ proc *p = myproc();
 
   acquire(&p->lock);
-  if (p->chan != 0) {
+  ಯದಿ (p->chan != 0) {
     p->state = SLEEPING;
     sched();
   }
@@ -572,21 +572,21 @@ sleep(void)
 }
 
 // Wake up all processes sleeping on channel chan.
-void
-wakeup(void *chan)
+ಶೂನ್ಯ
+wakeup(ಶೂನ್ಯ *chan)
 {
-  struct proc *p;
+  ಸಂರಚನಾ proc *p;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->chan == chan) {
+    ಯದಿ (p->chan == chan) {
       // If the process is waiting for wakeups on this channel,
       // signal that the wakeup happened by clearing p->chan.
       p->chan = 0;
 
       // If this waiting process has gotten so far as to actually
       // go to sleep, also set it back to RUNNING.
-      if (p->state == SLEEPING) {
+      ಯದಿ (p->state == SLEEPING) {
         p->state = RUNNABLE;
       }
     }
@@ -597,86 +597,86 @@ wakeup(void *chan)
 // Kill the process with the given pid.
 // The victim won't exit until it tries to return
 // to user space (see usertrap() in trap.c).
-int
-kkill(int pid)
+ಪೂರ್ಣಾಙ್ಕ
+kkill(ಪೂರ್ಣಾಙ್ಕ pid)
 {
-  struct proc *p;
+  ಸಂರಚನಾ proc *p;
 
-  if (pid == 0)
-    return -1;
+  ಯದಿ (pid == 0)
+    ಪ್ರತ್ಯಾಗಮ -1;
 
-  for (p = proc; p < &proc[NPROC]; p++) {
+  ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if (p->pid == pid) {
+    ಯದಿ (p->pid == pid) {
       p->killed = 1;
-      if (p->state == SLEEPING) {
+      ಯದಿ (p->state == SLEEPING) {
         // Wake process from sleep().
         p->state = RUNNABLE;
       }
       release(&p->lock);
-      return 0;
+      ಪ್ರತ್ಯಾಗಮ 0;
     }
     release(&p->lock);
   }
-  return -1;
+  ಪ್ರತ್ಯಾಗಮ -1;
 }
 
-void
-setkilled(struct proc *p)
+ಶೂನ್ಯ
+setkilled(ಸಂರಚನಾ proc *p)
 {
   acquire(&p->lock);
   p->killed = 1;
   release(&p->lock);
 }
 
-int
-killed(struct proc *p)
+ಪೂರ್ಣಾಙ್ಕ
+killed(ಸಂರಚನಾ proc *p)
 {
-  int k;
+  ಪೂರ್ಣಾಙ್ಕ k;
 
   acquire(&p->lock);
   k = p->killed;
   release(&p->lock);
-  return k;
+  ಪ್ರತ್ಯಾಗಮ k;
 }
 
 // Copy to either a user address, or kernel address,
 // depending on usr_dst.
 // Returns 0 on success, -1 on error.
-int
-either_copyout(int user_dst, uint64 dst, void *src, uint64 len)
+ಪೂರ್ಣಾಙ್ಕ
+either_copyout(ಪೂರ್ಣಾಙ್ಕ user_dst, uint64 dst, ಶೂನ್ಯ *src, uint64 len)
 {
-  struct proc *p = myproc();
-  if (user_dst) {
-    return copyout(p->pagetable, p->sz, dst, src, len);
-  } else {
-    memmove((char *)dst, src, len);
-    return 0;
+  ಸಂರಚನಾ proc *p = myproc();
+  ಯದಿ (user_dst) {
+    ಪ್ರತ್ಯಾಗಮ copyout(p->pagetable, p->sz, dst, src, len);
+  } ಅನ್ಯಥಾ {
+    memmove((ವರ್ಣ *)dst, src, len);
+    ಪ್ರತ್ಯಾಗಮ 0;
   }
 }
 
 // Copy from either a user address, or kernel address,
 // depending on usr_src.
 // Returns 0 on success, -1 on error.
-int
-either_copyin(void *dst, int user_src, uint64 src, uint64 len)
+ಪೂರ್ಣಾಙ್ಕ
+either_copyin(ಶೂನ್ಯ *dst, ಪೂರ್ಣಾಙ್ಕ user_src, uint64 src, uint64 len)
 {
-  struct proc *p = myproc();
-  if (user_src) {
-    return copyin(p->pagetable, p->sz, dst, src, len);
-  } else {
-    memmove(dst, (char *)src, len);
-    return 0;
+  ಸಂರಚನಾ proc *p = myproc();
+  ಯದಿ (user_src) {
+    ಪ್ರತ್ಯಾಗಮ copyin(p->pagetable, p->sz, dst, src, len);
+  } ಅನ್ಯಥಾ {
+    memmove(dst, (ವರ್ಣ *)src, len);
+    ಪ್ರತ್ಯಾಗಮ 0;
   }
 }
 
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
 // No lock to avoid wedging a stuck machine further.
-void
-procdump(void)
+ಶೂನ್ಯ
+procdump(ಶೂನ್ಯ)
 {
-  static char *states[] = {
+  ಸ್ಥಿರ ವರ್ಣ *states[] = {
     // clang-format off
     [UNUSED]    = "unused",
     [USED]      = "used",
@@ -686,16 +686,16 @@ procdump(void)
     [ZOMBIE]    = "zombie"
     // clang-format on
   };
-  struct proc *p;
-  char *state;
+  ಸಂರಚನಾ proc *p;
+  ವರ್ಣ *state;
 
   printk("\n");
-  for (p = proc; p < &proc[NPROC]; p++) {
-    if (p->state == UNUSED)
-      continue;
-    if (p->state >= 0 && p->state < NELEM(states) && states[p->state])
+  ಪ್ರತಿ (p = proc; p < &proc[NPROC]; p++) {
+    ಯದಿ (p->state == UNUSED)
+      ಅನುವರ್ತ;
+    ಯದಿ (p->state >= 0 && p->state < NELEM(states) && states[p->state])
       state = states[p->state];
-    else
+    ಅನ್ಯಥಾ
       state = "???";
     printk("%d %s %s", p->pid, state, p->name);
     printk("\n");

@@ -1,11 +1,11 @@
-struct buf {
-  int valid; // has data been read from disk?
-  int disk;  // does disk "own" buf?
+ಸಂರಚನಾ buf {
+  ಪೂರ್ಣಾಙ್ಕ valid; // has data been read from disk?
+  ಪೂರ್ಣಾಙ್ಕ disk;  // does disk "own" buf?
   uint dev;
   uint blockno;
-  struct sleeplock lock;
+  ಸಂರಚನಾ sleeplock lock;
   uint refcnt;
-  struct buf *prev; // LRU cache list
-  struct buf *next;
+  ಸಂರಚನಾ buf *prev; // LRU cache list
+  ಸಂರಚನಾ buf *next;
   uchar data[BSIZE];
 };

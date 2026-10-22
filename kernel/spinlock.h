@@ -1,8 +1,8 @@
 // Mutual exclusion lock.
-struct spinlock {
+ಸಂರಚನಾ spinlock {
   uint locked; // Is the lock held?
 
   // For debugging:
-  char *name;      // Name of lock.
-  struct cpu *cpu; // The cpu holding the lock.
+  ವರ್ಣ *name;      // Name of lock.
+  ಸಂರಚನಾ cpu *cpu; // The cpu holding the lock.
 };

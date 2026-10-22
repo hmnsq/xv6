@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#define SBRK_ERROR ((ವರ್ಣ *)-1)
 
-struct stat;
+ಸಂರಚನಾ stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+ಪೂರ್ಣಾಙ್ಕ fork(ಶೂನ್ಯ);
+ಪೂರ್ಣಾಙ್ಕ exit(ಪೂರ್ಣಾಙ್ಕ) __attribute__((noreturn));
+ಪೂರ್ಣಾಙ್ಕ wait(ಪೂರ್ಣಾಙ್ಕ *);
+ಪೂರ್ಣಾಙ್ಕ pipe(ಪೂರ್ಣಾಙ್ಕ *);
+ಪೂರ್ಣಾಙ್ಕ ಲಿಖ(ಪೂರ್ಣಾಙ್ಕ, ಧ್ರುವ ಶೂನ್ಯ *, ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ ಪಠ(ಪೂರ್ಣಾಙ್ಕ, ಶೂನ್ಯ *, ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ close(ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ kill(ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ exec(ಧ್ರುವ ವರ್ಣ *, ವರ್ಣ **);
+ಪೂರ್ಣಾಙ್ಕ open(ಧ್ರುವ ವರ್ಣ *, ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ mknod(ಧ್ರುವ ವರ್ಣ *, short, short);
+ಪೂರ್ಣಾಙ್ಕ unlink(ಧ್ರುವ ವರ್ಣ *);
+ಪೂರ್ಣಾಙ್ಕ fstat(ಪೂರ್ಣಾಙ್ಕ fd, ಸಂರಚನಾ stat *);
+ಪೂರ್ಣಾಙ್ಕ link(ಧ್ರುವ ವರ್ಣ *, ಧ್ರುವ ವರ್ಣ *);
+ಪೂರ್ಣಾಙ್ಕ mkdir(ಧ್ರುವ ವರ್ಣ *);
+ಪೂರ್ಣಾಙ್ಕ chdir(ಧ್ರುವ ವರ್ಣ *);
+ಪೂರ್ಣಾಙ್ಕ dup(ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ getpid(ಶೂನ್ಯ);
+ವರ್ಣ *sys_sbrk(ಪೂರ್ಣಾಙ್ಕ, ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ pause(ಪೂರ್ಣಾಙ್ಕ);
+ಪೂರ್ಣಾಙ್ಕ uptime(ಶೂನ್ಯ);
+ಪೂರ್ಣಾಙ್ಕ sync(ಶೂನ್ಯ);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+ಪೂರ್ಣಾಙ್ಕ stat(ಧ್ರುವ ವರ್ಣ *, ಸಂರಚನಾ stat *);
+ವರ್ಣ *strcpy(ವರ್ಣ *, ಧ್ರುವ ವರ್ಣ *);
+ಶೂನ್ಯ *memmove(ಶೂನ್ಯ *, ಧ್ರುವ ಶೂನ್ಯ *, ಪೂರ್ಣಾಙ್ಕ);
+ವರ್ಣ *strchr(ಧ್ರುವ ವರ್ಣ *, ವರ್ಣ c);
+ಪೂರ್ಣಾಙ್ಕ strcmp(ಧ್ರುವ ವರ್ಣ *, ಧ್ರುವ ವರ್ಣ *);
+ವರ್ಣ *gets(ವರ್ಣ *, ಪೂರ್ಣಾಙ್ಕ max);
+uint strlen(ಧ್ರುವ ವರ್ಣ *);
+ಶೂನ್ಯ *memset(ಶೂನ್ಯ *, ಪೂರ್ಣಾಙ್ಕ, uint);
+ಪೂರ್ಣಾಙ್ಕ atoi(ಧ್ರುವ ವರ್ಣ *);
+ಪೂರ್ಣಾಙ್ಕ memcmp(ಧ್ರುವ ಶೂನ್ಯ *, ಧ್ರುವ ಶೂನ್ಯ *, uint);
+ಶೂನ್ಯ *memcpy(ಶೂನ್ಯ *, ಧ್ರುವ ಶೂನ್ಯ *, uint);
+ವರ್ಣ *sbrk(ಪೂರ್ಣಾಙ್ಕ);
+ವರ್ಣ *sbrklazy(ಪೂರ್ಣಾಙ್ಕ);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+ಶೂನ್ಯ fprintf(ಪೂರ್ಣಾಙ್ಕ, ಧ್ರುವ ವರ್ಣ *, ...) __attribute__((format(printf, 2, 3)));
+ಶೂನ್ಯ printf(ಧ್ರುವ ವರ್ಣ *, ...) __attribute__((format(printf, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+ಶೂನ್ಯ *malloc(uint);
+ಶೂನ್ಯ ಮುಕ್ತ(ಶೂನ್ಯ *);
