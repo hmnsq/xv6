@@ -1,108 +1,108 @@
 // Simple grep.  Only supports ^ . * $ operators.
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#अन्तर्भाव "kernel/types.h"
+#अन्तर्भाव "kernel/stat.h"
+#अन्तर्भाव "kernel/fcntl.h"
+#अन्तर्भाव "user/user.h"
 
-char buf[1024];
-int match(char *, char *);
+वर्ण buf[1024];
+पूर्णाङ्क match(वर्ण *, वर्ण *);
 
-void
-grep(char *pattern, int fd)
+शून्य
+grep(वर्ण *pattern, पूर्णाङ्क fd)
 {
-  int n, m;
-  char *p, *q;
+  पूर्णाङ्क n, m;
+  वर्ण *p, *q;
 
   m = 0;
-  while ((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
+  यावत् ((n = पठ(fd, buf + m, परिमाण(buf) - m - 1)) > 0) {
     m += n;
     buf[m] = '\0';
     p = buf;
-    while ((q = strchr(p, '\n')) != 0) {
+    यावत् ((q = म_अक्षर(p, '\n')) != 0) {
       *q = 0;
-      if (match(pattern, p)) {
+      यदि (match(pattern, p)) {
         *q = '\n';
-        write(1, p, q + 1 - p);
+        लिख(1, p, q + 1 - p);
       }
       p = q + 1;
     }
-    if (m > 0) {
+    यदि (m > 0) {
       m -= p - buf;
-      memmove(buf, p, m);
+      स_हटाओ(buf, p, m);
     }
   }
 }
 
-int
-main(int argc, char *argv[])
+पूर्णाङ्क
+main(पूर्णाङ्क argc, वर्ण *argv[])
 {
-  int fd, i;
-  char *pattern;
+  पूर्णाङ्क fd, i;
+  वर्ण *pattern;
 
-  if (argc <= 1) {
-    fprintf(2, "usage: grep pattern [file ...]\n");
-    exit(1);
+  यदि (argc <= 1) {
+    ख_लिखो(2, "usage: grep pattern [file ...]\n");
+    निकास(1);
   }
   pattern = argv[1];
 
-  if (argc <= 2) {
+  यदि (argc <= 2) {
     grep(pattern, 0);
-    exit(0);
+    निकास(0);
   }
 
-  for (i = 2; i < argc; i++) {
-    if ((fd = open(argv[i], O_RDONLY)) < 0) {
-      printf("grep: cannot open %s\n", argv[i]);
-      exit(1);
+  प्रति (i = 2; i < argc; i++) {
+    यदि ((fd = खोलो(argv[i], O_RDONLY)) < 0) {
+      म_लिखो("grep: cannot open %s\n", argv[i]);
+      निकास(1);
     }
     grep(pattern, fd);
-    close(fd);
+    बंद(fd);
   }
-  exit(0);
+  निकास(0);
 }
 
 // Regexp matcher from Kernighan & Pike,
 // The Practice of Programming, Chapter 9, or
 // https://www.cs.princeton.edu/courses/archive/spr09/cos333/beautiful.html
 
-int matchhere(char *, char *);
-int matchstar(int, char *, char *);
+पूर्णाङ्क matchhere(वर्ण *, वर्ण *);
+पूर्णाङ्क matchstar(पूर्णाङ्क, वर्ण *, वर्ण *);
 
-int
-match(char *re, char *text)
+पूर्णाङ्क
+match(वर्ण *re, वर्ण *text)
 {
-  if (re[0] == '^')
-    return matchhere(re + 1, text);
-  do { // must look at empty string
-    if (matchhere(re, text))
-      return 1;
-  } while (*text++ != '\0');
-  return 0;
+  यदि (re[0] == '^')
+    प्रत्यागम matchhere(re + 1, text);
+  कुरु { // must look at empty string
+    यदि (matchhere(re, text))
+      प्रत्यागम 1;
+  } यावत् (*text++ != '\0');
+  प्रत्यागम 0;
 }
 
 // matchhere: search for re at beginning of text
-int
-matchhere(char *re, char *text)
+पूर्णाङ्क
+matchhere(वर्ण *re, वर्ण *text)
 {
-  if (re[0] == '\0')
-    return 1;
-  if (re[1] == '*')
-    return matchstar(re[0], re + 2, text);
-  if (re[0] == '$' && re[1] == '\0')
-    return *text == '\0';
-  if (*text != '\0' && (re[0] == '.' || re[0] == *text))
-    return matchhere(re + 1, text + 1);
-  return 0;
+  यदि (re[0] == '\0')
+    प्रत्यागम 1;
+  यदि (re[1] == '*')
+    प्रत्यागम matchstar(re[0], re + 2, text);
+  यदि (re[0] == '$' && re[1] == '\0')
+    प्रत्यागम *text == '\0';
+  यदि (*text != '\0' && (re[0] == '.' || re[0] == *text))
+    प्रत्यागम matchhere(re + 1, text + 1);
+  प्रत्यागम 0;
 }
 
 // matchstar: search for c*re at beginning of text
-int
-matchstar(int c, char *re, char *text)
+पूर्णाङ्क
+matchstar(पूर्णाङ्क c, वर्ण *re, वर्ण *text)
 {
-  do { // a * matches zero or more instances
-    if (matchhere(re, text))
-      return 1;
-  } while (*text != '\0' && (*text++ == c || c == '.'));
-  return 0;
+  कुरु { // a * matches zero or more instances
+    यदि (matchhere(re, text))
+      प्रत्यागम 1;
+  } यावत् (*text != '\0' && (*text++ == c || c == '.'));
+  प्रत्यागम 0;
 }
