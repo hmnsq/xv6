@@ -2,12 +2,12 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-int
-main(int argc, char **argv)
+puur_naa_nka
+main(puur_naa_nka argc, var_na **argv)
 {
-  int i;
+  puur_naa_nka i;
 
-  if (argc < 2) {
+  ᤀᤡ᤺ (argc < 2) {
     fprintf(2, "usage: kill pid...\n");
     exit(1);
   }
