@@ -1,90 +1,90 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/param.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
+#ضمن "kernel/param.h"
 
 // Memory allocator by Kernighan and Ritchie,
 // The C programming Language, 2nd ed.  Section 8.7.
 
-typedef long Align;
+تعريفنوع اوږد Align;
 
-union header {
-  struct {
-    union header *ptr;
-    uint size;
+اتحاد سرلیک {
+  بنية {
+    اتحاد سرلیک *ptr;
+    uint اندازه;
   } s;
   Align x;
 };
 
-typedef union header Header;
+تعريفنوع اتحاد سرلیک سرلیک_2;
 
-static Header base;
-static Header *freep;
+ساكن سرلیک_2 بنسټ;
+ساكن سرلیک_2 *freep;
 
-void
-free(void *ap)
+فراغ
+حرر(فراغ *ap)
 {
-  Header *bp, *p;
+  سرلیک_2 *bp, *p;
 
-  bp = (Header *)ap - 1;
-  for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-    if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
-      break;
-  if (bp + bp->s.size == p->s.ptr) {
-    bp->s.size += p->s.ptr->s.size;
+  bp = (سرلیک_2 *)ap - 1;
+  لكل (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
+    إذا (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+      اكسر;
+  إذا (bp + bp->s.اندازه == p->s.ptr) {
+    bp->s.اندازه += p->s.ptr->s.اندازه;
     bp->s.ptr = p->s.ptr->s.ptr;
-  } else
+  } وإلا
     bp->s.ptr = p->s.ptr;
-  if (p + p->s.size == bp) {
-    p->s.size += bp->s.size;
+  إذا (p + p->s.اندازه == bp) {
+    p->s.اندازه += bp->s.اندازه;
     p->s.ptr = bp->s.ptr;
-  } else
+  } وإلا
     p->s.ptr = bp;
   freep = p;
 }
 
-static Header *
+ساكن سرلیک_2 *
 morecore(uint nu)
 {
-  char *p;
-  Header *hp;
+  حرف *p;
+  سرلیک_2 *hp;
 
-  if (nu < 4096)
+  إذا (nu < 4096)
     nu = 4096;
-  p = sbrk(nu * sizeof(Header));
-  if (p == SBRK_ERROR)
-    return 0;
-  hp = (Header *)p;
-  hp->s.size = nu;
-  free((void *)(hp + 1));
-  return freep;
+  p = sbrk(nu * حجم(سرلیک_2));
+  إذا (p == SBRK_ERROR)
+    أرجع 0;
+  hp = (سرلیک_2 *)p;
+  hp->s.اندازه = nu;
+  حرر((فراغ *)(hp + 1));
+  أرجع freep;
 }
 
-void *
-malloc(uint nbytes)
+فراغ *
+حافظه_ورکړه(uint nbytes)
 {
-  Header *p, *prevp;
+  سرلیک_2 *p, *prevp;
   uint nunits;
 
-  nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-  if ((prevp = freep) == 0) {
-    base.s.ptr = freep = prevp = &base;
-    base.s.size = 0;
+  nunits = (nbytes + حجم(سرلیک_2) - 1) / حجم(سرلیک_2) + 1;
+  إذا ((prevp = freep) == 0) {
+    بنسټ.s.ptr = freep = prevp = &بنسټ;
+    بنسټ.s.اندازه = 0;
   }
-  for (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
-    if (p->s.size >= nunits) {
-      if (p->s.size == nunits)
+  لكل (p = prevp->s.ptr;; prevp = p, p = p->s.ptr) {
+    إذا (p->s.اندازه >= nunits) {
+      إذا (p->s.اندازه == nunits)
         prevp->s.ptr = p->s.ptr;
-      else {
-        p->s.size -= nunits;
-        p += p->s.size;
-        p->s.size = nunits;
+      وإلا {
+        p->s.اندازه -= nunits;
+        p += p->s.اندازه;
+        p->s.اندازه = nunits;
       }
       freep = prevp;
-      return (void *)(p + 1);
+      أرجع (فراغ *)(p + 1);
     }
-    if (p == freep)
-      if ((p = morecore(nunits)) == 0)
-        return 0;
+    إذا (p == freep)
+      إذا ((p = morecore(nunits)) == 0)
+        أرجع 0;
   }
 }

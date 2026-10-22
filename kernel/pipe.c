@@ -1,40 +1,40 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
-#include "sleeplock.h"
-#include "file.h"
+#ضمن "types.h"
+#ضمن "riscv.h"
+#ضمن "defs.h"
+#ضمن "param.h"
+#ضمن "spinlock.h"
+#ضمن "proc.h"
+#ضمن "fs.h"
+#ضمن "sleeplock.h"
+#ضمن "file.h"
 
-#define PIPESIZE 512
+#تعریف_کړه PIPESIZE 512
 
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
+بنية pipe {
+  بنية spinlock قلف;
+  حرف معلومات[PIPESIZE];
   uint nread;    // number of bytes read
   uint nwrite;   // number of bytes written
-  int readopen;  // read fd is still open
-  int writeopen; // write fd is still open
+  صحيح readopen;  // read fd is still open
+  صحيح writeopen; // write fd is still open
 };
 
-int
-pipealloc(struct file **f0, struct file **f1)
+صحيح
+pipealloc(بنية file **f0, بنية file **f1)
 {
-  struct pipe *pi;
+  بنية pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-  if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
-    goto bad;
-  if ((pi = (struct pipe *)kalloc()) == 0)
-    goto bad;
+  إذا ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+    اذهب bad;
+  إذا ((pi = (بنية pipe *)kalloc()) == 0)
+    اذهب bad;
   pi->readopen = 1;
   pi->writeopen = 1;
   pi->nwrite = 0;
   pi->nread = 0;
-  initlock(&pi->lock, "pipe");
+  initlock(&pi->قلف, "pipe");
   (*f0)->type = FD_PIPE;
   (*f0)->readable = 1;
   (*f0)->writable = 0;
@@ -43,101 +43,101 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->readable = 0;
   (*f1)->writable = 1;
   (*f1)->pipe = pi;
-  return 0;
+  أرجع 0;
 
 bad:
-  if (pi)
-    kfree((char *)pi);
-  if (*f0)
+  إذا (pi)
+    kfree((حرف *)pi);
+  إذا (*f0)
     fileclose(*f0);
-  if (*f1)
+  إذا (*f1)
     fileclose(*f1);
-  return -1;
+  أرجع -1;
 }
 
-void
-pipeclose(struct pipe *pi, int writable)
+فراغ
+pipeclose(بنية pipe *pi, صحيح writable)
 {
-  acquire(&pi->lock);
-  if (writable) {
+  acquire(&pi->قلف);
+  إذا (writable) {
     pi->writeopen = 0;
     wakeup(&pi->nread);
-  } else {
+  } وإلا {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
-  if (pi->readopen == 0 && pi->writeopen == 0) {
-    release(&pi->lock);
-    kfree((char *)pi);
-  } else
-    release(&pi->lock);
+  إذا (pi->readopen == 0 && pi->writeopen == 0) {
+    release(&pi->قلف);
+    kfree((حرف *)pi);
+  } وإلا
+    release(&pi->قلف);
 }
 
-int
-pipewrite(struct pipe *pi, uint64 addr, int n)
+صحيح
+pipewrite(بنية pipe *pi, uint64 addr, صحيح n)
 {
-  int i = 0;
-  struct proc *pr = myproc();
+  صحيح i = 0;
+  بنية proc *pr = myproc();
 
-  acquire(&pi->lock);
-  while (i < n) {
-    if (pi->readopen == 0 || killed(pr)) {
-      release(&pi->lock);
-      return -1;
+  acquire(&pi->قلف);
+  طالما (i < n) {
+    إذا (pi->readopen == 0 || killed(pr)) {
+      release(&pi->قلف);
+      أرجع -1;
     }
-    if (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
+    إذا (pi->nwrite == pi->nread + PIPESIZE) { //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep_prepare(&pi->nwrite);
-      release(&pi->lock);
+      release(&pi->قلف);
       sleep();
-      acquire(&pi->lock);
-    } else {
-      char ch;
-      if (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
-        if (i == 0)
+      acquire(&pi->قلف);
+    } وإلا {
+      حرف ch;
+      إذا (copyin(pr->pagetable, pr->sz, &ch, addr + i, 1) == -1) {
+        إذا (i == 0)
           i = -1;
-        break;
+        اكسر;
       }
-      pi->data[pi->nwrite++ % PIPESIZE] = ch;
+      pi->معلومات[pi->nwrite++ % PIPESIZE] = ch;
       i++;
     }
   }
   wakeup(&pi->nread);
-  release(&pi->lock);
+  release(&pi->قلف);
 
-  return i;
+  أرجع i;
 }
 
-int
-piperead(struct pipe *pi, uint64 addr, int n)
+صحيح
+piperead(بنية pipe *pi, uint64 addr, صحيح n)
 {
-  int i;
-  struct proc *pr = myproc();
-  char ch;
+  صحيح i;
+  بنية proc *pr = myproc();
+  حرف ch;
 
-  acquire(&pi->lock);
-  while (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
-    if (killed(pr)) {
-      release(&pi->lock);
-      return -1;
+  acquire(&pi->قلف);
+  طالما (pi->nread == pi->nwrite && pi->writeopen) { //DOC: pipe-empty
+    إذا (killed(pr)) {
+      release(&pi->قلف);
+      أرجع -1;
     }
     sleep_prepare(&pi->nread); //DOC: piperead-sleep
-    release(&pi->lock);
+    release(&pi->قلف);
     sleep();
-    acquire(&pi->lock);
+    acquire(&pi->قلف);
   }
-  for (i = 0; i < n; i++) { //DOC: piperead-copy
-    if (pi->nread == pi->nwrite)
-      break;
-    ch = pi->data[pi->nread % PIPESIZE];
-    if (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
-      if (i == 0)
+  لكل (i = 0; i < n; i++) { //DOC: piperead-copy
+    إذا (pi->nread == pi->nwrite)
+      اكسر;
+    ch = pi->معلومات[pi->nread % PIPESIZE];
+    إذا (copyout(pr->pagetable, pr->sz, addr + i, &ch, 1) == -1) {
+      إذا (i == 0)
         i = -1;
-      break;
+      اكسر;
     }
     pi->nread++;
   }
   wakeup(&pi->nwrite); //DOC: piperead-wakeup
-  release(&pi->lock);
-  return i;
+  release(&pi->قلف);
+  أرجع i;
 }

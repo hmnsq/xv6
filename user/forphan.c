@@ -1,40 +1,40 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "kernel/fcntl.h"
+#ضمن "user/user.h"
 
 // Create an orphaned file and check if test-xv6.py recovers it.
 
-#define BUFSZ 500
+#تعریف_کړه BUFSZ 500
 
-char buf[BUFSZ];
+حرف buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+صحيح
+اصلي(صحيح argc, حرف **argv)
 {
-  int fd = 0;
-  char *s = argv[0];
-  struct stat st;
-  char *ff = "file0";
+  صحيح fd = 0;
+  حرف *s = argv[0];
+  بنية stat st;
+  حرف *ff = "file0";
 
-  if ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
-    printf("%s: open failed\n", s);
-    exit(1);
+  إذا ((fd = open(ff, O_CREATE | O_WRONLY)) < 0) {
+    چاپ_کړه("%s: open failed\n", s);
+    وتل(1);
   }
-  if (fstat(fd, &st) < 0) {
+  إذا (fstat(fd, &st) < 0) {
     fprintf(2, "%s: cannot stat %s\n", s, "ff");
-    exit(1);
+    وتل(1);
   }
-  if (unlink(ff) < 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  إذا (unlink(ff) < 0) {
+    چاپ_کړه("%s: unlink failed\n", s);
+    وتل(1);
   }
-  if (open(ff, O_RDONLY) != -1) {
-    printf("%s: open successed\n", s);
-    exit(1);
+  إذا (open(ff, O_RDONLY) != -1) {
+    چاپ_کړه("%s: open successed\n", s);
+    وتل(1);
   }
-  printf("wait for kill and reclaim %d\n", st.ino);
+  چاپ_کړه("wait for kill and reclaim %d\n", st.ino);
   // sit around until killed
-  for (;;)
+  لكل (;;)
     pause(1000);
 }

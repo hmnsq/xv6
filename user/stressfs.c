@@ -7,44 +7,44 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
+#ضمن "kernel/fs.h"
+#ضمن "kernel/fcntl.h"
 
-int
-main(int argc, char *argv[])
+صحيح
+اصلي(صحيح argc, حرف *argv[])
 {
-  int fd, i;
-  char path[] = "stressfs0";
-  char data[512];
+  صحيح fd, i;
+  حرف لار[] = "stressfs0";
+  حرف معلومات[512];
 
-  printf("stressfs starting\n");
-  memset(data, 'a', sizeof(data));
+  چاپ_کړه("stressfs starting\n");
+  memset(معلومات, 'a', حجم(معلومات));
 
-  for (i = 0; i < 4; i++)
-    if (fork() > 0)
-      break;
+  لكل (i = 0; i < 4; i++)
+    إذا (fork() > 0)
+      اكسر;
 
-  printf("write %d\n", i);
+  چاپ_کړه("write %d\n", i);
 
-  path[8] += i;
-  fd = open(path, O_CREATE | O_RDWR);
-  for (i = 0; i < 20; i++) {
+  لار[8] += i;
+  fd = open(لار, O_CREATE | O_RDWR);
+  لكل (i = 0; i < 20; i++) {
     // printf(fd, "%d\n", i);
-    write(fd, data, sizeof(data));
+    اكتب(fd, معلومات, حجم(معلومات));
   }
   close(fd);
 
-  printf("read\n");
+  چاپ_کړه("read\n");
 
-  fd = open(path, O_RDONLY);
-  for (i = 0; i < 20; i++)
-    read(fd, data, sizeof(data));
+  fd = open(لار, O_RDONLY);
+  لكل (i = 0; i < 20; i++)
+    اقرأ(fd, معلومات, حجم(معلومات));
   close(fd);
 
   wait(0);
 
-  exit(0);
+  وتل(0);
 }

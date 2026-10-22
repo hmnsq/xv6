@@ -2,51 +2,51 @@
 // low-level driver for 16550a UART.
 //
 
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "proc.h"
-#include "defs.h"
+#ضمن "types.h"
+#ضمن "param.h"
+#ضمن "memlayout.h"
+#ضمن "riscv.h"
+#ضمن "spinlock.h"
+#ضمن "sleeplock.h"
+#ضمن "proc.h"
+#ضمن "defs.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#تعریف_کړه Reg(reg) ((متطاير بینښه حرف *)(UART0 + (reg)))
 
-#define ReadReg(reg)     (*(Reg(reg)))
-#define WriteReg(reg, v) (*(Reg(reg)) = (v))
+#تعریف_کړه ReadReg(reg)     (*(Reg(reg)))
+#تعریف_کړه WriteReg(reg, v) (*(Reg(reg)) = (v))
 
 // the UART control registers.
 // some have different meanings for read vs write.
 // see http://byterunner.com/16550.html
-#define RHR             0        // receive holding register (for input bytes)
-#define THR             0        // transmit holding register (for output bytes)
-#define IER             1        // interrupt enable register
-#define IER_RX_ENABLE   (1 << 0) // receiver interrupts
-#define IER_TX_ENABLE   (1 << 1) // transmit interrupts
-#define FCR             2        // FIFO control register
-#define FCR_FIFO_ENABLE (1 << 0)
-#define FCR_FIFO_CLEAR  (3 << 1) // clear the content of the two FIFOs
-#define ISR             2        // interrupt status register
-#define LCR             3        // line control register
-#define LCR_EIGHT_BITS  (3 << 0)
-#define LCR_BAUD_LATCH  (1 << 7) // special mode to set baud rate
-#define LSR             5        // line status register
-#define LSR_RX_READY    (1 << 0) // input is waiting to be read from RHR
-#define LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
+#تعریف_کړه RHR             0        // receive holding register (for input bytes)
+#تعریف_کړه THR             0        // transmit holding register (for output bytes)
+#تعریف_کړه IER             1        // interrupt enable register
+#تعریف_کړه IER_RX_ENABLE   (1 << 0) // receiver interrupts
+#تعریف_کړه IER_TX_ENABLE   (1 << 1) // transmit interrupts
+#تعریف_کړه FCR             2        // FIFO control register
+#تعریف_کړه FCR_FIFO_ENABLE (1 << 0)
+#تعریف_کړه FCR_FIFO_CLEAR  (3 << 1) // clear the content of the two FIFOs
+#تعریف_کړه ISR             2        // interrupt status register
+#تعریف_کړه LCR             3        // line control register
+#تعریف_کړه LCR_EIGHT_بټونه  (3 << 0)
+#تعریف_کړه LCR_BAUD_LATCH  (1 << 7) // special mode to set baud rate
+#تعریف_کړه LSR             5        // line status register
+#تعریف_کړه LSR_RX_READY    (1 << 0) // input is waiting to be read from RHR
+#تعریف_کړه LSR_TX_IDLE     (1 << 5) // THR can accept another character to send
 
 // for sending threads to serialize their writes
-static struct sleeplock tx_lock;
-static int tx_chan; // &tx_chan is the "wait channel"
+ساكن بنية sleeplock tx_قلف;
+ساكن صحيح tx_chan; // &tx_chan is the "wait channel"
 
-extern volatile int panicking; // from printk.c
-extern volatile int panicked;  // from printk.c
+خارجي متطاير صحيح panicking; // from printk.c
+خارجي متطاير صحيح panicked;  // from printk.c
 
-void
-uartinit(void)
+فراغ
+uartinit(فراغ)
 {
   // disable interrupts.
   WriteReg(IER, 0x00);
@@ -62,7 +62,7 @@ uartinit(void)
 
   // leave set-baud mode,
   // and set word length to 8 bits, no parity.
-  WriteReg(LCR, LCR_EIGHT_BITS);
+  WriteReg(LCR, LCR_EIGHT_بټونه);
 
   // reset and enable FIFOs.
   WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
@@ -70,86 +70,86 @@ uartinit(void)
   // enable transmit and receive interrupts.
   WriteReg(IER, IER_TX_ENABLE | IER_RX_ENABLE);
 
-  initsleeplock(&tx_lock, "uart");
+  initsleeplock(&tx_قلف, "uart");
 }
 
 // transmit buf[] to the uart. it blocks if the
 // uart is busy, so it cannot be called from
 // interrupts, only from write() system calls.
-void
-uartwrite(char buf[], int n)
+فراغ
+uartwrite(حرف buf[], صحيح n)
 {
-  acquiresleep(&tx_lock);
+  acquiresleep(&tx_قلف);
 
-  int i = 0;
-  while (i < n) {
+  صحيح i = 0;
+  طالما (i < n) {
     sleep_prepare(&tx_chan);
-    if (ReadReg(LSR) & LSR_TX_IDLE) {
+    إذا (ReadReg(LSR) & LSR_TX_IDLE) {
       WriteReg(THR, buf[i]);
       i += 1;
-    } else {
+    } وإلا {
       sleep();
     }
   }
 
-  releasesleep(&tx_lock);
+  releasesleep(&tx_قلف);
 }
 
 // write a byte to the uart without using
 // interrupts, for use by kernel printk() and
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
-void
-uartputc_sync(int c)
+فراغ
+uartputc_sync(صحيح c)
 {
-  if (panicking == 0)
-    push_off();
+  إذا (panicking == 0)
+    ټېل_off();
 
-  if (panicked) {
-    for (;;)
+  إذا (panicked) {
+    لكل (;;)
       ;
   }
 
   // wait for UART to set Transmit Holding Empty in LSR.
-  while ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  طالما ((ReadReg(LSR) & LSR_TX_IDLE) == 0)
     ;
   WriteReg(THR, c);
 
-  if (panicking == 0)
-    pop_off();
+  إذا (panicking == 0)
+    راوباسه_off();
 }
 
 // try to read one input character from the UART.
 // return -1 if none is waiting.
-static int
-uartgetc(void)
+ساكن صحيح
+uartgetc(فراغ)
 {
   // is input ready?
-  if (ReadReg(LSR) & LSR_RX_READY) {
-    return ReadReg(RHR);
-  } else {
-    return -1;
+  إذا (ReadReg(LSR) & LSR_RX_READY) {
+    أرجع ReadReg(RHR);
+  } وإلا {
+    أرجع -1;
   }
 }
 
 // handle a uart interrupt, raised because input has
 // arrived, or the uart is ready for more output, or
 // both. called from devintr().
-void
-uartintr(void)
+فراغ
+uartintr(فراغ)
 {
   ReadReg(ISR); // acknowledge the interrupt
 
-  if (ReadReg(LSR) & LSR_TX_IDLE) {
+  إذا (ReadReg(LSR) & LSR_TX_IDLE) {
     // UART finished transmitting; wake up sending thread.
     wakeup(&tx_chan);
   }
 
   // read and process incoming characters, if any.
-  while (1) {
-    int c = uartgetc();
-    if (c == -1)
-      break;
+  طالما (1) {
+    صحيح c = uartgetc();
+    إذا (c == -1)
+      اكسر;
     consoleintr(c);
   }
 }

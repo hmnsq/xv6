@@ -1,35 +1,35 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "kernel/fcntl.h"
-#include "user/user.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "kernel/fcntl.h"
+#ضمن "user/user.h"
 
 // Create an orphaned directory and check if test-xv6.py recovers it.
 
-#define BUFSZ 500
+#تعریف_کړه BUFSZ 500
 
-char buf[BUFSZ];
+حرف buf[BUFSZ];
 
-int
-main(int argc, char **argv)
+صحيح
+اصلي(صحيح argc, حرف **argv)
 {
-  char *s = argv[0];
+  حرف *s = argv[0];
 
-  if (mkdir("dd") != 0) {
-    printf("%s: mkdir dd failed\n", s);
-    exit(1);
+  إذا (mkdir("dd") != 0) {
+    چاپ_کړه("%s: mkdir dd failed\n", s);
+    وتل(1);
   }
 
-  if (chdir("dd") != 0) {
-    printf("%s: chdir dd failed\n", s);
-    exit(1);
+  إذا (chdir("dd") != 0) {
+    چاپ_کړه("%s: chdir dd failed\n", s);
+    وتل(1);
   }
 
-  if (unlink("../dd") < 0) {
-    printf("%s: unlink failed\n", s);
-    exit(1);
+  إذا (unlink("../dd") < 0) {
+    چاپ_کړه("%s: unlink failed\n", s);
+    وتل(1);
   }
-  printf("wait for kill and reclaim\n");
+  چاپ_کړه("wait for kill and reclaim\n");
   // sit around until killed
-  for (;;)
+  لكل (;;)
     pause(1000);
 }

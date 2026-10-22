@@ -1,11 +1,11 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
+#ضمن "types.h"
+#ضمن "riscv.h"
+#ضمن "defs.h"
+#ضمن "param.h"
+#ضمن "spinlock.h"
+#ضمن "sleeplock.h"
+#ضمن "fs.h"
+#ضمن "buf.h"
 
 // Simple logging that allows concurrent FS system calls.
 //
@@ -32,52 +32,52 @@
 
 // Contents of the header block, used for both the on-disk header block
 // and to keep track in memory of logged block# before commit.
-struct logheader {
-  int n;
-  int block[LOGBLOCKS];
+بنية logheader {
+  صحيح n;
+  صحيح بلاک[LOGBLOCKS];
 };
 
-struct log {
-  struct spinlock lock;
-  int start;
-  int outstanding; // how many FS sys calls are executing.
-  int committing;  // in commit(), please wait.
-  int dev;
-  int ncommit;
-  struct logheader lh;
+بنية لوګاریتم {
+  بنية spinlock قلف;
+  صحيح پیل;
+  صحيح outstanding; // how many FS sys calls are executing.
+  صحيح committing;  // in commit(), please wait.
+  صحيح dev;
+  صحيح ncommit;
+  بنية logheader lh;
 };
-struct log log;
+بنية لوګاریتم لوګاریتم;
 
-static void recover_from_log(void);
-static void commit();
+ساكن فراغ recover_from_log(فراغ);
+ساكن فراغ commit();
 
-void
-initlog(int dev, struct superblock *sb)
+فراغ
+initlog(صحيح dev, بنية superblock *sb)
 {
-  if (sizeof(struct logheader) >= BSIZE)
+  إذا (حجم(بنية logheader) >= BSIZE)
     panic("initlog: too big logheader");
 
-  initlock(&log.lock, "log");
-  log.start = sb->logstart;
-  log.dev = dev;
+  initlock(&لوګاریتم.قلف, "log");
+  لوګاریتم.پیل = sb->logstart;
+  لوګاریتم.dev = dev;
   recover_from_log();
 }
 
 // Copy committed blocks from log to their home location
-static void
-install_trans(int recovering)
+ساكن فراغ
+install_trans(صحيح recovering)
 {
-  int tail;
+  صحيح لکۍ;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    if (recovering) {
-      printk("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
+  لكل (لکۍ = 0; لکۍ < لوګاریتم.lh.n; لکۍ++) {
+    إذا (recovering) {
+      printk("recovering tail %d dst %d\n", لکۍ, لوګاریتم.lh.بلاک[لکۍ]);
     }
-    struct buf *lbuf = bread(log.dev, log.start + tail + 1); // read log block
-    struct buf *dbuf = bread(log.dev, log.lh.block[tail]);   // read dst
-    memmove(dbuf->data, lbuf->data, BSIZE); // copy block to dst
+    بنية buf *lbuf = bread(لوګاریتم.dev, لوګاریتم.پیل + لکۍ + 1); // read log block
+    بنية buf *dbuf = bread(لوګاریتم.dev, لوګاریتم.lh.بلاک[لکۍ]);   // read dst
+    memmove(dbuf->معلومات, lbuf->معلومات, BSIZE); // copy block to dst
     bwrite(dbuf);                           // write dst to disk
-    if (recovering == 0)
+    إذا (recovering == 0)
       bunpin(dbuf);
     brelse(lbuf);
     brelse(dbuf);
@@ -85,15 +85,15 @@ install_trans(int recovering)
 }
 
 // Read the log header from disk into the in-memory log header
-static void
-read_head(void)
+ساكن فراغ
+read_سر(فراغ)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *lh = (struct logheader *)(buf->data);
-  int i;
-  log.lh.n = lh->n;
-  for (i = 0; i < log.lh.n; i++) {
-    log.lh.block[i] = lh->block[i];
+  بنية buf *buf = bread(لوګاریتم.dev, لوګاریتم.پیل);
+  بنية logheader *lh = (بنية logheader *)(buf->معلومات);
+  صحيح i;
+  لوګاریتم.lh.n = lh->n;
+  لكل (i = 0; i < لوګاریتم.lh.n; i++) {
+    لوګاریتم.lh.بلاک[i] = lh->بلاک[i];
   }
   brelse(buf);
 }
@@ -101,113 +101,113 @@ read_head(void)
 // Write in-memory log header to disk.
 // This is the true point at which the
 // current transaction commits.
-static void
-write_head(void)
+ساكن فراغ
+write_سر(فراغ)
 {
-  struct buf *buf = bread(log.dev, log.start);
-  struct logheader *hb = (struct logheader *)(buf->data);
-  int i;
-  hb->n = log.lh.n;
-  for (i = 0; i < log.lh.n; i++) {
-    hb->block[i] = log.lh.block[i];
+  بنية buf *buf = bread(لوګاریتم.dev, لوګاریتم.پیل);
+  بنية logheader *hb = (بنية logheader *)(buf->معلومات);
+  صحيح i;
+  hb->n = لوګاریتم.lh.n;
+  لكل (i = 0; i < لوګاریتم.lh.n; i++) {
+    hb->بلاک[i] = لوګاریتم.lh.بلاک[i];
   }
   bwrite(buf);
   brelse(buf);
 }
 
-static void
-recover_from_log(void)
+ساكن فراغ
+recover_from_log(فراغ)
 {
-  read_head();
+  read_سر();
   install_trans(1); // if committed, copy from log to disk
-  log.lh.n = 0;
-  write_head(); // clear the log
+  لوګاریتم.lh.n = 0;
+  write_سر(); // clear the log
 }
 
 // called at the start of each FS system call.
-void
-begin_op(void)
+فراغ
+begin_op(فراغ)
 {
-  acquire(&log.lock);
-  while (1) {
-    if (log.committing) {
-      sleep_prepare(&log);
-      release(&log.lock);
+  acquire(&لوګاریتم.قلف);
+  طالما (1) {
+    إذا (لوګاریتم.committing) {
+      sleep_prepare(&لوګاریتم);
+      release(&لوګاریتم.قلف);
       sleep();
-      acquire(&log.lock);
-    } else if (log.lh.n + (log.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
+      acquire(&لوګاریتم.قلف);
+    } وإلا إذا (لوګاریتم.lh.n + (لوګاریتم.outstanding + 1) * MAXOPBLOCKS > LOGBLOCKS) {
       // this op might exhaust log space; wait for commit.
-      sleep_prepare(&log);
-      release(&log.lock);
+      sleep_prepare(&لوګاریتم);
+      release(&لوګاریتم.قلف);
       sleep();
-      acquire(&log.lock);
-    } else {
-      log.outstanding += 1;
-      release(&log.lock);
-      break;
+      acquire(&لوګاریتم.قلف);
+    } وإلا {
+      لوګاریتم.outstanding += 1;
+      release(&لوګاریتم.قلف);
+      اكسر;
     }
   }
 }
 
 // called at the end of each FS system call.
 // commits if this was the last outstanding operation.
-void
-end_op(void)
+فراغ
+پای_ټکی_op(فراغ)
 {
-  int do_commit = 0;
+  صحيح do_commit = 0;
 
-  acquire(&log.lock);
-  log.outstanding -= 1;
-  if (log.committing)
+  acquire(&لوګاریتم.قلف);
+  لوګاریتم.outstanding -= 1;
+  إذا (لوګاریتم.committing)
     panic("log.committing");
-  if (log.outstanding == 0) {
+  إذا (لوګاریتم.outstanding == 0) {
     do_commit = 1;
-    log.committing = 1;
-  } else {
+    لوګاریتم.committing = 1;
+  } وإلا {
     // begin_op() may be waiting for log space,
     // and decrementing log.outstanding has decreased
     // the amount of reserved space.
-    wakeup(&log);
+    wakeup(&لوګاریتم);
   }
-  release(&log.lock);
+  release(&لوګاریتم.قلف);
 
-  if (do_commit) {
+  إذا (do_commit) {
     // call commit w/o holding locks, since not allowed
     // to sleep with locks.
     commit();
-    acquire(&log.lock);
-    log.committing = 0;
-    log.ncommit += 1;
-    wakeup(&log);
-    release(&log.lock);
+    acquire(&لوګاریتم.قلف);
+    لوګاریتم.committing = 0;
+    لوګاریتم.ncommit += 1;
+    wakeup(&لوګاریتم);
+    release(&لوګاریتم.قلف);
   }
 }
 
 // Copy modified blocks from cache to log.
-static void
-write_log(void)
+ساكن فراغ
+write_log(فراغ)
 {
-  int tail;
+  صحيح لکۍ;
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    struct buf *to = bread(log.dev, log.start + tail + 1); // log block
-    struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
-    memmove(to->data, from->data, BSIZE);
-    bwrite(to); // write the log
+  لكل (لکۍ = 0; لکۍ < لوګاریتم.lh.n; لکۍ++) {
+    بنية buf *منزل = bread(لوګاریتم.dev, لوګاریتم.پیل + لکۍ + 1); // log block
+    بنية buf *from = bread(لوګاریتم.dev, لوګاریتم.lh.بلاک[لکۍ]); // cache block
+    memmove(منزل->معلومات, from->معلومات, BSIZE);
+    bwrite(منزل); // write the log
     brelse(from);
-    brelse(to);
+    brelse(منزل);
   }
 }
 
-static void
+ساكن فراغ
 commit()
 {
-  if (log.lh.n > 0) {
+  إذا (لوګاریتم.lh.n > 0) {
     write_log();      // Write modified blocks from cache to log
-    write_head();     // Write header to disk -- the real commit
+    write_سر();     // Write header to disk -- the real commit
     install_trans(0); // Now install writes to home locations
-    log.lh.n = 0;
-    write_head(); // Erase the transaction from the log
+    لوګاریتم.lh.n = 0;
+    write_سر(); // Erase the transaction from the log
   }
 }
 
@@ -220,42 +220,42 @@ commit()
 //   modify bp->data[]
 //   log_write(bp)
 //   brelse(bp)
-void
-log_write(struct buf *b)
+فراغ
+log_write(بنية buf *b)
 {
-  int i;
+  صحيح i;
 
-  acquire(&log.lock);
-  if (log.lh.n >= LOGBLOCKS)
+  acquire(&لوګاریتم.قلف);
+  إذا (لوګاریتم.lh.n >= LOGBLOCKS)
     panic("too big a transaction");
-  if (log.outstanding < 1)
+  إذا (لوګاریتم.outstanding < 1)
     panic("log_write outside of trans");
 
-  for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno) // log absorption
-      break;
+  لكل (i = 0; i < لوګاریتم.lh.n; i++) {
+    إذا (لوګاریتم.lh.بلاک[i] == b->blockno) // log absorption
+      اكسر;
   }
-  log.lh.block[i] = b->blockno;
-  if (i == log.lh.n) { // Add new block to log?
+  لوګاریتم.lh.بلاک[i] = b->blockno;
+  إذا (i == لوګاریتم.lh.n) { // Add new block to log?
     bpin(b);
-    log.lh.n++;
+    لوګاریتم.lh.n++;
   }
-  release(&log.lock);
+  release(&لوګاریتم.قلف);
 }
 
 uint64
-sys_sync(void)
+sys_sync(فراغ)
 {
-  acquire(&log.lock);
-  if (log.committing || log.outstanding > 0) {
-    int n = log.ncommit + 1;
-    while (log.ncommit < n) {
-      sleep_prepare(&log);
-      release(&log.lock);
+  acquire(&لوګاریتم.قلف);
+  إذا (لوګاریتم.committing || لوګاریتم.outstanding > 0) {
+    صحيح n = لوګاریتم.ncommit + 1;
+    طالما (لوګاریتم.ncommit < n) {
+      sleep_prepare(&لوګاریتم);
+      release(&لوګاریتم.قلف);
       sleep();
-      acquire(&log.lock);
+      acquire(&لوګاریتم.قلف);
     }
   }
-  release(&log.lock);
-  return 0;
+  release(&لوګاریتم.قلف);
+  أرجع 0;
 }

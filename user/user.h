@@ -1,50 +1,50 @@
-#define SBRK_ERROR ((char *)-1)
+#تعریف_کړه SBRK_ERROR ((حرف *)-1)
 
-struct stat;
+بنية stat;
 
 // system calls
-int fork(void);
-int exit(int) __attribute__((noreturn));
-int wait(int *);
-int pipe(int *);
-int write(int, const void *, int);
-int read(int, void *, int);
-int close(int);
-int kill(int);
-int exec(const char *, char **);
-int open(const char *, int);
-int mknod(const char *, short, short);
-int unlink(const char *);
-int fstat(int fd, struct stat *);
-int link(const char *, const char *);
-int mkdir(const char *);
-int chdir(const char *);
-int dup(int);
-int getpid(void);
-char *sys_sbrk(int, int);
-int pause(int);
-int uptime(void);
-int sync(void);
+صحيح fork(فراغ);
+صحيح وتل(صحيح) __attribute__((noreturn));
+صحيح wait(صحيح *);
+صحيح pipe(صحيح *);
+صحيح اكتب(صحيح, ثابت فراغ *, صحيح);
+صحيح اقرأ(صحيح, فراغ *, صحيح);
+صحيح close(صحيح);
+صحيح kill(صحيح);
+صحيح exec(ثابت حرف *, حرف **);
+صحيح open(ثابت حرف *, صحيح);
+صحيح mknod(ثابت حرف *, لنډ, لنډ);
+صحيح unlink(ثابت حرف *);
+صحيح fstat(صحيح fd, بنية stat *);
+صحيح link(ثابت حرف *, ثابت حرف *);
+صحيح mkdir(ثابت حرف *);
+صحيح chdir(ثابت حرف *);
+صحيح dup(صحيح);
+صحيح getpid(فراغ);
+حرف *sys_sbrk(صحيح, صحيح);
+صحيح pause(صحيح);
+صحيح uptime(فراغ);
+صحيح sync(فراغ);
 
 // ulib.c
-int stat(const char *, struct stat *);
-char *strcpy(char *, const char *);
-void *memmove(void *, const void *, int);
-char *strchr(const char *, char c);
-int strcmp(const char *, const char *);
-char *gets(char *, int max);
-uint strlen(const char *);
-void *memset(void *, int, uint);
-int atoi(const char *);
-int memcmp(const void *, const void *, uint);
-void *memcpy(void *, const void *, uint);
-char *sbrk(int);
-char *sbrklazy(int);
+صحيح stat(ثابت حرف *, بنية stat *);
+حرف *strcpy(حرف *, ثابت حرف *);
+فراغ *memmove(فراغ *, ثابت فراغ *, صحيح);
+حرف *strchr(ثابت حرف *, حرف c);
+صحيح strcmp(ثابت حرف *, ثابت حرف *);
+حرف *gets(حرف *, صحيح max);
+uint مزي_اوږدوالی(ثابت حرف *);
+فراغ *memset(فراغ *, صحيح, uint);
+صحيح atoi(ثابت حرف *);
+صحيح memcmp(ثابت فراغ *, ثابت فراغ *, uint);
+فراغ *حافظه_نقل(فراغ *, ثابت فراغ *, uint);
+حرف *sbrk(صحيح);
+حرف *sbrklazy(صحيح);
 
 // printf.c
-void fprintf(int, const char *, ...) __attribute__((format(printf, 2, 3)));
-void printf(const char *, ...) __attribute__((format(printf, 1, 2)));
+فراغ fprintf(صحيح, ثابت حرف *, ...) __attribute__((format(چاپ_کړه, 2, 3)));
+فراغ چاپ_کړه(ثابت حرف *, ...) __attribute__((format(چاپ_کړه, 1, 2)));
 
 // umalloc.c
-void *malloc(uint);
-void free(void *);
+فراغ *حافظه_ورکړه(uint);
+فراغ حرر(فراغ *);
