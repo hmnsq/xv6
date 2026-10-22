@@ -1,88 +1,88 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
-#include "kernel/fs.h"
-#include "kernel/fcntl.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
+#ضمن "kernel/fs.h"
+#ضمن "kernel/fcntl.h"
 
-char *
-fmtname(char *path)
+حرف *
+fmtname(حرف *path)
 {
-  static char buf[DIRSIZ + 1];
-  char *p;
+  ساكن حرف buf[DIRSIZ + 1];
+  حرف *p;
 
   // Find first character after last slash.
-  for (p = path + strlen(path); p >= path && *p != '/'; p--)
+  لكل (p = path + strlen(path); p >= path && *p != '/'; p--)
     ;
   p++;
 
   // Return blank-padded name.
-  if (strlen(p) >= DIRSIZ)
-    return p;
+  ܐܢ (strlen(p) >= DIRSIZ)
+    ܦܢܐ p;
   memmove(buf, p, strlen(p));
   memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
-  buf[sizeof(buf) - 1] = '\0';
-  return buf;
+  buf[حجم(buf) - 1] = '\0';
+  ܦܢܐ buf;
 }
 
-void
-ls(char *path)
+فراغ
+ls(حرف *path)
 {
-  char buf[512], *p;
-  int fd;
-  struct dirent de;
-  struct stat st;
+  حرف buf[512], *p;
+  صحيح fd;
+  بنية dirent de;
+  بنية stat st;
 
-  if ((fd = open(path, O_RDONLY)) < 0) {
+  ܐܢ ((fd = open(path, O_RDONLY)) < 0) {
     fprintf(2, "ls: cannot open %s\n", path);
-    return;
+    ܦܢܐ;
   }
 
-  if (fstat(fd, &st) < 0) {
+  ܐܢ (fstat(fd, &st) < 0) {
     fprintf(2, "ls: cannot stat %s\n", path);
     close(fd);
-    return;
+    ܦܢܐ;
   }
 
-  switch (st.type) {
-  case T_DEVICE:
-  case T_FILE:
-    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (int)st.size);
-    break;
+  بدل (st.type) {
+  حالة T_DEVICE:
+  حالة T_FILE:
+    printf("%s %d %d %d\n", fmtname(path), st.type, st.ino, (صحيح)st.size);
+    اكسر;
 
-  case T_DIR:
-    if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf) {
+  حالة T_DIR:
+    ܐܢ (strlen(path) + 1 + DIRSIZ + 1 > حجم buf) {
       printf("ls: path too long\n");
-      break;
+      اكسر;
     }
     strcpy(buf, path);
     p = buf + strlen(buf);
     *p++ = '/';
-    while (read(fd, &de, sizeof(de)) == sizeof(de)) {
-      if (de.inum == 0)
-        continue;
+    ܟܡܐ (اقرأ(fd, &de, حجم(de)) == حجم(de)) {
+      ܐܢ (de.inum == 0)
+        استمر;
       memmove(p, de.name, DIRSIZ);
       p[DIRSIZ] = 0;
-      if (stat(buf, &st) < 0) {
+      ܐܢ (stat(buf, &st) < 0) {
         printf("ls: cannot stat %s\n", buf);
-        continue;
+        استمر;
       }
-      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (int)st.size);
+      printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, (صحيح)st.size);
     }
-    break;
+    اكسر;
   }
   close(fd);
 }
 
-int
-main(int argc, char *argv[])
+صحيح
+main(صحيح argc, حرف *argv[])
 {
-  int i;
+  صحيح i;
 
-  if (argc < 2) {
+  ܐܢ (argc < 2) {
     ls(".");
     exit(0);
   }
-  for (i = 1; i < argc; i++)
+  لكل (i = 1; i < argc; i++)
     ls(argv[i]);
   exit(0);
 }

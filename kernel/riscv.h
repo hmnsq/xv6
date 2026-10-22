@@ -1,12 +1,12 @@
 #ifndef __ASSEMBLER__
 
 // which hart (core) is this?
-static inline uint64
+ساكن مضمن uint64
 r_mhartid()
 {
   uint64 x;
-  asm volatile("csrr %0, mhartid" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, mhartid" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // Machine Status Register, mstatus
@@ -16,27 +16,27 @@ r_mhartid()
 #define MSTATUS_MPP_S    (1L << 11)
 #define MSTATUS_MPP_U    (0L << 11)
 
-static inline uint64
+ساكن مضمن uint64
 r_mstatus()
 {
   uint64 x;
-  asm volatile("csrr %0, mstatus" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, mstatus" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_mstatus(uint64 x)
 {
-  asm volatile("csrw mstatus, %0" : : "r"(x));
+  asm متطاير("csrw mstatus, %0" : : "r"(x));
 }
 
 // machine exception program counter, holds the
 // instruction address to which a return from
 // exception will go.
-static inline void
+ساكن مضمن فراغ
 w_mepc(uint64 x)
 {
-  asm volatile("csrw mepc, %0" : : "r"(x));
+  asm متطاير("csrw mepc, %0" : : "r"(x));
 }
 
 // Supervisor Status Register, sstatus
@@ -47,165 +47,165 @@ w_mepc(uint64 x)
 #define SSTATUS_SIE  (1L << 1) // Supervisor Interrupt Enable
 #define SSTATUS_UIE  (1L << 0) // User Interrupt Enable
 
-static inline uint64
+ساكن مضمن uint64
 r_sstatus()
 {
   uint64 x;
-  asm volatile("csrr %0, sstatus" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, sstatus" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_sstatus(uint64 x)
 {
-  asm volatile("csrw sstatus, %0" : : "r"(x));
+  asm متطاير("csrw sstatus, %0" : : "r"(x));
 }
 
-static inline void
+ساكن مضمن فراغ
 s_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrs sstatus, %0" ::"rK"(x) : "memory");
 }
 
-static inline void
+ساكن مضمن فراغ
 c_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrc sstatus, %0" ::"rK"(x) : "memory");
 }
 
-static inline uint64
+ساكن مضمن uint64
 rc_sstatus(uint64 x)
 {
   __asm__ __volatile__("csrrc %0, sstatus, %1" : "=r"(x) : "rK"(x) : "memory");
-  return x;
+  ܦܢܐ x;
 }
 
 // Supervisor Interrupt Pending
-static inline uint64
+ساكن مضمن uint64
 r_sip()
 {
   uint64 x;
-  asm volatile("csrr %0, sip" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, sip" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_sip(uint64 x)
 {
-  asm volatile("csrw sip, %0" : : "r"(x));
+  asm متطاير("csrw sip, %0" : : "r"(x));
 }
 
 // Supervisor Interrupt Enable
 #define SIE_SEIE (1L << 9) // external
 #define SIE_STIE (1L << 5) // timer
-static inline uint64
+ساكن مضمن uint64
 r_sie()
 {
   uint64 x;
-  asm volatile("csrr %0, sie" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, sie" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_sie(uint64 x)
 {
-  asm volatile("csrw sie, %0" : : "r"(x));
+  asm متطاير("csrw sie, %0" : : "r"(x));
 }
 
 // Machine-mode Interrupt Enable
 #define MIE_STIE (1L << 5) // supervisor timer
-static inline uint64
+ساكن مضمن uint64
 r_mie()
 {
   uint64 x;
-  asm volatile("csrr %0, mie" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, mie" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_mie(uint64 x)
 {
-  asm volatile("csrw mie, %0" : : "r"(x));
+  asm متطاير("csrw mie, %0" : : "r"(x));
 }
 
 // supervisor exception program counter, holds the
 // instruction address to which a return from
 // exception will go.
-static inline void
+ساكن مضمن فراغ
 w_sepc(uint64 x)
 {
-  asm volatile("csrw sepc, %0" : : "r"(x));
+  asm متطاير("csrw sepc, %0" : : "r"(x));
 }
 
-static inline uint64
+ساكن مضمن uint64
 r_sepc()
 {
   uint64 x;
-  asm volatile("csrr %0, sepc" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, sepc" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // Machine Exception Delegation
-static inline uint64
+ساكن مضمن uint64
 r_medeleg()
 {
   uint64 x;
-  asm volatile("csrr %0, medeleg" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, medeleg" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_medeleg(uint64 x)
 {
-  asm volatile("csrw medeleg, %0" : : "r"(x));
+  asm متطاير("csrw medeleg, %0" : : "r"(x));
 }
 
 // Machine Interrupt Delegation
-static inline uint64
+ساكن مضمن uint64
 r_mideleg()
 {
   uint64 x;
-  asm volatile("csrr %0, mideleg" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, mideleg" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_mideleg(uint64 x)
 {
-  asm volatile("csrw mideleg, %0" : : "r"(x));
+  asm متطاير("csrw mideleg, %0" : : "r"(x));
 }
 
 // Supervisor Trap-Vector Base Address
 // low two bits are mode.
-static inline void
+ساكن مضمن فراغ
 w_stvec(uint64 x)
 {
-  asm volatile("csrw stvec, %0" : : "r"(x));
+  asm متطاير("csrw stvec, %0" : : "r"(x));
 }
 
-static inline uint64
+ساكن مضمن uint64
 r_stvec()
 {
   uint64 x;
-  asm volatile("csrr %0, stvec" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, stvec" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // Supervisor Timer Comparison Register
-static inline uint64
+ساكن مضمن uint64
 r_stimecmp()
 {
   uint64 x;
   // asm volatile("csrr %0, stimecmp" : "=r" (x) );
-  asm volatile("csrr %0, 0x14d" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, 0x14d" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_stimecmp(uint64 x)
 {
   // asm volatile("csrw stimecmp, %0" : : "r" (x));
-  asm volatile("csrw 0x14d, %0" : : "r"(x));
+  asm متطاير("csrw 0x14d, %0" : : "r"(x));
 }
 
 // Machine Environment Configuration Register
@@ -213,33 +213,33 @@ w_stimecmp(uint64 x)
 #define MENVCFG_STCE (1L << 63)
 #define MENVCFG_ADUE (1L << 61)
 
-static inline uint64
+ساكن مضمن uint64
 r_menvcfg()
 {
   uint64 x;
   // asm volatile("csrr %0, menvcfg" : "=r" (x) );
-  asm volatile("csrr %0, 0x30a" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, 0x30a" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_menvcfg(uint64 x)
 {
   // asm volatile("csrw menvcfg, %0" : : "r" (x));
-  asm volatile("csrw 0x30a, %0" : : "r"(x));
+  asm متطاير("csrw 0x30a, %0" : : "r"(x));
 }
 
 // Physical Memory Protection
-static inline void
+ساكن مضمن فراغ
 w_pmpcfg0(uint64 x)
 {
-  asm volatile("csrw pmpcfg0, %0" : : "r"(x));
+  asm متطاير("csrw pmpcfg0, %0" : : "r"(x));
 }
 
-static inline void
+ساكن مضمن فراغ
 w_pmpaddr0(uint64 x)
 {
-  asm volatile("csrw pmpaddr0, %0" : : "r"(x));
+  asm متطاير("csrw pmpaddr0, %0" : : "r"(x));
 }
 
 // use riscv's sv39 page table scheme.
@@ -249,140 +249,140 @@ w_pmpaddr0(uint64 x)
 
 // supervisor address translation and protection;
 // holds the address of the page table.
-static inline void
+ساكن مضمن فراغ
 w_satp(uint64 x)
 {
-  asm volatile("csrw satp, %0" : : "r"(x));
+  asm متطاير("csrw satp, %0" : : "r"(x));
 }
 
-static inline uint64
+ساكن مضمن uint64
 r_satp()
 {
   uint64 x;
-  asm volatile("csrr %0, satp" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, satp" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // Supervisor Trap Cause
-static inline uint64
+ساكن مضمن uint64
 r_scause()
 {
   uint64 x;
-  asm volatile("csrr %0, scause" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, scause" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // Supervisor Trap Value
-static inline uint64
+ساكن مضمن uint64
 r_stval()
 {
   uint64 x;
-  asm volatile("csrr %0, stval" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, stval" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // Machine-mode Counter-Enable
-static inline void
+ساكن مضمن فراغ
 w_mcounteren(uint64 x)
 {
-  asm volatile("csrw mcounteren, %0" : : "r"(x));
+  asm متطاير("csrw mcounteren, %0" : : "r"(x));
 }
 
-static inline uint64
+ساكن مضمن uint64
 r_mcounteren()
 {
   uint64 x;
-  asm volatile("csrr %0, mcounteren" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, mcounteren" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // machine-mode cycle counter
-static inline uint64
+ساكن مضمن uint64
 r_time()
 {
   uint64 x;
-  asm volatile("csrr %0, time" : "=r"(x));
-  return x;
+  asm متطاير("csrr %0, time" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // enable device interrupts
-static inline void
+ساكن مضمن فراغ
 intr_on()
 {
   s_sstatus(SSTATUS_SIE);
 }
 
 // disable device interrupts
-static inline void
+ساكن مضمن فراغ
 intr_off()
 {
   c_sstatus(SSTATUS_SIE);
 }
 
 // are device interrupts enabled?
-static inline int
+ساكن مضمن صحيح
 intr_get()
 {
   uint64 x = r_sstatus();
-  return (x & SSTATUS_SIE) != 0;
+  ܦܢܐ (x & SSTATUS_SIE) != 0;
 }
 
-static inline uint64
+ساكن مضمن uint64
 r_sp()
 {
   uint64 x;
-  asm volatile("mv %0, sp" : "=r"(x));
-  return x;
+  asm متطاير("mv %0, sp" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // read and write tp, the thread pointer, which xv6 uses to hold
 // this core's hartid (core number), the index into cpus[].
-static inline uint64
+ساكن مضمن uint64
 r_tp()
 {
   uint64 x;
-  asm volatile("mv %0, tp" : "=r"(x));
-  return x;
+  asm متطاير("mv %0, tp" : "=r"(x));
+  ܦܢܐ x;
 }
 
-static inline void
+ساكن مضمن فراغ
 w_tp(uint64 x)
 {
-  asm volatile("mv tp, %0" : : "r"(x));
+  asm متطاير("mv tp, %0" : : "r"(x));
 }
 
-static inline uint64
+ساكن مضمن uint64
 r_ra()
 {
   uint64 x;
-  asm volatile("mv %0, ra" : "=r"(x));
-  return x;
+  asm متطاير("mv %0, ra" : "=r"(x));
+  ܦܢܐ x;
 }
 
 // flush the TLB.
-static inline void
+ساكن مضمن فراغ
 sfence_vma()
 {
   // the zero, zero means flush all TLB entries.
-  asm volatile("sfence.vma zero, zero" ::: "memory");
+  asm متطاير("sfence.vma zero, zero" ::: "memory");
 }
 
 // fence for memory-mapped IO
-static inline void
+ساكن مضمن فراغ
 io_fence()
 {
-  asm volatile("fence iorw, iorw" ::: "memory");
+  asm متطاير("fence iorw, iorw" ::: "memory");
 }
 
 // fence for icache
-static inline void
+ساكن مضمن فراغ
 icache_fence()
 {
-  asm volatile("fence.i" ::: "memory");
+  asm متطاير("fence.i" ::: "memory");
 }
 
-typedef uint64 pte_t;
-typedef uint64 *pagetable_t; // 512 PTEs
+تعريفنوع uint64 pte_t;
+تعريفنوع uint64 *pagetable_t; // 512 PTEs
 
 #endif // __ASSEMBLER__
 
