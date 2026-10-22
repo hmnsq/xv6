@@ -1,11 +1,11 @@
-#define T_DIR    1 // Directory
-#define T_FILE   2 // File
-#define T_DEVICE 3 // Device
+#تعریف_کرو T_DIR    1 // Directory
+#تعریف_کرو T_FILE   2 // File
+#تعریف_کرو T_DEVICE 3 // Device
 
-struct stat {
-  int dev;     // File system's disk device
+بنية stat {
+  صحيح dev;     // File system's disk device
   uint ino;    // Inode number
-  short type;  // Type of file
-  short nlink; // Number of links to file
-  uint64 size; // Size of file in bytes
+  چھوٹا type;  // Type of file
+  چھوٹا nlink; // Number of links to file
+  uint64 ناپ; // Size of file in bytes
 };

@@ -1,10 +1,10 @@
-#include "kernel/types.h"
-#include "kernel/stat.h"
-#include "user/user.h"
+#ضمن "kernel/types.h"
+#ضمن "kernel/stat.h"
+#ضمن "user/user.h"
 
-int
-main(int argc, char *argv[])
+صحيح
+مکھ(صحيح argc, حرف *argv[])
 {
   sync();
-  exit(0);
+  باہر_نکلو(0);
 }
