@@ -34,14 +34,14 @@ struct redircmd {
 
 struct pipecmd {
   int type;
-  struct cmd *left;
-  struct cmd *right;
+  struct cmd *कालिवा;
+  struct cmd *कानान;
 };
 
 struct listcmd {
   int type;
-  struct cmd *left;
-  struct cmd *right;
+  struct cmd *कालिवा;
+  struct cmd *कानान;
 };
 
 struct backcmd {
@@ -93,9 +93,9 @@ runcmd(struct cmd *cmd)
   case LIST:
     lcmd = (struct listcmd *)cmd;
     if (fork1() == 0)
-      runcmd(lcmd->left);
+      runcmd(lcmd->कालिवा);
     wait(0);
-    runcmd(lcmd->right);
+    runcmd(lcmd->कानान);
     break;
 
   case PIPE:
@@ -107,14 +107,14 @@ runcmd(struct cmd *cmd)
       dup(p[1]);
       close(p[0]);
       close(p[1]);
-      runcmd(pcmd->left);
+      runcmd(pcmd->कालिवा);
     }
     if (fork1() == 0) {
       close(0);
       dup(p[0]);
       close(p[0]);
       close(p[1]);
-      runcmd(pcmd->right);
+      runcmd(pcmd->कानान);
     }
     close(p[0]);
     close(p[1]);
@@ -226,28 +226,28 @@ redircmd(struct cmd *subcmd, char *file, char *efile, int mode, int fd)
 }
 
 struct cmd *
-pipecmd(struct cmd *left, struct cmd *right)
+pipecmd(struct cmd *कालिवा, struct cmd *कानान)
 {
   struct pipecmd *cmd;
 
   cmd = malloc(sizeof(*cmd));
   memset(cmd, 0, sizeof(*cmd));
   cmd->type = PIPE;
-  cmd->left = left;
-  cmd->right = right;
+  cmd->कालिवा = कालिवा;
+  cmd->कानान = कानान;
   return (struct cmd *)cmd;
 }
 
 struct cmd *
-listcmd(struct cmd *left, struct cmd *right)
+listcmd(struct cmd *कालिवा, struct cmd *कानान)
 {
   struct listcmd *cmd;
 
   cmd = malloc(sizeof(*cmd));
   memset(cmd, 0, sizeof(*cmd));
   cmd->type = LIST;
-  cmd->left = left;
-  cmd->right = right;
+  cmd->कालिवा = कालिवा;
+  cmd->कानान = कानान;
   return (struct cmd *)cmd;
 }
 
@@ -480,14 +480,14 @@ nulterminate(struct cmd *cmd)
 
   case PIPE:
     pcmd = (struct pipecmd *)cmd;
-    nulterminate(pcmd->left);
-    nulterminate(pcmd->right);
+    nulterminate(pcmd->कालिवा);
+    nulterminate(pcmd->कानान);
     break;
 
   case LIST:
     lcmd = (struct listcmd *)cmd;
-    nulterminate(lcmd->left);
-    nulterminate(lcmd->right);
+    nulterminate(lcmd->कालिवा);
+    nulterminate(lcmd->कानान);
     break;
 
   case BACK:

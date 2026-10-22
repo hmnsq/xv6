@@ -136,16 +136,16 @@ static uint64 (*syscalls[])(void) = {
 void
 syscall(void)
 {
-  int num;
+  int नुमेरो;
   struct proc *p = myproc();
 
-  num = p->trapframe->a7;
-  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+  नुमेरो = p->trapframe->a7;
+  if (नुमेरो > 0 && नुमेरो < NELEM(syscalls) && syscalls[नुमेरो]) {
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
-    p->trapframe->a0 = syscalls[num]();
+    p->trapframe->a0 = syscalls[नुमेरो]();
   } else {
-    printk("%d %s: unknown sys call %d\n", p->pid, p->name, num);
+    printk("%d %s: unknown sys call %d\n", p->pid, p->name, नुमेरो);
     p->trapframe->a0 = -1;
   }
 }

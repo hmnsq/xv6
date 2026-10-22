@@ -39,7 +39,7 @@ static struct disk {
   struct virtq_used *used;
 
   // our own book-keeping.
-  char free[NUM];  // is a descriptor free?
+  char free[नुमेरो_2];  // is a descriptor free?
   uint16 used_idx; // we've looked this far in used[2..NUM].
 
   // track info about in-flight operations,
@@ -48,11 +48,11 @@ static struct disk {
   struct {
     struct buf *b;
     char status;
-  } info[NUM];
+  } info[नुमेरो_2];
 
   // disk command headers.
   // one-for-one with descriptors, for convenience.
-  struct virtio_blk_req ops[NUM];
+  struct virtio_blk_req ops[नुमेरो_2];
 
   struct spinlock vdisk_lock;
 
@@ -65,7 +65,7 @@ virtio_disk_init(void)
 
   initlock(&disk.vdisk_lock, "virtio_disk");
 
-  if (*R(VIRTIO_MMIO_MAGIC_VALUE) != 0x74726976 ||
+  if (*R(VIRTIO_MMIO_MAGIC_हालागा) != 0x74726976 ||
       *R(VIRTIO_MMIO_VERSION) != 2 || *R(VIRTIO_MMIO_DEVICE_ID) != 2 ||
       *R(VIRTIO_MMIO_VENDOR_ID) != 0x554d4551) {
     panic("could not find virtio disk");
@@ -111,10 +111,10 @@ virtio_disk_init(void)
     panic("virtio disk should not be ready");
 
   // check maximum queue size.
-  uint32 max = *R(VIRTIO_MMIO_QUEUE_NUM_MAX);
+  uint32 max = *R(VIRTIO_MMIO_QUEUE_नुमेरो_MAX);
   if (max == 0)
     panic("virtio disk has no queue 0");
-  if (max < NUM)
+  if (max < नुमेरो_2)
     panic("virtio disk max queue too short");
 
   // allocate and zero queue memory.
@@ -128,21 +128,21 @@ virtio_disk_init(void)
   memset(disk.used, 0, PGSIZE);
 
   // set queue size.
-  *R(VIRTIO_MMIO_QUEUE_NUM) = NUM;
+  *R(VIRTIO_MMIO_QUEUE_नुमेरो) = नुमेरो_2;
 
   // write physical addresses.
-  *R(VIRTIO_MMIO_QUEUE_DESC_LOW) = (uint64)disk.desc;
-  *R(VIRTIO_MMIO_QUEUE_DESC_HIGH) = (uint64)disk.desc >> 32;
-  *R(VIRTIO_MMIO_DRIVER_DESC_LOW) = (uint64)disk.avail;
-  *R(VIRTIO_MMIO_DRIVER_DESC_HIGH) = (uint64)disk.avail >> 32;
-  *R(VIRTIO_MMIO_DEVICE_DESC_LOW) = (uint64)disk.used;
-  *R(VIRTIO_MMIO_DEVICE_DESC_HIGH) = (uint64)disk.used >> 32;
+  *R(VIRTIO_MMIO_QUEUE_DESC_माबाबा) = (uint64)disk.desc;
+  *R(VIRTIO_MMIO_QUEUE_DESC_माताअस) = (uint64)disk.desc >> 32;
+  *R(VIRTIO_MMIO_DRIVER_DESC_माबाबा) = (uint64)disk.avail;
+  *R(VIRTIO_MMIO_DRIVER_DESC_माताअस) = (uint64)disk.avail >> 32;
+  *R(VIRTIO_MMIO_DEVICE_DESC_माबाबा) = (uint64)disk.used;
+  *R(VIRTIO_MMIO_DEVICE_DESC_माताअस) = (uint64)disk.used >> 32;
 
   // queue is ready.
   *R(VIRTIO_MMIO_QUEUE_READY) = 0x1;
 
   // all NUM descriptors start out unused.
-  for (int i = 0; i < NUM; i++)
+  for (int i = 0; i < नुमेरो_2; i++)
     disk.free[i] = 1;
 
   // tell device we're completely ready.
@@ -156,7 +156,7 @@ virtio_disk_init(void)
 static int
 alloc_desc()
 {
-  for (int i = 0; i < NUM; i++) {
+  for (int i = 0; i < नुमेरो_2; i++) {
     if (disk.free[i]) {
       disk.free[i] = 0;
       return i;
@@ -169,7 +169,7 @@ alloc_desc()
 static void
 free_desc(int i)
 {
-  if (i >= NUM)
+  if (i >= नुमेरो_2)
     panic("free_desc 1");
   if (disk.free[i])
     panic("free_desc 2");
@@ -272,7 +272,7 @@ virtio_disk_rw(struct buf *b, int write)
   disk.info[idx[0]].b = b;
 
   // tell the device the first index in our chain of descriptors.
-  disk.avail->ring[disk.avail->idx % NUM] = idx[0];
+  disk.avail->ring[disk.avail->idx % नुमेरो_2] = idx[0];
 
   io_fence();
 
@@ -317,7 +317,7 @@ virtio_disk_intr()
 
   while (disk.used_idx != disk.used->idx) {
     io_fence();
-    int id = disk.used->ring[disk.used_idx % NUM].id;
+    int id = disk.used->ring[disk.used_idx % नुमेरो_2].id;
 
     if (disk.info[id].status != 0)
       panic("virtio_disk_intr status");

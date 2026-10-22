@@ -165,8 +165,8 @@ copyinstr2(char *s)
     exit(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
+  char *मगा_कातविरान[] = {"xx", 0};
+  ret = exec(b, मगा_कातविरान);
   if (ret != -1) {
     printf("exec(%s) returned %d, not -1\n", b, fd);
     exit(1);
@@ -204,17 +204,17 @@ void
 copyinstr3(char *s)
 {
   sbrk(8192);
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0) {
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 इताअस = (uint64)sbrk(0);
+  if ((इताअस % PGSIZE) != 0) {
+    sbrk(PGSIZE - (इताअस % PGSIZE));
   }
-  top = (uint64)sbrk(0);
-  if (top % PGSIZE) {
+  इताअस = (uint64)sbrk(0);
+  if (इताअस % PGSIZE) {
     printf("oops\n");
     exit(1);
   }
 
-  char *b = (char *)(top - 1);
+  char *b = (char *)(इताअस - 1);
   *b = 'x';
 
   int ret = unlink(b);
@@ -235,8 +235,8 @@ copyinstr3(char *s)
     exit(1);
   }
 
-  char *args[] = {"xx", 0};
-  ret = exec(b, args);
+  char *मगा_कातविरान[] = {"xx", 0};
+  ret = exec(b, मगा_कातविरान);
   if (ret != -1) {
     printf("exec(%s) returned %d, not -1\n", b, fd);
     exit(1);
@@ -2340,17 +2340,17 @@ bigargtest(char *s)
   unlink("bigarg-ok");
   pid = fork();
   if (pid == 0) {
-    static char *args[MAXARG];
+    static char *मगा_कातविरान[MAXARG];
     int i;
     char big[400];
     memset(big, ' ', sizeof(big));
     big[sizeof(big) - 1] = '\0';
     for (i = 0; i < MAXARG - 1; i++)
-      args[i] = big;
-    args[MAXARG - 1] = 0;
+      मगा_कातविरान[i] = big;
+    मगा_कातविरान[MAXARG - 1] = 0;
     // this exec() should fail (and return) because the
     // arguments are too large.
-    exec("echo", args);
+    exec("echo", मगा_कातविरान);
     fd = open("bigarg-ok", O_CREATE);
     close(fd);
     exit(0);
@@ -2575,14 +2575,14 @@ sbrkbugs(char *s)
 void
 sbrklast(char *s)
 {
-  uint64 top = (uint64)sbrk(0);
-  if ((top % PGSIZE) != 0)
-    sbrk(PGSIZE - (top % PGSIZE));
+  uint64 इताअस = (uint64)sbrk(0);
+  if ((इताअस % PGSIZE) != 0)
+    sbrk(PGSIZE - (इताअस % PGSIZE));
   sbrk(PGSIZE);
   sbrk(10);
   sbrk(-20);
-  top = (uint64)sbrk(0);
-  char *p = (char *)(top - 64);
+  इताअस = (uint64)sbrk(0);
+  char *p = (char *)(इताअस - 64);
   p[0] = 'x';
   p[1] = '\0';
   int fd = open(p, O_RDWR | O_CREATE);
@@ -2601,8 +2601,8 @@ void
 sbrk8000(char *s)
 {
   sbrk(0x80000004);
-  volatile char *top = sbrk(0);
-  *(top - 1) = *(top - 1) + 1;
+  volatile char *इताअस = sbrk(0);
+  *(इताअस - 1) = *(इताअस - 1) + 1;
 }
 
 // regression test. test whether exec() leaks memory if one of the
@@ -3198,8 +3198,8 @@ execout(char *s)
         sbrk(-PGSIZE);
 
       close(1);
-      char *args[] = {"echo", "x", 0};
-      exec("echo", args);
+      char *मगा_कातविरान[] = {"echo", "x", 0};
+      exec("echo", मगा_कातविरान);
       exit(0);
     } else {
       wait((int *)0);

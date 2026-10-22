@@ -82,10 +82,10 @@ mycpu(void)
 struct proc *
 myproc(void)
 {
-  push_off();
+  इतुलाक_off();
   struct cpu *c = mycpu();
   struct proc *p = c->proc;
-  pop_off();
+  आलिसिन_off();
   return p;
 }
 

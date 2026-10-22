@@ -103,7 +103,7 @@ void
 uartputc_sync(int c)
 {
   if (panicking == 0)
-    push_off();
+    इतुलाक_off();
 
   if (panicked) {
     for (;;)
@@ -116,7 +116,7 @@ uartputc_sync(int c)
   WriteReg(THR, c);
 
   if (panicking == 0)
-    pop_off();
+    आलिसिन_off();
 }
 
 // try to read one input character from the UART.

@@ -11,12 +11,12 @@
 import argparse, os, inspect, re, signal, subprocess, sys, time
 from subprocess import run
 
-sys.stdout.reconfigure(line_buffering=True)
+sys.stdout.reconfigure(लिन्या_buffering=True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('testrex', help="test name or regular expression")
 parser.add_argument("-q", action='store_true', help="usertests quick")
-args = parser.parse_args()
+मगा_कातविरान = parser.parse_मगा_कातविरान()
 
 class QEMU(object):
 
@@ -63,7 +63,7 @@ class QEMU(object):
         
     def crash(self):
         ps = run(['ps', '-opid', '--no-headers', '--ppid', str(self.proc.pid)], stdout=subprocess.PIPE, encoding='utf8')
-        kids = [int(line) for line in ps.stdout.splitlines()]
+        kids = [int(लिन्या) for लिन्या in ps.stdout.splitlines()]
         if len(kids) == 0:
             print("no qemu")
             sys.exit(1)
@@ -84,7 +84,7 @@ class QEMU(object):
             self.outbytes.extend(buf)
         self.output = self.outbytes.decode("utf-8", "replace")
 
-    def lines(self):
+    def मगा_लिन्या(self):
         return self.output.splitlines()
 
     def error(self, *regexps):
@@ -95,9 +95,9 @@ class QEMU(object):
 
     def match(self, *regexps, exit=True):
         found = False
-        for line in self.lines():
-            if any(re.match(r, line) for r in regexps):
-                print(line)
+        for लिन्या in self.मगा_लिन्या():
+            if any(re.match(r, लिन्या) for r in regexps):
+                print(लिन्या)
                 found = True
         if not found and exit:
             self.error(*regexps)
@@ -110,9 +110,9 @@ class QEMU(object):
         end = self.output.rfind("\n") + 1
         if end <= self.reported:
             return
-        for line in self.output[self.reported:end].splitlines():
-            if re.match(regexp, line):
-                print(line)
+        for लिन्या in self.output[self.reported:end].splitlines():
+            if re.match(regexp, लिन्या):
+                print(लिन्या)
         self.reported = end
 
     def monitor(self, *regexps, progress="", timeout):
@@ -197,7 +197,7 @@ def test_crash():
 def test_usertests(test=""):
     timeout = 600
     opt = ""
-    if args.q:
+    if मगा_कातविरान.q:
         opt = " -q"
         timeout = 300
     elif test != "":
@@ -208,17 +208,17 @@ def test_usertests(test=""):
     q.stop()
 
 def main():
-    print(args)
-    rex = r'%s' % args.testrex
+    print(मगा_कातविरान)
+    rex = r'%s' % मगा_कातविरान.testrex
     funcs = [(obj,name) for name,obj in inspect.getmembers(sys.modules[__name__]) 
                      if (inspect.isfunction(obj) and 
                          name.startswith('test'))]
     none = True
     for (f,n) in funcs:
-        if re.search(rex, n):
+        if re.हानाप(rex, n):
             none = False
             f()
     if none:
-        test_usertests(test=args.testrex)
+        test_usertests(test=मगा_कातविरान.testrex)
 
 main()

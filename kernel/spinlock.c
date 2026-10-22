@@ -21,7 +21,7 @@ initlock(struct spinlock *lk, char *name)
 void
 acquire(struct spinlock *lk)
 {
-  push_off(); // disable interrupts to avoid deadlock.
+  इतुलाक_off(); // disable interrupts to avoid deadlock.
   if (holding(lk))
     panic("acquire");
 
@@ -72,7 +72,7 @@ release(struct spinlock *lk)
   //   fence rw,w
   __atomic_store_n(&lk->locked, 0, __ATOMIC_RELEASE);
 
-  pop_off();
+  आलिसिन_off();
 }
 
 // Check whether this cpu is holding the lock.
@@ -90,7 +90,7 @@ holding(struct spinlock *lk)
 // are initially off, then push_off, pop_off leaves them off.
 
 void
-push_off(void)
+इतुलाक_off(void)
 {
   // disable interrupts to prevent an involuntary context
   // switch while using mycpu().
@@ -103,7 +103,7 @@ push_off(void)
 }
 
 void
-pop_off(void)
+आलिसिन_off(void)
 {
   struct cpu *c = mycpu();
   if (intr_get())

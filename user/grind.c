@@ -242,8 +242,8 @@ go(int which_child)
           exit(1);
         }
         close(aa[1]);
-        char *args[3] = {"echo", "hi", 0};
-        exec("grindir/../echo", args);
+        char *मगा_कातविरान[3] = {"echo", "hi", 0};
+        exec("grindir/../echo", मगा_कातविरान);
         fprintf(2, "grind: echo: not found\n");
         exit(2);
       } else if (pid1 < 0) {
@@ -266,8 +266,8 @@ go(int which_child)
           exit(5);
         }
         close(bb[1]);
-        char *args[2] = {"cat", 0};
-        exec("/cat", args);
+        char *मगा_कातविरान[2] = {"cat", 0};
+        exec("/cat", मगा_कातविरान);
         fprintf(2, "grind: cat: not found\n");
         exit(6);
       } else if (pid2 < 0) {

@@ -48,8 +48,8 @@ struct {
   struct spinlock lock;
 
   // input circular buffer
-#define INPUT_BUF_SIZE 128
-  char buf[INPUT_BUF_SIZE];
+#define पासोक_BUF_SIZE 128
+  char buf[पासोक_BUF_SIZE];
   uint r; // Read index
   uint w; // Write index
   uint e; // Edit index
@@ -107,7 +107,7 @@ consoleread(int user_dst, uint64 dst, int n)
       acquire(&cons.lock);
     }
 
-    c = cons.buf[cons.r++ % INPUT_BUF_SIZE];
+    c = cons.buf[cons.r++ % पासोक_BUF_SIZE];
 
     if (c == C('D')) { // end-of-file
       if (n < target) {
@@ -154,7 +154,7 @@ consoleintr(int c)
     break;
   case C('U'): // Kill line.
     while (cons.e != cons.w &&
-           cons.buf[(cons.e - 1) % INPUT_BUF_SIZE] != '\n') {
+           cons.buf[(cons.e - 1) % पासोक_BUF_SIZE] != '\n') {
       cons.e--;
       consputc(BACKSPACE);
     }
@@ -167,16 +167,16 @@ consoleintr(int c)
     }
     break;
   default:
-    if (c != 0 && cons.e - cons.r < INPUT_BUF_SIZE) {
+    if (c != 0 && cons.e - cons.r < पासोक_BUF_SIZE) {
       c = (c == '\r') ? '\n' : c;
 
       // echo back to the user.
       consputc(c);
 
       // store for consumption by consoleread().
-      cons.buf[cons.e++ % INPUT_BUF_SIZE] = c;
+      cons.buf[cons.e++ % पासोक_BUF_SIZE] = c;
 
-      if (c == '\n' || c == C('D') || cons.e - cons.r == INPUT_BUF_SIZE) {
+      if (c == '\n' || c == C('D') || cons.e - cons.r == पासोक_BUF_SIZE) {
         // wake up consoleread() if a whole line (or end-of-file)
         // has arrived.
         cons.w = cons.e;
